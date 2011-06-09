@@ -1,0 +1,6 @@
+{{el.button_text}}
+{%for c in el.multiplechoice_set.all %}
+	<a href="{{c.action.goto.get_absolute_url}}"> {{c.choice}}</a>
+{%endfor%}
+
+

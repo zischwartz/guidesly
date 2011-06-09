@@ -1,0 +1,27 @@
+{%extends "base.html"%} 
+
+{% block content %} 
+<a href="{{slide.guide.get_absolute_url}}">Back to {{slide.guide.title}}</a>
+
+<h1>{{slide.title}}</h1>
+<p>{{slide.text}}</p>
+
+<br>
+
+{%for el in static_elements%}
+	<img src="{{ MEDIA_URL }}{{el.file.name}}">
+{%endfor%}
+<br>
+
+
+{%for el in interactive_elements%}
+{# {{el.render_el}} #}
+	<br>
+	{%include el.el_template%}
+	<br>
+{%endfor%}
+
+
+
+
+{% endblock %}

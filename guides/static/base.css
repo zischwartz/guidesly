@@ -1,0 +1,18 @@
+body
+{
+	background: #EFEFEF;
+	margin: 0px;
+	padding: 0px;
+}
+
+
+
+#wrap
+{
+	padding: 15px;
+	width: 500px;
+	margin-top: 20px;
+	margin-left: auto;
+	margin-right: auto;
+	background-color: white;
+}

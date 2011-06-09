@@ -1,0 +1,10 @@
+{%extends "base.html"%} 
+
+{% block content %} 
+
+	{%for guide in guide_list%}
+		<a href="{{guide.get_absolute_url}}">{{guide}}</a>
+	{%endfor%}
+
+
+{% endblock %}
