@@ -109,12 +109,6 @@ class MultipleChoiceInquiry (InteractiveElement):
 	
 	def el_template(self):
 		return 'els/mc.html'
-	
-	def render_el(self):
-		string =self.button_text
-		for c in self.multiplechoice_set.all():
-			string+= " <a href='%s'>%s</a><br>" % (c.action.goto.get_absolute_url(), c.choice)
-		return string
 
 class MultipleChoice (models.Model):
 	choice = models.CharField(max_length=250)
@@ -127,9 +121,9 @@ class YNInquiry (InteractiveElement):
 	yes_action = models.ForeignKey(Action, blank=True, null=True, related_name='yn_inquiry_yes')
 	no_action = models.ForeignKey(Action, blank=True, null=True, related_name='yn_inquiry_no')
 	
-	def render_el(self):
-		return "%s<br> <a class='ielement yninquiry' href='%s'>yes</a> <a class='ielement yninquiry' href='%s'>no</a>" % (self.button_text, self.yes_action.goto.get_absolute_url(), self.no_action.goto.get_absolute_url())
-	
+	def el_template(self):
+		return 'els/yn.html'
+
 class ValueInquiry (InteractiveElement):
 	min_value = models.IntegerField(blank=True, null=True)
 	max_value = models.IntegerField(blank=True, null=True)
