@@ -1,14 +1,19 @@
 from django.forms import ModelForm
 from models import *
 
-class CreateGuideForm(ModelForm):
+class GuideForm(ModelForm):
 	class Meta:
 		model=Guide
 		
-class CreateSlideForm(ModelForm):
+class SlideForm(ModelForm):
 	class Meta:
 		model=Slide
 
-class CreateStaticElementForm(ModelForm):
+class StaticElementForm(ModelForm):
 	class Meta:
 		model=StaticElement
+
+# this, at it's base, is a simple button
+class InteractiveElementForm(ModelForm):
+	class Meta:
+		model=InteractiveElement

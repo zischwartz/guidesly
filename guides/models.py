@@ -40,6 +40,7 @@ class Guide (models.Model):
 	modified = models.DateTimeField(auto_now=True)
 	is_linear = models.BooleanField(default=False) #if true, we should auto add next and back buttons
 	enable_comments = models.BooleanField(default=True)
+	# text_slugs_for_slides = models.BooleanField(default=False)
 	
 	def __unicode__(self):
 		return self.title

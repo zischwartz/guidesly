@@ -7,17 +7,19 @@
 <table>
 {# {{form.title}} #}
 	
-{{slide_form.as_table}}
+{{sf.as_table}}
 </table>
-<input name='guide' value={{creating_guide_id}}><br>
+{# <input name='guide' value={{creating_guide_id}}><br> #}
 <input type="submit" value="Add this slide" />
 </form>
+
+
+
 
 <br><br>
 <h2>Add Static Element</h2>
 
-<form action "/add-static" method="post">{% csrf_token %}
-
+<form action "add-static" method="post">{% csrf_token %}
 <table>
 {{static_element_form.as_table}}
 </table>

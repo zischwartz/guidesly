@@ -7,6 +7,7 @@ from datetime import datetime
 
 from django.views.generic import ListView, DetailView
 from forms import *
+from django.core.urlresolvers import reverse
 
 
 # Viewing Guides
@@ -31,38 +32,49 @@ def SlideDetailView (request, gslug, slug):
 # -------------------------
 def CreateGuide (request):
 	if request.method == 'POST':
-		form = CreateGuideForm(request.POST)
+		form = GuideForm(request.POST)
 		if form.is_valid():
 			g =form.save()
-			request.session['creating_guide_id'] = g.id
-			return HttpResponseRedirect('/create/slide')
+			# request.session['creating_guide_id'] = g.id #this was a silly way to do it
+			return HttpResponseRedirect(reverse('BuildSlide', kwargs={'gslug':g.slug}))
 	else:
-		form = CreateGuideForm()
+		form = GuideForm()
 	return render_to_response("create/create_guide.html", locals(), context_instance=RequestContext(request) )
 
 
-def CreateSlide (request):
+def EditGuide (request, gslug):
+	guide = get_object_or_404(Guide, slug=gslug)
+	slide_list= guide.slide_set.all()
+	return render_to_response("create/edit_guide.html", locals(), context_instance=RequestContext(request))
+
+
+def BuildSlide (request, gslug):
+	s = Slide(guide=get_object_or_404(Guide, slug=gslug))
+	s.save()
+	return HttpResponseRedirect(reverse('EditSlide', kwargs={'gslug':gslug, 'slug': s.id}))
+
+
+def EditSlide (request, gslug, slug):
 	if request.method == 'POST':
-		slide_form = CreateSlideForm(request.POST)
-		if slide_form.is_valid():
-			s=slide_form.save(commit=False)
-			s.id=request.session['creating_slide_id']
-			s.save()
-			return HttpResponseRedirect('/create/slide')
+		s= Slide.objects.get(id=slug)		
+		sf = SlideForm(request.POST, instance=s)
+		if sf.is_valid():
+			sf.save()
+			return HttpResponseRedirect(reverse('BuildSlide', kwargs={'gslug':gslug}))
+		else:
+			return HttpResponse('that slideform did not validate, fool')
 	else:
-		creating_guide_id=request.session['creating_guide_id']
-		s= Slide(guide_id=creating_guide_id)
-		s.save()
-		request.session['creating_slide_id'] = s.id
-		slide_form = CreateSlideForm(initial={'guide':creating_guide_id})
-		static_element_form= CreateStaticElementForm(initial={'slide':s.id})
-	return render_to_response("create/create_slide.html", locals(), context_instance=RequestContext(request) )
+		slide = get_object_or_404(Slide, guide__slug=gslug, id=slug)
+		sf= SlideForm(instance=slide)
+		static_element_form= StaticElementForm(initial={'slide':slug})
+		return render_to_response("create/create_slide.html", locals(), context_instance=RequestContext(request))
 
 def AddStaticElement (request):
-	if request.method == 'POST':
-		form= CreateStaticElementForm(request.POST)
-		if form.is_valid():
-			form.save()
-			return HttpResponseRedirect('/create/slide')
-	else:
-		form = CreateStaticElementForm
+	pass
+	# if request.method == 'POST':
+	# 	form= CreateStaticElementForm(request.POST)
+	# 	if form.is_valid():
+	# 		form.save()
+	# 		return HttpResponseRedirect('/create/slide')
+	# else:
+	# 	form = CreateStaticElementForm

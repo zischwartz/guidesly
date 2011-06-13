@@ -15,8 +15,15 @@ urlpatterns = patterns('',
     (r'^$', GuideListView),
     url(r'^g/(?P<slug>[^/]+)/?$', GuideDetailView, name='GuideDetailView'),
     url(r'^g/(?P<gslug>[^/]+)/(?P<slug>[^/]+)/?$', SlideDetailView, name='SlideDetailView'),
+    
     url(r'create/?$', CreateGuide, name='CreateGuide'),
-    url(r'create/slide', CreateSlide, name='CreateSlide'),
+    url(r'create/(?P<gslug>[^/]+)/?$', EditGuide, name='EditGuide'),
+    url(r'create/(?P<gslug>[^/]+)/add/?$', BuildSlide, name='BuildSlide'),
+    # url(r'create/(?P<gslug>[^/]+)/(?P<slug>[^/]+)/?$', CreateSlide, name='CreateSlide'),
+    url(r'create/(?P<gslug>[^/]+)/(?P<slug>[^/]+)/?$', EditSlide, name='EditSlide'),
+    # url(r'create/(?P<gslug>[^/]+)/?$', EditSlide, name='EditSlide'),
+    # url(r'create/(?P<gslug>[^/]+)/(?P<slug>[^/]+)/?$', EditSlide, name='EditSlide'),
+
 
     # (r'^guide/(?P<slug>[^/]+)/?$', GuideDetailView),
     # url(r'^learny/', include('learny.foo.urls')),
