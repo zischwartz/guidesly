@@ -23,13 +23,19 @@ SELEMENT_TYPE = (
 	('V', 'Video'),
 )
 
+SVALUEINQUIRY_TYPE = (
+	('L', 'Location'),
+	('A', 'Accelerometer'),
+	('T', 'Time'),
+)
+
 
 
 
 class Guide (models.Model):
 	title = models.CharField(max_length=250)
 	slug = models.SlugField(unique=True)
-	description = models.TextField()
+	description = models.TextField(blank=True)
 	created = models.DateTimeField(auto_now_add=True)
 	modified = models.DateTimeField(auto_now=True)
 	is_linear = models.BooleanField(default=False) #if true, we should auto add next and back buttons
@@ -44,25 +50,34 @@ class Guide (models.Model):
 	@models.permalink
 	def get_absolute_url(self):
 		return ('GuideDetailView', (), {'slug': self.slug })
+	
+	def save(self, *args, **kwargs):
+		super(Guide, self).save(*args, **kwargs)
+		return self.id
+		
 
 
 class Slide (models.Model):
 	title = models.CharField(max_length=250)
 	slug = models.SlugField()
 	text = models.TextField(blank=True, null=True)
-	guide= models.ForeignKey(Guide)
+	guide= models.ForeignKey(Guide, null=True)
 	slide_number = models.IntegerField(blank=True, null=True)
 	is_alt_slide = models.BooleanField(default=False) #if two slides have the same number, they're alt slides, meaning they're at the same level. sort of syntactic sugar...
 	objects = InheritanceManager()
 	def __unicode__(self):
-		return self.title
-	
+		if self.title !='':
+			return self.title
+		else:
+			return str(self.id)
+
 	class Meta:
 		ordering = ['slide_number']
 	
 	@models.permalink
 	def get_absolute_url(self):
 		return ('SlideDetailView', (), {'gslug': self.guide.slug, 'slug':self.slug })
+
 
 
 class StaticElement (models.Model):
@@ -72,6 +87,7 @@ class StaticElement (models.Model):
 	title = models.CharField(max_length=250, blank=True, null=True)
 	display_title = models.BooleanField(default=False) #if two slides have the same number, they're alt slides, meaning they're at the same level. sort of syntactic sugar...
 	type = models.CharField(blank=True, max_length=1, choices = SELEMENT_TYPE)
+
 
 class Action (models.Model):
 	goto = models.ForeignKey(Slide, blank=True, null=True)
@@ -124,10 +140,28 @@ class YNInquiry (InteractiveElement):
 	def el_template(self):
 		return 'els/yn.html'
 
-class ValueInquiry (InteractiveElement):
-	min_value = models.IntegerField(blank=True, null=True)
-	max_value = models.IntegerField(blank=True, null=True)
-	#these two are only for numerical value, but they'll just be blank for text input, or sensor
+#numerical
+class NValueInquiry (InteractiveElement):
+	min_value = models.FloatField(blank=True, null=True)
+	max_value = models.FloatField(blank=True, null=True)
+	increment_by = models.FloatField(blank=True, null=True)
+	default_value = models.FloatField(blank=True, null=True)
+	def el_template(self):
+		return 'els/nvalue.html'
+
+#text 
+class TValueInquiry (InteractiveElement):
+	default_value = models.CharField(max_length=500, blank=True, null=True,)
+
+	def el_template(self):
+		return 'els/tvalue.html'
+
+#sensor
+class SValueInquiry (InteractiveElement):
+	sensor_type = models.CharField(blank=True,  max_length=1, choices = SVALUEINQUIRY_TYPE)
+	def el_template(self):
+		return 'els/svalue.html'
+	
 
 class Timer (InteractiveElement):
 	seconds = models.IntegerField(blank=True, null=True)

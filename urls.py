@@ -15,14 +15,13 @@ urlpatterns = patterns('',
     (r'^$', GuideListView),
     url(r'^g/(?P<slug>[^/]+)/?$', GuideDetailView, name='GuideDetailView'),
     url(r'^g/(?P<gslug>[^/]+)/(?P<slug>[^/]+)/?$', SlideDetailView, name='SlideDetailView'),
+    url(r'create/?$', CreateGuide, name='CreateGuide'),
+    url(r'create/slide', CreateSlide, name='CreateSlide'),
 
     # (r'^guide/(?P<slug>[^/]+)/?$', GuideDetailView),
     # url(r'^learny/', include('learny.foo.urls')),
 
-    # Uncomment the admin/doc line below to enable admin documentation:
     url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
-
-    # Uncomment the next line to enable the admin:
     url(r'^admin/', include(admin.site.urls)),
 )
 

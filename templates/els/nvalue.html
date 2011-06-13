@@ -1,0 +1,11 @@
+
+{{el.increment_by}}-{{el.button_text}}
+<input type="number"
+       min="{{el.min_value}}"
+       max="{{el.max_value}}"
+	 {%if el.increment_by %}
+       step="{{el.increment_by}}"
+	{%endif%}
+       value="{{el.default_value}}">
+
+  <input type="submit" value="go">
