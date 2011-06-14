@@ -12,6 +12,7 @@ from django.core.urlresolvers import reverse
 from django.forms.models import inlineformset_factory
 
 
+from django.contrib import messages
 
 
 # Viewing Guides
@@ -64,9 +65,13 @@ def EditSlide (request, gslug, slug):
 		sf = SlideForm(request.POST, instance=s)
 		if sf.is_valid():
 			sf.save()
-			return HttpResponseRedirect(reverse('BuildSlide', kwargs={'gslug':gslug}))
+			if 'slide_sub_add' in request.POST: #this is saving and adding a new slide
+				return HttpResponseRedirect(reverse('BuildSlide', kwargs={'gslug':gslug}))
+			else:
+				messages.info(request, 'Slide Saved!')
+				return HttpResponseRedirect(reverse('EditSlide', kwargs={'gslug':gslug, 'slug': s.slug}))
 		else:
-			return HttpResponse('that slideform did not validate, fool')
+			return HttpResponse('that slideform did not validate, fool!')
 	else:
 		slide = get_object_or_404(Slide, guide__slug=gslug, slug=slug)
 		sf= SlideForm(instance=slide)

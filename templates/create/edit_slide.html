@@ -1,15 +1,21 @@
 {%extends "base.html"%}
 {%block content%}
 <h1>Add a Step to your Guide</h1>
+<a href="{% url SlideDetailView gslug=slide.guide.slug, slug=slide.slug %}"> View slide</a>
 
 <form action="" method="post">
-{% csrf_token %}
-<table>
-{# {{form.title}} #}
-{{sf.as_table}}
-</table>
-<input type="submit" value="Add this slide" />
+	<div id="slide_being_edited">
+		{% csrf_token %}
+		<table>
+		{# {{form.title}} #}
+		{{sf.as_table}}
+		</table>
+	</div>
+<input type="submit" value="Save &amp; Add Another Slide" name="slide_sub_add" />
+<input type="submit" value="Save Slide" name ="slide_sub_save"/>
 </form>
+
+
 
 
 
