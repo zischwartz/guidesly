@@ -9,6 +9,10 @@ from django.views.generic import ListView, DetailView
 from forms import *
 from django.core.urlresolvers import reverse
 
+from django.forms.models import inlineformset_factory
+
+
+
 
 # Viewing Guides
 # -------------------------
@@ -51,12 +55,12 @@ def EditGuide (request, gslug):
 def BuildSlide (request, gslug):
 	s = Slide(guide=get_object_or_404(Guide, slug=gslug))
 	s.save()
-	return HttpResponseRedirect(reverse('EditSlide', kwargs={'gslug':gslug, 'slug': s.id}))
+	return HttpResponseRedirect(reverse('EditSlide', kwargs={'gslug':gslug, 'slug': s.slug}))
 
 
 def EditSlide (request, gslug, slug):
 	if request.method == 'POST':
-		s= Slide.objects.get(id=slug)		
+		s= Slide.objects.get(guide__slug=gslug, slug=slug)		
 		sf = SlideForm(request.POST, instance=s)
 		if sf.is_valid():
 			sf.save()
@@ -64,17 +68,31 @@ def EditSlide (request, gslug, slug):
 		else:
 			return HttpResponse('that slideform did not validate, fool')
 	else:
-		slide = get_object_or_404(Slide, guide__slug=gslug, id=slug)
+		slide = get_object_or_404(Slide, guide__slug=gslug, slug=slug)
 		sf= SlideForm(instance=slide)
-		static_element_form= StaticElementForm(initial={'slide':slug})
-		return render_to_response("create/create_slide.html", locals(), context_instance=RequestContext(request))
+		StaticElementFormSet = inlineformset_factory(Slide, StaticElement, extra=1)
+		StaticElementForms = StaticElementFormSet(instance=slide)
 
-def AddStaticElement (request):
-	pass
-	# if request.method == 'POST':
-	# 	form= CreateStaticElementForm(request.POST)
-	# 	if form.is_valid():
-	# 		form.save()
-	# 		return HttpResponseRedirect('/create/slide')
+		return render_to_response("create/edit_slide.html", locals(), context_instance=RequestContext(request))
+
+def AddStaticElement (request, gslug, slug):
+	s= Slide.objects.get(guide__slug=gslug, slug=slug)
+	StaticElementFormSet = inlineformset_factory(Slide, StaticElement, extra=1)
+
+	if request.method == 'POST':
+		form= StaticElementFormSet(request.POST, request.FILES, instance=s)
+		if form.is_valid():
+			form.save()
+			return HttpResponseRedirect(reverse('EditSlide', kwargs={'gslug':gslug, 'slug': s.slug}))
+		else:
+			return HttpResponse(form.errors)
+	else:
+		StaticElementForms = StaticElementFormSet(instance=s)
+		return render_to_response("create/edit_slide.html", locals(), context_instance=RequestContext(request))
+	
+	# return HttpResponse('lolz')
+	
+
+			# return HttpResponseRedirect(reverse('EditSlide', kwargs={'gslug':gslug, 'slug': slug}))
 	# else:
 	# 	form = CreateStaticElementForm

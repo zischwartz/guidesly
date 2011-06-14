@@ -19,10 +19,8 @@ urlpatterns = patterns('',
     url(r'create/?$', CreateGuide, name='CreateGuide'),
     url(r'create/(?P<gslug>[^/]+)/?$', EditGuide, name='EditGuide'),
     url(r'create/(?P<gslug>[^/]+)/add/?$', BuildSlide, name='BuildSlide'),
-    # url(r'create/(?P<gslug>[^/]+)/(?P<slug>[^/]+)/?$', CreateSlide, name='CreateSlide'),
     url(r'create/(?P<gslug>[^/]+)/(?P<slug>[^/]+)/?$', EditSlide, name='EditSlide'),
-    # url(r'create/(?P<gslug>[^/]+)/?$', EditSlide, name='EditSlide'),
-    # url(r'create/(?P<gslug>[^/]+)/(?P<slug>[^/]+)/?$', EditSlide, name='EditSlide'),
+    url(r'create/(?P<gslug>[^/]+)/(?P<slug>[^/]+)/addstatic$', AddStaticElement, name='AddStaticElement'),
 
 
     # (r'^guide/(?P<slug>[^/]+)/?$', GuideDetailView),

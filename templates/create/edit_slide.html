@@ -1,0 +1,48 @@
+{%extends "base.html"%}
+{%block content%}
+<h1>Add a Step to your Guide</h1>
+
+<form action="" method="post">
+{% csrf_token %}
+<table>
+{# {{form.title}} #}
+{{sf.as_table}}
+</table>
+<input type="submit" value="Add this slide" />
+</form>
+
+
+
+
+<br><br>
+<h2>Add Static Element</h2>
+
+{# <form action="{%url AddStaticElement gslug slug%}" method="post" enctype="multipart/form-data"> #}
+{# {% csrf_token %} #}
+{# <table> #}
+{# {{StaticElementForms}} #}
+{#  #}
+{# </table> #}
+{# <input type="submit" value="Add this element" /> #}
+{# </form> #}
+{# above works #}
+
+
+<form action="{%url AddStaticElement gslug slug%}" method="post" enctype="multipart/form-data">
+		{{StaticElementForms.management_form}}
+
+	{%for f in StaticElementForms %}
+		{% csrf_token %} 
+		{%if forloop.counter <= StaticElementForms.initial_form_count %}
+			<table>{{f.as_table}}</table>
+			<input type="submit" value="Edit this element" />
+		{%else%}
+			<table>{{f.as_table}}</table>
+			<input type="submit" value="Add this element" />
+		{%endif%}
+		<br><br>
+	{%endfor%}
+</form>
+
+
+{%endblock%}

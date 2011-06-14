@@ -31,7 +31,6 @@ SVALUEINQUIRY_TYPE = (
 
 
 
-
 class Guide (models.Model):
 	title = models.CharField(max_length=250)
 	slug = models.SlugField(unique=True)
@@ -40,7 +39,8 @@ class Guide (models.Model):
 	modified = models.DateTimeField(auto_now=True)
 	is_linear = models.BooleanField(default=False) #if true, we should auto add next and back buttons
 	enable_comments = models.BooleanField(default=True)
-	# text_slugs_for_slides = models.BooleanField(default=False)
+	text_slugs_for_slides = models.BooleanField(default=False)
+	number_of_slides = models.IntegerField(default=0)
 	
 	def __unicode__(self):
 		return self.title
@@ -52,9 +52,9 @@ class Guide (models.Model):
 	def get_absolute_url(self):
 		return ('GuideDetailView', (), {'slug': self.slug })
 	
-	def save(self, *args, **kwargs):
-		super(Guide, self).save(*args, **kwargs)
-		return self.id
+	# def save(self, *args, **kwargs):
+	# 	super(Guide, self).save(*args, **kwargs)
+	# 	return self.id
 		
 
 
@@ -72,6 +72,16 @@ class Slide (models.Model):
 		else:
 			return str(self.id)
 
+	def save(self, *args, **kwargs):
+		if not self.slide_number:
+			n= self.guide.number_of_slides
+			self.slide_number= n
+			self.slug = n
+			self.guide.number_of_slides = n+1
+			self.guide.save()
+		super(Slide, self).save(*args, **kwargs)
+
+
 	class Meta:
 		ordering = ['slide_number']
 	
@@ -84,7 +94,7 @@ class Slide (models.Model):
 class StaticElement (models.Model):
 	slide = models.ForeignKey(Slide)
 	created = models.DateTimeField(auto_now_add=True)
-	file = models.FileField(upload_to='media/%Y') #the path obvs needs to include guide and slide
+	file = models.FileField(upload_to='media/%Y', blank=True) #the path obvs needs to include guide and slide
 	title = models.CharField(max_length=250, blank=True, null=True)
 	display_title = models.BooleanField(default=False) #if two slides have the same number, they're alt slides, meaning they're at the same level. sort of syntactic sugar...
 	type = models.CharField(blank=True, max_length=1, choices = SELEMENT_TYPE)

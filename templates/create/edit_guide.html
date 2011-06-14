@@ -6,7 +6,8 @@
 <p>{{guide.description}}</p>
 <br>
 {%for slide in slide_list%}
-	<li><a href="{{slide.get_absolute_url}}">{{slide}}</a>  <a href="{% url EditSlide gslug=slide.guide.slug, slug=slide.id %}"> EDIT</a>
+	<li><a href="{{slide.get_absolute_url}}">{{slide}}</a>  
+		<a href="{% url EditSlide gslug=slide.guide.slug, slug=slide.slug %}"> EDIT</a>
 </li>
 {%endfor%}
 
