@@ -61,10 +61,12 @@ def BuildSlide (request, gslug):
 
 def EditSlide (request, gslug, slug):
 	if request.method == 'POST':
-		s= Slide.objects.get(guide__slug=gslug, slug=slug)		
+		s= Slide.objects.get(guide__slug=gslug, slug=slug)
 		sf = SlideForm(request.POST, instance=s)
 		if sf.is_valid():
-			sf.save()
+			slide=sf.save(commit=False)
+			slide.brand_new=False
+			slide.save()
 			if 'slide_sub_add' in request.POST: #this is saving and adding a new slide
 				return HttpResponseRedirect(reverse('BuildSlide', kwargs={'gslug':gslug}))
 			else:

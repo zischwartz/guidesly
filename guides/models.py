@@ -59,12 +59,13 @@ class Guide (models.Model):
 
 
 class Slide (models.Model):
-	title = models.CharField(max_length=250)
+	title = models.CharField(max_length=250, blank=True)
 	slug = models.SlugField()
 	text = models.TextField(blank=True, null=True)
 	guide= models.ForeignKey(Guide, null=True)
 	slide_number = models.IntegerField(blank=True, null=True)
 	is_alt_slide = models.BooleanField(default=False) #if two slides have the same number, they're alt slides, meaning they're at the same level. sort of syntactic sugar...
+	brand_new = models.BooleanField(default=True) 
 	objects = InheritanceManager()
 	def __unicode__(self):
 		if self.title !='':
