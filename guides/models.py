@@ -60,7 +60,7 @@ class Guide (models.Model):
 
 class Slide (models.Model):
 	title = models.CharField(max_length=250, blank=True)
-	slug = models.SlugField()
+	slug = models.SlugField(blank=True)
 	text = models.TextField(blank=True, null=True)
 	guide= models.ForeignKey(Guide, null=True)
 	slide_number = models.IntegerField(blank=True, null=True)

@@ -1,25 +1,54 @@
 {%extends "base.html"%}
 {%block content%}
 
-{%if slide.brand_new%}
+{%if s.brand_new%}
 <h1>Add Step</h1>
 {%else%}
 <h1>Edit Step</h1>
 {%endif%}
 
-<a href="{% url SlideDetailView gslug=slide.guide.slug, slug=slide.slug %}"> View slide</a>
+<a href="{% url SlideDetailView gslug=s.guide.slug, slug=s.slug %}"> View Step</a>
+| <a href="{% url EditGuide gslug=s.guide.slug %}"> View All Steps in <i>{{s.guide.title}}</i> </a>
+<div class="clearfix"></div>
+
+<div id="slide_element_toolbar" class="">
+	<div class="add_button" id="add_static">Add Media</div>	
+	<div class="hidden" id="add_static_form"> {%include 'create/add_static.html'%}</div>
+
+	<div class="add_button" id="add_interactive">Add Interaction</div>
+	<div class="hidden" id="add_interactive_form"> {%include 'create/edit_interactive.html'%}</div>
+
+
+</div>
+
 
 <form action="" method="post">
-	<div id="slide_being_edited">
+<div id="slide_being_edited" class="{%if s.brand_new%}brand_new{%endif%}">
 		{% csrf_token %}
-		<table>
-		{{sf.as_table}}
-		</table>
-		{# {{sf.title}} #}
-	</div>
-<input type="submit" value="Save &amp; Add Another Slide" name="slide_sub_add" />
-<input type="submit" value="Save Slide" name ="slide_sub_save"/>
-</form>
+		
+		{# <table> #}
+		{# {{sf.as_table}} #}
+		{# </table> #}
+		
+		{# <input type="hidden" name="brand_new" id="id_brand_new" value="{{s.brand_new}}"/> #}
+		<input type="hidden" name="slide_number" value="{%firstof s.slide_number '' %}" id="id_slide_number" />
+		<input type="hidden" name="slug" value="{{s.slug}}" id="id_slug" />
+		<input type="hidden" name="guide" id="id_guide" value="{{s.guide.id}}">
+		<input id="id_title" type="text" name="title" value="{%firstof s.title 'Title' %}" maxlength="250" {# placeholder="Title" #} />
+		<textarea id="id_text" {# rows="10" cols="40" #} name="text">{%if s.text%}{{s.text}}{%else%} 
+Slide text goes here{%endif%} </textarea>
+	
+	{%for e in s.staticelement_set.all%}
+		<div class="a_static_element" data-id="{{e.id}}">
+			<br>{%if e.file%} <img src="{{MEDIA_URL}}{{e.file}}" width="100" height="100">- {%endif%}{{e.title}}<br>
+		</div>
+	{%endfor%}
+	
+	</div> {# end #slide_being_edited #}
+	<input type="submit" value="Save &amp; Add Another Slide" name="slide_sub_add" />
+	<input type="submit" value="Save Slide" name ="slide_sub_save"/>
+</form> {# end slide form #}
+
 
 
 
@@ -28,6 +57,12 @@
 
 <br><br>
 <h2>Add Static Element</h2>
+<form action="{%url AddStaticElement gslug slug%}" method="post" enctype="multipart/form-data">
+{% csrf_token %}
+<table> {{static_element_form.as_table}}</table>
+<input type="submit" value="Add this element" />
+
+</form>
 
 {# <form action="{%url AddStaticElement gslug slug%}" method="post" enctype="multipart/form-data"> #}
 {# {% csrf_token %} #}
@@ -40,21 +75,21 @@
 {# above works #}
 
 
-<form action="{%url AddStaticElement gslug slug%}" method="post" enctype="multipart/form-data">
-		{{StaticElementForms.management_form}}
-
-	{%for f in StaticElementForms %}
-		{% csrf_token %} 
-		{%if forloop.counter <= StaticElementForms.initial_form_count %}
-			<table>{{f.as_table}}</table>
-			<input type="submit" value="Edit this element" />
-		{%else%}
-			<table>{{f.as_table}}</table>
-			<input type="submit" value="Add this element" />
-		{%endif%}
-		<br><br>
-	{%endfor%}
-</form>
+{# <form action="{%url AddStaticElement gslug slug%}" method="post" enctype="multipart/form-data"> #}
+{# 		{{StaticElementForms.management_form}} #}
+{#  #}
+{# 	{%for f in StaticElementForms %} #}
+{# 		{% csrf_token %}  #}
+{# 		{%if forloop.counter <= StaticElementForms.initial_form_count %} #}
+{# 			<table>{{f.as_table}}</table> #}
+{# 			<input type="submit" value="Edit this element" /> #}
+{# 		{%else%} #}
+{# 			<table>{{f.as_table}}</table> #}
+{# 			<input type="submit" value="Add this element" /> #}
+{# 		{%endif%} #}
+{# 		<br><br> #}
+{# 	{%endfor%} #}
+{# </form> #}
 
 
 {%endblock%}

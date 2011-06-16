@@ -1,0 +1,10 @@
+This isn't really the form for this. 
+<form action="{%url AddStaticElement gslug slug%}" method="post" enctype="multipart/form-data">
+{% csrf_token %}
+<input type="hidden" name="slide" value="{{s.id}}">
+<input type="text" name="title">
+<label for="file">File:</label><input type="file" name="file">
+<label for="display_title">Display title:</label><input type="checkbox" name="display_title" />
+{{static_element_form.type}}
+<input type="submit" value="Add this element" /> 
+</form>

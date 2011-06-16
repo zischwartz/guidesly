@@ -1,10 +1,87 @@
 
 #slide_being_edited
 {
-	width: 500px;
-	height: 500px;
-	background-color: #cde1f2;
-	padding: 5px;
-	margin: 10px auto 10px auto;
+	width: 400px;
+	min-height: 400px;
+/*	max-height: 800px;*/
+	background-color: #fcfce0;
+	padding: 10px;
+/*	margin: 10px auto 10px auto;*/
+	margin: 10px;
+/*	border: 1px solid #7baad1;*/
+	border: 1px solid #c1c18d;
+	-moz-box-shadow: 0 0 5px #888;
+	-webkit-box-shadow: 0 0 5px#888;
+	box-shadow: 0 0 5px #888;
+}
+
+	#slide_being_edited.brand_new input, #slide_being_edited.brand_new textarea
+	{
+		color: gray;
+	}
+
+
+	#slide_being_edited input, #slide_being_edited textarea
+	{
+
+		display: block;
+		text-align: center;
+		margin: 25px auto 10px auto;
+		color: black;
+
+	}
+
+	#slide_being_edited #id_title
+	{
+
+		font-size: 2em;
+		width: 65%;
+	}
 	
+	#slide_being_edited #id_text
+	{
+		width: 65%;
+		height: 100px;
+		padding-top: 5px;
+	}
+	
+	#slide_being_edited .a_static_element:hover
+	{
+		background-color: white;
+		cursor: pointer;
+	}
+	
+	
+#slide_element_toolbar
+{
+/*	background-color: white;*/
+	float: right;
+	width: 250px;
+}
+
+#slide_element_toolbar .add_button
+{
+	background-color: black;
+	color: white;
+	padding: 3px;
+	text-align: center;
+	margin: 10px auto;
+	font-size: 1.5em;
+	cursor: pointer;
+/*	height: 3em;*/
+}
+
+#slide_element_toolbar #add_static_form
+{
+	background-color: #e2e2e2;
+	padding: 5px;
+	margin-top: -10px;
+	border: 1px solid gray;
+}
+
+#slide_element_toolbar .delete_element_button
+{
+	padding: 2px;
+	background-color:#ffb0a3;
+	text-align: center;
 }

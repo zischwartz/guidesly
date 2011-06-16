@@ -12,6 +12,7 @@ class SlideForm(ModelForm):
 class StaticElementForm(ModelForm):
 	class Meta:
 		model=StaticElement
+		
 
 # this, at it's base, is a simple button
 class InteractiveElementForm(ModelForm):

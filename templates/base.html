@@ -3,13 +3,21 @@
 
 	<head>
 		<title>Learny!</title>
+		{# <link type="text/css" rel="stylesheet" media="screen" href="{{STATIC_URL}}/baseline.compress.css">  #}
+		{# <link type="text/css" rel="stylesheet" media="only screen and (max-device-width: 480px)" href="{{STATIC_URL}}/baseline.iphone.compress.css">  #}
+	
+		<link rel="stylesheet" media="all" href="{{STATIC_URL}}base.css"/>
+		<link rel="stylesheet" media="all" href="{{STATIC_URL}}create.css"/>
 
-		<link rel="stylesheet" media="all" href="{{STATIC_URL}}/base.css"/>
-		<link rel="stylesheet" media="all" href="{{STATIC_URL}}/create.css"/>
-		<script src="{{STATIC_URL}}/jquery-1.6.1.min.js"></script>
-		{# <script src="{{MEDIA_URL}}js/base.js"></script> #}
+		<script src="{{STATIC_URL}}jquery-1.6.1.min.js"></script>
+		<script src="{{STATIC_URL}}create.js"></script>
+
 		{# <link rel="shortcut icon" href=""> #}
+		{# // <script src="{{MEDIA_URL}}js/base.js"></script> #}
 
+
+		{%block extrahead%}{%endblock%}
+		{# extra head is for  #}
 	</head>
 	
 <body>
