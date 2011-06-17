@@ -40,7 +40,6 @@ def CreateGuide (request):
 		form = GuideForm(request.POST)
 		if form.is_valid():
 			g =form.save()
-			# request.session['creating_guide_id'] = g.id #this was a silly way to do it
 			return HttpResponseRedirect(reverse('BuildSlide', kwargs={'gslug':g.slug}))
 	else:
 		form = GuideForm()
@@ -79,7 +78,7 @@ def EditSlide (request, gslug, slug):
 	else:
 		s = get_object_or_404(Slide, guide__slug=gslug, slug=slug)
 		sf= SlideForm(instance=s)
-		static_element_form= StaticElementForm()
+		static_element_form= StaticElementForm(initial={'slide': s})
 		return render_to_response("create/edit_slide.html", locals(), context_instance=RequestContext(request))
 
 def AddStaticElement (request, gslug, slug):
@@ -101,10 +100,16 @@ def EditStaticElement (request, gslug, slug, elementid):
 	# s= Slide.objects.get(guide__slug=gslug, slug=slug)
 	element = StaticElement.objects.get(id=elementid)
 	if request.method == 'POST':
-		form= StaticElementForm(request.POST, request.FILES)
+		form= StaticElementForm(request.POST, request.FILES, instance=element)
 		if form.is_valid():
 			form.save()
 			messages.info(request, "Media Saved!")
 			return HttpResponseRedirect(reverse('EditSlide', kwargs={'gslug':gslug, 'slug': slug}))
-	else:
-		return render_to_response("create/edit_static.html", locals(), context_instance=RequestContext(request))
+	elif request.method == 'GET':
+		static_element_form= StaticElementForm(instance=element)
+		return render_to_response("create/add_static.html", locals(), context_instance=RequestContext(request))
+	elif request.method == 'DELETE':
+		element = StaticElement.objects.get(id=elementid)
+		element.delete()
+		return HttpResponseRedirect(reverse('EditSlide', kwargs={'gslug':gslug, 'slug': slug}))
+

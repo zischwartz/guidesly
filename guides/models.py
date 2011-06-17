@@ -40,7 +40,7 @@ class Guide (models.Model):
 	is_linear = models.BooleanField(default=False) #if true, we should auto add next and back buttons
 	enable_comments = models.BooleanField(default=True)
 	text_slugs_for_slides = models.BooleanField(default=False)
-	number_of_slides = models.IntegerField(default=0)
+	number_of_slides = models.IntegerField(default=1)
 	
 	def __unicode__(self):
 		return self.title
@@ -64,8 +64,11 @@ class Slide (models.Model):
 	text = models.TextField(blank=True, null=True)
 	guide= models.ForeignKey(Guide, null=True)
 	slide_number = models.IntegerField(blank=True, null=True)
-	is_alt_slide = models.BooleanField(default=False) #if two slides have the same number, they're alt slides, meaning they're at the same level. sort of syntactic sugar...
+	is_alt_slide = models.BooleanField(default=False) #delete this? just having numbers seems to be simpler
 	brand_new = models.BooleanField(default=True) 
+	
+	default_next_slide = models.ForeignKey('self', related_name='+', blank=True, null=True) # the + says don't do a backwards relationship
+	default_prev_slide = models.ForeignKey('self', related_name='+', blank=True, null=True)
 	objects = InheritanceManager()
 	def __unicode__(self):
 		if self.title !='':
@@ -93,10 +96,10 @@ class Slide (models.Model):
 
 
 class StaticElement (models.Model):
+	title = models.CharField(max_length=250, blank=True, null=True)
 	slide = models.ForeignKey(Slide)
 	created = models.DateTimeField(auto_now_add=True)
 	file = models.FileField(upload_to='media/%Y', blank=True) #the path obvs needs to include guide and slide
-	title = models.CharField(max_length=250, blank=True, null=True)
 	display_title = models.BooleanField(default=False) #if two slides have the same number, they're alt slides, meaning they're at the same level. sort of syntactic sugar...
 	type = models.CharField(blank=True, max_length=1, choices = SELEMENT_TYPE)
 

@@ -1,5 +1,7 @@
 from django.forms import ModelForm
 from models import *
+from django.forms.widgets import *
+
 
 class GuideForm(ModelForm):
 	class Meta:
@@ -12,7 +14,8 @@ class SlideForm(ModelForm):
 class StaticElementForm(ModelForm):
 	class Meta:
 		model=StaticElement
-		
+		widgets = {
+			'slide': HiddenInput}
 
 # this, at it's base, is a simple button
 class InteractiveElementForm(ModelForm):

@@ -10,7 +10,11 @@
 		<link rel="stylesheet" media="all" href="{{STATIC_URL}}create.css"/>
 
 		<script src="{{STATIC_URL}}jquery-1.6.1.min.js"></script>
+		<script type="text/javascript">
+			var current_url ="{{request.path}}";
+		</script>
 		<script src="{{STATIC_URL}}create.js"></script>
+		
 
 		{# <link rel="shortcut icon" href=""> #}
 		{# // <script src="{{MEDIA_URL}}js/base.js"></script> #}
@@ -21,6 +25,7 @@
 	</head>
 	
 <body>
+	
 	<div id="wrap">
 	
 	{% if messages %}
