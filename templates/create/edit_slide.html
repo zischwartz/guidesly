@@ -7,19 +7,38 @@
 <h1>Edit Step</h1>
 {%endif%}
 
-<a href="{% url SlideDetailView gslug=s.guide.slug, slug=s.slug %}"> View Step</a>
-| <a href="{% url EditGuide gslug=s.guide.slug %}"> View All Steps in <i>{{s.guide.title}}</i> </a>
+<a href="{% url SlideDetailView gslug=s.guide.slug, slug=s.slug %}"> View Step</a>| <a href="{% url EditGuide gslug=s.guide.slug %}"> View All Steps in <i>{{s.guide.title}}</i> </a>
 <div class="clearfix"></div>
 
 <div id="slide_element_toolbar" class="">
-	<div class="add_button" id="add_static">Add Media</div>	
-	<div class="hidden" id="add_static_form">{%include 'create/add_static.html'%}</div>
 	
-	<div class="hidden add_button" id="edit_static">Edit Media</div>
-	<div class="hidden" id="edit_static_form"></div>
+		<div class="button has_group" id="add_static">Add Media</div>	
+		<div class="button_group">
+			<div class="button" data-subtype="image"> Image</div>
+			<div class="button" data-subtype="audio"> Audio</div>
+			<div class="button" data-subtype="video"> Video</div>
+		</div> {# end button group #}
 
-	<div class="add_button" id="add_interactive">Add Interaction</div>
-	<div class="hidden" id="add_interactive_form"> {%include 'create/edit_interactive.html'%}</div>
+	<div class="hidden button_form" id="add_static_form">
+		<div class="clearfix"></div>
+			{%include 'create/add_static.html'%}
+		</div>
+	
+	<div class="hidden button" id="edit_static">Edit Media</div>
+	<div class="clearfix"></div>
+	
+	<div class="hidden button_form" id="edit_static_form"></div>
+
+	<div class="button has_group" id="add_interactive">Add Interaction</div>
+		<div class="button_group">
+			<div class="button">Simple Button</div>
+			<div class="button"> Multiple Choice</div>
+			<div class="button"> Text Input</div>
+			<div class="button"> Number Input</div>
+			<div class="button"> Yes/No Question</div>
+			<div class="button"> Sensor </div>
+		</div> {# end button group #}
+	<div class="hidden button_form" id="add_interactive_form"> {%include 'create/edit_interactive.html'%}</div>
 
 
 </div>
@@ -48,8 +67,8 @@ Slide text goes here{%endif%} </textarea>
 	{%endfor%}
 	
 	</div> {# end #slide_being_edited #}
-	<input class="add_button" type="submit" value="Save &amp; Add Another Slide" name="slide_sub_add" />
-	<input class="add_button" type="submit" value="Save Slide" name ="slide_sub_save"/>
+	<input class="button" type="submit" value="Save &amp; Add Another Slide" name="slide_sub_add" />
+	<input class="button" type="submit" value="Save Slide" name ="slide_sub_save"/>
 </form> {# end slide form #}
 
 
@@ -58,14 +77,14 @@ Slide text goes here{%endif%} </textarea>
 
 
 
-<br><br>
-<h2>Add Static Element</h2>
-<form action="{%url AddStaticElement gslug slug%}" method="post" enctype="multipart/form-data">
-{% csrf_token %}
-<table> {{static_element_form.as_table}}</table>
-<input type="submit" value="Add this element" />
-
-</form>
+{# <br><br> #}
+{# <h2>Add Static Element</h2> #}
+{# <form action="{%url AddStaticElement gslug slug%}" method="post" enctype="multipart/form-data"> #}
+{# {% csrf_token %} #}
+{# <table> {{static_element_form.as_table}}</table> #}
+{# <input type="submit" value="Add this element" /> #}
+{#  #}
+{# </form> #}
 
 {# <form action="{%url AddStaticElement gslug slug%}" method="post" enctype="multipart/form-data"> #}
 {# {% csrf_token %} #}

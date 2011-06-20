@@ -57,10 +57,11 @@
 /*	background-color: white;*/
 	float: right;
 	width: 250px;
+	margin-top: 10px;
 }
 
 /*#slide_element_toolbar .add_button*/
-.add_button
+.button
 {
 	background-color: black;
 	color: white;
@@ -69,20 +70,51 @@
 	margin: 10px auto;
 	font-size: 1.5em;
 	cursor: pointer;
-/*	height: 3em;*/
+}
+.button:hover
+{
+	color: yellow;
 }
 
-#slide_element_toolbar #add_static_form
+.button_group 
+{
+	margin-top: -9px;
+	display: none;
+	overflow: hidden;
+
+
+}
+
+.button_group .button
+{
+	font-size: 1em;
+	width: 27%;
+	float: left;
+	margin: 0px 5px 5px 0px;
+	min-height: 45px;
+	padding: 5px;
+/*	border: 1px solid red;*/
+}
+
+
+#slide_element_toolbar .button_form
 {
 	background-color: #e2e2e2;
 	padding: 5px;
-	margin-top: -10px;
+	margin-top: -5px;
 	border: 1px solid gray;
+	display: none;
+	width: 100%;
 }
+
+
+
 
 #slide_element_toolbar .delete_element_button
 {
 	padding: 2px;
 	background-color:#ffb0a3;
 	text-align: center;
+	clear: both;
+	display: block;
 }

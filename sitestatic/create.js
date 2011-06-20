@@ -1,9 +1,24 @@
 $(document).ready(function(){
 
+console.log('hello world');
 
-$("#add_static").click(function(){
- $("#add_static_form").toggle('fast');
+$( ".button").button();
+
+
+$(".button.has_group").click(function(){
+	$(this).next('.button_group').slideDown('fast');
 });
+
+
+$(".button_group .button").click(function(){
+	console.log($(this).parent().next('.button_form'));
+	$(this).parent().next('.button_form').slideDown('fast');
+
+});
+
+// $("#add_static").click(function(){
+//  $("#add_static_form").toggle('fast');
+// });
 
 
 var current_el;
@@ -33,7 +48,6 @@ $(".delete_element_button").live('click', function(event){
 	});
 	 $("#edit_static_form, #edit_static").slideUp('fast');
 
-	
  	event.preventDefault();
 	return false;
 
