@@ -5,6 +5,7 @@
 	min-height: 400px;
 /*	max-height: 800px;*/
 	background-color: #fcfce0;
+	background-color: #fffdf7;
 	padding: 10px;
 /*	margin: 10px auto 10px auto;*/
 	margin: 10px;
@@ -54,67 +55,56 @@
 	
 #slide_element_toolbar
 {
-/*	background-color: white;*/
+
 	float: right;
-	width: 250px;
+	width: 350px;
 	margin-top: 10px;
 }
 
-/*#slide_element_toolbar .add_button*/
-.button
+.ui-accordion .ui-accordion-header
 {
-	background-color: black;
-	color: white;
-	padding: 3px;
+	margin-top: 5px;
+}
+
+.ui-accordion .ui-accordion-content
+{
+	padding: .3em;
 	text-align: center;
-	margin: 10px auto;
-	font-size: 1.5em;
-	cursor: pointer;
-}
-.button:hover
-{
-	color: yellow;
 }
 
-.button_group 
+#add_interactive_group.ui-accordion-content
 {
-	margin-top: -9px;
-	display: none;
-	overflow: hidden;
-
+	padding: 0em !important;
+	text-align: left;
+	width: 348px; 
+	/*TODO use a real value*/
 
 }
-
-.button_group .button
+#add_interactive_group.ui-accordion-content h4 a, #add_interactive_group.ui-accordion-content h4 .ui-icon
 {
-	font-size: 1em;
-	width: 27%;
-	float: left;
-	margin: 0px 5px 5px 0px;
-	min-height: 45px;
+	margin-left: 20px;
+}
+
+
+.ui-button .ui-button-text
+{
+	padding: .3em;
+}
+
+.button_form
+{
+	font-size: .8em;
+	text-align: left;
 	padding: 5px;
-/*	border: 1px solid red;*/
+	margin-top: 10px;
 }
 
-
-#slide_element_toolbar .button_form
+.ui-tabs-nav
 {
-	background-color: #e2e2e2;
-	padding: 5px;
-	margin-top: -5px;
-	border: 1px solid gray;
-	display: none;
-	width: 100%;
-}
-
-
-
-
-#slide_element_toolbar .delete_element_button
-{
-	padding: 2px;
-	background-color:#ffb0a3;
-	text-align: center;
-	clear: both;
-	display: block;
+	background-color: white !important;
+	background-image: none;
+	border-top: 0px;
+	border-right: 0px;
+	border-left: 0px;
+	border-radius: 0px;
 }

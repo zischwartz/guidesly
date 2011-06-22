@@ -27,6 +27,7 @@ class SlideAdmin(admin.ModelAdmin):
 admin.site.register(Guide, GuideAdmin)
 admin.site.register(Slide, SlideAdmin)
 admin.site.register(StaticElement)
+admin.site.register(ImageElement)
 admin.site.register(InteractiveElement)
 admin.site.register(MultipleChoice)
 admin.site.register(MultipleChoiceInquiry)

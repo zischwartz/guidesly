@@ -13,6 +13,7 @@ from django.core.urlresolvers import reverse
 
 
 from django.contrib import messages
+from log import getlogger
 
 
 # Viewing Guides
@@ -78,14 +79,32 @@ def EditSlide (request, gslug, slug):
 	else:
 		s = get_object_or_404(Slide, guide__slug=gslug, slug=slug)
 		sf= SlideForm(instance=s)
-		static_element_form= StaticElementForm(initial={'slide': s})
+		current_static_elements = s.staticelement_set.all()
+		current_interactive_elements=s.interactiveelement_set.all().select_subclasses()
+		
+		static_element_form_dict = {
+			'image':ImageElementForm(initial={'slide': s, 'type':'I'}),
+		 	'video':VideoElementForm(initial={'slide': s, 'type':'V'}),
+		 	'audio':AudioElementForm(initial={'slide': s, 'type':'A'})}
+		
+		interactive_element_form_dict= {
+			'button':InteractiveElementForm(initial={'slide': s, 'type':'B'}),
+			'timer':InteractiveElementForm(initial={'slide': s, 'type':'T'})}
+		
 		return render_to_response("create/edit_slide.html", locals(), context_instance=RequestContext(request))
+
+
 
 def AddStaticElement (request, gslug, slug):
 	s= Slide.objects.get(guide__slug=gslug, slug=slug)
-	static_element_form= StaticElementForm() #wtf is this doing here, remove 
 	if request.method == 'POST':
-		form= StaticElementForm(request.POST, request.FILES) #, instance=s)
+		if request.POST.__getitem__('type') =='I':
+			form= ImageElementForm(request.POST, request.FILES)
+		if request.POST.__getitem__('type') =='A':
+			form= AudioElementForm(request.POST, request.FILES)
+		if request.POST.__getitem__('type') =='V':
+			form= VideoElementForm(request.POST, request.FILES)
+		
 		if form.is_valid():
 			form.save()
 			messages.info(request, "Media Added!")
@@ -93,23 +112,42 @@ def AddStaticElement (request, gslug, slug):
 		else:
 			return HttpResponse(form.errors)
 	else:
-		static_element_form= StaticElementForm()
+		pass #this should never happen
+		#static_element_form= StaticElementForm()
 		return render_to_response("create/edit_slide.html", locals(), context_instance=RequestContext(request))
 	
 def EditStaticElement (request, gslug, slug, elementid):
-	# s= Slide.objects.get(guide__slug=gslug, slug=slug)
-	element = StaticElement.objects.get(id=elementid)
+	# Place.objects.filter(location='here').select_subclasses()
+	element = StaticElement.objects.filter(slide__slug=slug, id=elementid).select_subclasses()[0]
+	logger=getlogger()
+	logger.debug("---------------")
+	some_type_of_form =model_form_dictionary[element.__class__]
+
 	if request.method == 'POST':
-		form= StaticElementForm(request.POST, request.FILES, instance=element)
+		form= some_type_of_form(request.POST, request.FILES, instance=element)
 		if form.is_valid():
 			form.save()
 			messages.info(request, "Media Saved!")
 			return HttpResponseRedirect(reverse('EditSlide', kwargs={'gslug':gslug, 'slug': slug}))
 	elif request.method == 'GET':
-		static_element_form= StaticElementForm(instance=element)
+		static_element_form= some_type_of_form(instance=element)
 		return render_to_response("create/add_static.html", locals(), context_instance=RequestContext(request))
 	elif request.method == 'DELETE':
 		element = StaticElement.objects.get(id=elementid)
 		element.delete()
 		return HttpResponseRedirect(reverse('EditSlide', kwargs={'gslug':gslug, 'slug': slug}))
 
+def AddInteractiveElement(request, gslug, slug):
+	s= Slide.objects.get(guide__slug=gslug, slug=slug)
+	if request.method == 'POST':
+		if request.POST.__getitem__('type') =='B':
+			form= InteractiveElementForm(request.POST)
+		if request.POST.__getitem__('type') =='T':
+			form= InteractiveElementForm(request.POST)
+		
+		if form.is_valid():
+			form.save()
+			messages.info(request, "Interaction Added!")
+			return HttpResponseRedirect(reverse('EditSlide', kwargs={'gslug':gslug, 'slug': s.slug}))
+	else:
+		pass #this shouldn't really happen

@@ -1,8 +1,10 @@
 from django.db import models
 import datetime 
-
-
+import tagging
+from tagging.fields import TagField
+from django.contrib.auth.models import User
 from model_utils.managers import InheritanceManager
+from django.template.defaultfilters import slugify
 
 # from learny.photologue.models import Photo
 
@@ -15,6 +17,7 @@ IELEMENT_TYPE = (
 	('V', 'Enter Value'),
 	('N', 'Enter Numerical Value'),
 	('S', 'Sensor'),
+	('T', 'Timer'),
 )
 
 SELEMENT_TYPE = (
@@ -33,7 +36,7 @@ SVALUEINQUIRY_TYPE = (
 
 class Guide (models.Model):
 	title = models.CharField(max_length=250)
-	slug = models.SlugField(unique=True)
+	slug = models.SlugField(unique=True, blank=True) #this is kinda silly
 	description = models.TextField(blank=True)
 	created = models.DateTimeField(auto_now_add=True)
 	modified = models.DateTimeField(auto_now=True)
@@ -41,6 +44,11 @@ class Guide (models.Model):
 	enable_comments = models.BooleanField(default=True)
 	text_slugs_for_slides = models.BooleanField(default=False)
 	number_of_slides = models.IntegerField(default=1)
+	tags = TagField()
+
+	def save(self, *args, **kwargs):
+		self.slug= slugify(self.title)
+		super(Guide, self).save(*args, **kwargs)
 	
 	def __unicode__(self):
 		return self.title
@@ -55,7 +63,10 @@ class Guide (models.Model):
 	# def save(self, *args, **kwargs):
 	# 	super(Guide, self).save(*args, **kwargs)
 	# 	return self.id
-		
+# try:
+# 	tagging.register(Post, "tagz")
+# except myproject.tagging.AlreadyRegistered:
+# 	pass
 
 
 class Slide (models.Model):
@@ -70,6 +81,7 @@ class Slide (models.Model):
 	default_next_slide = models.ForeignKey('self', related_name='+', blank=True, null=True) # the + says don't do a backwards relationship
 	default_prev_slide = models.ForeignKey('self', related_name='+', blank=True, null=True)
 	objects = InheritanceManager()
+	
 	def __unicode__(self):
 		if self.title !='':
 			return self.title
@@ -93,23 +105,55 @@ class Slide (models.Model):
 	def get_absolute_url(self):
 		return ('SlideDetailView', (), {'gslug': self.guide.slug, 'slug':self.slug })
 
-
+class UserFile (models.Model):
+	created = models.DateTimeField(auto_now_add=True)
+	file = models.FileField(upload_to='media/%Y', blank=True) #the path obvs needs to include guide and slide
+	owner = models.ForeignKey(User)
 
 class StaticElement (models.Model):
 	title = models.CharField(max_length=250, blank=True, null=True)
 	slide = models.ForeignKey(Slide)
 	created = models.DateTimeField(auto_now_add=True)
-	file = models.FileField(upload_to='media/%Y', blank=True) #the path obvs needs to include guide and slide
 	display_title = models.BooleanField(default=False) #if two slides have the same number, they're alt slides, meaning they're at the same level. sort of syntactic sugar...
 	type = models.CharField(blank=True, max_length=1, choices = SELEMENT_TYPE)
+	is_primary = models.BooleanField(default=True)
+	objects = InheritanceManager()
+	# file = models.FileField(upload_to='media/%Y', blank=True) #the path obvs needs to include guide and slide
+	file = models.ForeignKey(UserFile)
+
+	@property
+	def file_url(self):
+		return self.file.file
+	
+
+
+
+class ImageElement (StaticElement):
+	is_background = models.BooleanField(default=False)
+
+		
+class VideoElement (StaticElement):
+	autoplay = models.BooleanField(default=False)
+	length_seconds = models.IntegerField(blank=True, null=True)
+	length_minutes = models.IntegerField(blank=True, null=True)
+
+		
+
+class AudioElement (StaticElement):
+	length_seconds = models.IntegerField(blank=True, null=True)
+	length_minutes = models.IntegerField(blank=True, null=True)
+	continue_playing = models.BooleanField(default=False)
+	autoplay = models.BooleanField(default=False)
 
 
 class Action (models.Model):
 	goto = models.ForeignKey(Slide, blank=True, null=True)
 	save_choice = models.BooleanField(default=False)
 	play_static = models.ForeignKey(StaticElement, blank=True, null=True)
+	objects = InheritanceManager()
 	def __unicode__(self):
 		return "action-goto: %s" % self.goto
+
 
 class ConditionalAction (Action):
 	condition = models.CharField(max_length=120)
@@ -182,3 +226,11 @@ class Timer (InteractiveElement):
 	seconds = models.IntegerField(blank=True, null=True)
 	minutes = models.IntegerField(blank=True, null=True)
 	execute_action_when_done = models.BooleanField(default=True)
+
+
+
+# USER PERMISSION PER OBJECT INSTANCE
+
+from object_permissions import register
+
+# register(['permission'], Guide)

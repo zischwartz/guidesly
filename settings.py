@@ -111,6 +111,13 @@ TEMPLATE_DIRS = (
     # Don't forget to use absolute paths, not relative paths.
 )
 
+AUTH_PROFILE_MODULE = 'accounts.UserProfile'
+
+AUTHENTICATION_BACKENDS= 'object_permissions.backend.ObjectPermBackend' 
+
+
+
+
 INSTALLED_APPS = (
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -123,9 +130,14 @@ INSTALLED_APPS = (
     # Uncomment the next line to enable admin documentation:
     'django.contrib.admindocs',
     # 'photologue',
+    'object_permissions',
+    'accounts',
+    'tagging',
     'guides',
     'south',
 )
+
+LOG_FILE = "log.log"
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to

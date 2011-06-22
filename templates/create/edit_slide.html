@@ -10,38 +10,65 @@
 <a href="{% url SlideDetailView gslug=s.guide.slug, slug=s.slug %}"> View Step</a>| <a href="{% url EditGuide gslug=s.guide.slug %}"> View All Steps in <i>{{s.guide.title}}</i> </a>
 <div class="clearfix"></div>
 
-<div id="slide_element_toolbar" class="">
-	
-		<div class="button has_group" id="add_static">Add Media</div>	
+
+
+<div id="fileupload"> 
+    <form action="/batchupload/send" method="POST" enctype="multipart/form-data"> 
+        <div class="fileupload-buttonbar"> 
+            <label class="fileinput-button"> 
+                <span>Add files...</span> 
+                <input type="file" name="files[]" multiple> 
+            </label> 
+            <button type="submit" class="start">Start upload</button> 
+            <button type="reset" class="cancel">Cancel upload</button> 
+            <button type="button" class="delete">Delete files</button> 
+        </div> 
+    </form> 
+    <div class="fileupload-content"> 
+        <table class="files"></table> 
+        <div class="fileupload-progressbar"></div> 
+    </div> 
+</div> 
+
+
+
+
+<div id="slide_element_toolbar">
+
+		<h3 id="add_static"><a href="#">Add Media</a></h3>	
 		<div class="button_group">
-			<div class="button" data-subtype="image"> Image</div>
-			<div class="button" data-subtype="audio"> Audio</div>
-			<div class="button" data-subtype="video"> Video</div>
+			<ul>
+				<li><a href="#add_image_form">Image</a></li>
+				<li><a href="#add_audio_form">Audio</a></li>
+				<li><a href="#add_video_form">Video</a></li>
+			</ul>
+
+			{%for key, static_element_form in static_element_form_dict.items%}
+				<div class=" button_form" id="add_{{key}}_form" data-subtype="{{key}}">
+					{%include 'create/add_static.html'%}
+				</div>
+			{%endfor%}
+
 		</div> {# end button group #}
 
-	<div class="hidden button_form" id="add_static_form">
-		<div class="clearfix"></div>
-			{%include 'create/add_static.html'%}
-		</div>
+	<h3 class="button " id="edit_static"><a href="#">Edit Media</a></h3>
+	<div class="button_group">
+		<div class="button_form" id="edit_static_form">Click on some media on the slide to edit it here.</div>
+	</div>
 	
-	<div class="hidden button" id="edit_static">Edit Media</div>
-	<div class="clearfix"></div>
-	
-	<div class="hidden button_form" id="edit_static_form"></div>
+	<h3 class="button" id="add_interactive"><a href="#">Add Interaction</a></h3>
+		<div id="add_interactive_group">
+			{%for key, interactive_element_form in interactive_element_form_dict.items%}
+				<h4> <a href="#">{{key|title}}</a></h4>
+				<div class="button_form" id="add_{{key}}_form" data-subtype="{{key}}">
+					{%include 'create/edit_interactive.html'%}
+				</div>
+			{%endfor%}
 
-	<div class="button has_group" id="add_interactive">Add Interaction</div>
-		<div class="button_group">
-			<div class="button">Simple Button</div>
-			<div class="button"> Multiple Choice</div>
-			<div class="button"> Text Input</div>
-			<div class="button"> Number Input</div>
-			<div class="button"> Yes/No Question</div>
-			<div class="button"> Sensor </div>
-		</div> {# end button group #}
-	<div class="hidden button_form" id="add_interactive_form"> {%include 'create/edit_interactive.html'%}</div>
-
-
-</div>
+		</div> {# end add_interactive_group #}
+		
+		
+</div> {# end #slide_element_toolbar #}
 
 
 <form action="" method="post">
@@ -60,10 +87,16 @@
 		<textarea id="id_text" {# rows="10" cols="40" #} name="text">{%if s.text%}{{s.text}}{%else%} 
 Slide text goes here{%endif%} </textarea>
 	
-	{%for e in s.staticelement_set.all%}
+	{%for e in current_static_elements%}
 		<div class="a_static_element" data-id="{{e.id}}">
 			<br>{%if e.file%} <img src="{{MEDIA_URL}}{{e.file}}" width="100" height="100">- {%endif%}{{e.title}}<br>
 		</div>
+	{%endfor%}
+	
+	{%for el in current_interactive_elements%}
+		<br>
+		{%include el.el_template%}
+		<br>
 	{%endfor%}
 	
 	</div> {# end #slide_being_edited #}
@@ -75,43 +108,6 @@ Slide text goes here{%endif%} </textarea>
 
 
 
-
-
-{# <br><br> #}
-{# <h2>Add Static Element</h2> #}
-{# <form action="{%url AddStaticElement gslug slug%}" method="post" enctype="multipart/form-data"> #}
-{# {% csrf_token %} #}
-{# <table> {{static_element_form.as_table}}</table> #}
-{# <input type="submit" value="Add this element" /> #}
-{#  #}
-{# </form> #}
-
-{# <form action="{%url AddStaticElement gslug slug%}" method="post" enctype="multipart/form-data"> #}
-{# {% csrf_token %} #}
-{# <table> #}
-{# {{StaticElementForms}} #}
-{#  #}
-{# </table> #}
-{# <input type="submit" value="Add this element" /> #}
-{# </form> #}
-{# above works #}
-
-
-{# <form action="{%url AddStaticElement gslug slug%}" method="post" enctype="multipart/form-data"> #}
-{# 		{{StaticElementForms.management_form}} #}
-{#  #}
-{# 	{%for f in StaticElementForms %} #}
-{# 		{% csrf_token %}  #}
-{# 		{%if forloop.counter <= StaticElementForms.initial_form_count %} #}
-{# 			<table>{{f.as_table}}</table> #}
-{# 			<input type="submit" value="Edit this element" /> #}
-{# 		{%else%} #}
-{# 			<table>{{f.as_table}}</table> #}
-{# 			<input type="submit" value="Add this element" /> #}
-{# 		{%endif%} #}
-{# 		<br><br> #}
-{# 	{%endfor%} #}
-{# </form> #}
 
 
 {%endblock%}

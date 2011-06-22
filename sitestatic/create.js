@@ -1,38 +1,84 @@
+
+
 $(document).ready(function(){
 
 console.log('hello world');
 
-$( ".button").button();
+// $( ".button_group .button").button();
+
+$('#fileupload').fileupload();
+
+    $.getJSON($('#fileupload form').prop('action'), function (files) {
+        var fu = $('#fileupload').data('fileupload');
+        fu._adjustMaxNumberOfFiles(-files.length);
+        fu._renderDownload(files)
+            .appendTo($('#fileupload .files'))
+            .fadeIn(function () {
+                // Fix for IE7 and lower:
+                $(this).show();
+            });
+    });
+
+    // Open download dialogs via iframes,
+    // to prevent aborting current uploads:
+    $('#fileupload .files a:not([target^=_blank])').live('click', function (e) {
+        e.preventDefault();
+        $('<iframe style="display:none;"></iframe>')
+            .prop('src', this.href)
+            .appendTo('body');
+    });
 
 
-$(".button.has_group").click(function(){
-	$(this).next('.button_group').slideDown('fast');
+
+
+var icons = {header: "ui-icon-circle-arrow-e", headerSelected: "ui-icon-circle-arrow-s"};
+$("#slide_element_toolbar").accordion({
+	// header: '.top_button',
+	autoHeight: false,
+	collapsible: true,
+	icons: icons,
+	active: false,
+	// clearStyle: true,
 });
+
+$("#add_interactive_group").accordion({
+	header: 'h4',
+	autoHeight: false,
+	collapsible: true,
+	icons: icons,
+	active: false,
+	// clearStyle: true,
+});
+
+$( ".button_group" ).tabs();
+
 
 
 $(".button_group .button").click(function(){
-	console.log($(this).parent().next('.button_form'));
-	$(this).parent().next('.button_form').slideDown('fast');
-
+	// console.log($(this).parent().next('.button_form'));
+	subtype= $(this).data("subtype");
+	subtype = "add_"+subtype+"_form";
+	console.log(subtype);
+	
+	$(this).nextAll('.button_form').slideDown('fast');
 });
 
-// $("#add_static").click(function(){
-//  $("#add_static_form").toggle('fast');
-// });
 
-
-var current_el;
 // Editing a Static Element, start by clicking on it in the preview
+var current_el;
 $(".a_static_element").click(function(e){
 	element_id= $(this).data("id");
 	current_el=  $(this);
-	// $("#add_static_form").slideUp('fast');
-	 $("#edit_static_form, #edit_static").slideDown('fast', function(e){
-		// alert(element_id);
-		$("#edit_static_form").load(current_url+"/editstatic/"+element_id);
-		// put the url in a static variable thing in base.html
-	});
+	// console.log(current_el);
+	
+	if(($("#slide_element_toolbar").accordion( "option", "active" ))!=1) //1 is the index of the Edit Static...
+	{
+		$("#slide_element_toolbar").accordion("activate", "#edit_static");
+	}
+	
+	$("#edit_static_form").load(current_url+"/editstatic/"+element_id);
 })
+
 
 //Deleting a static element
 $(".delete_element_button").live('click', function(event){
@@ -46,7 +92,8 @@ $(".delete_element_button").live('click', function(event){
 		success: function(){
 		$(this).addClass("done");}
 	});
-	 $("#edit_static_form, #edit_static").slideUp('fast');
+	
+	$("#slide_element_toolbar").accordion("activate", false);
 
  	event.preventDefault();
 	return false;
@@ -56,3 +103,5 @@ $(".delete_element_button").live('click', function(event){
 
 
 }) // end docready
+
+

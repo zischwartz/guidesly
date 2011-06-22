@@ -22,6 +22,7 @@ urlpatterns = patterns('',
     url(r'create/(?P<gslug>[^/]+)/(?P<slug>[^/]+)/?$', EditSlide, name='EditSlide'),
     url(r'create/(?P<gslug>[^/]+)/(?P<slug>[^/]+)/addstatic$', AddStaticElement, name='AddStaticElement'),
     url(r'create/(?P<gslug>[^/]+)/(?P<slug>[^/]+)/editstatic/(?P<elementid>[^/]+)$', EditStaticElement, name='EditStaticElement'),
+    url(r'create/(?P<gslug>[^/]+)/(?P<slug>[^/]+)/addinteractive$', AddInteractiveElement, name='AddInteractiveElement'),
 
 
     # (r'^guide/(?P<slug>[^/]+)/?$', GuideDetailView),
