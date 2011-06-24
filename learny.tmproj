@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>currentDocument</key>
-	<string>templates/create/edit_slide.html</string>
+	<string>guides/models.py</string>
 	<key>documents</key>
 	<array>
 		<dict>
@@ -21,88 +21,103 @@
 	<integer>218</integer>
 	<key>metaData</key>
 	<dict>
-		<key>settings.py</key>
+		<key>guides/models.py</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>17</integer>
+				<integer>38</integer>
 				<key>line</key>
-				<integer>105</integer>
+				<integer>83</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>94</integer>
+			<integer>58</integer>
 		</dict>
-		<key>sitestatic/base.css</key>
+		<key>sitestatic/viewbase.css</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>29</integer>
+				<integer>1</integer>
 				<key>line</key>
-				<integer>76</integer>
+				<integer>67</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>47</integer>
+			<integer>63</integer>
 		</dict>
-		<key>sitestatic/create.js</key>
+		<key>templates/base.html</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>6</integer>
+				<integer>59</integer>
 				<key>line</key>
-				<integer>28</integer>
-			</dict>
-			<key>firstVisibleColumn</key>
-			<integer>0</integer>
-			<key>firstVisibleLine</key>
-			<integer>0</integer>
-		</dict>
-		<key>templates/create/edit_slide.html</key>
-		<dict>
-			<key>caret</key>
-			<dict>
-				<key>column</key>
-				<integer>35</integer>
-				<key>line</key>
-				<integer>15</integer>
+				<integer>12</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
 			<integer>0</integer>
 		</dict>
-		<key>urls.py</key>
+		<key>templates/home.html</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>4</integer>
+				<key>line</key>
+				<integer>9</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>0</integer>
+		</dict>
+		<key>templates/slide.html</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>78</integer>
+				<key>line</key>
+				<integer>3</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>0</integer>
+		</dict>
+		<key>templates/viewbase.html</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
 				<integer>57</integer>
 				<key>line</key>
-				<integer>24</integer>
+				<integer>12</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>0</integer>
+			<integer>4</integer>
 		</dict>
 	</dict>
 	<key>openDocuments</key>
 	<array>
-		<string>urls.py</string>
-		<string>settings.py</string>
-		<string>sitestatic/base.css</string>
-		<string>sitestatic/create.js</string>
-		<string>templates/create/edit_slide.html</string>
+		<string>sitestatic/viewbase.css</string>
+		<string>templates/base.html</string>
+		<string>templates/slide.html</string>
+		<string>templates/viewbase.html</string>
+		<string>guides/models.py</string>
+		<string>templates/home.html</string>
 	</array>
 	<key>showFileHierarchyDrawer</key>
 	<true/>
 	<key>windowFrame</key>
-	<string>{{88, 50}, {1203, 828}}</string>
+	<string>{{61, 81}, {1032, 797}}</string>
 </dict>
 </plist>

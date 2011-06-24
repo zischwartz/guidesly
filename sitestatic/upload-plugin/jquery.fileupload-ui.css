@@ -98,3 +98,29 @@
 .ui-state-disabled input {
   cursor: default;
 }
+
+
+/*Added drop zone widget*/
+
+
+.dropzone-container div {
+
+  text-align: center;
+  border: 1px dashed black;
+border-bottom: 0px;
+padding: 15px;
+}
+
+.dropzone-container div.ui-state-active {
+  height: 110%;
+  font-size: 1.5em;
+  background: white;
+}
+
+.dropzone-container div.ui-state-highlight {
+  background: orange;
+  height: 120%;
+
+}
+
+

@@ -23,6 +23,8 @@ urlpatterns = patterns('',
     url(r'create/(?P<gslug>[^/]+)/(?P<slug>[^/]+)/addstatic$', AddStaticElement, name='AddStaticElement'),
     url(r'create/(?P<gslug>[^/]+)/(?P<slug>[^/]+)/editstatic/(?P<elementid>[^/]+)$', EditStaticElement, name='EditStaticElement'),
     url(r'create/(?P<gslug>[^/]+)/(?P<slug>[^/]+)/addinteractive$', AddInteractiveElement, name='AddInteractiveElement'),
+    url(r'create/(?P<gslug>[^/]+)/(?P<slug>[^/]+)/editinteractive/(?P<elementid>[^/]+)$', EditInteractiveElement, name='EditInteractiveElement'),
+    url(r'^upload/', include('fileupload.urls')),
 
 
     # (r'^guide/(?P<slug>[^/]+)/?$', GuideDetailView),

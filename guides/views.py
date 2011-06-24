@@ -151,3 +151,27 @@ def AddInteractiveElement(request, gslug, slug):
 			return HttpResponseRedirect(reverse('EditSlide', kwargs={'gslug':gslug, 'slug': s.slug}))
 	else:
 		pass #this shouldn't really happen
+
+
+def EditInteractiveElement (request, gslug, slug, elementid):
+	# Place.objects.filter(location='here').select_subclasses()
+	element = InteractiveElement.objects.filter(slide__slug=slug, id=elementid).select_subclasses()[0]
+	logger=getlogger()
+	logger.debug("---------------")
+	some_type_of_form =model_form_dictionary[element.__class__]
+
+	if request.method == 'POST':
+		form= some_type_of_form(request.POST, instance=element)
+		if form.is_valid():
+			form.save()
+			messages.info(request, "Interaction Saved!")
+			return HttpResponseRedirect(reverse('EditSlide', kwargs={'gslug':gslug, 'slug': slug}))
+	elif request.method == 'GET':
+		interactive_element_form= some_type_of_form(instance=element)
+		return render_to_response("create/edit_interactive.html", locals(), context_instance=RequestContext(request))
+	elif request.method == 'DELETE':
+		element = InteractiveElement.objects.get(id=elementid)
+		element.delete()
+		return HttpResponseRedirect(reverse('EditSlide', kwargs={'gslug':gslug, 'slug': slug}))
+		
+

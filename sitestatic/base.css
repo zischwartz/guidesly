@@ -19,7 +19,7 @@ time, mark, audio, video {
 	font: inherit;
 	vertical-align: baseline;
 }
-/* HTML5 display-role reset for older browsers */
+
 article, aside, details, figcaption, figure, 
 footer, header, hgroup, menu, nav, section {
 	display: block;
@@ -45,13 +45,15 @@ table {
 
 
 
-
-
 body
 {
 	background-color: #efefef;
 	background-color: #e2e2e2;
+/*	background-color: #383838;*/
 	font-family: 'Helvetica Neue', Arial, sans-serif;
+	
+
+
 
 }
 
@@ -80,12 +82,9 @@ h2 {font-size:1.5em; font-weight: bold; padding: 3px 0 5px 0;}
 
 
 
-
-
 .hidden {display:none;}
-
-
 .clearfix:after { content: "."; display: block; height: 0; clear: both; visibility: hidden;  font-size: 0;}
 .clearfix { display: inline-block; }
 * html .clearfix { height: 1%; } /* Hides from IE-mac \*/
 .clearfix { display: block; }
+

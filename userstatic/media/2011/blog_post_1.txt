@@ -1,0 +1,38 @@
+HH Notes
+
+Do-
+fix hyphens in buy links, checkout itunes
+p(\w*)/?
+is for general
+
+									(r'/p(\w*)/(\d*)', GetNextEventsPage)],
+
+
+-add next page, maybe auto
+-feedback widget
+
+
+DONE
+-Make /events redirect. duh. instantiate playlist, the redirect to short url
+-add accessed on, and accessed times (duh) to return saved 
+-Add fb and twitter, subtly 
+-yeahhh, quicksand sorting
+
+
+
+
+MY SITE ID
+2009037
+
+http://itunes.com/Artist_Or_Developer_Name
+http://itunes.com/dr.dog?partnerId=30&siteID=2009037
+
+http://itunes.com/dr.dog/album?partnerId=30&siteID=2009037
+
+
+Take a given iTunes Store URL: http://itunes.apple.com/fr/artist/plastic-bertrand/id78609223
+Check for a "?" in the URL, which indicates that a query string already exists
+Attach the partnerId of your affiliate using the correct separator character ('&' or '?'), for example, LinkShare: 
+http://itunes.apple.com/fr/artist/plastic-bertrand/id78609223?partnerId=30
+Attach your affToken (which for LinkShare is siteID): 
+http://itunes.apple.com/fr/artist/plastic-bertrand/id78609223?partnerId=30&siteID=ABCDEFGH123

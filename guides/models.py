@@ -6,6 +6,7 @@ from django.contrib.auth.models import User
 from model_utils.managers import InheritanceManager
 from django.template.defaultfilters import slugify
 
+from fileupload.models import UserFile
 # from learny.photologue.models import Photo
 
 
@@ -36,7 +37,7 @@ SVALUEINQUIRY_TYPE = (
 
 class Guide (models.Model):
 	title = models.CharField(max_length=250)
-	slug = models.SlugField(unique=True, blank=True) #this is kinda silly
+	slug = models.SlugField(unique=True, blank=True, max_length=250) #blank=true is silly but neccesary 
 	description = models.TextField(blank=True)
 	created = models.DateTimeField(auto_now_add=True)
 	modified = models.DateTimeField(auto_now=True)
@@ -45,6 +46,8 @@ class Guide (models.Model):
 	text_slugs_for_slides = models.BooleanField(default=False)
 	number_of_slides = models.IntegerField(default=1)
 	tags = TagField()
+	# add has title slide
+	
 
 	def save(self, *args, **kwargs):
 		self.slug= slugify(self.title)
@@ -76,7 +79,12 @@ class Slide (models.Model):
 	guide= models.ForeignKey(Guide, null=True)
 	slide_number = models.IntegerField(blank=True, null=True)
 	is_alt_slide = models.BooleanField(default=False) #delete this? just having numbers seems to be simpler
-	brand_new = models.BooleanField(default=True) 
+	brand_new = models.BooleanField(default=True)
+	
+	# add show more text bool, slide down
+	# add prompt/question. sort of a heading for all the interactive elements on a slide
+	# add text_on_top bool
+	# add template object (and style objects)
 	
 	default_next_slide = models.ForeignKey('self', related_name='+', blank=True, null=True) # the + says don't do a backwards relationship
 	default_prev_slide = models.ForeignKey('self', related_name='+', blank=True, null=True)
@@ -105,10 +113,6 @@ class Slide (models.Model):
 	def get_absolute_url(self):
 		return ('SlideDetailView', (), {'gslug': self.guide.slug, 'slug':self.slug })
 
-class UserFile (models.Model):
-	created = models.DateTimeField(auto_now_add=True)
-	file = models.FileField(upload_to='media/%Y', blank=True) #the path obvs needs to include guide and slide
-	owner = models.ForeignKey(User)
 
 class StaticElement (models.Model):
 	title = models.CharField(max_length=250, blank=True, null=True)
@@ -123,7 +127,7 @@ class StaticElement (models.Model):
 
 	@property
 	def file_url(self):
-		return self.file.file
+		return self.file.url
 	
 
 

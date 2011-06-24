@@ -133,6 +133,7 @@ INSTALLED_APPS = (
     'object_permissions',
     'accounts',
     'tagging',
+    'fileupload',
     'guides',
     'south',
 )

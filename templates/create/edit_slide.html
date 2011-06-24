@@ -12,25 +12,6 @@
 
 
 
-<div id="fileupload"> 
-    <form action="/batchupload/send" method="POST" enctype="multipart/form-data"> 
-        <div class="fileupload-buttonbar"> 
-            <label class="fileinput-button"> 
-                <span>Add files...</span> 
-                <input type="file" name="files[]" multiple> 
-            </label> 
-            <button type="submit" class="start">Start upload</button> 
-            <button type="reset" class="cancel">Cancel upload</button> 
-            <button type="button" class="delete">Delete files</button> 
-        </div> 
-    </form> 
-    <div class="fileupload-content"> 
-        <table class="files"></table> 
-        <div class="fileupload-progressbar"></div> 
-    </div> 
-</div> 
-
-
 
 
 <div id="slide_element_toolbar">
@@ -51,10 +32,7 @@
 
 		</div> {# end button group #}
 
-	<h3 class="button " id="edit_static"><a href="#">Edit Media</a></h3>
-	<div class="button_group">
-		<div class="button_form" id="edit_static_form">Click on some media on the slide to edit it here.</div>
-	</div>
+
 	
 	<h3 class="button" id="add_interactive"><a href="#">Add Interaction</a></h3>
 		<div id="add_interactive_group">
@@ -67,6 +45,10 @@
 
 		</div> {# end add_interactive_group #}
 		
+	<h3 class="button " id="edit_static"><a href="#">Edit <span id="edited_type"></span></a></h3>
+	<div class="button_group">
+		<div class="button_form" id="edit_static_form">Click on a media or interactive element on the slide. Then you can edit it here.</div>
+	</div>
 		
 </div> {# end #slide_element_toolbar #}
 
@@ -88,15 +70,17 @@
 Slide text goes here{%endif%} </textarea>
 	
 	{%for e in current_static_elements%}
-		<div class="a_static_element" data-id="{{e.id}}">
-			<br>{%if e.file%} <img src="{{MEDIA_URL}}{{e.file}}" width="100" height="100">- {%endif%}{{e.title}}<br>
+		<div class="an_element a_static_el" data-id="{{e.id}}" data-title="{{e.title}}">
+			<br>{%if e.file%} <img src="{{e.file_url}}" width="100" height="100">- {%endif%}{{e.title}}<br>
 		</div>
 	{%endfor%}
 	
+	<br>
+	
 	{%for el in current_interactive_elements%}
-		<br>
-		{%include el.el_template%}
-		<br>
+		<div class="an_element an_interactive_el" data-id="{{el.id}}" data-title="{{el.button_text}}">
+			{%include el.el_template%}<br>
+		</div>
 	{%endfor%}
 	
 	</div> {# end #slide_being_edited #}

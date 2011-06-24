@@ -2,31 +2,10 @@
 
 $(document).ready(function(){
 
-console.log('hello world');
+// console.log('hello world');
 
 // $( ".button_group .button").button();
 
-$('#fileupload').fileupload();
-
-    $.getJSON($('#fileupload form').prop('action'), function (files) {
-        var fu = $('#fileupload').data('fileupload');
-        fu._adjustMaxNumberOfFiles(-files.length);
-        fu._renderDownload(files)
-            .appendTo($('#fileupload .files'))
-            .fadeIn(function () {
-                // Fix for IE7 and lower:
-                $(this).show();
-            });
-    });
-
-    // Open download dialogs via iframes,
-    // to prevent aborting current uploads:
-    $('#fileupload .files a:not([target^=_blank])').live('click', function (e) {
-        e.preventDefault();
-        $('<iframe style="display:none;"></iframe>')
-            .prop('src', this.href)
-            .appendTo('body');
-    });
 
 
 
@@ -66,18 +45,39 @@ $(".button_group .button").click(function(){
 
 // Editing a Static Element, start by clicking on it in the preview
 var current_el;
-$(".a_static_element").click(function(e){
+
+$(".an_element").live('click', function(event){
 	element_id= $(this).data("id");
+	element_title= $(this).data("title");
 	current_el=  $(this);
 	// console.log(current_el);
 	
-	if(($("#slide_element_toolbar").accordion( "option", "active" ))!=1) //1 is the index of the Edit Static...
+	//  is the editing toolbar already open?
+	if(($("#slide_element_toolbar").accordion( "option", "active" ))!=2) //2 is the index of the Edit . TODO make this less fragile
 	{
 		$("#slide_element_toolbar").accordion("activate", "#edit_static");
 	}
 	
-	$("#edit_static_form").load(current_url+"/editstatic/"+element_id);
+	if ($(this).hasClass("a_static_el"))
+	{
+		$("#edit_static_form").load(current_url+"/editstatic/"+element_id);	
+		$("#edited_type").text("Media: "+element_title);
+	}
+	
+	if ($(this).hasClass("an_interactive_el"))
+	{
+		$("#edit_static_form").load(current_url+"/editinteractive/"+element_id);	
+		$("#edited_type").text("Interaction: "+element_title);
+
+	}
+	
+	
+	event.preventDefault();
+	return false;
 })
+
+
+
 
 
 //Deleting a static element

@@ -1,4 +1,16 @@
 {%extends "base.html"%}
+
+{%block extrahead%}
+		
+		<link rel="stylesheet" media="all" href="{{STATIC_URL}}upload-plugin/jquery.fileupload-ui.css"/>
+		<script type="text/javascript" src="{{STATIC_URL}}upload-plugin/jquery.iframe-transport.js"></script>
+		<script type="text/javascript" src="{{STATIC_URL}}upload-plugin/jquery.fileupload.js"></script>
+		<script type="text/javascript" src="{{STATIC_URL}}upload-plugin/jquery.fileupload-ui.js"></script>
+		<script type="text/javascript" src="{{STATIC_URL}}upload-plugin/jquery.tmpl.min.js"></script>
+		<script type="text/javascript" src="{{STATIC_URL}}upload-plugin/application.js"></script>
+
+{%endblock%}
+
 {%block content%}
 <h1>Create a new guide</h1>
 
@@ -12,7 +24,35 @@
 
 <br>
 <h2>Have lots of media you'll want to use for this guide?</h2>
-Upload it all now, right here, right now, easily.
+
+{% load upload_tags %}
+<div id="fileupload">
+    <form method="post" action="/upload/new/" enctype="multipart/form-data">
+		<div class="dropzone-container">
+	    	<div class="dropzone ui-corner-all">In most browsers, you can just drag and drop a bunch of files from your desktop, right here.</div>
+		</div>
+		
+        <div class="fileupload-buttonbar">
+            {% csrf_token %}
+            <label class="fileinput-button">
+                <span>Add files...</span>
+                <input type="file" name="file" multiple>
+            </label>
+            <button type="submit" class="start">Start upload</button>
+            <button type="reset" class="cancel">Cancel upload</button>
+            <button type="button" class="delete">Delete files</button>
+        </div>
+    </form>
+    <div class="fileupload-content">
+        <table class="files"></table>
+        <div class="fileupload-progressbar"></div>
+    </div>
+</div>
+
+{% upload_js %}
+
+
+
 
 
 
