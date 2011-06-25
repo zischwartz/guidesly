@@ -24,6 +24,7 @@ class UserFile(models.Model):
 
     def save(self, *args, **kwargs):
         # self.slug = slugify(self.file.name) #this takes out the period...
+        # self.owner=
         self.slug = self.file.name
         super(UserFile, self).save(*args, **kwargs)
 

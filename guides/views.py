@@ -37,6 +37,8 @@ def SlideDetailView (request, gslug, slug):
 # Creating Guides
 # -------------------------
 def CreateGuide (request):
+	if request.user.is_authenticated():
+		current_user= request.user
 	if request.method == 'POST':
 		form = GuideForm(request.POST)
 		if form.is_valid():

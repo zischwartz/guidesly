@@ -15,7 +15,12 @@
 $(function () {
 
     // Initialize the jQuery File Upload widget:
-    $('#fileupload').fileupload();
+    $('#fileupload').fileupload(
+	// formData: [
+	// 	name: 'owner',
+	// 	value: 'test',
+	// ]
+	);
 
     // Load existing files:
     $.getJSON($('#fileupload form').prop('action'), function (files) {

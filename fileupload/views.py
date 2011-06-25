@@ -16,6 +16,10 @@ class UserFileCreateView(CreateView):
         data = [{'name': f.name, 'url': self.object.url, 'thumbnail_url': self.object.url, 'delete_url': reverse('upload-delete', args=[f.name]), 'delete_type': "DELETE"}]
         return JSONResponse(data)
 
+    def form_invalid (self, form):
+        return HttpResponse(form.errors)
+
+
 class UserFileDeleteView(DeleteView):
     model = UserFile
 

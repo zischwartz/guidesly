@@ -52,9 +52,26 @@ body
 /*	background-color: #383838;*/
 	font-family: 'Helvetica Neue', Arial, sans-serif;
 	
+}
 
 
+#topbar
+{
+	width: 100%;
+	background-color: gray;
+	padding-top: 5px;
+	padding-bottom: 5px;
+	top: 0px;
+	left: 0px;
+	position: absolute;
+	border-bottom: 1px solid black;
+}
 
+#topbar a
+{
+	color: black;
+	text-decoration: none;
+	padding: 0px 10px;
 }
 
 
