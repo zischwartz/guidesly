@@ -1,0 +1,17 @@
+{%extends "base-viewing.html"%} 
+
+{%block topbar%}
+		Hey {{user}}
+{%endblock%}
+
+{% block content %} 
+	<div class="text_viewing_wrap box">
+		<h1>{{guide.title}}</h1>
+		<p>{{guide.description}}</p>
+
+		<br>
+		{%for slide in slide_list%}
+			<li><a href="{{slide.get_absolute_url}}">{{slide}}</a> </li>
+		{%endfor%}
+	</div> {#  end info_box #}
+{% endblock %}

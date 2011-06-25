@@ -1,0 +1,52 @@
+{%extends "base-viewing.html"%} 
+
+{%block topbar%}
+		<a href="{{slide.guide.get_absolute_url}}">Back to {{slide.guide.title|title}} Index</a>
+{%endblock%}
+
+{% block content %} 
+
+
+<div id="slide_wrap" class="box">
+	<div class="slide" data-id="{{slide.slug}}">
+
+			{%if slide.title%}
+			<h1>{{slide.title}}</h1>
+			{%endif%}
+			
+			{%if slide.text and slide.text_on_top%}
+			<div class="slide_text">
+				{{slide.text}}
+			</div>
+			{%endif%}
+			
+			<div class="slide_media">
+				{%for el in static_elements%}
+					<img src="{{el.file.url}}" class="big_image">
+				{%endfor%}
+			</div>
+			
+			{%if slide.text and not slide.text_on_top%}
+			<div class="slide_text">
+				{{slide.text}}
+			</div>
+			{%endif%}
+				
+			<div class="slide_interactive_elements">	
+				{%for el in interactive_elements%}
+					<div class="interactive_element">
+						{%include el.el_template%}
+					</div>
+				{%endfor%}
+			</div>
+			
+			</div> {# end .slide #}
+</div> {# end #slide_wrap #}
+
+
+
+
+
+
+
+{% endblock %}
