@@ -2,7 +2,7 @@ from django.forms import ModelForm
 from django import forms
 from models import *
 from django.forms.widgets import *
-from log import *
+# from log import *
 
 class GuideForm(ModelForm):
 	class Meta:
@@ -42,7 +42,9 @@ class ImageElementForm(ModelForm):
 		widgets = {
 			'slide': HiddenInput,
 			'type': HiddenInput,
-			# 'file': Select(),
+			'file': HiddenInput,
+			'display_title': HiddenInput,
+			'title': TextInput(attrs={'placeholder': 'Title (optional)'})
 			}
 
 class AudioElementForm(ModelForm):
@@ -73,7 +75,7 @@ class InteractiveElementForm(ModelForm):
 			'type': HiddenInput,
 			}
 
-
+# from log import *
 # logger=getlogger()		
 # logger.debug('-----------------------------------------------------------------------------------------------------------------')
 # logger.debug(ModelForm.__subclasses__())

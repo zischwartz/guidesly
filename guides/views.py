@@ -128,7 +128,6 @@ def AddStaticElement (request, gslug, slug):
 		return render_to_response("create/edit_slide.html", locals(), context_instance=RequestContext(request))
 	
 def EditStaticElement (request, gslug, slug, elementid):
-	# Place.objects.filter(location='here').select_subclasses()
 	element = StaticElement.objects.filter(slide__slug=slug, id=elementid).select_subclasses()[0]
 	logger=getlogger()
 	logger.debug("---------------")
@@ -165,7 +164,7 @@ def AddInteractiveElement(request, gslug, slug):
 
 
 def EditInteractiveElement (request, gslug, slug, elementid):
-	# Place.objects.filter(location='here').select_subclasses()
+
 	element = InteractiveElement.objects.filter(slide__slug=slug, id=elementid).select_subclasses()[0]
 	logger=getlogger()
 	logger.debug("---------------")

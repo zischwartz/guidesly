@@ -4,7 +4,8 @@ $(document).ready(function(){
 
 // console.log('hello world');
 
-// $( ".button_group .button").button();
+$( "input[type=submit]").button();
+$( "button").button();
 
 
 
@@ -28,6 +29,25 @@ $("#add_static_group").accordion({
 	icons: icons,
 	active: false,
 	// clearStyle: true,
+}).bind('accordionchangestart', function(event, ui) {
+	// alert(ui.newHeader.data('subtype'));
+	subtype= ui.newHeader.data('subtype')
+	$("."+subtype+"_chooser").load('/upload/list/'+subtype);
+});
+
+$(".choosefile").live("click", function(){
+	static_el_id= $(this).addClass("selected").data('id');
+	$(this).parent().parent().children(".see_all_button").slideDown();
+	$(this).parent().children(".choosefile").not(this).slideUp()
+	$(this).parent().next('form').find("input#id_file").val(static_el_id);
+	$(this).parent().next('form').slideDown();
+});
+
+//this unselects
+$(".see_all_button").click(function(){
+	$(this).parent().find(".selected").removeClass("selected");
+	$(this).next().children(".choosefile").slideDown()
+	$(this).slideUp();
 });
 
 $("#add_interactive_group").accordion({
@@ -39,21 +59,23 @@ $("#add_interactive_group").accordion({
 	// clearStyle: true,
 });
 
-// $( ".button_group" ).tabs();
 
 
+// var active = $( "#add_static_group" ).accordion( "option", "active" );
+ // alert(active);
 
-$(".button_group .button").click(function(){
-	// console.log($(this).parent().next('.button_form'));
-	subtype= $(this).data("subtype");
-	subtype = "add_"+subtype+"_form";
-	console.log(subtype);
-	
-	$(this).nextAll('.button_form').slideDown('fast');
-});
+// 
+// $(".button_group .button").click(function(){
+// 	// console.log($(this).parent().next('.button_form'));
+// 	subtype= $(this).data("subtype");
+// 	subtype = "add_"+subtype+"_form";
+// 	// console.log(subtype);
+// 	
+// 	$(this).nextAll('.button_form').slideDown('fast');
+// });
 
 
-// Editing a Static Element, start by clicking on it in the preview
+// Editing an Element, start by clicking on it in the preview
 var current_el;
 
 $(".an_element").live('click', function(event){
@@ -81,7 +103,6 @@ $(".an_element").live('click', function(event){
 
 	}
 	
-	
 	event.preventDefault();
 	return false;
 })
@@ -90,7 +111,7 @@ $(".an_element").live('click', function(event){
 
 
 
-//Deleting a static element
+//Deleting an element
 $(".delete_element_button").live('click', function(event){
 
 	$("#slide_element_toolbar").accordion("activate", false);

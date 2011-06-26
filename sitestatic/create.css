@@ -67,7 +67,7 @@
 {
 
 	float: right;
-	width: 350px;
+	width: 450px;
 	margin-top: 10px;
 }
 
@@ -86,7 +86,7 @@
 {
 	padding: 0em !important;
 	text-align: left !important;
-	width: 348px; 
+	width: 448px; 
 	/*TODO use a real value*/
 
 }
@@ -111,6 +111,14 @@
 	margin-top: 10px;
 }
 
+#add_static_group .button_form form
+{
+	overflow: hidden;
+	padding: 5px;
+	display: none;
+}
+
+
 .ui-tabs-nav
 {
 	background-color: white !important;
@@ -119,4 +127,26 @@
 	border-right: 0px;
 	border-left: 0px;
 	border-radius: 0px;
+}
+
+
+.choosefile
+{
+	border: 1px solid white;
+}
+
+.choosefile:hover
+{
+	border: 1px dashed black;
+	cursor: pointer;
+}
+
+.choosefile.selected
+{
+	border: 1px solid black;
+}
+
+.see_all_button
+{
+	display: none;
 }

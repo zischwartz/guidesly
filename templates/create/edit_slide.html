@@ -20,8 +20,11 @@
 		
 		<div id="add_static_group">
 			{%for key, static_element_form in static_element_form_dict.items%}
-				<h4> <a href="#">{{key|title}}</a></h4>
+				<h4 data-subtype="{{key}}"> <a href="#">{{key|title}}</a></h4>
 				<div class="button_form" id="add_{{key}}_form" data-subtype="{{key}}">
+					{# <div class="button upload_new">Upload New</div> #}
+					<button class="button see_all_button">Pick Another File</button>					
+					<div class="chooser {{key}}_chooser" data-subtype="{{key}}"></div>
 					{%include 'create/add_static.html'%}
 				</div>
 			{%endfor%}		

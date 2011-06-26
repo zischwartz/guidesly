@@ -1,3 +1,8 @@
+
+{%if file_list%}
 {%for file in file_list%}
-<img src="{{file.url}}" data-id="{{file.id}}">
+	<img src="{{file.url}}" data-id="{{file.id}}" class="choosefile">
 {%endfor%}
+{%else%}
+Sorry, no files found
+{%endif%}
