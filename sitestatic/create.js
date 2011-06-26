@@ -11,8 +11,18 @@ $(document).ready(function(){
 
 
 var icons = {header: "ui-icon-circle-arrow-e", headerSelected: "ui-icon-circle-arrow-s"};
+
 $("#slide_element_toolbar").accordion({
 	// header: '.top_button',
+	autoHeight: false,
+	collapsible: true,
+	icons: icons,
+	active: false,
+	// clearStyle: true,
+});
+
+$("#add_static_group").accordion({
+	header: 'h4',
 	autoHeight: false,
 	collapsible: true,
 	icons: icons,
@@ -29,7 +39,7 @@ $("#add_interactive_group").accordion({
 	// clearStyle: true,
 });
 
-$( ".button_group" ).tabs();
+// $( ".button_group" ).tabs();
 
 
 
@@ -83,7 +93,12 @@ $(".an_element").live('click', function(event){
 //Deleting a static element
 $(".delete_element_button").live('click', function(event){
 
-	$(current_el).hide('fast', function(){$(this).remove();});
+	$("#slide_element_toolbar").accordion("activate", false);
+
+	$(current_el).hide('fast', function(){
+		$(this).remove();
+		$("#edit_static_form").html("Click on a media or interactive element on the slide. Then you can edit it here.");
+	});
 
 	$.ajax({
 		url: $(this).attr('href'),
@@ -93,13 +108,12 @@ $(".delete_element_button").live('click', function(event){
 		$(this).addClass("done");}
 	});
 	
-	$("#slide_element_toolbar").accordion("activate", false);
-
  	event.preventDefault();
 	return false;
-
-
 })
+
+
+
 
 
 }) // end docready

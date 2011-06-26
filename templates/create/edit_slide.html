@@ -17,22 +17,15 @@
 <div id="slide_element_toolbar">
 
 		<h3 id="add_static"><a href="#">Add Media</a></h3>	
-		<div class="button_group">
-			<ul>
-				<li><a href="#add_image_form">Image</a></li>
-				<li><a href="#add_audio_form">Audio</a></li>
-				<li><a href="#add_video_form">Video</a></li>
-			</ul>
-
+		
+		<div id="add_static_group">
 			{%for key, static_element_form in static_element_form_dict.items%}
-				<div class=" button_form" id="add_{{key}}_form" data-subtype="{{key}}">
+				<h4> <a href="#">{{key|title}}</a></h4>
+				<div class="button_form" id="add_{{key}}_form" data-subtype="{{key}}">
 					{%include 'create/add_static.html'%}
 				</div>
-			{%endfor%}
-
-		</div> {# end button group #}
-
-
+			{%endfor%}		
+		</div>
 	
 	<h3 class="button" id="add_interactive"><a href="#">Add Interaction</a></h3>
 		<div id="add_interactive_group">
@@ -65,9 +58,8 @@
 		<input type="hidden" name="slide_number" value="{%firstof s.slide_number '' %}" id="id_slide_number" />
 		<input type="hidden" name="slug" value="{{s.slug}}" id="id_slug" />
 		<input type="hidden" name="guide" id="id_guide" value="{{s.guide.id}}">
-		<input id="id_title" type="text" name="title" value="{%firstof s.title 'Title' %}" maxlength="250" {# placeholder="Title" #} />
-		<textarea id="id_text" {# rows="10" cols="40" #} name="text">{%if s.text%}{{s.text}}{%else%} 
-Slide text goes here{%endif%} </textarea>
+		<input id="id_title" type="text" name="title" value="{{s.title}}" maxlength="250" placeholder="Slide Title" />
+		<textarea placeholder='Slide text goes here' id="id_text" {# rows="10" cols="40" #} name="text">{{s.text}}</textarea>
 	
 	{%for e in current_static_elements%}
 		<div class="an_element a_static_el" data-id="{{e.id}}" data-title="{{e.title}}">

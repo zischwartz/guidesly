@@ -1,4 +1,5 @@
 from django.forms import ModelForm
+from django import forms
 from models import *
 from django.forms.widgets import *
 from log import *
@@ -23,13 +24,25 @@ class SlideForm(ModelForm):
 # 			'type': HiddenInput,
 # 			}
 
+
+
+
+# class ImageSelect(forms.Select): 
+# 	def render(self, name, value, attrs=None):
+# 		# value = self._format_value(value)
+# 		# return super(TimeInput, self).render(name, value, attrs)
+# 		return 'x' + value
+
+
 class ImageElementForm(ModelForm):
+	# file = forms.ModelChoiceField()
+	
 	class Meta:
 		model=ImageElement
 		widgets = {
 			'slide': HiddenInput,
 			'type': HiddenInput,
-
+			# 'file': Select(),
 			}
 
 class AudioElementForm(ModelForm):

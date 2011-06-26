@@ -1,5 +1,5 @@
 from fileupload.models import UserFile
-from django.views.generic import CreateView, DeleteView
+from django.views.generic import CreateView, DeleteView, ListView
 
 from django.http import HttpResponse
 from django.utils import simplejson
@@ -33,3 +33,10 @@ class JSONResponse(HttpResponse):
     def __init__(self,obj='',json_opts={},mimetype="application/json",*args,**kwargs):
         content = simplejson.dumps(obj,**json_opts)
         super(JSONResponse,self).__init__(content,mimetype,*args,**kwargs)
+
+
+class UserFileListView(ListView):
+	context_object_name = "file_list"
+	template_name = "file_list.html"
+	def get_queryset(self):
+		return UserFile.objects.filter(owner=self.request.user)

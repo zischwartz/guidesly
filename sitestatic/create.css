@@ -20,7 +20,17 @@
 	{
 		color: gray;
 	}
-
+	
+::-webkit-input-placeholder 
+{
+    text-align:center;
+	color: gray;
+	}
+:-moz-placeholder 
+{
+    text-align: center;
+	color: gray;
+}
 
 	#slide_being_edited input, #slide_being_edited textarea
 	{
@@ -28,7 +38,7 @@
 		display: block;
 		text-align: center;
 		margin: 25px auto 10px auto;
-		color: black;
+/*		color: black;*/
 
 	}
 
@@ -52,7 +62,7 @@
 		cursor: pointer;
 	}
 	
-	
+
 #slide_element_toolbar
 {
 
@@ -72,17 +82,19 @@
 	text-align: center;
 }
 
-#add_interactive_group.ui-accordion-content
+.ui-accordion-content
 {
 	padding: 0em !important;
-	text-align: left;
+	text-align: left !important;
 	width: 348px; 
 	/*TODO use a real value*/
 
 }
-#add_interactive_group.ui-accordion-content h4 a, #add_interactive_group.ui-accordion-content h4 .ui-icon
+.ui-accordion-content h4 a, .ui-accordion-content h4 .ui-icon
 {
 	margin-left: 20px;
+		text-align: left !important;
+
 }
 
 

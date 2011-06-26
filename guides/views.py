@@ -15,6 +15,7 @@ from django.core.urlresolvers import reverse
 from django.contrib import messages
 from log import getlogger
 
+from fileupload.models import UserFile
 
 # Viewing Guides
 # -------------------------
@@ -84,10 +85,18 @@ def EditSlide (request, gslug, slug):
 		current_static_elements = s.staticelement_set.all()
 		current_interactive_elements=s.interactiveelement_set.all().select_subclasses()
 		
+		if request.user.is_authenticated():
+			current_user= request.user
+		# tester= available_userfiles
 		static_element_form_dict = {
 			'image':ImageElementForm(initial={'slide': s, 'type':'I'}),
 		 	'video':VideoElementForm(initial={'slide': s, 'type':'V'}),
 		 	'audio':AudioElementForm(initial={'slide': s, 'type':'A'})}
+		
+		# it seems this is unnecesary 
+		# static_element_form_dict['image'].fields['file'].queryset=UserFile.objects.filter(owner=current_user)
+		# static_element_form_dict['video'].fields['file'].queryset=UserFile.objects.filter(owner=current_user)
+		# static_element_form_dict['audio'].fields['file'].queryset=UserFile.objects.filter(owner=current_user) 
 		
 		interactive_element_form_dict= {
 			'button':InteractiveElementForm(initial={'slide': s, 'type':'B'}),
