@@ -23,6 +23,8 @@ class UserFile(models.Model):
 	owner = models.ForeignKey(User, blank=True, null=True)
 	type = models.CharField(blank=True, max_length=5, choices = SELEMENT_TYPE)
 
+	class Meta:
+		ordering = ['-created']
 	# content_type = models.ForeignKey(ContentType)
 	# TODO add type of file here, maybe use contenttype fr
 
