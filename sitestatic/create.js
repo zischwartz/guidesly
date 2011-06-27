@@ -18,7 +18,7 @@ $("#slide_element_toolbar").accordion({
 	autoHeight: false,
 	collapsible: true,
 	icons: icons,
-	active: false,
+	active: false
 	// clearStyle: true,
 });
 
@@ -27,18 +27,18 @@ $("#add_static_group").accordion({
 	autoHeight: false,
 	collapsible: true,
 	icons: icons,
-	active: false,
+	active: false
 	// clearStyle: true,
 }).bind('accordionchangestart', function(event, ui) {
 	// alert(ui.newHeader.data('subtype'));
-	subtype= ui.newHeader.data('subtype')
+	subtype= ui.newHeader.data('subtype');
 	$("."+subtype+"_chooser").load('/upload/list/'+subtype);
 });
 
 $(".choosefile").live("click", function(){
 	static_el_id= $(this).addClass("selected").data('id');
 	$(this).parent().parent().children(".see_all_button").slideDown();
-	$(this).parent().children(".choosefile").not(this).slideUp()
+	$(this).parent().children(".choosefile").not(this).slideUp();
 	$(this).parent().next('form').find("input#id_file").val(static_el_id);
 	$(this).parent().next('form').slideDown();
 });
@@ -46,7 +46,7 @@ $(".choosefile").live("click", function(){
 //this unselects
 $(".see_all_button").click(function(){
 	$(this).parent().find(".selected").removeClass("selected");
-	$(this).next().children(".choosefile").slideDown()
+	$(this).next().children(".choosefile").slideDown();
 	$(this).slideUp();
 });
 
@@ -55,7 +55,7 @@ $("#add_interactive_group").accordion({
 	autoHeight: false,
 	collapsible: true,
 	icons: icons,
-	active: false,
+	active: false
 	// clearStyle: true,
 });
 
@@ -105,7 +105,7 @@ $(".an_element").live('click', function(event){
 	
 	event.preventDefault();
 	return false;
-})
+});
 
 
 
@@ -137,6 +137,6 @@ $(".delete_element_button").live('click', function(event){
 
 
 
-}) // end docready
+}); // end docready
 
 
