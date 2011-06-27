@@ -3,27 +3,23 @@
 ///  Slide transition code  /////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////
 
+var _jqSlideFrameId = "DIV.slide";
+
 $(function() {
     if (typeof history.pushState === 'undefined') {
         alert("Warning -- your browser doesn't support HTML 5");
     } else {
-        rebindSlideTransitionLinks();
+        // jQuery binding to replace the click() event on
+        // a link inside the slide frame.
+        $(_jqSlideFrameId+" A").live('click', function(event) {
+            event.preventDefault();
+
+            var url = this.href;
+            history.pushState({path: url}, '', url);
+            slideToUrl(url, true);
+        });
     }
 });
-
-var _jqSlideFrameId = "DIV.slide";
-
-// jQuery binding to replace the click() event on
-// a link inside the slide frame.
-function rebindSlideTransitionLinks() {
-    $(_jqSlideFrameId+" A").click(function(event) {
-        event.preventDefault();
-
-        var url = this.href;
-        history.pushState({path: url}, '', url);
-        slideToUrl(url, true);
-    });
-}
 
 // The purpose of this function is to do a slide
 // transition between the div that's currently in
@@ -43,16 +39,14 @@ function slideTo(jqNewDiv, goForward) {
         var newNode = parent.find(_jqSlideFrameId);
         newNode.hide();
         newNode.fadeIn(300);
-        rebindSlideTransitionLinks();
     };
 
-    if (goForward) {
+//    if (goForward) {
 //        $(_jqSlideFrame).animate({ left: +1000 }, 1000, 'linear', callback);
-        $(_jqSlideFrameId).fadeOut(300, callback);
-    } else {
+//    } else {
 //        $(_jqSlideFrame).animate({ left: -1000 }, 1000, 'linear', callback);
-        $(_jqSlideFrameId).fadeOut(300, callback);
-    }
+//    }
+    $(_jqSlideFrameId).fadeOut(300, callback);
 }
 
 // like slideTo(), but with a url argument instead
