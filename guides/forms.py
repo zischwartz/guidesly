@@ -10,8 +10,9 @@ class GuideForm(ModelForm):
 		widgets = {
 			'slug': HiddenInput,
 			'number_of_slides': HiddenInput,
+			}	
 
-			}		
+				
 class SlideForm(ModelForm):
 	class Meta:
 		model=Slide

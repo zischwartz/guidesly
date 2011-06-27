@@ -6,8 +6,11 @@ from django.conf import settings
 from django.contrib import admin
 admin.autodiscover()
 
+from api import StaticElementResource
+
 from guides.views import *
 
+staticelement_resource=StaticElementResource()
 
 urlpatterns = patterns('',
     # Examples:
@@ -25,7 +28,7 @@ urlpatterns = patterns('',
     url(r'create/(?P<gslug>[^/]+)/(?P<slug>[^/]+)/addinteractive$', AddInteractiveElement, name='AddInteractiveElement'),
     url(r'create/(?P<gslug>[^/]+)/(?P<slug>[^/]+)/editinteractive/(?P<elementid>[^/]+)$', EditInteractiveElement, name='EditInteractiveElement'),
     url(r'^upload/', include('fileupload.urls')),
-
+    (r'^api/', include(staticelement_resource.urls)),
 
     # (r'^guide/(?P<slug>[^/]+)/?$', GuideDetailView),
     # url(r'^learny/', include('learny.foo.urls')),
