@@ -118,7 +118,7 @@ TEMPLATE_DIRS = (
 
 AUTH_PROFILE_MODULE = 'accounts.UserProfile'
 
-AUTHENTICATION_BACKENDS= 'object_permissions.backend.ObjectPermBackend' 
+# AUTHENTICATION_BACKENDS= 'object_permissions.backend.ObjectPermBackend',
 # got Error importing authentication backends. Is AUTHENTICATION_BACKENDS a correctly defined list or tuple?
 # commented this out, loaded page, commented back in, everything is fine?
 
