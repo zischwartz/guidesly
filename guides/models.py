@@ -22,9 +22,10 @@ IELEMENT_TYPE = (
 )
 
 SELEMENT_TYPE = (
-	('I', 'Image'),
-	('A', 'Audio'),
-	('V', 'Video'),
+	('image', 'Image'),
+	('audio', 'Audio'),
+	('video', 'Video'),
+	('other', 'Other'),
 )
 
 SVALUEINQUIRY_TYPE = (
@@ -46,9 +47,8 @@ class Guide (models.Model):
 	text_slugs_for_slides = models.BooleanField(default=False)
 	number_of_slides = models.IntegerField(default=1)
 	tags = TagField()
-	# add has title slide
+	has_title_slide = models.BooleanField(default=False)
 	
-
 	def save(self, *args, **kwargs):
 		self.slug= slugify(self.title)
 		super(Guide, self).save(*args, **kwargs)
@@ -62,15 +62,6 @@ class Guide (models.Model):
 	@models.permalink
 	def get_absolute_url(self):
 		return ('GuideDetailView', (), {'slug': self.slug })
-	
-	# def save(self, *args, **kwargs):
-	# 	super(Guide, self).save(*args, **kwargs)
-	# 	return self.id
-# try:
-# 	tagging.register(Post, "tagz")
-# except myproject.tagging.AlreadyRegistered:
-# 	pass
-
 
 class Slide (models.Model):
 	title = models.CharField(max_length=250, blank=True)
@@ -80,7 +71,6 @@ class Slide (models.Model):
 	slide_number = models.IntegerField(blank=True, null=True)
 	is_alt_slide = models.BooleanField(default=False) #delete this? just having numbers seems to be simpler
 	brand_new = models.BooleanField(default=True)
-	
 	# add show more text bool, slide down
 	# add prompt/question. sort of a heading for all the interactive elements on a slide
 	# add text_on_top bool
@@ -88,7 +78,7 @@ class Slide (models.Model):
 	
 	default_next_slide = models.ForeignKey('self', related_name='+', blank=True, null=True) # the + says don't do a backwards relationship
 	default_prev_slide = models.ForeignKey('self', related_name='+', blank=True, null=True)
-	objects = InheritanceManager()
+	# objects = InheritanceManager()
 	
 	def __unicode__(self):
 		if self.title !='':
@@ -119,10 +109,14 @@ class StaticElement (models.Model):
 	slide = models.ForeignKey(Slide)
 	created = models.DateTimeField(auto_now_add=True)
 	display_title = models.BooleanField(default=False) #if two slides have the same number, they're alt slides, meaning they're at the same level. sort of syntactic sugar...
-	type = models.CharField(blank=True, max_length=1, choices = SELEMENT_TYPE)
+	type = models.CharField(blank=True, max_length=5, choices = SELEMENT_TYPE)
 	is_primary = models.BooleanField(default=True)
 	objects = InheritanceManager()
 	# file = models.FileField(upload_to='media/%Y', blank=True) #the path obvs needs to include guide and slide
+	is_background = models.BooleanField(default=False)
+	autoplay = models.BooleanField(default=False)
+	length_seconds = models.IntegerField(blank=True, null=True)
+	length_minutes = models.IntegerField(blank=True, null=True)
 	file = models.ForeignKey(UserFile)
 
 	@property
@@ -130,38 +124,31 @@ class StaticElement (models.Model):
 		return self.file.url
 	
 
-
-
-class ImageElement (StaticElement):
-	is_background = models.BooleanField(default=False)
-
-		
-class VideoElement (StaticElement):
-	autoplay = models.BooleanField(default=False)
-	length_seconds = models.IntegerField(blank=True, null=True)
-	length_minutes = models.IntegerField(blank=True, null=True)
-
-		
-
-class AudioElement (StaticElement):
-	length_seconds = models.IntegerField(blank=True, null=True)
-	length_minutes = models.IntegerField(blank=True, null=True)
-	continue_playing = models.BooleanField(default=False)
-	autoplay = models.BooleanField(default=False)
-
-
 class Action (models.Model):
 	goto = models.ForeignKey(Slide, blank=True, null=True)
 	save_choice = models.BooleanField(default=False)
 	play_static = models.ForeignKey(StaticElement, blank=True, null=True)
-	objects = InheritanceManager()
 	def __unicode__(self):
 		return "action-goto: %s" % self.goto
 
 
-class ConditionalAction (Action):
-	condition = models.CharField(max_length=120)
-	a_number = models.FloatField( blank=True, null=True)
+COND_TYPE = (
+	('==', '=='),
+	('>', 'is greater than'),
+	('<', 'is less than'),
+	('<=', 'is less than or equal to'),
+	('>=', 'is greater than or equal to'),
+	('!=', 'is not equal to'),
+)
+
+
+class ConditionalAction (models.Model):
+	condition = models.CharField(max_length=2, choices = COND_TYPE, blank=True, null=True)
+	text__match_answer = models.CharField(max_length=512, blank=True, null=True)
+	b_number = models.FloatField( blank=True, null=True)
+	goto = models.ForeignKey(Slide, blank=True, null=True)
+	save_choice = models.BooleanField(default=False)
+	play_static = models.ForeignKey(StaticElement, blank=True, null=True)
 
 
 #this base class is used for just a simple button, and is extended for the other types
@@ -180,6 +167,11 @@ class InteractiveElement (models.Model):
 	def __unicode__(self):
 		return self.button_text
 
+
+
+# ********************************************************
+# ***************         SIGH                ************
+# ********************************************************
 
 class MultipleChoiceInquiry (InteractiveElement):
 	# choices = models.ForeignKey(MultipleChoices, blank=True, null=True) #deleted because we want multiple..duh

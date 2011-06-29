@@ -17,13 +17,16 @@ class SlideForm(ModelForm):
 	class Meta:
 		model=Slide
 
-# class StaticElementForm(ModelForm):
-# 	class Meta:
-# 		model=StaticElement
-# 		widgets = {
-# 			'slide': HiddenInput,
-# 			'type': HiddenInput,
-# 			}
+class StaticElementForm(ModelForm):
+	class Meta:
+		model=StaticElement
+		widgets = {
+			'slide': HiddenInput,
+			'type': HiddenInput,
+			'file': HiddenInput,
+			'title': TextInput(attrs={'placeholder': 'Title (optional)'})
+
+			}
 
 
 
@@ -34,36 +37,36 @@ class SlideForm(ModelForm):
 # 		# return super(TimeInput, self).render(name, value, attrs)
 # 		return 'x' + value
 
-
-class ImageElementForm(ModelForm):
-	# file = forms.ModelChoiceField()
-	
-	class Meta:
-		model=ImageElement
-		widgets = {
-			'slide': HiddenInput,
-			'type': HiddenInput,
-			'file': HiddenInput,
-			'display_title': HiddenInput,
-			'title': TextInput(attrs={'placeholder': 'Title (optional)'})
-			}
-
-class AudioElementForm(ModelForm):
-	class Meta:
-		model=AudioElement
-		widgets = {
-			'slide': HiddenInput,
-			'type': HiddenInput,
-			}
-
-
-class VideoElementForm(ModelForm):
-	class Meta:
-		model=VideoElement
-		widgets = {
-			'slide': HiddenInput,
-			'type': HiddenInput,
-			}
+# 
+# class ImageElementForm(ModelForm):
+# 	# file = forms.ModelChoiceField()
+# 	
+# 	class Meta:
+# 		model=ImageElement
+# 		widgets = {
+# 			'slide': HiddenInput,
+# 			'type': HiddenInput,
+# 			'file': HiddenInput,
+# 			'display_title': HiddenInput,
+# 			'title': TextInput(attrs={'placeholder': 'Title (optional)'})
+# 			}
+# 
+# class AudioElementForm(ModelForm):
+# 	class Meta:
+# 		model=AudioElement
+# 		widgets = {
+# 			'slide': HiddenInput,
+# 			'type': HiddenInput,
+# 			}
+# 
+# 
+# class VideoElementForm(ModelForm):
+# 	class Meta:
+# 		model=VideoElement
+# 		widgets = {
+# 			'slide': HiddenInput,
+# 			'type': HiddenInput,
+# 			}
 
 
 

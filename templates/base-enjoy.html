@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<title>Guides.ly</title>
+
+		{# <link type="text/css" href="{{STATIC_URL}}jui-css/smoothness/jquery-ui-1.8.13.custom.css" rel="stylesheet" />	 #}
+ 		<script src="{{STATIC_URL}}jquery-1.6.1.min.js"></script>
+	    <script type="text/javascript" src="{{STATIC_URL}}jquery-ui-1.8.13.custom.min.js"></script>
+		
+
+		<link rel="stylesheet" media="all" href="{{STATIC_URL}}base-enjoy.css"/>
+
+
+		
+		<script type="text/javascript">
+			var current_url ="{{request.path}}";
+		</script>
+		
+        <script src="{{STATIC_URL}}enjoy.js"></script>
+        <script src="{{STATIC_URL}}create.js"></script>
+
+
+		<link rel="shortcut icon" href="{{STATIC_URL}}favicon.ico">
+		{# // <script src="{{MEDIA_URL}}js/base.js"></script> #}
+
+
+		{%block extrahead%}{%endblock%}
+	</head>
+
+<body>
+	<div id="topbar">{%block topbar%}{%endblock%}</div>
+
+	<div id="wrap" class="view">
+		
+	{% if messages %}
+		<div id="messages">{% for message in messages %}
+		<p{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>{% endfor %}</div>
+	{%endif%}
+	
+		{# WOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO #}
+		{% block content %} 
+		Hi. If you're seeing this, something messed up. This is the base template dude...
+		{% endblock %}
+
+	</div> 	{# end #wrap #}
+
+</body>
+</html>

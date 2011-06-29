@@ -1,0 +1,127 @@
+
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed, 
+figure, figcaption, footer, header, hgroup, 
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font-size: 100%;
+	font: inherit;
+	vertical-align: baseline;
+}
+
+article, aside, details, figcaption, figure, 
+footer, header, hgroup, menu, nav, section {
+	display: block;
+}
+body {
+	line-height: 1;
+}
+ol, ul {
+	list-style: none;
+}
+blockquote, q {
+	quotes: none;
+}
+blockquote:before, blockquote:after,
+q:before, q:after {
+	content: '';
+	content: none;
+}
+table {
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+
+
+
+body
+{
+	background-color: #efefef;
+	background-color: #e2e2e2;
+	font: 16px/1.5em 'Helvetica Neue',helvetica,arial,sans-serif;
+	width: 100%;
+}
+
+
+
+
+.hidden {display:none;}
+.clearfix:after { content: "."; display: block; height: 0; clear: both; visibility: hidden;  font-size: 0;}
+.clearfix { display: inline-block; }
+* html .clearfix { height: 1%; } /* Hides from IE-mac \*/
+.clearfix { display: block; }
+
+
+
+h1 {font-size:2em; font-weight: bold; padding: 4px 0 6px 0;}
+h2 {font-size:1.5em; font-weight: bold; padding: 3px 0 5px 0;}
+
+
+#messages
+{
+	color: brown;
+}
+
+
+
+#container {
+	max-width: 75em;
+/*	max-width: 100%*/
+	margin: 0 auto;
+}
+
+
+#header, #footer 
+{
+/*	height:50px;*/
+	padding:5px 5%;
+	color:#fff;
+	background: #777
+}
+#header a, #footer a {color: #ddd; text-decoration: none;}
+
+
+#content {
+	float:left;
+	width:57%;
+	padding:1em 5% 1em 5%;
+	background-color: #ccc;
+	min-height: 700px;
+}
+
+#sidebar {
+	float:left;
+	width:23%;
+	padding:1em 5%;
+	background-color: white;
+	min-height: 700px;
+}
+
+/*Maybe neccesary later*/
+/*#content .inner {
+	max-width:80%;
+}
+#sidebar .inner {
+	max-width: 90%;
+}*/
+
+#footer {
+	clear:both;
+}
+
+/**********************************************************************************/
+/* EDITING SLIDE FORM*/
+/**********************************************************************************/
+
+

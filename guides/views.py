@@ -80,28 +80,19 @@ def EditSlide (request, gslug, slug):
 			# return HttpResponse(sf.errors)
 			return HttpResponse('that slideform did not validate, fool!')
 	else:
+		if request.user.is_authenticated():
+			current_user= request.user
+			
 		s = get_object_or_404(Slide, guide__slug=gslug, slug=slug)
 		sf= SlideForm(instance=s)
 		current_static_elements = s.staticelement_set.all()
-		current_interactive_elements=s.interactiveelement_set.all().select_subclasses()
+		current_interactive_elements=s.interactiveelement_set.all()
 		
-		if request.user.is_authenticated():
-			current_user= request.user
-		# tester= available_userfiles
-		static_element_form_dict = {
-			'image':ImageElementForm(initial={'slide': s, 'type':'I'}),
-		 	'video':VideoElementForm(initial={'slide': s, 'type':'V'}),
-		 	'audio':AudioElementForm(initial={'slide': s, 'type':'A'})}
+		static_element_form= StaticElementForm(initial={'slide': s})
+		static_element_form_dict= {"image":static_element_form, "video":static_element_form, "audio": static_element_form}
 		
-		# it seems this is unnecesary 
-		# static_element_form_dict['image'].fields['file'].queryset=UserFile.objects.filter(owner=current_user)
-		# static_element_form_dict['video'].fields['file'].queryset=UserFile.objects.filter(owner=current_user)
-		# static_element_form_dict['audio'].fields['file'].queryset=UserFile.objects.filter(owner=current_user) 
-		
-		interactive_element_form_dict= {
-			'button':InteractiveElementForm(initial={'slide': s, 'type':'B'}),
-			'timer':InteractiveElementForm(initial={'slide': s, 'type':'T'})}
-		
+		interactive_element_form= InteractiveElementForm(initial={'slide': s})
+		interactive_element_form_dict = {"button": interactive_element_form, "timer":interactive_element_form}
 		return render_to_response("create/edit_slide.html", locals(), context_instance=RequestContext(request))
 
 
@@ -109,38 +100,29 @@ def EditSlide (request, gslug, slug):
 def AddStaticElement (request, gslug, slug):
 	s= Slide.objects.get(guide__slug=gslug, slug=slug)
 	if request.method == 'POST':
-		if request.POST.__getitem__('type') =='I':
-			form= ImageElementForm(request.POST, request.FILES)
-		if request.POST.__getitem__('type') =='A':
-			form= AudioElementForm(request.POST, request.FILES)
-		if request.POST.__getitem__('type') =='V':
-			form= VideoElementForm(request.POST, request.FILES)
-		
+		form= StaticElementForm(request.POST)
 		if form.is_valid():
 			form.save()
 			messages.info(request, "Media Added!")
 			return HttpResponseRedirect(reverse('EditSlide', kwargs={'gslug':gslug, 'slug': s.slug}))
 		else:
 			return HttpResponse(form.errors)
-	else:
-		pass #this should never happen
-		#static_element_form= StaticElementForm()
+	else: 
+		static_element_form= StaticElementForm() 
 		return render_to_response("create/edit_slide.html", locals(), context_instance=RequestContext(request))
 	
 def EditStaticElement (request, gslug, slug, elementid):
 	element = StaticElement.objects.filter(slide__slug=slug, id=elementid).select_subclasses()[0]
-	logger=getlogger()
-	logger.debug("---------------")
-	some_type_of_form =model_form_dictionary[element.__class__]
-
 	if request.method == 'POST':
-		form= some_type_of_form(request.POST, request.FILES, instance=element)
+		form= StaticElementForm(request.POST, instance=element)
 		if form.is_valid():
 			form.save()
 			messages.info(request, "Media Saved!")
 			return HttpResponseRedirect(reverse('EditSlide', kwargs={'gslug':gslug, 'slug': slug}))
+		else:
+			return HttpResponse(form.errors)
 	elif request.method == 'GET':
-		static_element_form= some_type_of_form(instance=element)
+		static_element_form= StaticElementForm(instance=element)
 		return render_to_response("create/add_static.html", locals(), context_instance=RequestContext(request))
 	elif request.method == 'DELETE':
 		element = StaticElement.objects.get(id=elementid)
@@ -150,34 +132,28 @@ def EditStaticElement (request, gslug, slug, elementid):
 def AddInteractiveElement(request, gslug, slug):
 	s= Slide.objects.get(guide__slug=gslug, slug=slug)
 	if request.method == 'POST':
-		if request.POST.__getitem__('type') =='B':
-			form= InteractiveElementForm(request.POST)
-		if request.POST.__getitem__('type') =='T':
-			form= InteractiveElementForm(request.POST)
-		
+		form= InteractiveElementForm(request.POST)	
 		if form.is_valid():
 			form.save()
 			messages.info(request, "Interaction Added!")
 			return HttpResponseRedirect(reverse('EditSlide', kwargs={'gslug':gslug, 'slug': s.slug}))
+		else:
+			return HttpResponse(form.errors)
 	else:
-		pass #this shouldn't really happen
+		return HttpResponse(form.errors)
 
 
 def EditInteractiveElement (request, gslug, slug, elementid):
 
 	element = InteractiveElement.objects.filter(slide__slug=slug, id=elementid).select_subclasses()[0]
-	logger=getlogger()
-	logger.debug("---------------")
-	some_type_of_form =model_form_dictionary[element.__class__]
-
 	if request.method == 'POST':
-		form= some_type_of_form(request.POST, instance=element)
+		form= InteractiveElementForm(request.POST, instance=element)
 		if form.is_valid():
 			form.save()
 			messages.info(request, "Interaction Saved!")
 			return HttpResponseRedirect(reverse('EditSlide', kwargs={'gslug':gslug, 'slug': slug}))
 	elif request.method == 'GET':
-		interactive_element_form= some_type_of_form(instance=element)
+		interactive_element_form= InteractiveElementForm(instance=element)
 		return render_to_response("create/edit_interactive.html", locals(), context_instance=RequestContext(request))
 	elif request.method == 'DELETE':
 		element = InteractiveElement.objects.get(id=elementid)
@@ -185,3 +161,8 @@ def EditInteractiveElement (request, gslug, slug, elementid):
 		return HttpResponseRedirect(reverse('EditSlide', kwargs={'gslug':gslug, 'slug': slug}))
 		
 
+
+
+	# logger=getlogger()
+	# logger.debug("---------------")
+	# some_type_of_form =model_form_dictionary[element.__class__]

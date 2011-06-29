@@ -1,4 +1,4 @@
-{%extends "base.html"%}
+{%extends "base-create.html"%}
 
 {%block extrahead%}
 		
@@ -12,18 +12,14 @@
 {%endblock%}
 
 
-{%block topbar%}
-	Hello {{current_user}}
+{%block header%}
+	Hello {{current_user}}. You're currently creating a guide.
 {%endblock%}
 
 {%block content%}
-	<h1>Create a new guide</h1>
-
 	<form action="" method="post">
 	{% csrf_token %}
-	<table>
-	{{form.as_table}}
-	</table>
+	<table>	{{form.as_table}}</table>
 	<input type="submit" value="Create guide" />
 	</form>
 
@@ -58,5 +54,8 @@
 
 	{% upload_js %}
 
+{%endblock%}
 
+{%block sidebar%}
+This would be an ideal place to impart some wisdom about the general creation of guides
 {%endblock%}

@@ -6,11 +6,17 @@ from django.conf import settings
 from django.contrib import admin
 admin.autodiscover()
 
-from api import StaticElementResource
+from tastypie.api import Api
+from api import *
 
 from guides.views import *
 
-staticelement_resource=StaticElementResource()
+
+v1_api = Api(api_name='v1')
+v1_api.register(StaticElementResource())
+v1_api.register(SlideResource())
+
+
 
 urlpatterns = patterns('',
     # Examples:
@@ -28,7 +34,7 @@ urlpatterns = patterns('',
     url(r'create/(?P<gslug>[^/]+)/(?P<slug>[^/]+)/addinteractive$', AddInteractiveElement, name='AddInteractiveElement'),
     url(r'create/(?P<gslug>[^/]+)/(?P<slug>[^/]+)/editinteractive/(?P<elementid>[^/]+)$', EditInteractiveElement, name='EditInteractiveElement'),
     url(r'^upload/', include('fileupload.urls')),
-    (r'^api/', include(staticelement_resource.urls)),
+    (r'^api/', include(v1_api.urls)),
 
     # (r'^guide/(?P<slug>[^/]+)/?$', GuideDetailView),
     # url(r'^learny/', include('learny.foo.urls')),
