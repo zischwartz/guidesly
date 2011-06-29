@@ -14,24 +14,23 @@ class UserResource(ModelResource):
 		
 class SlideResource(ModelResource):
 	staticelements = fields.ToManyField('api.StaticElementResource', 'staticelement_set', full=True)
+	interactiveelements = fields.ToManyField('api.InteractiveElementResource', 'interactiveelement_set', full=True)
 	# staticelements = fields.ToManyField('api.StaticElementResource', 'staticelement_set')
-
 	class Meta:
 		queryset= Slide.objects.all()
-
 		filtering = {
 		"slug": ('exact'),
 		}
-		# http://127.0.0.1:8000/api/v1/slide/?format=json&slug=1
-		# http://127.0.0.1:8000/api/v1/slide/?slug=1&format=json
-
-
 
 class StaticElementResource(ModelResource):
 	slide = fields.ForeignKey(SlideResource, 'slide')
-
 	class Meta:
-		queryset= StaticElement.objects.all().select_subclasses()
+		queryset= StaticElement.objects.all()
+
+class InteractiveElementResource(ModelResource):
+	slide= fields.ForeignKey(SlideResource, 'slide')
+	class Meta:
+		queryset= InteractiveElement.objects.all()
 
 
 		
