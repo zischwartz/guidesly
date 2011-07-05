@@ -71,6 +71,7 @@ class Slide (models.Model):
 	slide_number = models.IntegerField(blank=True, null=True)
 	is_alt_slide = models.BooleanField(default=False) #delete this? just having numbers seems to be simpler
 	brand_new = models.BooleanField(default=True)
+	#add date created!
 	# add show more text bool, slide down
 	# add prompt/question. sort of a heading for all the interactive elements on a slide
 	# add text_on_top bool
@@ -107,7 +108,7 @@ class Slide (models.Model):
 class StaticElement (models.Model):
 	title = models.CharField(max_length=250, blank=True, null=True)
 	slide = models.ForeignKey(Slide)
-	created = models.DateTimeField(auto_now_add=True)
+	created = models.DateTimeField(auto_now_add=True,  blank=True, null=True)
 	display_title = models.BooleanField(default=False) #if two slides have the same number, they're alt slides, meaning they're at the same level. sort of syntactic sugar...
 	type = models.CharField(blank=True, max_length=5, choices = SELEMENT_TYPE)
 	is_primary = models.BooleanField(default=True)
@@ -166,6 +167,8 @@ class InteractiveElement (models.Model):
 		# return "<a class='ielement' href='%s'>%s</a>" % (self.default_action.goto.get_absolute_url(), self.button_text)
 	def __unicode__(self):
 		return self.button_text
+
+
 
 
 

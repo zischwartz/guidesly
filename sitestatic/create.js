@@ -8,7 +8,7 @@ var file_api_url='/api/v1/userfile/';
 // var obj = jQuery.parseJSON('{"name":"John"}');
 // alert( obj.name === "John" );
 
-// add keys
+// add specific keys to mapping ko
 // var slideMapping = {
 // 	'children': {
 // 		key: function(data) {
@@ -18,10 +18,10 @@ var file_api_url='/api/v1/userfile/';
 // }
 
 
-// add flip
-	// $(".slide_title").click(function(){
-	// 	$(this).flip({direction:'lr', speed: 150})
-	// });
+// // add flip
+// 	$(".image_wrap").click(function(){
+// 		$(this).flip({direction:'lr', speed: 150})
+// 	});
 
 var viewModel = {};
 
@@ -29,8 +29,26 @@ $(document).ready(function(){
 
 
 	$.getJSON(slide_api_url + current_slide_id + "/", function(data) {
-			viewModel = ko.mapping.fromJS(data);
-			ko.applyBindings(viewModel);	
+		// load initial data for the current slide.
+		slideViewModel = ko.mapping.fromJS(data);
+		//map it to ko
+		//and add a save function
+		slideViewModel.save =  function(formElelement){
+				var jsonData = ko.toJSON(slideViewModel);
+				$.ajax({
+					url: slide_api_url+ current_slide_id + "/",
+					type: "PUT",
+					data:jsonData,
+					success:function(data) { console.log(data); },
+					contentType: "application/json",
+					});
+				// alert('saved');
+				}; //end save function
+
+				//apply the bindings 
+			ko.applyBindings(slideViewModel);
+		
+			
 			// alert('The length of the array is ' + viewModel.staticelements().length);
 		});
 
