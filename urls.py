@@ -14,7 +14,9 @@ from guides.views import *
 
 v1_api = Api(api_name='v1')
 v1_api.register(StaticElementResource())
+v1_api.register(InteractiveElementResource())
 v1_api.register(SlideResource())
+v1_api.register(UserFileResource())
 
 
 

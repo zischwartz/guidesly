@@ -150,7 +150,7 @@ h2 {font-size:1.5em; font-weight: bold; padding: 3px 0 5px 0;}
 	
 }
 
-input#slide_title
+input.slide_title
 {
 	margin: 0 auto 1em auto;
 	clear: both;
@@ -180,4 +180,5 @@ input#slide_title
 	margin-right: -25%;
 	box-shadow: 0px 0px 3px gray;
 	font-size: 1.2em;
+	display: block;
 }

@@ -1,0 +1,88 @@
+{%extends "base-create.html"%}
+
+{%block header%}
+	{%if s.brand_new%}
+	Add Step
+	{%else%}
+	Edit Step
+	{%endif%}
+	
+	<a href="{% url SlideDetailView gslug=s.guide.slug, slug=s.slug %}"> View Step</a> | <a href="{% url EditGuide gslug=s.guide.slug %}"> View All Steps in <i>{{s.guide.title}}</i> </a>
+
+{%endblock%}
+
+{%block content%}
+	{# {%load verbatim_templatetag%} #}
+	{# {% verbatim %}  #}
+	{# {%endverbatim%} #}
+	<form action="" method="post">
+	<div id="slide_being_edited" class="{%if s.brand_new%}brand_new{%endif%}">
+	{% csrf_token %}
+		
+		<input id="slide_title" data-bind='value:title' type="text" name="title" {# value="{{s.title}}" maxlength="250" placeholder="Slide Title" #} />
+		
+		
+		
+		<input type="hidden" name="slide_number" value="{%firstof s.slide_number '' %}" id="id_slide_number" />
+		<input type="hidden" name="slug" value="{{s.slug}}" id="id_slug" />
+		<input type="hidden" name="guide" id="id_guide" value="{{s.guide.id}}">
+		
+		<textarea placeholder='Slide text goes here' id="id_text" {# rows="10" cols="40" #} name="text">{{s.text}}</textarea>
+	
+	{%for e in current_static_elements%}
+		<div class="an_element a_static_el" data-id="{{e.id}}" data-title="{{e.title}}">
+			<br>{%if e.file%} <img src="{{e.file_url}}" width="100" height="100">- {%endif%}{{e.title}}<br>
+		</div>
+	{%endfor%}
+	
+	<br>
+	
+	{%for el in current_interactive_elements%}
+		<div class="an_element an_interactive_el" data-id="{{el.id}}" data-title="{{el.button_text}}">
+			{%include el.el_template%}<br>
+		</div>
+	{%endfor%}
+	
+	</div> {# end #slide_being_edited #}
+	<input class="button" type="submit" value="Save &amp; Add Another Slide" name="slide_sub_add" />
+	<input class="button" type="submit" value="Save Slide" name ="slide_sub_save"/>
+</form> {# end slide form #}
+
+{%endblock%}
+
+
+{%block sidebar%}
+<div id="slide_element_toolbar">
+
+		<h3 id="add_static">Add Media</h3>	
+		
+		<div id="add_static_group">
+			{%for key, static_element_form in static_element_form_dict.items%}
+				<h4 data-subtype="{{key}}"> <a href="#">{{key|title}}</a></h4>
+				<div class="button_form" id="add_{{key}}_form" data-subtype="{{key}}">
+					{# <div class="button upload_new">Upload New</div> #}
+					<button class="button see_all_button">Pick Another File</button>					
+					<div class="chooser {{key}}_chooser" data-subtype="{{key}}"></div>
+					{%include 'create/add_static.html'%}
+				</div>
+			{%endfor%}		
+		</div>
+	
+	<h3 class="button" id="add_interactive"><a href="#">Add Interaction</a></h3>
+		<div id="add_interactive_group">
+			{%for key, interactive_element_form in interactive_element_form_dict.items%}
+				<h4> <a href="#">{{key|title}}</a></h4>
+				<div class="button_form" id="add_{{key}}_form" data-subtype="{{key}}">
+					{%include 'create/edit_interactive.html'%}
+				</div>
+			{%endfor%}
+
+		</div> {# end add_interactive_group #}
+		
+	<h3 class="button " id="edit_static"><a href="#">Edit <span id="edited_type"></span></a></h3>
+	<div class="button_group">
+		<div class="button_form" id="edit_static_form">Click on a media or interactive element on the slide. Then you can edit it here.</div>
+	</div>
+		
+</div> {# end #slide_element_toolbar #}
+{%endblock%}

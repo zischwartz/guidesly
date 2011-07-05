@@ -1,16 +1,44 @@
+var slide_api_url='/api/v1/slide/';
+var file_api_url='/api/v1/userfile/';
+// alert(current_slide_id);
 
+// this should be better...
+
+// console.log('hello world');
+// var obj = jQuery.parseJSON('{"name":"John"}');
+// alert( obj.name === "John" );
+
+// add keys
+// var slideMapping = {
+// 	'children': {
+// 		key: function(data) {
+// 			return ko.utils.unwrapObservable(data.id);
+// 		}
+// 	}
+// }
+
+
+// add flip
+	// $(".slide_title").click(function(){
+	// 	$(this).flip({direction:'lr', speed: 150})
+	// });
+
+var viewModel = {};
 
 $(document).ready(function(){
 
-// console.log('hello world');
 
-$( "input[type=submit]").button();
-$( "button").button();
+	$.getJSON(slide_api_url + current_slide_id + "/", function(data) {
+			viewModel = ko.mapping.fromJS(data);
+			ko.applyBindings(viewModel);	
+			// alert('The length of the array is ' + viewModel.staticelements().length);
+		});
 
 
 
 
-
+// Make the sidbar pretty, animated, acordian
+// 
 var icons = {header: "ui-icon-circle-arrow-e", headerSelected: "ui-icon-circle-arrow-s"};
 
 $("#slide_element_toolbar").accordion({
@@ -19,124 +47,68 @@ $("#slide_element_toolbar").accordion({
 	collapsible: true,
 	icons: icons,
 	active: false
-	// clearStyle: true,
+
 });
 
-$("#add_static_group").accordion({
-	header: 'h4',
-	autoHeight: false,
-	collapsible: true,
-	icons: icons,
-	active: false
-	// clearStyle: true,
-}).bind('accordionchangestart', function(event, ui) {
-	// alert(ui.newHeader.data('subtype'));
-	subtype= ui.newHeader.data('subtype');
-	$("."+subtype+"_chooser").load('/upload/list/'+subtype);
-});
-
-$(".choosefile").live("click", function(){
-	static_el_id= $(this).addClass("selected").data('id');
-	$(this).parent().parent().children(".see_all_button").slideDown();
-	$(this).parent().children(".choosefile").not(this).slideUp();
-	$(this).parent().next('form').find("input#id_file").val(static_el_id);
-	$(this).parent().next('form').slideDown();
-});
-
-//this unselects
-$(".see_all_button").click(function(){
-	$(this).parent().find(".selected").removeClass("selected");
-	$(this).next().children(".choosefile").slideDown();
-	$(this).slideUp();
-});
-
-$("#add_interactive_group").accordion({
-	header: 'h4',
-	autoHeight: false,
-	collapsible: true,
-	icons: icons,
-	active: false
-	// clearStyle: true,
+$("#add_media_group h4").click(function(){
+	media_type= $(this).data("media_type");
+	// alert(media_type);
+	$.getJSON(file_api_url, function(data) {
+			viewModel.media_files += ko.mapping.fromJS(data);
+			ko.applyBindings(viewModel);
+			});	
+	$("#add_media_group h4").slideUp();
 });
 
 
-
-// var active = $( "#add_static_group" ).accordion( "option", "active" );
- // alert(active);
-
+// $("#add_static_group").accordion({
+// 	header: 'h4',
+// 	autoHeight: false,
+// 	collapsible: true,
+// 	icons: icons,
+// 	active: false
+// 	// clearStyle: true,
+// });
 // 
-// $(".button_group .button").click(function(){
-// 	// console.log($(this).parent().next('.button_form'));
-// 	subtype= $(this).data("subtype");
-// 	subtype = "add_"+subtype+"_form";
-// 	// console.log(subtype);
-// 	
-// 	$(this).nextAll('.button_form').slideDown('fast');
+// 
+// 
+// $("#add_interactive_group").accordion({
+// 	header: 'h4',
+// 	autoHeight: false,
+// 	collapsible: true,
+// 	icons: icons,
+// 	active: false
+// 	// clearStyle: true,
 // });
 
 
-// Editing an Element, start by clicking on it in the preview
-var current_el;
-
-$(".an_element").live('click', function(event){
-	element_id= $(this).data("id");
-	element_title= $(this).data("title");
-	current_el=  $(this);
-	// console.log(current_el);
-	
-	//  is the editing toolbar already open?
-	if(($("#slide_element_toolbar").accordion( "option", "active" ))!=2) //2 is the index of the Edit . TODO make this less fragile
-	{
-		$("#slide_element_toolbar").accordion("activate", "#edit_static");
-	}
-	
-	if ($(this).hasClass("a_static_el"))
-	{
-		$("#edit_static_form").load(current_url+"/editstatic/"+element_id);	
-		$("#edited_type").text("Media: "+element_title);
-	}
-	
-	if ($(this).hasClass("an_interactive_el"))
-	{
-		$("#edit_static_form").load(current_url+"/editinteractive/"+element_id);	
-		$("#edited_type").text("Interaction: "+element_title);
-
-	}
-	
-	event.preventDefault();
-	return false;
-});
+});// end docready
 
 
 
 
-
-//Deleting an element
-$(".delete_element_button").live('click', function(event){
-
-	$("#slide_element_toolbar").accordion("activate", false);
-
-	$(current_el).hide('fast', function(){
-		$(this).remove();
-		$("#edit_static_form").html("Click on a media or interactive element on the slide. Then you can edit it here.");
-	});
-
-	$.ajax({
-		url: $(this).attr('href'),
-		type: 'DELETE',
-		context: document.body,
-		success: function(){
-		$(this).addClass("done");}
-	});
-	
- 	event.preventDefault();
-	return false;
-})
-
-
-
-
-
-}); // end docready
+// 
+// 
+// $("#add_static_group").accordion({
+// 	header: 'h4',
+// 	autoHeight: false,
+// 	collapsible: true,
+// 	icons: icons,
+// 	active: false
+// 	// clearStyle: true,
+// }).bind('accordionchangestart', function(event, ui) {
+// 	// alert(ui.newHeader.data('subtype'));
+// 	subtype= ui.newHeader.data('subtype');
+// 	// $("."+subtype+"_chooser").load('/upload/list/'+subtype);
+// });
+// 
+// $("#add_interactive_group").accordion({
+// 	header: 'h4',
+// 	autoHeight: false,
+// 	collapsible: true,
+// 	icons: icons,
+// 	active: false
+// 	// clearStyle: true,
+// });
 
 

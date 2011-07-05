@@ -11,6 +11,8 @@
 		<script type="text/javascript" src="{{STATIC_URL}}js-libs/jquery-ui-1.8.13.custom.min.js"></script>
 		<script type="text/javascript" src="{{STATIC_URL}}js-libs/jquery.tmpl.js"></script>
 		<script type="text/javascript" src="{{STATIC_URL}}js-libs/knockout-1.2.1.debug.js"></script>
+		<script type="text/javascript" src="{{STATIC_URL}}js-libs/knockout.mapping.js"></script>
+		<script type="text/javascript" src="{{STATIC_URL}}js-libs/jquery.flip.min.js"></script>
 		
 		<link rel="stylesheet" media="all" href="{{STATIC_URL}}css/base-create.css"/>
 		<!-- <link rel="stylesheet" media="all" href="{{STATIC_URL}}create.css"/> -->
@@ -18,12 +20,13 @@
 		
 		<script type="text/javascript">
 			var current_url ="{{request.path}}";
+			var current_slide_id ="{{s.id}}";
 		</script>
 		
 		<script src="{{STATIC_URL}}create.js"></script>
 		
 
-		<link rel="shortcut icon" href="{{STATIC_URL}}favicon.ico">
+		<link rel="shortcut icon" href="img/{{STATIC_URL}}favicon.ico">
 		{# // <script src="{{MEDIA_URL}}js/base.js"></script> #}
 
 
@@ -43,7 +46,7 @@
 	</div>
 	
 	<div id="sidebar">
-		{% block sidebar %}<p>Sidebar</p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.{%endblock%}
+		{% block sidebar %}<p>Sidebar</p> You probably shouldn't be seeing this. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.{%endblock%}
 	</div>
 	
 	<footer id="footer">
