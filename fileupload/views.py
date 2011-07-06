@@ -58,7 +58,7 @@ class JSONResponse(HttpResponse):
 		content = simplejson.dumps(obj,**json_opts)
 		super(JSONResponse,self).__init__(content,mimetype,*args,**kwargs)
 
-
+#unused now
 class UserFileListView(ListView):
 	context_object_name = "file_list"
 	template_name = "file_list.html"

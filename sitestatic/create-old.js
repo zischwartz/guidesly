@@ -1,3 +1,64 @@
+// what a waste of time. i should not have spent to much time trying to make this work.
+
+
+slideViewModel.add2slide = function() {
+	// console.log("executed?");
+	itemToAdd= new Object();
+	itemToAdd = {
+		file: {file:ko.observable(slideViewModel.media_files.remove(this)[0])},
+		slide:  ko.observable(current_slide_id)
+		};
+	
+	// itemToAdd.slide = ko.observable(current_slide_id);
+	// slideViewModel.itemToAdd = ko.observable({file:slideViewModel.removedItem});
+	slideViewModel.staticelements.push(itemToAdd);
+
+	console.log(slideViewModel.staticelements())
+	
+	
+	
+	
+	// TODO, this requires processing to convert from userfile to staticelement. maybe make their models more similar? or not.
+	// or maybe it should just add to the slide, first, and then reload the slide...
+	// slideViewModel.staticelements.push(added);
+	// console.log(this);
+	// construct this:
+// http://127.0.0.1:8000/api/v1/staticelement/2/?format=json
+// {"autoplay": false, "display_title": false, "file": {"file": "/media/media/zbed.png", "id": "2", "slug": "zbed.png", "type": "image"}, "id": "2", "is_background": false, "is_primary": true, "length_minutes": null, "length_seconds": null, "resource_uri": "/api/v1/staticelement/2/", "slide": "/api/v1/slide/2/", "title": "", "type": "I"}
+	
+
+
+
+
+// Directly below this is newer, but replaced by adding the json to the view
+
+	// $.agetJSON(slide_api_url + current_slide_id + "/", function(data) {
+	// 	// load initial data for the current slide.
+	// 	slideViewModel = ko.mapping.fromJS(data);
+	// 	ko.mapping.updateFromJS(slideViewModel, data);
+	// 	//map it to ko
+	// 	//and add a save function
+	// 	slideViewModel.save =  function(formElelement){
+	// 			var jsonData = ko.toJSON(slideViewModel);
+	// 			$.ajax({
+	// 				url: slide_api_url+ current_slide_id + "/",
+	// 				type: "PUT",
+	// 				data:jsonData,
+	// 				success:function(data) { console.log(data); },
+	// 				contentType: "application/json",
+	// 				});
+	// 			// alert('saved');
+	// 			}; //end save function
+	// 
+	// 			//apply the bindings 
+	// 		ko.applyBindings(slideViewModel);
+	// 	
+	// 		
+	// 		// alert('The length of the array is ' + viewModel.staticelements().length);
+	// 	});
+
+
+
 
 
 $(document).ready(function(){

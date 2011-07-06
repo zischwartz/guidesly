@@ -61,6 +61,7 @@ def BuildSlide (request, gslug):
 	s.save()
 	return HttpResponseRedirect(reverse('EditSlide', kwargs={'gslug':gslug, 'slug': s.slug}))
 
+from api import SlideResource
 
 def EditSlide (request, gslug, slug):
 	if request.method == 'POST':
@@ -82,7 +83,7 @@ def EditSlide (request, gslug, slug):
 	else:
 		if request.user.is_authenticated():
 			current_user= request.user
-			
+		
 		s = get_object_or_404(Slide, guide__slug=gslug, slug=slug)
 		sf= SlideForm(instance=s)
 		current_static_elements = s.staticelement_set.all()
@@ -93,7 +94,14 @@ def EditSlide (request, gslug, slug):
 		
 		interactive_element_form= InteractiveElementForm(initial={'slide': s})
 		interactive_element_form_dict = {"button": interactive_element_form, "timer":interactive_element_form}
+
+		ur = SlideResource()
+		slider = ur.get_detail(request, id=s.id)
+		# slider = ur.obj_get(id=s.id)
+		ur_bundle = ur.build_bundle(obj=slider, request=request)
+		slide_json= ur.serialize(None, ur.full_dehydrate(s), 'application/json')
 		return render_to_response("create/edit_slide.html", locals(), context_instance=RequestContext(request))
+		# return render_to_response("create/edit_slide.html", locals(), context_instance=RequestContext(request))
 
 
 

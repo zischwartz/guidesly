@@ -33,6 +33,7 @@ class SlideResource(ModelResource):
 	class Meta:
 		authorization = Authorization()
 		# allowed_methods =   ['get', 'post', 'put', 'delete']
+		# include_resource_uri =False
 		queryset= Slide.objects.all()
 		filtering = {
 		"slug": ('exact'),
@@ -40,17 +41,20 @@ class SlideResource(ModelResource):
 
 
 class UserFileResource(ModelResource):
+	owner = fields.ForeignKey(UserResource, 'owner')
 	class Meta:
 		queryset= UserFile.objects.all()
 		authorization= myUserAuthorization()
 		excludes = ['created']
 		include_resource_uri =False
+		filtering= {"type": ('exact'), "owner": ('exact')}
 
 		
 class StaticElementResource(ModelResource):
 	slide = fields.ForeignKey(SlideResource, 'slide')
 	file = fields.ForeignKey(UserFileResource, 'file', full=True)
 	class Meta:
+		authorization = Authorization()
 		queryset= StaticElement.objects.all()
 		excludes = ['created']
 
