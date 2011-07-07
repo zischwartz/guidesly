@@ -1,38 +1,38 @@
 {%extends "base-enjoy.html"%} 
 
 {%block topbar%}
-		<a href="{{slide.guide.get_absolute_url}}">Back to {{slide.guide.title|title}} Index</a>
+		<a href="{{card.guide.get_absolute_url}}">Back to {{card.guide.title|title}} Index</a>
 {%endblock%}
 
 {% block content %} 
 
 
-<div id="slide_wrap" class="box">
-	<div class="slide" data-id="{{slide.slug}}">
+<div id="card_wrap" class="box">
+	<div class="card" data-id="{{card.slug}}">
 
-			{%if slide.title%}
-			<h1>{{slide.title}}</h1>
+			{%if card.title%}
+			<h1>{{card.title}}</h1>
 			{%endif%}
 			
-			{%if slide.text and slide.text_on_top%}
-			<div class="slide_text">
-				{{slide.text}}
+			{%if card.text and card.text_on_top%}
+			<div class="card_text">
+				{{card.text}}
 			</div>
 			{%endif%}
 			
-			<div class="slide_media">
+			<div class="card_media">
 				{%for el in static_elements%}
 					<img src="{{el.file.url}}" class="big_image">
 				{%endfor%}
 			</div>
 			
-			{%if slide.text and not slide.text_on_top%}
-			<div class="slide_text">
-				{{slide.text}}
+			{%if card.text and not card.text_on_top%}
+			<div class="card_text">
+				{{card.text}}
 			</div>
 			{%endif%}
 				
-			<div class="slide_interactive_elements">	
+			<div class="card_interactive_elements">	
 				{%for el in interactive_elements%}
 					<div class="interactive_element">
 						{%include el.el_template%}
@@ -40,8 +40,8 @@
 				{%endfor%}
 			</div>
 			
-			</div> {# end .slide #}
-</div> {# end #slide_wrap #}
+			</div> {# end .card #}
+</div> {# end #card_wrap #}
 
 
 

@@ -20,7 +20,7 @@
 		
 		<script type="text/javascript">
 			var current_url ="{{request.path}}";
-			var current_slide_id ="{{s.id}}";
+			var current_card_id ="{{s.id}}";
 		</script>
 		
 		
@@ -36,7 +36,7 @@
 	
 	
 <div id="container">
-	<header id="header">{%block header%}Hey {{current_user}}{%endblock%}</header>
+	<header id="header">{%block header%}Hey {{current_user}} !{%endblock%}</header>
 
 	<div id="content">
 		{% if messages %}<div id="messages">{%for message in messages%}<p{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>{% endfor %}</div>{%endif%}

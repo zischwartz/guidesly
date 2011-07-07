@@ -29,9 +29,9 @@
 	</head>
 
 <body>
-	<div id="topbar">{%block topbar%}{%endblock%}</div>
+	<header id="header">{%block header%}Hey {{current_user}} !{%endblock%}</header>
 
-	<div id="wrap" class="view">
+	<div id="wrap">
 		
 	{% if messages %}
 		<div id="messages">{% for message in messages %}

@@ -9,9 +9,9 @@
 <h1>{{guide.title}}</h1>
 <p>{{guide.description}}</p>
 <br>
-{%for slide in slide_list%}
-	<li><a href="{{slide.get_absolute_url}}">{{slide}}</a>  
-		<a href="{% url EditSlide gslug=slide.guide.slug, slug=slide.slug %}"> EDIT</a>
+{%for card in card_list%}
+	<li><a href="{{card.get_absolute_url}}">{{card}}</a>  
+		<a href="{% url EditCard gslug=card.guide.slug, slug=card.slug %}"> EDIT</a>
 </li>
 {%endfor%}
 

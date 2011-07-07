@@ -19,13 +19,13 @@ class InteractiveElementInline (admin.TabularInline):
 	extra=1
 
 
-class SlideAdmin(admin.ModelAdmin):
+class CardAdmin(admin.ModelAdmin):
 	prepopulated_fields = {"slug": ("title",)}
 	inlines = [StaticElementInline, InteractiveElementInline, MultipleChoiceInquiryInline]
 
 
 admin.site.register(Guide, GuideAdmin)
-admin.site.register(Slide, SlideAdmin)
+admin.site.register(Card, CardAdmin)
 admin.site.register(StaticElement)
 # admin.site.register(ImageElement)
 admin.site.register(InteractiveElement)

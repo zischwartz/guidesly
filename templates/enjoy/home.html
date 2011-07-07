@@ -1,18 +1,18 @@
 {%extends "base-enjoy.html"%} 
 
 {% block content %} 
+	<div id="home_wrap">
+			{%for guide in guide_list%}
+			<li>	<a href="{{guide.get_absolute_url}}">{{guide}}</a></li>
 
-	{%for guide in guide_list%}
-	<li>	<a href="{{guide.get_absolute_url}}">{{guide}}</a></li>
+			{%endfor%}
 
-	{%endfor%}
-
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<a href="/create">Create a new guide</a>
-
+		<br>
+		<br>
+		<br>
+		<br>
+		<br>
+		<br>
+		<a href="/create">Create a new guide</a>
+	</div>
 {% endblock %}

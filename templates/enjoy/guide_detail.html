@@ -10,8 +10,8 @@
 		<p>{{guide.description}}</p>
 
 		<br>
-		{%for slide in slide_list%}
-			<li><a href="{{slide.get_absolute_url}}">{{slide}}</a> </li>
+		{%for card in card_list%}
+			<li><a href="{{card.get_absolute_url}}">{{card}}</a> </li>
 		{%endfor%}
 	</div> {#  end info_box #}
 {% endblock %}

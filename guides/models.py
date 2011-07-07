@@ -5,6 +5,7 @@ from tagging.fields import TagField
 from django.contrib.auth.models import User
 from model_utils.managers import InheritanceManager
 from django.template.defaultfilters import slugify
+import jsonfield 
 
 from fileupload.models import UserFile
 # from learny.photologue.models import Photo
@@ -32,23 +33,26 @@ SVALUEINQUIRY_TYPE = (
 	('L', 'Location'),
 	('A', 'Accelerometer'),
 	('T', 'Time'),
+	('D', 'Date'),
 )
 
 
 
 class Guide (models.Model):
-	title = models.CharField(max_length=250)
+	title = models.CharField(max_length=500)
 	slug = models.SlugField(unique=True, blank=True, max_length=250) #blank=true is silly but neccesary 
 	description = models.TextField(blank=True)
 	created = models.DateTimeField(auto_now_add=True)
 	modified = models.DateTimeField(auto_now=True)
 	is_linear = models.BooleanField(default=False) #if true, we should auto add next and back buttons
 	enable_comments = models.BooleanField(default=True)
-	text_slugs_for_slides = models.BooleanField(default=False)
-	number_of_slides = models.IntegerField(default=1)
+	text_slugs_for_cards = models.BooleanField(default=True)
+	number_of_cards = models.IntegerField(default=1)
 	tags = TagField()
-	has_title_slide = models.BooleanField(default=False)
-	
+	has_title_card = models.BooleanField(default=False)
+	cards = models.ManyToManyField('Card', blank=True, null=True, related_name="cards_in_guide")
+	card_order =jsonfield.JSONField(blank=True, null=True)
+
 	def save(self, *args, **kwargs):
 		self.slug= slugify(self.title)
 		super(Guide, self).save(*args, **kwargs)
@@ -63,23 +67,17 @@ class Guide (models.Model):
 	def get_absolute_url(self):
 		return ('GuideDetailView', (), {'slug': self.slug })
 
-class Slide (models.Model):
-	title = models.CharField(max_length=250, blank=True)
+class Card (models.Model):
+	title = models.CharField(max_length=500, blank=True, null=True)
+	created = models.DateTimeField(auto_now_add=True)
+	modified = models.DateTimeField(auto_now=True)
 	slug = models.SlugField(blank=True)
 	text = models.TextField(blank=True, null=True)
-	guide= models.ForeignKey(Guide, null=True)
-	slide_number = models.IntegerField(blank=True, null=True)
-	is_alt_slide = models.BooleanField(default=False) #delete this? just having numbers seems to be simpler
+	guide= models.ForeignKey(Guide, null=True) #we'll use this as the default guide..., otherwise theres no absolute url
 	brand_new = models.BooleanField(default=True)
-	#add date created!
-	# add show more text bool, slide down
-	# add prompt/question. sort of a heading for all the interactive elements on a slide
-	# add text_on_top bool
-	# add template object (and style objects)
-	
-	default_next_slide = models.ForeignKey('self', related_name='+', blank=True, null=True) # the + says don't do a backwards relationship
-	default_prev_slide = models.ForeignKey('self', related_name='+', blank=True, null=True)
-	# objects = InheritanceManager()
+	lots_of_text = models.BooleanField(default=False)
+	tags = TagField()
+
 	
 	def __unicode__(self):
 		if self.title !='':
@@ -88,37 +86,30 @@ class Slide (models.Model):
 			return str(self.id)
 
 	def save(self, *args, **kwargs):
-		if not self.slide_number:
-			n= self.guide.number_of_slides
-			self.slide_number= n
-			self.slug = n
-			self.guide.number_of_slides = n+1
-			self.guide.save()
-		super(Slide, self).save(*args, **kwargs)
+		self.slug=slugify(self.title)
+		super(Card, self).save(*args, **kwargs)
 
 
 	class Meta:
-		ordering = ['slide_number']
+		ordering = ['-created']
 	
 	@models.permalink
 	def get_absolute_url(self):
-		return ('SlideDetailView', (), {'gslug': self.guide.slug, 'slug':self.slug })
+		return ('CardDetailView', (), {'gslug': self.guide.slug, 'slug':self.slug })
 
 
 class StaticElement (models.Model):
 	title = models.CharField(max_length=250, blank=True, null=True)
-	slide = models.ForeignKey(Slide)
-	created = models.DateTimeField(auto_now_add=True,  blank=True, null=True)
-	display_title = models.BooleanField(default=False) #if two slides have the same number, they're alt slides, meaning they're at the same level. sort of syntactic sugar...
+	card = models.ForeignKey(Card)
+	created = models.DateTimeField(auto_now_add=True, blank=True, null=True)
 	type = models.CharField(blank=True, max_length=5, choices = SELEMENT_TYPE)
 	is_primary = models.BooleanField(default=True)
-	objects = InheritanceManager()
-	# file = models.FileField(upload_to='media/%Y', blank=True) #the path obvs needs to include guide and slide
 	is_background = models.BooleanField(default=False)
 	autoplay = models.BooleanField(default=False)
 	length_seconds = models.IntegerField(blank=True, null=True)
 	length_minutes = models.IntegerField(blank=True, null=True)
 	file = models.ForeignKey(UserFile)
+	external_file = models.URLField(blank=True) #,verify_exists=True)
 
 	@property
 	def file_url(self):
@@ -126,7 +117,7 @@ class StaticElement (models.Model):
 	
 
 class Action (models.Model):
-	goto = models.ForeignKey(Slide, blank=True, null=True)
+	goto = models.ForeignKey(Card, blank=True, null=True)
 	save_choice = models.BooleanField(default=False)
 	play_static = models.ForeignKey(StaticElement, blank=True, null=True)
 	def __unicode__(self):
@@ -147,20 +138,19 @@ class ConditionalAction (models.Model):
 	condition = models.CharField(max_length=2, choices = COND_TYPE, blank=True, null=True)
 	text__match_answer = models.CharField(max_length=512, blank=True, null=True)
 	b_number = models.FloatField( blank=True, null=True)
-	goto = models.ForeignKey(Slide, blank=True, null=True)
+	goto_on_true = models.ForeignKey(Card, blank=True, null=True, related_name="goto_on_true")
+	goto_on_false = models.ForeignKey(Card, blank=True, null=True, related_name="goto_on_false")
 	save_choice = models.BooleanField(default=False)
 	play_static = models.ForeignKey(StaticElement, blank=True, null=True)
 
 
 #this base class is used for just a simple button, and is extended for the other types
 class InteractiveElement (models.Model):
-	slide = models.ForeignKey(Slide)
+	card = models.ForeignKey(Card)
 	button_text = models.CharField(max_length=100)
 	required = models.BooleanField(default=False)
 	type = models.CharField(blank=True,  max_length=1, choices = IELEMENT_TYPE)
 	default_action = models.ForeignKey(Action, blank=True, null=True)
-	text = models.TextField(blank=True, null=True)
-	objects = InheritanceManager()
 		
 	def el_template(self):
 		return 'els/button.html'
@@ -191,12 +181,6 @@ class MultipleChoice (models.Model):
 	def __unicode__(self):
 		return self.choice
 
-class YNInquiry (InteractiveElement):
-	yes_action = models.ForeignKey(Action, blank=True, null=True, related_name='yn_inquiry_yes')
-	no_action = models.ForeignKey(Action, blank=True, null=True, related_name='yn_inquiry_no')
-	
-	def el_template(self):
-		return 'els/yn.html'
 
 #numerical
 class NValueInquiry (InteractiveElement):
@@ -230,6 +214,6 @@ class Timer (InteractiveElement):
 
 # USER PERMISSION PER OBJECT INSTANCE
 
-from object_permissions import register
+# from object_permissions import register
 
 # register(['permission'], Guide)

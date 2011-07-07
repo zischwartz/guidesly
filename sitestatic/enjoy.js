@@ -1,27 +1,27 @@
 
 /////////////////////////////////////////////////////////////////////////////
-///  Slide transition code  /////////////////////////////////////////////////
+///  Card transition code  /////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////
 
-var _jqSlideFrameId = "DIV.slide";
+var _jqCardFrameId = "DIV.card";
 
 $(function() {
     if (typeof history.pushState === 'undefined') {
         alert("Warning -- your browser doesn't support HTML 5");
     } else {
         // jQuery binding to replace the click() event on
-        // a link inside the slide frame.
-        $(_jqSlideFrameId+" A").live('click', function(event) {
+        // a link inside the card frame.
+        $(_jqCardFrameId+" A").live('click', function(event) {
             event.preventDefault();
 
             var url = this.href;
             history.pushState({path: url}, '', url);
-            slideToUrl(url, true);
+            cardToUrl(url, true);
         });
     }
 });
 
-// The purpose of this function is to do a slide
+// The purpose of this function is to do a card
 // transition between the div that's currently in
 // the DOM and the jqNewDiv argument (which is a
 // jQuery wrapper for the new div object,
@@ -31,30 +31,30 @@ $(function() {
 // is a forward transition (i.e. when a user clicks
 // on a link) or a backward transition (i.e. when
 // the user clicks the back button in the browser)
-function slideTo(jqNewDiv, goForward) {
-    var parent = $(_jqSlideFrameId).parent();
+function cardTo(jqNewDiv, goForward) {
+    var parent = $(_jqCardFrameId).parent();
     var callback = function() {
         parent.empty();
         parent.append(jqNewDiv);
-        var newNode = parent.find(_jqSlideFrameId);
+        var newNode = parent.find(_jqCardFrameId);
         newNode.hide();
         newNode.fadeIn(300);
     };
 
 //    if (goForward) {
-//        $(_jqSlideFrame).animate({ left: +1000 }, 1000, 'linear', callback);
+//        $(_jqCardFrame).animate({ left: +1000 }, 1000, 'linear', callback);
 //    } else {
-//        $(_jqSlideFrame).animate({ left: -1000 }, 1000, 'linear', callback);
+//        $(_jqCardFrame).animate({ left: -1000 }, 1000, 'linear', callback);
 //    }
-    $(_jqSlideFrameId).fadeOut(300, callback);
+    $(_jqCardFrameId).fadeOut(300, callback);
 }
 
-// like slideTo(), but with a url argument instead
+// like cardTo(), but with a url argument instead
 // of the already-fetched HTML.
-function slideToUrl(url, goForward) {
+function cardToUrl(url, goForward) {
     var callback = function(data) {
-        var jqSlideFrame = $(data).find(_jqSlideFrameId);
-        slideTo(jqSlideFrame, goForward);
+        var jqCardFrame = $(data).find(_jqCardFrameId);
+        cardTo(jqCardFrame, goForward);
     };
     $.get(url, null, callback, "html");
 }
@@ -68,11 +68,11 @@ var currentLocation = null;
 // in Chrome, when the page is first displayed.
 $(window).bind('popstate', function(event) {
     if (currentLocation != null) {
-        slideToUrl(location.pathname, false);
+        cardToUrl(location.pathname, false);
     }
     currentLocation = location.pathname;
 });
 
 /////////////////////////////////////////////////////////////////////////////
-///  End slide transition code  /////////////////////////////////////////////
+///  End card transition code  /////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////

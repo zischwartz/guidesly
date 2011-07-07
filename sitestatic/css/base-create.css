@@ -138,7 +138,7 @@ h2 {font-size:1.5em; font-weight: bold; padding: 3px 0 5px 0;}
 /* SLIDE BEING EDITED */
 /**********************************************************************************/
 
-#slide_being_edited
+#card_being_edited
 {
 	width:90%;
 	min-height: 36em;
@@ -150,7 +150,7 @@ h2 {font-size:1.5em; font-weight: bold; padding: 3px 0 5px 0;}
 	
 }
 
-input.slide_title
+input.card_title
 {
 	margin: 0 auto 1em auto;
 	clear: both;
@@ -166,12 +166,12 @@ input.slide_title
 		/* SIDE BAR */
 /**********************************************************************************/
 
-#slide_element_toolbar
+#card_element_toolbar
 {
 	
 }
 
-#slide_element_toolbar h3
+#card_element_toolbar h3
 {
 	background-color: #eee;
 	margin-top: .5em	;

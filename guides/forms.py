@@ -9,19 +9,19 @@ class GuideForm(ModelForm):
 		model=Guide
 		widgets = {
 			'slug': HiddenInput,
-			'number_of_slides': HiddenInput,
+			'number_of_cards': HiddenInput,
 			}	
 
 				
-class SlideForm(ModelForm):
+class CardForm(ModelForm):
 	class Meta:
-		model=Slide
+		model=Card
 
 class StaticElementForm(ModelForm):
 	class Meta:
 		model=StaticElement
 		widgets = {
-			'slide': HiddenInput,
+			'card': HiddenInput,
 			'type': HiddenInput,
 			'file': HiddenInput,
 			'title': TextInput(attrs={'placeholder': 'Title (optional)'})
@@ -44,7 +44,7 @@ class StaticElementForm(ModelForm):
 # 	class Meta:
 # 		model=ImageElement
 # 		widgets = {
-# 			'slide': HiddenInput,
+# 			'card': HiddenInput,
 # 			'type': HiddenInput,
 # 			'file': HiddenInput,
 # 			'display_title': HiddenInput,
@@ -55,7 +55,7 @@ class StaticElementForm(ModelForm):
 # 	class Meta:
 # 		model=AudioElement
 # 		widgets = {
-# 			'slide': HiddenInput,
+# 			'card': HiddenInput,
 # 			'type': HiddenInput,
 # 			}
 # 
@@ -64,7 +64,7 @@ class StaticElementForm(ModelForm):
 # 	class Meta:
 # 		model=VideoElement
 # 		widgets = {
-# 			'slide': HiddenInput,
+# 			'card': HiddenInput,
 # 			'type': HiddenInput,
 # 			}
 
@@ -75,7 +75,7 @@ class InteractiveElementForm(ModelForm):
 	class Meta:
 		model=InteractiveElement
 		widgets = {
-			'slide': HiddenInput,
+			'card': HiddenInput,
 			'type': HiddenInput,
 			}
 

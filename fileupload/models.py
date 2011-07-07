@@ -19,10 +19,9 @@ class UserFile(models.Model):
 
 	file = models.FileField(upload_to='media/')
 	slug = models.SlugField(max_length=150, blank=True)
-	created = models.DateTimeField(auto_now_add=True)
+	created = models.DateTimeField(auto_now_add=True, blank=True, null=True)
 	owner = models.ForeignKey(User, blank=True, null=True)
 	type = models.CharField(blank=True, max_length=5, choices = SELEMENT_TYPE)
-
 
 	class Meta:
 		ordering = ['-created']
@@ -38,9 +37,7 @@ class UserFile(models.Model):
 		return (settings.MEDIA_URL +'media/'+ self.slug)
 		# return ('upload-new', )
 
-	def save(self, *args, **kwargs):
-		# self.slug = slugify(self.file.name) #this takes out the period...
-		# self.owner=			
+	def save(self, *args, **kwargs):		
 		self.slug = self.file.name
 		super(UserFile, self).save(*args, **kwargs)
 

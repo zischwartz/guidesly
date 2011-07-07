@@ -11,10 +11,11 @@ class Migration(SchemaMigration):
         # Adding model 'UserFile'
         db.create_table('fileupload_userfile', (
             ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('file', self.gf('django.db.models.fields.files.FileField')(max_length=100, blank=True)),
+            ('file', self.gf('django.db.models.fields.files.FileField')(max_length=100)),
             ('slug', self.gf('django.db.models.fields.SlugField')(db_index=True, max_length=150, blank=True)),
             ('created', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, blank=True)),
-            ('owner', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['auth.User'])),
+            ('owner', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['auth.User'], null=True, blank=True)),
+            ('type', self.gf('django.db.models.fields.CharField')(max_length=5, blank=True)),
         ))
         db.send_create_signal('fileupload', ['UserFile'])
 
@@ -63,12 +64,13 @@ class Migration(SchemaMigration):
             'name': ('django.db.models.fields.CharField', [], {'max_length': '100'})
         },
         'fileupload.userfile': {
-            'Meta': {'object_name': 'UserFile'},
+            'Meta': {'ordering': "['-created']", 'object_name': 'UserFile'},
             'created': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
-            'file': ('django.db.models.fields.files.FileField', [], {'max_length': '100', 'blank': 'True'}),
+            'file': ('django.db.models.fields.files.FileField', [], {'max_length': '100'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'owner': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['auth.User']"}),
-            'slug': ('django.db.models.fields.SlugField', [], {'db_index': 'True', 'max_length': '150', 'blank': 'True'})
+            'owner': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['auth.User']", 'null': 'True', 'blank': 'True'}),
+            'slug': ('django.db.models.fields.SlugField', [], {'db_index': 'True', 'max_length': '150', 'blank': 'True'}),
+            'type': ('django.db.models.fields.CharField', [], {'max_length': '5', 'blank': 'True'})
         }
     }
 

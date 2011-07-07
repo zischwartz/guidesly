@@ -1,9 +1,9 @@
-var slide_api_url='/api/v1/slide/';
+var card_api_url='/api/v1/card/';
 var staticel_api_url='/api/v1/staticelement/';
 
 var file_api_url='/api/v1/userfile/';
 
-// alert(current_slide_id);
+// alert(current_card_id);
 
 // this should be better...
 
@@ -12,7 +12,7 @@ var file_api_url='/api/v1/userfile/';
 // alert( obj.name === "John" );
 
 // add specific keys to mapping ko
-// var slideMapping = {
+// var cardMapping = {
 // 	'children': {
 // 		key: function(data) {
 // 			return ko.utils.unwrapObservable(data.id);
@@ -33,33 +33,33 @@ var file_api_url='/api/v1/userfile/';
 
 
 
-var slideViewModel;
+var cardViewModel;
 
 
 // DOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOCREADDDDDDDDDDDDDDDDDDDYYYYYYYYYYYYYYYY
 $(document).ready(function(){
 
-	slideViewModel = ko.mapping.fromJS(initial_slide_json);
+	cardViewModel = ko.mapping.fromJS(initial_card_json);
 
-	slideViewModel.save =  function(formElelement){
-					var jsonData = ko.toJSON(slideViewModel);
+	cardViewModel.save =  function(formElelement){
+					var jsonData = ko.toJSON(cardViewModel);
 					$.ajax({
-						url: slide_api_url+ current_slide_id + "/",
+						url: card_api_url+ current_card_id + "/",
 						type: "PUT",
 						data:jsonData,
 						success:function(data) { console.log(data); },
 						contentType: "application/json",
 						})};
 
-	// ko.applyBindings(slideViewModel);
-	// ko.applyBindings(slideViewModel, document.getElementById("#content"));
+	// ko.applyBindings(cardViewModel);
+	// ko.applyBindings(cardViewModel, document.getElementById("#content"));
 	
-	// alert(slideViewModel.staticelements().length);
+	// alert(cardViewModel.staticelements().length);
 
 // Make the sidbar pretty, animated, acordian
 // 
 var icons = {header: "ui-icon-circle-arrow-e", headerSelected: "ui-icon-circle-arrow-s"};
-$("#slide_element_toolbar").accordion({
+$("#card_element_toolbar").accordion({
 	// header: '.top_button',
 	autoHeight: false,
 	collapsible: true,
@@ -68,14 +68,14 @@ $("#slide_element_toolbar").accordion({
 });
 
 
-slideViewModel.media_files = ko.observableArray();
+cardViewModel.media_files = ko.observableArray();
 
 
 itemToAdd= new Object();
-slideViewModel.add2slide = function() {
+cardViewModel.add2card = function() {
 	// console.log("executed?");
-	itemToAdd.file=this;
-	itemToAdd.slide= slideViewModel.resource_uri();
+	itemToAdd.file=this.resource_uri;
+	itemToAdd.card= cardViewModel.resource_uri();
 	var jsonData = ko.toJSON(itemToAdd);
 	$.ajax({
 		url: staticel_api_url,
@@ -84,8 +84,9 @@ slideViewModel.add2slide = function() {
 		success:function(data) { console.log(data); },
 		contentType: "application/json",
 	});
-	slideViewModel.media_files.remove(this);
-	slideViewModel.staticelements.push(itemToAdd);
+	cardViewModel.media_files.remove(this);
+	itemToAdd.file=this;
+	cardViewModel.staticelements.push(itemToAdd);
 
 	// console.log(jsonData);
 
@@ -96,12 +97,12 @@ slideViewModel.add2slide = function() {
 	
 	
 	// TODO, this requires processing to convert from userfile to staticelement. maybe make their models more similar? or not.
-	// or maybe it should just add to the slide, first, and then reload the slide...
-	// slideViewModel.staticelements.push(added);
+	// or maybe it should just add to the card, first, and then reload the card...
+	// cardViewModel.staticelements.push(added);
 	// console.log(this);
 	// construct this:
 // http://127.0.0.1:8000/api/v1/staticelement/2/?format=json
-// {"autoplay": false, "display_title": false, "file": {"file": "/media/media/zbed.png", "id": "2", "slug": "zbed.png", "type": "image"}, "id": "2", "is_background": false, "is_primary": true, "length_minutes": null, "length_seconds": null, "resource_uri": "/api/v1/staticelement/2/", "slide": "/api/v1/slide/2/", "title": "", "type": "I"}
+// {"autoplay": false, "display_title": false, "file": {"file": "/media/media/zbed.png", "id": "2", "slug": "zbed.png", "type": "image"}, "id": "2", "is_background": false, "is_primary": true, "length_minutes": null, "length_seconds": null, "resource_uri": "/api/v1/staticelement/2/", "card": "/api/v1/card/2/", "title": "", "type": "I"}
 	
 
 
@@ -112,19 +113,19 @@ slideViewModel.add2slide = function() {
 $("#add_media_group h4").click(function(){
 	media_type= $(this).data("media_type");
 	$.getJSON(file_api_url + "?type="+media_type, function(data) {
-		// $("#add_media_group h4").slideUp();
-		for (x in  data.objects){slideViewModel.media_files.push(data.objects[x]);}
+		// $("#add_media_group h4").cardUp();
+		for (x in  data.objects){cardViewModel.media_files.push(data.objects[x]);}
 		});	
 });
 
 
 
 
-ko.applyBindings(slideViewModel);
+ko.applyBindings(cardViewModel);
 
 
 
-// ko.applyBindings(slideViewModel);
+// ko.applyBindings(cardViewModel);
 // ko.applyBindings(toolViewModel);
 
 

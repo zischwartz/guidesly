@@ -15,7 +15,7 @@ from guides.views import *
 v1_api = Api(api_name='v1')
 v1_api.register(StaticElementResource())
 v1_api.register(InteractiveElementResource())
-v1_api.register(SlideResource())
+v1_api.register(CardResource())
 v1_api.register(UserFileResource())
 
 
@@ -25,12 +25,12 @@ urlpatterns = patterns('',
     # (r'^$', ListView.as_view(model=Guide)),
     (r'^$', GuideListView),
     url(r'^g/(?P<slug>[^/]+)/?$', GuideDetailView, name='GuideDetailView'),
-    url(r'^g/(?P<gslug>[^/]+)/(?P<slug>[^/]+)/?$', SlideDetailView, name='SlideDetailView'),
+    url(r'^g/(?P<gslug>[^/]+)/(?P<slug>[^/]+)/?$', CardDetailView, name='CardDetailView'),
     
     url(r'create/?$', CreateGuide, name='CreateGuide'),
     url(r'create/(?P<gslug>[^/]+)/?$', EditGuide, name='EditGuide'),
-    url(r'create/(?P<gslug>[^/]+)/add/?$', BuildSlide, name='BuildSlide'),
-    url(r'create/(?P<gslug>[^/]+)/(?P<slug>[^/]+)/?$', EditSlide, name='EditSlide'),
+    url(r'create/(?P<gslug>[^/]+)/add/?$', BuildCard, name='BuildCard'),
+    url(r'create/(?P<gslug>[^/]+)/(?P<id>[^/]+)/?$', EditCard, name='EditCard'),
     url(r'create/(?P<gslug>[^/]+)/(?P<slug>[^/]+)/addstatic$', AddStaticElement, name='AddStaticElement'),
     url(r'create/(?P<gslug>[^/]+)/(?P<slug>[^/]+)/editstatic/(?P<elementid>[^/]+)$', EditStaticElement, name='EditStaticElement'),
     url(r'create/(?P<gslug>[^/]+)/(?P<slug>[^/]+)/addinteractive$', AddInteractiveElement, name='AddInteractiveElement'),
