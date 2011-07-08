@@ -16,8 +16,8 @@
 	Edit Step
 	{%endif%}
 	
-	<a href="{% url CardDetailView gslug=s.guide.slug, slug=s.slug %}"> View Step</a> | <a href="{% url EditGuide gslug=s.guide.slug %}"> View All Steps in <i>{{s.guide.title}}</i> </a>
-
+	<a href="{% url CardDetailViewById id=s.id %}"> View Step</a> | <a href="{% url EditGuide gslug=s.guide.slug %}"> View All Steps in <i>{{s.guide.title}}</i> </a>
+- - - Hey {{user}}
 
 
 {%endblock%}

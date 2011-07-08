@@ -34,7 +34,7 @@ class UserFile(models.Model):
 	# @models.permalink
 	@property
 	def url(self):
-		return (settings.MEDIA_URL +'media/'+ self.slug)
+		return (settings.MEDIA_URL + self.file.name) #removed string /media/ and changed slug to file
 		# return ('upload-new', )
 
 	def save(self, *args, **kwargs):		

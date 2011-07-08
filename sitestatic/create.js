@@ -47,7 +47,7 @@ $(document).ready(function(){
 						url: card_api_url+ current_card_id + "/",
 						type: "PUT",
 						data:jsonData,
-						success:function(data) { console.log(data); },
+						//success:function(data) { console.log(data); },
 						contentType: "application/json",
 						})};
 
@@ -73,8 +73,10 @@ cardViewModel.media_files = ko.observableArray();
 
 itemToAdd= new Object();
 cardViewModel.add2card = function() {
-	// console.log("executed?");
-	itemToAdd.file=this.resource_uri;
+
+	// itemToAdd.file=this.resource_uri; //WOPRKS
+	itemToAdd.file=this;
+	
 	itemToAdd.card= cardViewModel.resource_uri();
 	var jsonData = ko.toJSON(itemToAdd);
 	$.ajax({
@@ -85,10 +87,10 @@ cardViewModel.add2card = function() {
 		contentType: "application/json",
 	});
 	cardViewModel.media_files.remove(this);
-	itemToAdd.file=this;
+	// itemToAdd.file=this;                             //not present
 	cardViewModel.staticelements.push(itemToAdd);
 
-	// console.log(jsonData);
+
 
 };
 

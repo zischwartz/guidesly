@@ -68,25 +68,26 @@ class Guide (models.Model):
 		return ('GuideDetailView', (), {'slug': self.slug })
 
 class Card (models.Model):
-	title = models.CharField(max_length=500, blank=True, null=True)
+	title = models.CharField(max_length=500, blank=True, null=True) #maybe add default=""
 	created = models.DateTimeField(auto_now_add=True)
 	modified = models.DateTimeField(auto_now=True)
 	slug = models.SlugField(blank=True)
 	text = models.TextField(blank=True, null=True)
 	guide= models.ForeignKey(Guide, null=True) #we'll use this as the default guide..., otherwise theres no absolute url
 	brand_new = models.BooleanField(default=True)
-	lots_of_text = models.BooleanField(default=False)
+	has_lots_of_text = models.BooleanField(default=False)
 	tags = TagField()
 
 	
 	def __unicode__(self):
-		if self.title !='':
+		if self.title !=None:
 			return self.title
 		else:
-			return str(self.id)
+			return "Untitled Card # " + str(self.id)
 
 	def save(self, *args, **kwargs):
-		self.slug=slugify(self.title)
+		if self.title:
+			self.slug=slugify(self.title)
 		super(Card, self).save(*args, **kwargs)
 
 
@@ -95,7 +96,10 @@ class Card (models.Model):
 	
 	@models.permalink
 	def get_absolute_url(self):
-		return ('CardDetailView', (), {'gslug': self.guide.slug, 'slug':self.slug })
+		if self.slug:
+			return ('CardDetailView', (), {'gslug': self.guide.slug, 'slug':self.slug })
+		else:
+			return ('CardDetailViewById', (), { 'id':self.id })
 
 
 class StaticElement (models.Model):
@@ -111,9 +115,10 @@ class StaticElement (models.Model):
 	file = models.ForeignKey(UserFile)
 	external_file = models.URLField(blank=True) #,verify_exists=True)
 
-	@property
-	def file_url(self):
-		return self.file.url
+	#deprecate
+	# @property
+	# def file_url(self):
+	# 	return self.file.url
 	
 
 class Action (models.Model):

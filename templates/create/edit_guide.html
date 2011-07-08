@@ -11,7 +11,7 @@
 <br>
 {%for card in card_list%}
 	<li><a href="{{card.get_absolute_url}}">{{card}}</a>  
-		<a href="{% url EditCard gslug=card.guide.slug, slug=card.slug %}"> EDIT</a>
+		<a href="{% url EditCard gslug=card.guide.slug, id=card.id %}"> EDIT</a>
 </li>
 {%endfor%}
 

@@ -13,10 +13,12 @@ from guides.views import *
 
 
 v1_api = Api(api_name='v1')
+
 v1_api.register(StaticElementResource())
 v1_api.register(InteractiveElementResource())
 v1_api.register(CardResource())
 v1_api.register(UserFileResource())
+v1_api.register(UserResource())
 
 
 
@@ -26,6 +28,7 @@ urlpatterns = patterns('',
     (r'^$', GuideListView),
     url(r'^g/(?P<slug>[^/]+)/?$', GuideDetailView, name='GuideDetailView'),
     url(r'^g/(?P<gslug>[^/]+)/(?P<slug>[^/]+)/?$', CardDetailView, name='CardDetailView'),
+    url(r'^c/(?P<id>[^/]+)/?$', CardDetailViewById, name='CardDetailViewById'),
     
     url(r'create/?$', CreateGuide, name='CreateGuide'),
     url(r'create/(?P<gslug>[^/]+)/?$', EditGuide, name='EditGuide'),
