@@ -125,7 +125,7 @@ h2 {font-size:1.5em; font-weight: bold; padding: 3px 0 5px 0;}
 	
 	width: 100%;
 	background-color: gray;
-	padding:5px 5%;
+/*	padding:5px 5%;*/
 
 	top: 0px;
 	left: 0px;
@@ -138,6 +138,11 @@ h2 {font-size:1.5em; font-weight: bold; padding: 3px 0 5px 0;}
 	color: black;
 	text-decoration: none;
 	padding: 0px 10px;
+}
+
+#header span
+{
+	padding: 0 5% ;
 }
 
 #home_wrap

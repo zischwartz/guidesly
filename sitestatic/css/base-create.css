@@ -60,6 +60,7 @@ body
 {
 
 	background-color: #383838;
+	background-color: black;
 
 	font: 16px/1.5em 'Helvetica Neue',helvetica,arial,sans-serif;
 	width: 100%;
@@ -99,39 +100,78 @@ h2 {font-size:1.5em; font-weight: bold; padding: 3px 0 5px 0;}
 #header, #footer 
 {
 /*	height:50px;*/
-	padding:5px 5%;
-	color:#fff;
-	background: #777
+	padding:  .5em 5%;
+	color:black;
+	background: #6d635b;
+	background-color: #fff;
+	overflow: hidden;
+	border-bottom: 1px lightgray solid;
+	
 }
-#header a, #footer a {color: #ddd; text-decoration: none;}
 
+#header span.inner, #footer span.inner
+{
+/*	padding: 0 5%;*/
+}
+
+#header a .ui-button-text{ font-size: .6em !important;}
+
+#header span.right
+{
+	float: right;
+}
+
+.headerTitle
+{
+	margin: -1em 2em 0 0;
+	padding: .8em;
+	padding-top: 1em;
+background-image: -webkit-gradient(
+    linear,
+    left bottom,
+    left top,
+    color-stop(0.37, rgb(232,232,232)),
+    color-stop(0.69, rgb(255,255,255))
+);
+background-image: -moz-linear-gradient(
+    center bottom,
+    rgb(232,232,232) 37%,
+    rgb(255,255,255) 69%
+);
+	color: black;
+
+	float: left;
+	text-align: center;
+	box-shadow: 1px 1px 5px #3f3f3f;
+	letter-spacing: .2em;
+
+}
 
 #content {
 	float:left;
 	width:57%;
-	padding:1em 5% 1em 5%;
+	padding:1em 5% 2em 5%;
 	background-color: #ccc;
-	min-height: 650px;
+	background-color: #f9f9f9;
+
+	min-height: 41em;
 }
 
 #sidebar {
 	float:left;
-	width:23%;
-	padding:1em 5%;
+	width:27%;
+	padding:1em 3% 1em 3%; 
 	background-color: white;
-	min-height: 650px;
+	min-height: 42em;
 }
 
-/*Maybe neccesary later*/
-/*#content .inner {
-	max-width:80%;
-}
-#sidebar .inner {
-	max-width: 90%;
-}*/
+
 
 #footer {
 	clear:both;
+	text-align: center;
+	font-size: .8em;
+	font-style: italic;
 }
 
 /**********************************************************************************/
@@ -146,7 +186,9 @@ h2 {font-size:1.5em; font-weight: bold; padding: 3px 0 5px 0;}
 /*	border: 1px solid white;*/
 /*	overflow: hidden;*/
 	background-color: #eee;
-	box-shadow: 0px 0px 3px black;
+	background-color: white;
+	box-shadow: 0px 0px 5px gray;
+	margin-bottom: 1em;
 	
 }
 
@@ -168,17 +210,85 @@ input.card_title
 
 #card_element_toolbar
 {
-	
+/*	margin-right: -25%;*/
+/*	width: 110%;*/
+	margin-top: -1em;
+
+}
+#card_element_toolbar h3  {margin-top: 1em;}
+
+#card_element_toolbar h3 a
+{
+	font-size: 1.2em;
+ 	text-transform: capitalize ;
 }
 
-#card_element_toolbar h3
+
+#card_element_toolbar h3 img
 {
-	background-color: #eee;
-	margin-top: .5em	;
-	margin-bottom: .5em	;
-	padding: 1em 1em 1em 2em;
-	margin-right: -25%;
-	box-shadow: 0px 0px 3px gray;
-	font-size: 1.2em;
+	
+	width: 1.1em;
+	margin-bottom: -.4em;
+	padding: .2em;
+	border-radius: 2px;
+}
+
+#card_element_toolbar h3 img:hover
+{
+/*	background-color: #d1eeff;*/
+}
+
+
+
+
+#card_element_toolbar .userfiles
+{
+/*	background-color: gray;*/
+	overflow: hidden;
+	margin-top: -1em;
+}
+
+#card_element_toolbar .userfiles .media
+{ 
+	background-color: black;
+	padding: .3em .3em; 
+	float: left;
+	display: block;
+	margin: .2em;
+	color:white;
+	cursor: pointer;
+
+}
+
+#card_element_toolbar .userfiles .media:hover
+{
+	background-color: #ffae00;
+	color:black;
+
+}
+
+
+
+#card_element_toolbar .image_caption
+{
+	font-size: .5em;
+}
+
+
+#card_element_toolbar .userfiles img
+{
+	width: 5em;
+	margin-left: auto;
+	margin-right: auto;
 	display: block;
 }
+
+
+
+/*experiment with jquery ui icons....*/
+/*
+.photoIcon {
+     background-image: url("http://i45.tinypic.com/504bp2.png") !important;
+     left: 10px;
+}
+*/

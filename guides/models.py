@@ -68,7 +68,7 @@ class Guide (models.Model):
 		return ('GuideDetailView', (), {'slug': self.slug })
 
 class Card (models.Model):
-	title = models.CharField(max_length=500, blank=True, null=True) #maybe add default=""
+	title = models.CharField(max_length=500, blank=True, null=True, default="") #maybe add default=""
 	created = models.DateTimeField(auto_now_add=True)
 	modified = models.DateTimeField(auto_now=True)
 	slug = models.SlugField(blank=True)
@@ -77,13 +77,13 @@ class Card (models.Model):
 	brand_new = models.BooleanField(default=True)
 	has_lots_of_text = models.BooleanField(default=False)
 	tags = TagField()
-
+	# card_number = models.IntegerField(blank=True, null=True) #for default guide...
 	
 	def __unicode__(self):
-		if self.title !=None:
+		if self.title !="":
 			return self.title
 		else:
-			return "Untitled Card # " + str(self.id)
+			return "Untitled Card #" + str(self.id)
 
 	def save(self, *args, **kwargs):
 		if self.title:

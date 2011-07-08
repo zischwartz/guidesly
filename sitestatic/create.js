@@ -36,7 +36,7 @@ var file_api_url='/api/v1/userfile/';
 var cardViewModel;
 
 
-// DOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOCREADDDDDDDDDDDDDDDDDDDYYYYYYYYYYYYYYYY
+// DOOOOCCCCCCCCCCCCCCCRRRRRRRRREEEEEEEEEADDDDDDDDDDDDDDDDDDDYYYYYYYYYYYYYYYY
 $(document).ready(function(){
 
 	cardViewModel = ko.mapping.fromJS(initial_card_json);
@@ -56,16 +56,19 @@ $(document).ready(function(){
 	
 	// alert(cardViewModel.staticelements().length);
 
-// Make the sidbar pretty, animated, acordian
-// 
-var icons = {header: "ui-icon-circle-arrow-e", headerSelected: "ui-icon-circle-arrow-s"};
+jQuery.easing.def = "easeOutQuart";
+
+
+// var icons = {header: "ui-icon-circle-arrow-e", headerSelected: "ui-icon-circle-arrow-s"};
+// var icons = {secondary: "photoIcon", headerSelected: "ui-icon-circle-arrow-s"};
 $("#card_element_toolbar").accordion({
-	// header: '.top_button',
 	autoHeight: false,
 	collapsible: true,
-	icons: icons,
-	active: false
+	// icons: icons,
+	active: false,
 });
+
+$(".uibutton").button();
 
 
 cardViewModel.media_files = ko.observableArray();
@@ -90,34 +93,39 @@ cardViewModel.add2card = function() {
 	// itemToAdd.file=this;                             //not present
 	cardViewModel.staticelements.push(itemToAdd);
 
-
-
 };
 
+
 	
 	
-	
-	
-	// TODO, this requires processing to convert from userfile to staticelement. maybe make their models more similar? or not.
-	// or maybe it should just add to the card, first, and then reload the card...
-	// cardViewModel.staticelements.push(added);
-	// console.log(this);
-	// construct this:
-// http://127.0.0.1:8000/api/v1/staticelement/2/?format=json
-// {"autoplay": false, "display_title": false, "file": {"file": "/media/media/zbed.png", "id": "2", "slug": "zbed.png", "type": "image"}, "id": "2", "is_background": false, "is_primary": true, "length_minutes": null, "length_seconds": null, "resource_uri": "/api/v1/staticelement/2/", "card": "/api/v1/card/2/", "title": "", "type": "I"}
 	
 
 
+cardViewModel.media_type= ko.observable("Media");
 
+cardViewModel.changeMediaType= function(event){
+	// alert($(event.currentTarget).data("media_type"));
+	cardViewModel.media_type($(event.currentTarget).data("media_type"));
+	// ko.applyBindings(cardViewModel);
+
+}
+cardViewModel.changeMediaTypeBack= function(event){
+	cardViewModel.media_type("Media")
+	// ko.applyBindings(cardViewModel);
+
+}
 
 
 // pick image, video, audio or other.
-$("#add_media_group h4").click(function(){
-	media_type= $(this).data("media_type");
-	$.getJSON(file_api_url + "?type="+media_type, function(data) {
-		// $("#add_media_group h4").cardUp();
+$("#add_media_group h4, h3 img").click(function(){
+	cardViewModel.media_type= $(this).data("media_type");
+	$.getJSON(file_api_url + "?type="+cardViewModel.media_type, function(data) {
+		$("#add_media_group h4").slideUp();
 		for (x in  data.objects){cardViewModel.media_files.push(data.objects[x]);}
 		});	
+	ko.applyBindings(cardViewModel);
+	
+	// alert(cardViewModel.media_type);
 });
 
 
@@ -128,57 +136,11 @@ ko.applyBindings(cardViewModel);
 
 
 // ko.applyBindings(cardViewModel);
-// ko.applyBindings(toolViewModel);
 
-
-// $("#add_static_group").accordion({
-// 	header: 'h4',
-// 	autoHeight: false,
-// 	collapsible: true,
-// 	icons: icons,
-// 	active: false
-// 	// clearStyle: true,
-// });
-// 
-// 
-// 
-// $("#add_interactive_group").accordion({
-// 	header: 'h4',
-// 	autoHeight: false,
-// 	collapsible: true,
-// 	icons: icons,
-// 	active: false
-// 	// clearStyle: true,
-// });
 
 
 });// end docready
 
 
-
-
-// 
-// 
-// $("#add_static_group").accordion({
-// 	header: 'h4',
-// 	autoHeight: false,
-// 	collapsible: true,
-// 	icons: icons,
-// 	active: false
-// 	// clearStyle: true,
-// }).bind('accordionchangestart', function(event, ui) {
-// 	// alert(ui.newHeader.data('subtype'));
-// 	subtype= ui.newHeader.data('subtype');
-// 	// $("."+subtype+"_chooser").load('/upload/list/'+subtype);
-// });
-// 
-// $("#add_interactive_group").accordion({
-// 	header: 'h4',
-// 	autoHeight: false,
-// 	collapsible: true,
-// 	icons: icons,
-// 	active: false
-// 	// clearStyle: true,
-// });
 
 

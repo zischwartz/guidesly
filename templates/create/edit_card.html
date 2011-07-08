@@ -9,16 +9,12 @@
 {%endblock%}
 
 {%block header%}
-	
-	{%if s.brand_new%}
-	Add Step
-	{%else%}
-	Edit Step
-	{%endif%}
-	
-	<a href="{% url CardDetailViewById id=s.id %}"> View Step</a> | <a href="{% url EditGuide gslug=s.guide.slug %}"> View All Steps in <i>{{s.guide.title}}</i> </a>
-- - - Hey {{user}}
-
+	<div class="headerTitle">
+		{%if s.brand_new%}Add Card
+		{%else%}Edit Card
+		{%endif%}
+	</div>
+	<a href="{% url CardDetailViewById id=s.id %}" class="uibutton"> Preview Card</a> <a href="{% url EditGuide gslug=s.guide.slug %}" class="uibutton"> View All Cards in <i>{{s.guide.title}}</i> </a>
 
 {%endblock%}
 
@@ -29,7 +25,7 @@
 		<div id="card_being_edited" class="{%if s.brand_new%}brand_new{%endif%}">
 		{% csrf_token %}	
 		<h1 class="card_title" data-bind="text:title">{{s.title}}</h1>
-		<input class="card_title" data-bind="value:title, valueUpdate:'afterkeydown'" type="text" name="title" {# value="{{s.title}}"  maxlength="250" placeholder="Card Title" />
+		<input class="card_title" data-bind="value:title, valueUpdate:'afterkeydown'" type="text" name="title" {# value="{{s.title}}"  maxlength="250" placeholder="Card Title (optional)" />
 		
 		<div data-bind="template:{name: 'imageTemplate',  foreach: cardViewModel.staticelements}"> </div>
 
@@ -57,7 +53,8 @@
 		{%endfor%}
 	
 		</div> {# end #card_being_edited #}
-	<input class="button" type="submit" value="Save Card" name ="card_sub_save"/>
+	<input class="uibutton" type="submit" value="Save Card" name ="card_sub_save"/>
+	<input class="uibutton" type="submit" value="Save Card &amp; Add New Card" name ="card_sub_save_and_add"/>
 	{# <input class="button" type="submit" value="Save &amp; Add Another Card" name="card_sub_add" /> #}
 </form> {# end card form #}
 
@@ -71,31 +68,39 @@
 
 <div id="card_element_toolbar">
 
-	<h3 id="add_static">Add Media</h3>
+	<h3 id="add_static"> 
+		<a href="#">Add  <span data-bind="text:media_type">Media</span> 
+			<img src="{{STATIC_URL}}img/image-icon.png" data-media_type="image" class="uibutton" data-bind="event: {mouseover: changeMediaType, mouseout: changeMediaTypeBack}">
+			<img src="{{STATIC_URL}}img/audio-icon.png" data-media_type="audio" class="uibutton" data-bind="event: {mouseover: changeMediaType, mouseout: changeMediaTypeBack}">
+			<img src="{{STATIC_URL}}img/video-icon.png" data-media_type="video" class="uibutton" data-bind="event: {mouseover: changeMediaType, mouseout: changeMediaTypeBack}">
+			<img src="{{STATIC_URL}}img/upload-icon.png" data-media_type="upload" class="uibutton" data-bind="event: {mouseover: changeMediaType, mouseout: changeMediaTypeBack}">
+
+		</a>
+	</h3>
 	<div id="add_media_group">
-		<h4 data-media_type="image">Add Image</h4>
-		<h4 data-media_type="video">Add Video</h4>
-		<h4 data-media_type="audio">Add Audio</h4>
-		<h4 data-media_type="other">Add Other</h4>
+		<h4 class="image uibutton" data-media_type="image">Add Image</h4>
+		<h4 class="video uibutton" data-media_type="video">Add Video</h4>
+		<h4 class="audio uibutton" data-media_type="audio">Add Audio</h4>
+		<h4 class="other uibutton" data-media_type="other">Add Other File</h4>
+		<h4 class="uibutton">Upload Files</h4>
 		<div class="userfiles" data-bind="template:{name: 'mediaTemplate',  foreach: cardViewModel.media_files}"></div>
 	</div>
-	
-	<h3 id="add_static">Add an Input</h3>
-	<div id="add_interactive_group">
+	<h3 id="add_static"><a href="#">Add Input</a></h3>
+	<div id="add_input_group">
 		<h4>Add Button</h4>
 		<h4>Add Timer</h4>
 		<h4>Add Text Question</h4>
 	</div>
 	
-	<h3 id="add_static">Edit Card Element</h3>
-
+	<h3 id="add_static"><a href="#">Edit Card Options</a></h3>
+	<div id="edit_card_options_group"> Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua in volupta</div>
 </div> {# end #card_element_toolbar #}
-      {# <button data-bind='click: makeOlder'>Make older</button> #}
+
 
 
 	{% verbatim %} 		
 		<script id='mediaTemplate' type='text/html'>
-			<br>
+
 			<div data-bind='click: cardViewModel.add2card' class="media"> 
 				<img src="${file}">
 				<div class="image_caption">${slug}</div>

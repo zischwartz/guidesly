@@ -7,6 +7,7 @@
 		<title>Guides.ly</title>
 	
 		{# <link type="text/css" href="{{STATIC_URL}}jui-css/smoothness/jquery-ui-1.8.13.custom.css" rel="stylesheet" />	 #}
+		<link type="text/css" href="{{STATIC_URL}}jui-css/aristo/jquery-ui-1.8.7.custom.css" rel="stylesheet" />	
  		<script type="text/javascript" src="{{STATIC_URL}}js-libs/jquery-1.6.1.min.js"></script>
 		<script type="text/javascript" src="{{STATIC_URL}}js-libs/jquery-ui-1.8.13.custom.min.js"></script>
 		<script type="text/javascript" src="{{STATIC_URL}}js-libs/jquery.tmpl.js"></script>
@@ -15,7 +16,7 @@
 		<script type="text/javascript" src="{{STATIC_URL}}js-libs/jquery.flip.min.js"></script>
 		
 		<link rel="stylesheet" media="all" href="{{STATIC_URL}}css/base-create.css"/>
-		<!-- <link rel="stylesheet" media="all" href="{{STATIC_URL}}create.css"/> -->
+
 		
 		
 		<script type="text/javascript">
@@ -36,7 +37,7 @@
 	
 	
 <div id="container">
-	<header id="header">{%block header%}Hey {{current_user}} !{%endblock%}</header>
+	<header id="header"><span class="inner">{%block header%}{%endblock%} <span class="right">Hey {{user}} !</span></span></header>
 
 	<div id="content">
 		{% if messages %}<div id="messages">{%for message in messages%}<p{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>{% endfor %}</div>{%endif%}
@@ -49,7 +50,7 @@
 	</div>
 	
 	<footer id="footer">
-		<p>Footer</p>
+		<span>Yeah. This is a footer. That's right.</span>
 	</footer>
 	
 </div>	{# end container #}
