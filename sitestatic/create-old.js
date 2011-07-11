@@ -1,3 +1,76 @@
+
+
+// cardViewModel.titleOrPlaceholder= ko.dependentObservable(function() {
+//     if (this.title()!=="")
+// 		{return this.title();}	
+// 	else 
+// 		{return 'Card Title (optional)';}
+// }, cardViewModel);
+
+
+// You're stupid. clone it, then programatically give it the data bind. Because it's just a data- attribute you dumbass. And then bend it.
+
+// Give a form element focus
+// and then detect when the .ue_editor's child loses focus and rever the flip.
+
+//also just use the classes he built in
+
+  // $("input:text:visible:first").focus();
+
+$(".ue").live('click', function(){
+	if ($(this).hasClass("ue_active"))
+		{	
+			$(this).removeClass("ue_active").revertFlip();
+			return false;
+		}
+	//otherwise remove it from an element that already has it.	 And revert it?
+	$('.ue_active').removeClass("ue_active").revertFlip();
+	$(this).addClass("ue_active");
+	$(this).flip({
+		direction:'lr',
+		speed: 150,
+		// dontChangeColor: true,
+		content: $(this).next('.ue_editor'),
+		// onBefore: function(){ $(this).slideUp();}, //.data('bind', '');}
+		onEnd: function(){ $(this).addClass("test");}//.data('bind', "value:title, valueUpdate: 'afterkeydown'"); ko.applyBindings(cardViewModel)}
+		// onEnd: function(){ $(this).find("input:first").addClass("test").data('bind', "value:title, valueUpdate: 'afterkeydown'"); ko.applyBindings(cardViewModel)}
+	});
+	// alert($(this).addClass("test").html());
+// $(this).next('.ue_editor').find("input:text:first").focus();
+
+	// return false;
+})
+
+// $("#card_being_edited").click(function(){
+// 	$('.ue_active').removeClass("ue_active").revertFlip();
+// 	// $(this).addClass("ue_active");
+// })
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // what a waste of time. i should not have spent to much time trying to make this work.
 
 

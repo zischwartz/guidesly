@@ -2,9 +2,11 @@
 
 {%block extrahead%}
 		<script src="{{STATIC_URL}}create.js"></script>
-
+{%load markup%}
 <script type="text/javascript">
 	var initial_card_json= {{card_json|safe}};
+
+		// {#initial_card_json.text= "{{card_text|markdown}}"; #}
 </script>
 {%endblock%}
 
@@ -14,36 +16,35 @@
 		{%else%}Edit Card
 		{%endif%}
 	</div>
-	<a href="{% url CardDetailViewById id=s.id %}" class="uibutton"> Preview Card</a> <a href="{% url EditGuide gslug=s.guide.slug %}" class="uibutton"> View All Cards in <i>{{s.guide.title}}</i> </a>
+	<a href="{% url CardDetailViewById id=s.id %}" class="uibutton"> Preview <i data-bind="text: title() == '' ? 'Card': title()"></i>	</a> <a href="{% url EditGuide gslug=s.guide.slug %}" class="uibutton"> Overview of <i>{{s.guide.title}}</i> </a>
 
 {%endblock%}
 
 {%block content%}
-	{%load verbatim_templatetag%}
+	{%load verbatim_templatetag%} {% load markup %}
 	{# <form action="" method="post" > #}
 	<form action="" method="post" data-bind="submit: save">
 		<div id="card_being_edited" class="{%if s.brand_new%}brand_new{%endif%}">
-		{% csrf_token %}	
-		<h1 class="card_title" data-bind="text:title">{{s.title}}</h1>
-		<input class="card_title" data-bind="value:title, valueUpdate:'afterkeydown'" type="text" name="title" {# value="{{s.title}}"  maxlength="250" placeholder="Card Title (optional)" />
-		
-		<div data-bind="template:{name: 'imageTemplate',  foreach: cardViewModel.staticelements}"> </div>
-
-		<input type="hidden" name="card_number" value="{%firstof s.card_number '' %}" id="id_card_number" />
-		<input type="hidden" name="slug" value="{{s.slug}}" id="id_slug" />
-		<input type="hidden" name="guide" id="id_guide" value="{{s.guide.id}}">
-
-		{% verbatim %} 		
-			<script id='imageTemplate' type='text/html'>
-				<div class="image_wrap">
-					<img src="${file.file}"> 
-					<div class="image_caption">	${title}</div>
+			
+			{# CARD TITLE #}
+			<div class="ue" tabindex="3">
+				<h1 class="front" data-bind="text: title() == '' ? 'Card Title': title, css: { optional: title() =='' }"></h1>
+				<div class="back">
+					<a class="closex">x</a>
+					<label for="title">Card's title: </label><input data-bind="value:title, valueUpdate: 'afterkeydown'" type="text" name="title" id="title" />
 				</div>
-			</script>
-		{%endverbatim%}
+			</div>	 {# end .ue #}
+			
+			{# CALLING CAD MEDIA CLIENTSIDE TEMPLATE #}
+			<div data-bind="template:{name: 'imageTemplate',  foreach: cardViewModel.staticelements}"> </div>
+
 	
-		<textarea placeholder='Card text goes here' class="card_text" name="text" data-bind="value:text">{{s.text}}</textarea>
-	
+		<div class="ue" tabindex="10">
+			<div class="front" data-bind="html: text() == '' ? 'Card text (optional)': marked_text, css: { optional: text() =='' }">{{s.text|markdown}}</div>
+			<div class="back">
+				<textarea class="cardtext" placeholder='Card text goes here' class="card_text" name="text" data-bind="value:text">{{s.text}}</textarea>
+			</div>
+			</div>
 		<br>
 	
 		{%for el in current_interactive_elements%}
@@ -95,6 +96,27 @@
 	<h3 id="add_static"><a href="#">Edit Card Options</a></h3>
 	<div id="edit_card_options_group"> Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua in volupta</div>
 </div> {# end #card_element_toolbar #}
+
+{% verbatim %} 		
+	<script id='imageTemplate' type='text/html'>
+		<div class="ue" tabindex="${id}">
+			<figure class="a_media_wrap front">
+				<img src="${file.file}"> 
+				<div class="media_caption">	${title}</div>
+			</figure>
+			<div class="back">
+				<a class="closex">x</a>
+				<img src="${file.file}" width="50px"> 
+				<label>Image title:</label><input type="text" placeholder="Image Title (optional)"> <br>
+				<a class="uibutton">Make Primary</a>
+				<a class="uibutton">Make Background</a>
+				<a class="uibutton delete">Remove</a>
+
+			</div>
+		</div> 
+	</script>
+{%endverbatim%}
+
 
 
 

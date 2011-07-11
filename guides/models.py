@@ -103,7 +103,7 @@ class Card (models.Model):
 
 
 class StaticElement (models.Model):
-	title = models.CharField(max_length=250, blank=True, null=True)
+	title = models.CharField(max_length=250, blank=True, null=True, default="")
 	card = models.ForeignKey(Card)
 	created = models.DateTimeField(auto_now_add=True, blank=True, null=True)
 	type = models.CharField(blank=True, max_length=5, choices = SELEMENT_TYPE)

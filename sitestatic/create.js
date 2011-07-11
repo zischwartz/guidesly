@@ -21,26 +21,26 @@ var file_api_url='/api/v1/userfile/';
 // }
 
 
-// // add flip
-// 	$(".image_wrap").click(function(){
-// 		$(this).flip({direction:'lr', speed: 150})
-// 	});
 
 // function StaticItem(file)
 // {
 // 	this.file= ko.observable(file);
 // }
 
-
+// jQuery.expr[':'].focus = function(elem) {
+//   return elem === document.activeElement && (elem.type || elem.href);
+// };
 
 var cardViewModel;
+var converter = new Showdown.converter();
+
 
 
 // DOOOOCCCCCCCCCCCCCCCRRRRRRRRREEEEEEEEEADDDDDDDDDDDDDDDDDDDYYYYYYYYYYYYYYYY
 $(document).ready(function(){
 
 	cardViewModel = ko.mapping.fromJS(initial_card_json);
-
+	
 	cardViewModel.save =  function(formElelement){
 					var jsonData = ko.toJSON(cardViewModel);
 					$.ajax({
@@ -68,12 +68,8 @@ $("#card_element_toolbar").accordion({
 	active: false,
 });
 
-$(".uibutton").button();
-
 
 cardViewModel.media_files = ko.observableArray();
-
-
 itemToAdd= new Object();
 cardViewModel.add2card = function() {
 
@@ -95,11 +91,49 @@ cardViewModel.add2card = function() {
 
 };
 
+//  FLIPINg user editable content so they can edit it. ---------------------------------
+// $(".back").hide();
+var flip_focal=0;
 
-	
-	
-	
+function mySideChange(front) {
+    if (front) {
+        $(this).find('.front').show();
+        $(this).find('.back').hide();
+		$(this).removeClass("ue_active");
 
+        
+    } else {
+        $(this).find('.front').hide();
+        $(this).find('.back').show();
+		flip_focal=0;
+		$(this).addClass("ue_active");
+    }
+}
+
+$(".ue").live('focusin', 
+	function(){
+		// console.log($(this));
+		
+		$(this).stop().rotate3Di('flip', 500, {
+			direction: 'clockwise',
+			sideChange: mySideChange,
+			complete: function() {if (flip_focal==0) {$(this).find("input:first").focus(); flip_focal=1;}}
+			}); //end of rotate()
+		console.log('hi');
+		} //end of the live function
+);
+
+$(".ue").live('focusout', function () {
+	$(this).stop().rotate3Di('unflip', 500, {sideChange: mySideChange});
+	console.log('bye');
+	});
+
+
+cardViewModel.marked_text = ko.dependentObservable(function() {
+	if (this.text() =='')
+		return ''
+	return converter.makeHtml(this.text());
+},cardViewModel);
 
 cardViewModel.media_type= ko.observable("Media");
 
@@ -114,6 +148,7 @@ cardViewModel.changeMediaTypeBack= function(event){
 	// ko.applyBindings(cardViewModel);
 
 }
+
 
 
 // pick image, video, audio or other.
@@ -134,10 +169,7 @@ $("#add_media_group h4, h3 img").click(function(){
 ko.applyBindings(cardViewModel);
 
 
-
-// ko.applyBindings(cardViewModel);
-
-
+$(".uibutton").button();
 
 });// end docready
 

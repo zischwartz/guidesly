@@ -18,6 +18,7 @@ time, mark, audio, video {
 	font-size: 100%;
 	font: inherit;
 	vertical-align: baseline;
+	outline: none;
 }
 
 article, aside, details, figcaption, figure, 
@@ -77,7 +78,7 @@ body
 
 
 
-h1 {font-size:2em; font-weight: bold; padding: 4px 0 6px 0;}
+h1 {font-size:3em; font-weight: bold; padding: 4px 0 6px 0;}
 h2 {font-size:1.5em; font-weight: bold; padding: 3px 0 5px 0;}
 
 
@@ -189,18 +190,78 @@ background-image: -moz-linear-gradient(
 	background-color: white;
 	box-shadow: 0px 0px 5px gray;
 	margin-bottom: 1em;
+	text-align: center;
 	
 }
 
-input.card_title
+
+/*----------------- */
+/*        user (author) editable content in #CARD_BEING_EDITED    */
+/*----------------- */
+
+/*/*#card_being_edited MIGHT AS WELL BE IMPLIED*/
+ .ue
 {
-	margin: 0 auto 1em auto;
-	clear: both;
-	font-size: 2.5em;
-	display: block;
-	width: 80%;
+	padding: .5em;
+	border: 2px solid white;
+	text-align: center;
+	margin: 1em auto;
+	display: inline-block;
+	cursor: pointer;
+
 }
 
+ .ue:hover 
+{
+	border:2px dashed orange;
+/*	background-color: #ffe7d1;*/
+	background-image: url('/static/img/stripes-orange.png');
+}
+
+ .ue_active, .ue_active:hover
+{
+	border:3px dashed orange;
+	background-image: url('/static/img/stripes-gray.png');
+
+
+}
+
+.optional
+{
+	color: gray;
+}
+
+/*Images in ue's*/
+/*.ue:hover img {border: 1px solid black;}
+.ue img {border: 1px solid white;}*/
+
+.closex
+{
+	display: block;
+	display: none;
+	position: absolute;
+	top: -.25em;
+	right: 0px;
+	padding: 0 .4em 0 .4em;
+	background-color: gray;
+	color: white;
+	font-size: .7em;
+}
+
+.closex:hover
+{
+	text-decoration: none;
+	background-color: black;
+	color: orange;
+}
+
+/**************************/
+/******specific card elements*/
+textarea.cardtext
+{
+	width: 40em;
+	height: 20em;
+}
 
 
 
@@ -292,3 +353,18 @@ input.card_title
      left: 10px;
 }
 */
+
+
+.test
+{
+	background-color:green;
+	font-size:2em;
+	color:green;
+	border: 1px solid green;
+}
+
+
+.back
+{
+	display: none;
+}

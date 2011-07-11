@@ -9,8 +9,6 @@ from django.views.generic import ListView, DetailView
 from forms import *
 from django.core.urlresolvers import reverse
 
-# from django.forms.models import inlineformset_factory
-
 
 from django.contrib import messages
 from log import getlogger
@@ -103,11 +101,13 @@ def EditCard (request, gslug, id):
 		interactive_element_form= InteractiveElementForm(initial={'card': s})
 		interactive_element_form_dict = {"button": interactive_element_form, "timer":interactive_element_form}
 
+		# s.text=markup.markdown(s.text)
 		ur = CardResource()
 		# cardr = ur.obj_get_detail( id=s.id) #request, was included
 		# cardr = ur.obj_get(id=s.id)
 		ur_bundle = ur.build_bundle(obj=s, request=request)
 		card_json= ur.serialize(None, ur.full_dehydrate(s), 'application/json') #with newer version, full dehyrate ur_bundle
+		# card_text=s.text
 		return render_to_response("create/edit_card.html", locals(), context_instance=RequestContext(request))
 		# return render_to_response("create/edit_card.html", locals(), context_instance=RequestContext(request))
 
