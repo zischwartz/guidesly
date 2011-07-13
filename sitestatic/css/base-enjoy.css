@@ -28,7 +28,8 @@ body {
 	line-height: 1;
 }
 ol, ul {
-	list-style: none;
+/*	list-style: none;*/
+	margin-left: 1em;
 }
 blockquote, q {
 	quotes: none;
@@ -166,6 +167,9 @@ h2 {font-size:1.5em; font-weight: bold; padding: 3px 0 5px 0;}
 /*	margin-left: auto;
 	margin-right: auto;
 	width: 850px;*/
+background-color: white;
+color: black;
+
 }
 
 .card h1
@@ -173,6 +177,7 @@ h2 {font-size:1.5em; font-weight: bold; padding: 3px 0 5px 0;}
 	text-align: center;
 	padding-top: 15px;
 	color: white;
+	color: black;
 	letter-spacing: .2em;
 }
 
@@ -188,8 +193,9 @@ h2 {font-size:1.5em; font-weight: bold; padding: 3px 0 5px 0;}
 	margin-top: 15px;
 	margin-bottom: 15px;
 	color: white;
+	color: black;
 	letter-spacing:0.2em;
-	
+	padding-bottom: 15px;
 }
 
 .big_image

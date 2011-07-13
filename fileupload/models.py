@@ -17,7 +17,7 @@ SELEMENT_TYPE = (
 
 class UserFile(models.Model):
 
-	file = models.FileField(upload_to='media/')
+	file = models.FileField(upload_to='uf/')
 	slug = models.SlugField(max_length=150, blank=True)
 	created = models.DateTimeField(auto_now_add=True, blank=True, null=True)
 	owner = models.ForeignKey(User, blank=True, null=True)
@@ -35,9 +35,10 @@ class UserFile(models.Model):
 	@property
 	def url(self):
 		return (settings.MEDIA_URL + self.file.name) #removed string /media/ and changed slug to file
-		# return ('upload-new', )
+		# return (settings.MEDIA_URL + self.file.name) #removed string /media/ and changed slug to file
 
-	def save(self, *args, **kwargs):		
-		self.slug = self.file.name
-		super(UserFile, self).save(*args, **kwargs)
+
+	# def save(self, *args, **kwargs):		
+	# 	self.slug = name#self.file.name
+	# 	super(UserFile, self).save(*args, **kwargs)
 

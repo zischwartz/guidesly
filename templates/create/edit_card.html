@@ -2,8 +2,7 @@
 
 {%block extrahead%}
 		<script src="{{STATIC_URL}}create.js"></script>
-{%load markup%}
-<script type="text/javascript">
+		<script type="text/javascript">
 	var initial_card_json= {{card_json|safe}};
 
 		// {#initial_card_json.text= "{{card_text|markdown}}"; #}
@@ -16,12 +15,14 @@
 		{%else%}Edit Card
 		{%endif%}
 	</div>
-	<a href="{% url CardDetailViewById id=s.id %}" class="uibutton"> Preview <i data-bind="text: title() == '' ? 'Card': title()"></i>	</a> <a href="{% url EditGuide gslug=s.guide.slug %}" class="uibutton"> Overview of <i>{{s.guide.title}}</i> </a>
+	<a href="{% url CardDetailViewById id=s.id %}" class="uibutton"> Preview <i data-bind="text: title() == '' ? 'Card': title()"></i></a>
+	<a href="{% url EditGuide gslug=s.guide.slug %}" class="uibutton"> Overview of <i>{{s.guide.title}}</i> </a>
+{# <i data-bind="text: title() == '' ? 'Card': title()"></i> #}
 
 {%endblock%}
 
 {%block content%}
-	{%load verbatim_templatetag%} {% load markup %}
+	{%load verbatim_templatetag%} 
 	{# <form action="" method="post" > #}
 	<form action="" method="post" data-bind="submit: save">
 		<div id="card_being_edited" class="{%if s.brand_new%}brand_new{%endif%}">
@@ -35,14 +36,14 @@
 				</div>
 			</div>	 {# end .ue #}
 			
-			{# CALLING CAD MEDIA CLIENTSIDE TEMPLATE #}
-			<div data-bind="template:{name: 'imageTemplate',  foreach: cardViewModel.staticelements}"> </div>
+			{# CALLING  MEDIA CLIENTSIDE TEMPLATE  which is actually way down below, and perhaps should be a separate template file on the server#}
+			<div data-bind="template:{name: 'imageTemplate',  foreach: cardViewModel.staticelements,  afterRender: mediaPostProcessingLogic}"> </div>
 
 	
 		<div class="ue" tabindex="10">
-			<div class="front" data-bind="html: text() == '' ? 'Card text (optional)': marked_text, css: { optional: text() =='' }">{{s.text|markdown}}</div>
+			<div class="front cardtext" data-bind="html: text() == '' ? 'Card text (optional)': marked_text, css: { optional: text() =='' }">{{s.text}}</div>
 			<div class="back">
-				<textarea class="cardtext" placeholder='Card text goes here' class="card_text" name="text" data-bind="value:text">{{s.text}}</textarea>
+				<textarea class="cardtext" class="card_text" name="text" data-bind="value:text">{{s.text}}</textarea>
 			</div>
 			</div>
 		<br>
@@ -69,48 +70,58 @@
 
 <div id="card_element_toolbar">
 
-	<h3 id="add_static"> 
+	<h3 id="add_media"> 
 		<a href="#">Add  <span data-bind="text:media_type">Media</span> 
-			<img src="{{STATIC_URL}}img/image-icon.png" data-media_type="image" class="uibutton" data-bind="event: {mouseover: changeMediaType, mouseout: changeMediaTypeBack}">
-			<img src="{{STATIC_URL}}img/audio-icon.png" data-media_type="audio" class="uibutton" data-bind="event: {mouseover: changeMediaType, mouseout: changeMediaTypeBack}">
-			<img src="{{STATIC_URL}}img/video-icon.png" data-media_type="video" class="uibutton" data-bind="event: {mouseover: changeMediaType, mouseout: changeMediaTypeBack}">
-			<img src="{{STATIC_URL}}img/upload-icon.png" data-media_type="upload" class="uibutton" data-bind="event: {mouseover: changeMediaType, mouseout: changeMediaTypeBack}">
-
+			<div class="iconbuttons">
+				<img src="{{STATIC_URL}}img/image-icon.png" data-media_type="image" class="uibutton" data-bind="event: {mouseover: changeMediaType, mouseout: changeMediaTypeBack}">
+				<img src="{{STATIC_URL}}img/video-icon.png" data-media_type="video" class="uibutton" data-bind="event: {mouseover: changeMediaType, mouseout: changeMediaTypeBack}">
+				<img src="{{STATIC_URL}}img/audio-icon.png" data-media_type="audio" class="uibutton" data-bind="event: {mouseover: changeMediaType, mouseout: changeMediaTypeBack}">
+				<img src="{{STATIC_URL}}img/upload-icon.png" data-media_type="upload" class="uibutton" data-bind="event: {mouseover: changeMediaType, mouseout: changeMediaTypeBack}">
+			</div>
 		</a>
 	</h3>
 	<div id="add_media_group">
-		<h4 class="image uibutton" data-media_type="image">Add Image</h4>
-		<h4 class="video uibutton" data-media_type="video">Add Video</h4>
-		<h4 class="audio uibutton" data-media_type="audio">Add Audio</h4>
-		<h4 class="other uibutton" data-media_type="other">Add Other File</h4>
-		<h4 class="uibutton">Upload Files</h4>
+		{# <h5>From stuff you've already uploaded:</h5> #}
+		<h4 class="image uibutton" data-media_type="image"><img src="{{STATIC_URL}}img/image-icon.png"> Add Image</h4>
+		<h4 class="video uibutton" data-media_type="video"><img src="{{STATIC_URL}}img/video-icon.png"> Add Video</h4>
+		<h4 class="audio uibutton" data-media_type="audio"><img src="{{STATIC_URL}}img/audio-icon.png"> Add Audio</h4>
+		<h4 class="other uibutton" data-media_type="other"> <img src="{{STATIC_URL}}img/document-icon.png"> Add Other File Type</h4>
+ 		<h4 class="uibutton"><img src="{{STATIC_URL}}img/upload-icon.png"> Upload Files Now</h4>
 		<div class="userfiles" data-bind="template:{name: 'mediaTemplate',  foreach: cardViewModel.media_files}"></div>
 	</div>
-	<h3 id="add_static"><a href="#">Add Input</a></h3>
+	<h3 id="add_input"><a href="#">Add <span data-bind="text:input_type">Input</span>
+		<div class="iconbuttons">
+			<img src="{{STATIC_URL}}img/button-icon.png" data-input_type="button" class="uibutton" data-bind="event: {mouseover: changeInputType, mouseout: changeInputTypeBack}">
+			<img src="{{STATIC_URL}}img/timer-icon.png" data-input_type="timer" class="uibutton" data-bind="event: {mouseover: changeInputType, mouseout: changeInputTypeBack}">
+		</div>
+		</a></h3>
 	<div id="add_input_group">
-		<h4>Add Button</h4>
-		<h4>Add Timer</h4>
-		<h4>Add Text Question</h4>
+		<h4 class=" uibutton" data-input_type="button"><img src="{{STATIC_URL}}img/button-icon.png"> Add Button</h4>
+		<h4 class=" uibutton" data-input_type="timer"><img src="{{STATIC_URL}}img/timer-icon.png"> Add Timer</h4>
+		<h4 class=" uibutton" data-input_type="text_question"><img src="{{STATIC_URL}}img/button-icon.png"> Add Text Question</h4>
+
+
 	</div>
 	
 	<h3 id="add_static"><a href="#">Edit Card Options</a></h3>
 	<div id="edit_card_options_group"> Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua in volupta</div>
 </div> {# end #card_element_toolbar #}
 
-{% verbatim %} 		
+{# TODO come up with good number #}
+{% verbatim %} 		 
 	<script id='imageTemplate' type='text/html'>
-		<div class="ue" tabindex="${id}">
+		<div class="ue" data-bind="event: { focusin: cardViewModel.flipEl, focusout: cardViewModel.unflipEl } ,attr: { tabindex: typeof(id)!='undefined' ? id: -1 }"> 
 			<figure class="a_media_wrap front">
 				<img src="${file.file}"> 
-				<div class="media_caption">	${title}</div>
+				<div class="media_title">${title}</div>
 			</figure>
 			<div class="back">
 				<a class="closex">x</a>
 				<img src="${file.file}" width="50px"> 
-				<label>Image title:</label><input type="text" placeholder="Image Title (optional)"> <br>
-				<a class="uibutton">Make Primary</a>
-				<a class="uibutton">Make Background</a>
-				<a class="uibutton delete">Remove</a>
+				<label>Image title:</label><input type="text" data-bind="value:title, valueUpdate: 'change'"> <br>
+				<a class="uibutton" data-bind="text : is_primary() ==true ? 'Currently the primary media for card': 'Make the Primary media', css: {disabled: is_primary() ==true }">e</a><br>
+				<a class="uibutton" data-bind="text : is_background() ==true ? 'Currently the background image for card': 'Make this the background image', css: {'ui-state-disabled': is_background() ==true }">Make Background</a>
+				<a class="uibutton delete" data-bind="click: cardViewModel.deleteFromCard">Remove</a>
 
 			</div>
 		</div> 
@@ -120,16 +131,16 @@
 
 
 
-	{% verbatim %} 		
-		<script id='mediaTemplate' type='text/html'>
+{% verbatim %} 		
+	<script id='mediaTemplate' type='text/html'>
 
-			<div data-bind='click: cardViewModel.add2card' class="media"> 
-				<img src="${file}">
-				<div class="image_caption">${slug}</div>
+		<div data-bind='click: cardViewModel.add2card' class="media"> 
+			<img src="${file}">
+			<div class="image_caption">${slug}</div>
 
-			</div>
-		</script>
-	{%endverbatim%}
+		</div>
+	</script>
+{%endverbatim%}
 	
 	
 {%endblock%}

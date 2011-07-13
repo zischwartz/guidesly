@@ -26,8 +26,9 @@ class UserFileCreateView(CreateView):
 		elif file_type == 'video':
 			self.object.type='video'
 		else:
-			self.objec.type='other'
+			self.object.type='other'
 		
+		self.object.slug=f.name
 		# logger=getlogger()
 		# logger.debug(file_type)	
 		# logger.debug('-----------------------------------------------------------------------------------------------------------------')

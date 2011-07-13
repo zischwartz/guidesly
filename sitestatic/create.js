@@ -3,58 +3,37 @@ var staticel_api_url='/api/v1/staticelement/';
 
 var file_api_url='/api/v1/userfile/';
 
-// alert(current_card_id);
 
-// this should be better...
-
-// console.log('hello world');
-// var obj = jQuery.parseJSON('{"name":"John"}');
-// alert( obj.name === "John" );
-
-// add specific keys to mapping ko
-// var cardMapping = {
-// 	'children': {
-// 		key: function(data) {
-// 			return ko.utils.unwrapObservable(data.id);
-// 		}
-// 	}
-// }
-
-
-
-// function StaticItem(file)
-// {
-// 	this.file= ko.observable(file);
-// }
-
-// jQuery.expr[':'].focus = function(elem) {
-//   return elem === document.activeElement && (elem.type || elem.href);
-// };
 
 var cardViewModel;
 var converter = new Showdown.converter();
 
 
-
 // DOOOOCCCCCCCCCCCCCCCRRRRRRRRREEEEEEEEEADDDDDDDDDDDDDDDDDDDYYYYYYYYYYYYYYYY
-$(document).ready(function(){
+$(document).ready(function(){	
+$(".uibutton").button();
 
-	cardViewModel = ko.mapping.fromJS(initial_card_json);
+var mapping = {
+    'staticelements': {
+        key: function(data) {
+			console.log(data);
+			console.log(data.resource_uri);
+            return ko.utils.unwrapObservable(data.id);
+        }
+    }
+}
+
+	cardViewModel = ko.mapping.fromJS(initial_card_json, mapping);
 	
 	cardViewModel.save =  function(formElelement){
 					var jsonData = ko.toJSON(cardViewModel);
 					$.ajax({
-						url: card_api_url+ current_card_id + "/",
+						url: cardViewModel.resource_uri(),
 						type: "PUT",
 						data:jsonData,
 						//success:function(data) { console.log(data); },
 						contentType: "application/json",
 						})};
-
-	// ko.applyBindings(cardViewModel);
-	// ko.applyBindings(cardViewModel, document.getElementById("#content"));
-	
-	// alert(cardViewModel.staticelements().length);
 
 jQuery.easing.def = "easeOutQuart";
 
@@ -68,33 +47,61 @@ $("#card_element_toolbar").accordion({
 	active: false,
 });
 
-
 cardViewModel.media_files = ko.observableArray();
+
+//Adding a file from your media files to a card
 itemToAdd= new Object();
 cardViewModel.add2card = function() {
-
-	// itemToAdd.file=this.resource_uri; //WOPRKS
 	itemToAdd.file=this;
-	
 	itemToAdd.card= cardViewModel.resource_uri();
+	itemToAdd.is_primary= ko.observable(false);
+	itemToAdd.is_background=ko.observable(false);
+	itemToAdd.title=ko.observable('');
 	var jsonData = ko.toJSON(itemToAdd);
-	$.ajax({
+	var postURL;
+	postURL=$.ajax({
 		url: staticel_api_url,
 		type: "POST",
 		data: jsonData,
+		success:function(data) {
+			console.log('success and'); 
+			console.log(postURL.getResponseHeader('location')); 
+			itemToAdd.title=ko.observable('');
+			itemToAdd.resource_uri=ko.observable(postURL.getResponseHeader('location'));
+
+			cardViewModel.staticelements.push(itemToAdd);
+
+			},
+		// success:function(data) { console.log('success and'); console.log(postURL.getAllResponseHeaders()); },
+		contentType: "application/json",
+	});
+	var itemURL= postURL.getResponseHeader('location');
+	// alert(itemURL);
+	// itemToAdd.title=ko.observable('');
+	// itemToAdd.resource_uri=ko.observable(postURL.getResponseHeader('location'));
+	cardViewModel.media_files.remove(this);
+	// alert(postURL);
+};
+
+
+cardViewModel.deleteFromCard= function()
+{
+	console.log("yess lets delete this:");
+	$.ajax({
+		// url: staticel_api_url + this.id() +'/',
+		url: this.resource_uri(),
+		type: "DELETE",
 		success:function(data) { console.log(data); },
 		contentType: "application/json",
 	});
-	cardViewModel.media_files.remove(this);
-	// itemToAdd.file=this;                             //not present
-	cardViewModel.staticelements.push(itemToAdd);
+	cardViewModel.staticelements.remove(this);
 
 };
+
 
 //  FLIPINg user editable content so they can edit it. ---------------------------------
 // $(".back").hide();
 var flip_focal=0;
-
 function mySideChange(front) {
     if (front) {
         $(this).find('.front').show();
@@ -110,23 +117,44 @@ function mySideChange(front) {
     }
 }
 
-$(".ue").live('focusin', 
-	function(){
-		// console.log($(this));
-		
-		$(this).stop().rotate3Di('flip', 500, {
+// $(".zue").live('focusin', 
+cardViewModel.flipEl=function(event){
+		// console.log($(event.currentTarget));
+		el=event.currentTarget;
+		console.log(el);
+		$(el).stop().rotate3Di('flip', 500, {
 			direction: 'clockwise',
 			sideChange: mySideChange,
-			complete: function() {if (flip_focal==0) {$(this).find("input:first").focus(); flip_focal=1;}}
+			complete: function() {if (flip_focal==0) {$(el).find("input:first").focus(); flip_focal=1;}},
+			easing: 'easeOutBack' //easeInQuint also good
 			}); //end of rotate()
-		console.log('hi');
-		} //end of the live function
-);
 
-$(".ue").live('focusout', function () {
-	$(this).stop().rotate3Di('unflip', 500, {sideChange: mySideChange});
+		} 
+
+
+
+cardViewModel.unflipEl=function(event){
+	el=event.currentTarget;
+	$(el).stop().rotate3Di('unflip', 500, {
+		sideChange: mySideChange,
+		complete: function() 
+			{ 	
+				console.log('DONE');
+				console.log(this);
+				var jsonData = ko.toJSON(this);
+				$.ajax({
+					url: this.resource_uri(),
+					type: "PUT",
+					data:jsonData,
+					success:function(data) { console.log(data); },
+					contentType: "application/json",
+					});				
+			}.bind(this)//end complete (of spin) function
+	});//3d spin
+	// console.log(this);
+
 	console.log('bye');
-	});
+}
 
 
 cardViewModel.marked_text = ko.dependentObservable(function() {
@@ -135,41 +163,53 @@ cardViewModel.marked_text = ko.dependentObservable(function() {
 	return converter.makeHtml(this.text());
 },cardViewModel);
 
+
+
 cardViewModel.media_type= ko.observable("Media");
+cardViewModel.input_type= ko.observable("Input");
 
 cardViewModel.changeMediaType= function(event){
-	// alert($(event.currentTarget).data("media_type"));
 	cardViewModel.media_type($(event.currentTarget).data("media_type"));
-	// ko.applyBindings(cardViewModel);
-
 }
+
+cardViewModel.changeInputType= function(event){
+	cardViewModel.input_type($(event.currentTarget).data("input_type"));
+}
+cardViewModel.changeInputTypeBack= function(event){
+	cardViewModel.input_type("Input")
+}
+
 cardViewModel.changeMediaTypeBack= function(event){
 	cardViewModel.media_type("Media")
-	// ko.applyBindings(cardViewModel);
-
 }
-
 
 
 // pick image, video, audio or other.
-$("#add_media_group h4, h3 img").click(function(){
-	cardViewModel.media_type= $(this).data("media_type");
-	$.getJSON(file_api_url + "?type="+cardViewModel.media_type, function(data) {
+$("#add_media_group h4, #add_media img").click(function(event){
+	// stop it from opening and closing the acordian
+	event.stopPropagation(); 	
+	cardViewModel.media_type($(this).data("media_type"));
+	
+	$.getJSON(file_api_url + "?type="+cardViewModel.media_type(), function(data) {
 		$("#add_media_group h4").slideUp();
 		for (x in  data.objects){cardViewModel.media_files.push(data.objects[x]);}
 		});	
-	ko.applyBindings(cardViewModel);
+	// ko.applyBindings(cardViewModel);
 	
-	// alert(cardViewModel.media_type);
+	// alert(cardViewModel.media_type());
 });
 
 
+cardViewModel.mediaPostProcessingLogic= function(elements){
+	console.log(elements);
+	$(elements).find("a.uibutton").button();
+}
 
 
 ko.applyBindings(cardViewModel);
 
 
-$(".uibutton").button();
+// $(".uibutton").button();
 
 });// end docready
 

@@ -58,20 +58,6 @@ class CardResource(ModelResource):
 		# logger.debug(bundle.data['staticelements'])
 		return bundle
 	
-	# def hydrate_title(self, bundle):
-	# 	import logging
-	# 	logging.info("heyyyyyyyyyyyyyyyyyyyyy")
-	# 	return bundle.obj.title.upper()
-	
-	# def hydrate_title(self, bundle):
-	# 	list_of_statics= []
-	# 	logging.info("heyy")
-	# 	logging.info(bundle.data['title'])
-	# 	return bundle.data['title'].lower()
-		# for se in bundle.data['staticelements']:
-			# list_of_se+=se[0]
-		# bundle.data['staticelements'] = ["/api/v1/staticelement/1/", "/api/v1/staticelement/2"]
-		# return bundle
 
 
 class UserFileResource(ModelResource):
@@ -92,6 +78,15 @@ class StaticElementResource(ModelResource):
 		authorization = Authorization()
 		queryset= StaticElement.objects.all()
 		excludes = ['created']
+
+	# bah this should be so easy- to send back just the id of the new element
+	# def dispatch(self, request_type, request, **kwargs):
+		# return self.id
+		# return super(StaticElementResource, self).dispatch(request_type, request, id=self.id, **kwargs)
+		
+# TODO I want to dispatch on POST the ID of the file created
+		# always_return_data = True
+
 
 class InteractiveElementResource(ModelResource):
 	card= fields.ForeignKey(CardResource, 'card')

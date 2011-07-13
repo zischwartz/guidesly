@@ -6,6 +6,7 @@
 
 {% block content %} 
 
+{%load markup%}
 
 <div id="card_wrap" class="box">
 	<div class="card" data-id="{{card.slug}}">
@@ -28,7 +29,7 @@
 			
 			{%if card.text and not card.text_on_top%}
 			<div class="card_text">
-				{{card.text}}
+				{{card.text|markdown}}
 			</div>
 			{%endif%}
 				

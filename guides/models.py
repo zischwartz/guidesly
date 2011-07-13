@@ -92,7 +92,7 @@ class Card (models.Model):
 
 
 	class Meta:
-		ordering = ['-created']
+		ordering = ['created']
 	
 	@models.permalink
 	def get_absolute_url(self):
