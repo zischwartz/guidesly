@@ -3,9 +3,8 @@
 {%block extrahead%}
 		<script src="{{STATIC_URL}}create.js"></script>
 		<script type="text/javascript">
-	var initial_card_json= {{card_json|safe}};
+		var initial_card_json= '{{card_json|safe|escapejs}}';
 
-		// {#initial_card_json.text= "{{card_text|markdown}}"; #}
 </script>
 {%endblock%}
 
@@ -15,7 +14,7 @@
 		{%else%}Edit Card
 		{%endif%}
 	</div>
-	<a href="{% url CardDetailViewById id=s.id %}" class="uibutton"> Preview <i data-bind="text: title() == '' ? 'Card': title()"></i></a>
+	<a href="{% url CardDetailViewById id=s.id %}" class="uibutton"> Preview <i data-bind="text: title == '' ? 'Card': title"></i></a>
 	<a href="{% url EditGuide gslug=s.guide.slug %}" class="uibutton"> Overview of <i>{{s.guide.title}}</i> </a>
 {# <i data-bind="text: title() == '' ? 'Card': title()"></i> #}
 
@@ -28,8 +27,8 @@
 		<div id="card_being_edited" class="{%if s.brand_new%}brand_new{%endif%}">
 			
 			{# CARD TITLE #}
-			<div class="ue" tabindex="3">
-				<h1 class="front" data-bind="text: title() == '' ? 'Card Title': title, css: { optional: title() =='' }"></h1>
+			<div class="ue" tabindex="3" data-bind="event: { focusin: cardViewModel.flipEl, focusout: cardViewModel.unflipEl}">
+				<h1 class="front" data-bind="text: title == '' ? 'Card Title': title, css: { optional: title =='' }"></h1>
 				<div class="back">
 					<a class="closex">x</a>
 					<label for="title">Card's title: </label><input data-bind="value:title, valueUpdate: 'afterkeydown'" type="text" name="title" id="title" />
@@ -37,11 +36,14 @@
 			</div>	 {# end .ue #}
 			
 			{# CALLING  MEDIA CLIENTSIDE TEMPLATE  which is actually way down below, and perhaps should be a separate template file on the server#}
-			<div data-bind="template:{name: 'imageTemplate',  foreach: cardViewModel.staticelements,  afterRender: mediaPostProcessingLogic}"> </div>
+			<div data-bind="template:{name: 'imageTemplate',  foreach: cardViewModel.staticelements,
+			  				afterRender: mediaPostProcessingLogic,
+			 				beforeRemove: function(elem) { alert('hi'); $(elem).slideUp() },
+							afterAdd: function(elem) {$(elem).hide().slideDown() }}"> </div>
 
 	
-		<div class="ue" tabindex="10">
-			<div class="front cardtext" data-bind="html: text() == '' ? 'Card text (optional)': marked_text, css: { optional: text() =='' }">{{s.text}}</div>
+		<div class="ue" tabindex="10" data-bind="event: { focusin: cardViewModel.flipEl, focusout: cardViewModel.unflipEl }">
+			<div class="front cardtext" data-bind="html: text == '' ? 'Card text (optional)': marked_text, css: { optional: text =='' }">{{s.text}}</div>
 			<div class="back">
 				<textarea class="cardtext" class="card_text" name="text" data-bind="value:text">{{s.text}}</textarea>
 			</div>
@@ -107,10 +109,11 @@
 	<div id="edit_card_options_group"> Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua in volupta</div>
 </div> {# end #card_element_toolbar #}
 
-{# TODO come up with good number #}
+
+{# TODO come up with good number  for tabindex#}
 {% verbatim %} 		 
 	<script id='imageTemplate' type='text/html'>
-		<div class="ue" data-bind="event: { focusin: cardViewModel.flipEl, focusout: cardViewModel.unflipEl } ,attr: { tabindex: typeof(id)!='undefined' ? id: -1 }"> 
+		<div class="ue" data-bind="event: { focusin: cardViewModel.flipEl, focusout: cardViewModel.unflipEl }, attr: { tabindex: typeof(id)!='undefined' ? id: -1 }"> 
 			<figure class="a_media_wrap front">
 				<img src="${file.file}"> 
 				<div class="media_title">${title}</div>
@@ -119,8 +122,8 @@
 				<a class="closex">x</a>
 				<img src="${file.file}" width="50px"> 
 				<label>Image title:</label><input type="text" data-bind="value:title, valueUpdate: 'change'"> <br>
-				<a class="uibutton" data-bind="text : is_primary() ==true ? 'Currently the primary media for card': 'Make the Primary media', css: {disabled: is_primary() ==true }">e</a><br>
-				<a class="uibutton" data-bind="text : is_background() ==true ? 'Currently the background image for card': 'Make this the background image', css: {'ui-state-disabled': is_background() ==true }">Make Background</a>
+				<a class="uibutton" data-bind="text : is_primary ==true ? 'Currently the primary media for card': 'Make the Primary media', css: {disabled: is_primary ==true }">e</a><br>
+				<a class="uibutton" data-bind="text : is_background ==true ? 'Currently the background image for card': 'Make this the background image', css: {'ui-state-disabled': is_background ==true }">Make Background</a>
 				<a class="uibutton delete" data-bind="click: cardViewModel.deleteFromCard">Remove</a>
 
 			</div>

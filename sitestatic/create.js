@@ -1,30 +1,42 @@
 var card_api_url='/api/v1/card/';
 var staticel_api_url='/api/v1/staticelement/';
-
 var file_api_url='/api/v1/userfile/';
-
-
 
 var cardViewModel;
 var converter = new Showdown.converter();
 
+var initial_card_object;
+var mapping;
 
 // DOOOOCCCCCCCCCCCCCCCRRRRRRRRREEEEEEEEEADDDDDDDDDDDDDDDDDDDYYYYYYYYYYYYYYYY
 $(document).ready(function(){	
-$(".uibutton").button();
-
-var mapping = {
-    'staticelements': {
-        key: function(data) {
-			console.log(data);
-			console.log(data.resource_uri);
-            return ko.utils.unwrapObservable(data.id);
-        }
-    }
-}
-
-	cardViewModel = ko.mapping.fromJS(initial_card_json, mapping);
 	
+	$(".uibutton").button();
+
+	mapping = {
+	    'staticelements': {
+	        key: function(data) {
+				// console.log('mapping key:');
+				// console.log(data.resource_uri);
+	            // return fake.resource_uri;
+	            return ko.utils.unwrapObservable(data.resource_uri);
+	        }
+	    }
+	}
+
+
+	// cardViewModel = ko.mapping.fromJSON(initial_card_json, mapping);
+	// console.log(initial_card_json);
+	initial_card_object= jQuery.parseJSON(initial_card_json);
+	cardViewModel = ko.mapping.fromJS(initial_card_object, mapping);
+	// or
+	// cardViewModel = ko.mapping.fromJSON(initial_card_json, mapping);
+	// console.log(initial_card_object);
+
+	// cardViewModel.staticelements.mappedRemove({ resource_uri : '/api/v1/staticelement/4/' });
+	//this line works, so the mapping is infact, working, 
+
+
 	cardViewModel.save =  function(formElelement){
 					var jsonData = ko.toJSON(cardViewModel);
 					$.ajax({
@@ -119,7 +131,7 @@ function mySideChange(front) {
 
 // $(".zue").live('focusin', 
 cardViewModel.flipEl=function(event){
-		// console.log($(event.currentTarget));
+		console.log($(event.currentTarget));
 		el=event.currentTarget;
 		console.log(el);
 		$(el).stop().rotate3Di('flip', 500, {
@@ -141,7 +153,9 @@ cardViewModel.unflipEl=function(event){
 			{ 	
 				console.log('DONE');
 				console.log(this);
+				// ko.mapping.updateFromJS(cardViewModel, this); 
 				var jsonData = ko.toJSON(this);
+				//save the changes on the elemnt to the server
 				$.ajax({
 					url: this.resource_uri(),
 					type: "PUT",
@@ -150,11 +164,13 @@ cardViewModel.unflipEl=function(event){
 					contentType: "application/json",
 					});				
 			}.bind(this)//end complete (of spin) function
-	});//3d spin
+	});//end 3d spin
 	// console.log(this);
 
 	console.log('bye');
 }
+
+// alert('The length of the array is ' + cardViewModel.staticelements().length);
 
 
 cardViewModel.marked_text = ko.dependentObservable(function() {
@@ -163,7 +179,15 @@ cardViewModel.marked_text = ko.dependentObservable(function() {
 	return converter.makeHtml(this.text());
 },cardViewModel);
 
+cardViewModel.mediaPostProcessingLogic= function(elements){
+	// console.log(elements);
+	$(elements).find("a.uibutton").button();
+}
 
+
+//**********************************************
+//******      SIDEBAR CODE              ********
+//**********************************************
 
 cardViewModel.media_type= ko.observable("Media");
 cardViewModel.input_type= ko.observable("Input");
@@ -199,11 +223,6 @@ $("#add_media_group h4, #add_media img").click(function(event){
 	// alert(cardViewModel.media_type());
 });
 
-
-cardViewModel.mediaPostProcessingLogic= function(elements){
-	console.log(elements);
-	$(elements).find("a.uibutton").button();
-}
 
 
 ko.applyBindings(cardViewModel);
