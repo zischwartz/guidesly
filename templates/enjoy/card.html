@@ -23,7 +23,7 @@
 			
 			<div class="card_media">
 				{%for el in static_elements%}
-					<img src="{{el.file}}" class="big_image">
+					<div class="media_el {%if el.is_primary%}is_primary{%else%} is_thumb {%endif%}" style="background-image:url('{{el.file}}');"></div>
 				{%endfor%}
 			</div>
 			

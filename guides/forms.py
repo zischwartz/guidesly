@@ -19,7 +19,7 @@ class CardForm(ModelForm):
 
 class StaticElementForm(ModelForm):
 	class Meta:
-		model=StaticElement
+		model=MediaElement
 		widgets = {
 			'card': HiddenInput,
 			'type': HiddenInput,
@@ -73,7 +73,7 @@ class StaticElementForm(ModelForm):
 # this, at it's base, is a simple button
 class InteractiveElementForm(ModelForm):
 	class Meta:
-		model=InteractiveElement
+		model=InputElement
 		widgets = {
 			'card': HiddenInput,
 			'type': HiddenInput,
@@ -84,9 +84,9 @@ class InteractiveElementForm(ModelForm):
 # logger.debug('-----------------------------------------------------------------------------------------------------------------')
 # logger.debug(ModelForm.__subclasses__())
 
-model_form_dictionary={}
-for x in ModelForm.__subclasses__():
-	model_form_dictionary[x._meta.model]= x
+# model_form_dictionary={}
+# for x in ModelForm.__subclasses__():
+# 	model_form_dictionary[x._meta.model]= x
 
 
 

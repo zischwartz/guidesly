@@ -14,8 +14,9 @@ from guides.views import *
 
 v1_api = Api(api_name='v1')
 
-v1_api.register(StaticElementResource())
-v1_api.register(InteractiveElementResource())
+v1_api.register(MediaElementResource())
+v1_api.register(ActionResource())
+v1_api.register(InputElementResource())
 v1_api.register(CardResource())
 v1_api.register(UserFileResource())
 v1_api.register(UserResource())
@@ -34,10 +35,10 @@ urlpatterns = patterns('',
     url(r'create/(?P<gslug>[^/]+)/?$', EditGuide, name='EditGuide'),
     url(r'create/(?P<gslug>[^/]+)/add/?$', BuildCard, name='BuildCard'),
     url(r'create/(?P<gslug>[^/]+)/(?P<id>[^/]+)/?$', EditCard, name='EditCard'),
-    url(r'create/(?P<gslug>[^/]+)/(?P<slug>[^/]+)/addstatic$', AddStaticElement, name='AddStaticElement'),
-    url(r'create/(?P<gslug>[^/]+)/(?P<slug>[^/]+)/editstatic/(?P<elementid>[^/]+)$', EditStaticElement, name='EditStaticElement'),
-    url(r'create/(?P<gslug>[^/]+)/(?P<slug>[^/]+)/addinteractive$', AddInteractiveElement, name='AddInteractiveElement'),
-    url(r'create/(?P<gslug>[^/]+)/(?P<slug>[^/]+)/editinteractive/(?P<elementid>[^/]+)$', EditInteractiveElement, name='EditInteractiveElement'),
+    # url(r'create/(?P<gslug>[^/]+)/(?P<slug>[^/]+)/addmedia$', AddMediaElement, name='AddMediaElement'),
+    # url(r'create/(?P<gslug>[^/]+)/(?P<slug>[^/]+)/editmedia/(?P<elementid>[^/]+)$', EditMediaElement, name='EditMediaElement'),
+    # url(r'create/(?P<gslug>[^/]+)/(?P<slug>[^/]+)/addinput$', AddInputElement, name='AddInputElement'),
+    # url(r'create/(?P<gslug>[^/]+)/(?P<slug>[^/]+)/editinput/(?P<elementid>[^/]+)$', EditInputElement, name='EditInputElement'),
     url(r'^upload/', include('fileupload.urls')),
     (r'^api/', include(v1_api.urls)),
 

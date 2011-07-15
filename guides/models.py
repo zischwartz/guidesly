@@ -11,6 +11,9 @@ from fileupload.models import UserFile
 # from learny.photologue.models import Photo
 
 
+# from tastypie.resources import ModelResource
+# from api.CardResource import CardResource
+
 # Create your models here.
 IELEMENT_TYPE = (
 	('B', 'Just a Button'),
@@ -101,8 +104,23 @@ class Card (models.Model):
 		else:
 			return ('CardDetailViewById', (), { 'id':self.id })
 
+	@property
+	def rep_media(self):
+		primary =  self.staticelement_set.filter(is_primary=True);
+		if primary:
+			return primary[0]
+		somemedia=self.staticelement_set.all()
+		if somemedia:
+			return somemedia[0]
 
-class StaticElement (models.Model):
+	@property
+	def resource_uri(self):
+		r = CardResource() # cardresource is imported at the end of this file
+		return r.get_resource_uri(self)
+
+
+
+class MediaElement (models.Model):
 	title = models.CharField(max_length=250, blank=True, null=True, default="")
 	card = models.ForeignKey(Card)
 	created = models.DateTimeField(auto_now_add=True, blank=True, null=True)
@@ -124,7 +142,7 @@ class StaticElement (models.Model):
 class Action (models.Model):
 	goto = models.ForeignKey(Card, blank=True, null=True)
 	save_choice = models.BooleanField(default=False)
-	play_static = models.ForeignKey(StaticElement, blank=True, null=True)
+	play_static = models.ForeignKey(MediaElement, blank=True, null=True)
 	def __unicode__(self):
 		return "action-goto: %s" % self.goto
 
@@ -146,15 +164,16 @@ class ConditionalAction (models.Model):
 	goto_on_true = models.ForeignKey(Card, blank=True, null=True, related_name="goto_on_true")
 	goto_on_false = models.ForeignKey(Card, blank=True, null=True, related_name="goto_on_false")
 	save_choice = models.BooleanField(default=False)
-	play_static = models.ForeignKey(StaticElement, blank=True, null=True)
+	play_static = models.ForeignKey(MediaElement, blank=True, null=True)
 
 
-#this base class is used for just a simple button, and is extended for the other types
-class InteractiveElement (models.Model):
+
+class InputElement (models.Model):
 	card = models.ForeignKey(Card)
 	button_text = models.CharField(max_length=100)
 	required = models.BooleanField(default=False)
 	type = models.CharField(blank=True,  max_length=1, choices = IELEMENT_TYPE)
+	default_target = models.ForeignKey(Card, blank=True, null=True, related_name="default_target")
 	default_action = models.ForeignKey(Action, blank=True, null=True)
 		
 	def el_template(self):
@@ -171,7 +190,7 @@ class InteractiveElement (models.Model):
 # ***************         SIGH                ************
 # ********************************************************
 
-class MultipleChoiceInquiry (InteractiveElement):
+class MultipleChoiceInquiry (InputElement):
 	# choices = models.ForeignKey(MultipleChoices, blank=True, null=True) #deleted because we want multiple..duh
 	show_choices = models.BooleanField(default=False)
 	allow_multiple_selections = models.BooleanField(default=False)
@@ -188,7 +207,7 @@ class MultipleChoice (models.Model):
 
 
 #numerical
-class NValueInquiry (InteractiveElement):
+class NValueInquiry (InputElement):
 	min_value = models.FloatField(blank=True, null=True)
 	max_value = models.FloatField(blank=True, null=True)
 	increment_by = models.FloatField(blank=True, null=True)
@@ -197,25 +216,28 @@ class NValueInquiry (InteractiveElement):
 		return 'els/nvalue.html'
 
 #text 
-class TValueInquiry (InteractiveElement):
+class TValueInquiry (InputElement):
 	default_value = models.CharField(max_length=500, blank=True, null=True,)
 
 	def el_template(self):
 		return 'els/tvalue.html'
 
 #sensor
-class SValueInquiry (InteractiveElement):
+class SValueInquiry (InputElement):
 	sensor_type = models.CharField(blank=True,  max_length=1, choices = SVALUEINQUIRY_TYPE)
 	def el_template(self):
 		return 'els/svalue.html'
 	
 
-class Timer (InteractiveElement):
+class Timer (InputElement):
 	seconds = models.IntegerField(blank=True, null=True)
 	minutes = models.IntegerField(blank=True, null=True)
 	execute_action_when_done = models.BooleanField(default=True)
 
 
+
+
+from api import CardResource
 
 # USER PERMISSION PER OBJECT INSTANCE
 

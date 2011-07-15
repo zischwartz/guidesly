@@ -97,7 +97,6 @@ a:hover
 	margin-left: auto;
 	margin-right: auto;
 	width: 850px;
-
 	background-color: white;
 	
 }
@@ -158,28 +157,58 @@ h2 {font-size:1.5em; font-weight: bold; padding: 3px 0 5px 0;}
 	margin-left: auto;
 	margin-right: auto;
 	width: 850px;
+/*	width: 950px;*/
 
 	background-color: #383838;
 }
+
+
 
 .card
 {
 /*	margin-left: auto;
 	margin-right: auto;
 	width: 850px;*/
-background-color: white;
-color: black;
-
+	background-color: white;
+	color: black;
 }
 
 .card h1
 {
 	text-align: center;
-	padding-top: 15px;
+/*	padding-top: 15px;*/
 	color: white;
 	color: black;
 	letter-spacing: .2em;
 }
+
+/* the container of media */
+.card_media
+{
+	overflow: auto;
+}
+
+.media_el.is_thumb
+{
+	height:5em; 
+	width: 5em; 
+	background-size: contain;
+
+	background: no-repeat center center;
+/*	border: 1px solid green;*/
+	float: left;
+}
+
+
+.media_el.is_primary
+{
+
+	height:36em;   
+	background-size: contain;
+	background: no-repeat center center;
+	background-color: black;
+}
+
 
 .card .card_text
 {
@@ -198,15 +227,7 @@ color: black;
 	padding-bottom: 15px;
 }
 
-.big_image
-{
-	margin-left: auto;
-	margin-right: auto;
-	display: block;
 
-/*	border: 1px solid white;*/
-
-}
 
 .card_interactive_elements
 {
@@ -214,9 +235,6 @@ color: black;
 	margin-right: auto;
 	background-color: #262626;
 	overflow: hidden;
-	
-
-	
 }
 
 .interactive_element a

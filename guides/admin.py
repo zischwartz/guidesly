@@ -5,30 +5,31 @@ from django.contrib import admin
 class GuideAdmin(admin.ModelAdmin):
 	prepopulated_fields = {"slug": ("title",)}
 
-class StaticElementInline (admin.TabularInline):
-	model=StaticElement
+class MediaElementInline (admin.TabularInline):
+	model=MediaElement
 	extra=1
 
 
-class MultipleChoiceInquiryInline (admin.TabularInline):
-	model=MultipleChoiceInquiry
-	extra=1
+# class MultipleChoiceInquiryInline (admin.TabularInline):
+# 	model=MultipleChoiceInquiry
+# 	extra=1
 
-class InteractiveElementInline (admin.TabularInline):
-	model=InteractiveElement
+class InputElementInline (admin.TabularInline):
+	model=InputElement
+	fk_name = 'card'
 	extra=1
 
 
 class CardAdmin(admin.ModelAdmin):
 	prepopulated_fields = {"slug": ("title",)}
-	inlines = [StaticElementInline, InteractiveElementInline, MultipleChoiceInquiryInline]
+	inlines = [MediaElementInline, InputElementInline,]# MultipleChoiceInquiryInline]
 
 
 admin.site.register(Guide, GuideAdmin)
 admin.site.register(Card, CardAdmin)
-admin.site.register(StaticElement)
+admin.site.register(MediaElement)
 # admin.site.register(ImageElement)
-admin.site.register(InteractiveElement)
+admin.site.register(InputElement)
 # admin.site.register(MultipleChoice)
 # admin.site.register(MultipleChoiceInquiry)
 admin.site.register(Action)

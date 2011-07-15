@@ -28,15 +28,15 @@ def GuideDetailView (request, slug):
 
 def CardDetailView (request, gslug, slug):
 	card = get_object_or_404(Card, guide__slug=gslug, slug=slug)
-	static_elements = card.staticelement_set.all()
-	interactive_elements=card.interactiveelement_set.all()
+	media_elements = card.mediaelement_set.all()
+	input_elements=card.inputelement_set.all()
 	return render_to_response("enjoy/card.html", locals(), context_instance=RequestContext(request))
 
 def CardDetailViewById (request, id):
 	card = get_object_or_404(Card, id=id)
-	static_elements = card.staticelement_set.all()
-	interactive_elements=card.interactiveelement_set.all()
-	return render_to_response("enjoy/card.html", locals(), context_instance=RequestContext(request))
+	return HttpResponseRedirect(reverse('CardDetailView', kwargs={'gslug':card.guide.slug, 'slug': card.slug}))
+
+	# return render_to_response("enjoy/card.html", locals(), context_instance=RequestContext(request))
 	
 
 # Creating Guides
@@ -92,8 +92,8 @@ def EditCard (request, gslug, id):
 		
 		s = get_object_or_404(Card, guide__slug=gslug, id=id)
 		sf= CardForm(instance=s)
-		current_static_elements = s.staticelement_set.all()
-		current_interactive_elements=s.interactiveelement_set.all()
+		current_media_elements = s.mediaelement_set.all()
+		current_input_elements=s.inputelement_set.all()
 		
 		static_element_form= StaticElementForm(initial={'card': s})
 		static_element_form_dict= {"image":static_element_form, "video":static_element_form, "audio": static_element_form}
