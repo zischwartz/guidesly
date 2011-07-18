@@ -80,7 +80,8 @@ class Card (models.Model):
 	brand_new = models.BooleanField(default=True)
 	has_lots_of_text = models.BooleanField(default=False)
 	tags = TagField()
-	# card_number = models.IntegerField(blank=True, null=True) #for default guide...
+	card_number = models.IntegerField(blank=True, null=True) #for default guide...
+	representative_media = models.URLField(blank=True, null=True)
 	
 	def __unicode__(self):
 		if self.title !="":
@@ -89,8 +90,11 @@ class Card (models.Model):
 			return "Untitled Card #" + str(self.id)
 
 	def save(self, *args, **kwargs):
+		self.representative_media = self.rep_media
 		if self.title:
 			self.slug=slugify(self.title)
+		else:
+			self.slug = self.id # TODO this is hacky
 		super(Card, self).save(*args, **kwargs)
 
 
@@ -108,10 +112,13 @@ class Card (models.Model):
 	def rep_media(self):
 		primary =  self.mediaelement_set.filter(is_primary=True);
 		if primary:
-			return primary[0]
+			return primary[0].file
+			
 		somemedia=self.mediaelement_set.all()
 		if somemedia:
-			return somemedia[0]
+			return somemedia[0].file
+		else:
+			return None
 
 	@property
 	def resource_uri(self):

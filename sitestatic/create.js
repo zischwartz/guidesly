@@ -171,7 +171,7 @@ VM.uePostProcessing= function(elements){
 }
 
 //**********************************************
-//******      DEFINE DIFFERENT MEDIA TEMPLATES, PRIMARY, BG OR NOT   (not implimented) ********
+//******      DEFINE DIFFERENT MEDIA TEMPLATES, PRIMARY, BG OR NOT   (not currently implimented) ********
 //**********************************************
 VM.mediaTypeTemplate= function(element){
 // this will return differently based on if it's image, video, audio (or bg?)
@@ -266,6 +266,7 @@ VM.addInput2card= function(){
 	// var jsonData = ko.toJSON(newAction);
 	newAction = new Object();
 	newAction.goto =ko.observable(VM.newActionGotoCard());
+	newAction.id = null;
 	
 	var postURL_input;
 	inputToAdd.card= VM.resource_uri();

@@ -60,7 +60,15 @@ class CardResource(ModelResource):
 
 		return bundle
 	
+class SmallCardResource(ModelResource):
+	class Meta:
+		authorization = Authorization()
+		queryset= Card.objects.all()
 
+class GuideResource(ModelResource):
+	class Meta:
+		authorization = Authorization()
+		queryset= Guide.objects.all()
 
 class UserFileResource(ModelResource):
 	owner = fields.ForeignKey(UserResource, 'owner' )#, full=True)

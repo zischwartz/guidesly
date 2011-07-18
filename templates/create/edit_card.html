@@ -193,7 +193,6 @@
 
 {% verbatim %} 		
 	<script id='mediaTemplate' type='text/html'>
-
 		<div data-bind='click: VM.addMedia2card' class="media"> 
 			<img src="${file}">
 			<div class="image_caption">${slug}</div>
@@ -201,6 +200,14 @@
 		</div>
 	</script>
 {%endverbatim%}
-	
+
+
+{%verbatim %}	
+	<script id='smallCardTemplate' type='text/html'>
+
+		<input type="radio" id="radiob-card-${card.id}" name="radio" class="uibutton" data-bind="checked: newActionGotoCard" value="${card.resource_uri}"/><label for="radiob-card-{{card.id}}">{%firstof card.title 'Untitled Card'%} {%if card.rep_media%}<br><img src="{{card.rep_media.file}}" style="width:50px">{%endif%}</label> 
+	{%endfor%}<br>
+	</script>
+{%endverbatim%}
 	
 {%endblock%}

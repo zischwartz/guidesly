@@ -20,6 +20,8 @@ v1_api.register(InputElementResource())
 v1_api.register(CardResource())
 v1_api.register(UserFileResource())
 v1_api.register(UserResource())
+v1_api.register(SmallCardResource())
+v1_api.register(GuideResource())
 
 
 
@@ -40,14 +42,15 @@ urlpatterns = patterns('',
     # url(r'create/(?P<gslug>[^/]+)/(?P<slug>[^/]+)/addinput$', AddInputElement, name='AddInputElement'),
     # url(r'create/(?P<gslug>[^/]+)/(?P<slug>[^/]+)/editinput/(?P<elementid>[^/]+)$', EditInputElement, name='EditInputElement'),
     url(r'^upload/', include('fileupload.urls')),
+    url(r'^user/', include('accounts.urls')),
     (r'^api/', include(v1_api.urls)),
 
     # (r'^guide/(?P<slug>[^/]+)/?$', GuideDetailView),
     # url(r'^learny/', include('learny.foo.urls')),
-
     url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
     url(r'^admin/', include(admin.site.urls)),
 )
+
 
 urlpatterns += staticfiles_urlpatterns()
 
