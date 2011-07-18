@@ -14,7 +14,7 @@
 		{%else%}Edit Card
 		{%endif%}
 	</div>
-	<a href="{% url CardDetailViewById id=s.id %}" class="uibutton"> Preview <i data-bind="text: title() == '' ? 'Untitled Card {{s.id}}': title"></i></a>
+	<a href="{% url CardDetailViewById id=s.id %}" class="uibutton"> Preview <i data-bind="text: title() == '' ? 'Untitled Card {{s.id}}': title()"></i></a>
 	<a href="{% url EditGuide gslug=s.guide.slug %}" class="uibutton"> Overview of <i>{{s.guide.title}}</i> </a>
 {# <i data-bind="text: title() == '' ? 'Card': title()"></i> #}
 
@@ -23,7 +23,6 @@
 {%load verbatim_templatetag%} 
 
 {%block content%}
-
 	<form action="" method="post" data-bind="submit: save">
 		<div id="card_being_edited" class="{%if s.brand_new%}brand_new{%endif%}">
 			
@@ -38,7 +37,7 @@
 			</div>	 {# end .ue #}
 					
 	{#   MEDIA CLIENTSIDE TEMPLATE CALL  which is actually way down below, and perhaps should be a separate template file on the server#}
-			<div data-bind="template:{name: VM.mediaTypeTemplate,  foreach: VM.staticelements,
+			<div data-bind="template:{name: VM.mediaTypeTemplate,  foreach: VM.mediaelements,
 			  				afterRender: uePostProcessing,
 			 				beforeRemove: function(elem) {$(elem).slideUp() },
 							afterAdd: function(elem) {$(elem).hide().slideDown() }}"> </div>
@@ -53,10 +52,10 @@
 		<br>
 	
 	{# INPUT ELEMENTS #}
-	<div data-bind="template:{name: VM.inputTypeTemplate, foreach: VM.interactiveelements, 
-	  				afterRender: uePostProcessing,
-					beforeRemove: function(elem) {$(elem).slideUp() },
-					afterAdd: function(elem) {$(elem).hide().slideDown() }}"></div>
+		<div data-bind="template:{name: VM.inputTypeTemplate,  foreach: VM.inputelements,
+		  				afterRender: uePostProcessing,
+		 				beforeRemove: function(elem) {$(elem).slideUp() },
+						afterAdd: function(elem) {$(elem).hide().slideDown() }}"> </div>
 
 
 	{# INTERACTIVE ELEMENTS #}
@@ -104,8 +103,11 @@
  		<br><br>
 		{# <h5>Or:</h5> #}
 		<h4 class="uibutton"><img src="{{STATIC_URL}}img/upload-icon.png"> Upload Files Now</h4>
+
+
 		{# USERFILE MEDIA JS TEMPLATE  #}
 		<div class="userfiles" data-bind="template:{name: 'mediaTemplate',  foreach: VM.media_files}"></div>
+		{# *************************** #}
 	</div>
 	<h3 id="add_input"><a href="#">Add <span data-bind="text:input_type">Input</span>
 		<div class="iconbuttons">
@@ -120,16 +122,18 @@
 		<br><br>
 		<div class="add_button_group">
 			{# <label for="adder_button_text">Button Text</label> #}
-			<input type="text" name="adder_button_text" placeholder="Button Text" id="adder_button_text" data-bind="value:newButtonText">
-			<br>Action:
+			<input type="text" name="adder_button_text" placeholder="Button Text" id="adder_button_text" data-bind="value:newButtonText, valueUpdate: 'afterkeydown'">
+			<br>Action: <span data-bind="text:newButtonText"></span>
 			Go to:
 			<form data-bind="submit:addInput2card">
 			{%for card in s.guide.card_set.all %}<br>
 				<input type="radio" id="radiob-card-{{card.id}}" name="radio" class="uibutton" data-bind="checked: newActionGotoCard" value="{{card.resource_uri}}"/><label for="radiob-card-{{card.id}}">{%firstof card.title 'Untitled Card'%} {%if card.rep_media%}<br><img src="{{card.rep_media.file}}" style="width:50px">{%endif%}</label> 
-
-			{%endfor%}
+			{%endfor%}<br>
 			<br><br>
-			<button class=" uibutton" type="submit" data-input_type="button">Add This Button to Card</button>
+				<input type="radio" id="radiob-card-new" name="radio" class="uibutton" data-bind="checked: newActionGotoCard" value="addcard"/><label for="radiob-card-new">A New Card</label> 
+				<input type="text" data-bind="value:newCardTitle, visible: newActionGotoCard()=='addcard' " placeholder="New Card Title">
+			<br><br>
+			<button class=" uibutton" type="submit" data-input_type="button" data-bind="enable: newActionGotoCard(), css:{'ui-button-disabled': !newActionGotoCard(), 'ui-state-disabled': !newActionGotoCard()}">Add This Button to Card</button>
 			</form>
 		</div>
 
@@ -171,12 +175,16 @@
 {% verbatim %} 		
 	<script id='buttonTemplate' type='text/html'>
 		<div class="ue" data-bind="event: { focusin: VM.flipEl, focusout: VM.unflipEl }, attr: { tabindex: typeof(id)!='undefined' ? id: -1 }">
-			<div class="front">
-				le front
-			</div>
+		
+			<div class="front input-button" data-bind="text:button_text"></div>
+			
 			<div class="back">
-			 -le back-
+			<input data-bind="value:button_text">
+			<input data-bind="value: default_action.goto">
+			<a class="uibutton delete" data-bind="click: VM.deleteFromCard">Remove</a>
+
 			</div>
+			
 		</div>
 	</script>
 {%endverbatim%}

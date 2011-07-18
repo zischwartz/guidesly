@@ -106,10 +106,10 @@ class Card (models.Model):
 
 	@property
 	def rep_media(self):
-		primary =  self.staticelement_set.filter(is_primary=True);
+		primary =  self.mediaelement_set.filter(is_primary=True);
 		if primary:
 			return primary[0]
-		somemedia=self.staticelement_set.all()
+		somemedia=self.mediaelement_set.all()
 		if somemedia:
 			return somemedia[0]
 
@@ -173,9 +173,17 @@ class InputElement (models.Model):
 	button_text = models.CharField(max_length=100)
 	required = models.BooleanField(default=False)
 	type = models.CharField(blank=True,  max_length=1, choices = IELEMENT_TYPE)
-	default_target = models.ForeignKey(Card, blank=True, null=True, related_name="default_target")
-	default_action = models.ForeignKey(Action, blank=True, null=True)
-		
+	default_goto = models.ForeignKey(Card, blank=True, null=True, related_name="+") #not using this so far
+	default_action = models.OneToOneField(Action, blank=True, null=True)
+	# default_action = models.ForeignKey(Action, blank=True, null=True)
+	
+	# def save(self, *args, **kwargs):
+	# 	if not self.default_action:
+	# 		someaction = Action()
+	# 		someaction.save()
+	# 		self.default_action=someaction
+	# 	super(InputElement, self).save(*args, **kwargs)
+	
 	def el_template(self):
 		return 'els/button.html'
 		# return "<a class='ielement' href='%s'>%s</a>" % (self.default_action.goto.get_absolute_url(), self.button_text)
@@ -190,49 +198,48 @@ class InputElement (models.Model):
 # ***************         SIGH                ************
 # ********************************************************
 
-class MultipleChoiceInquiry (InputElement):
-	# choices = models.ForeignKey(MultipleChoices, blank=True, null=True) #deleted because we want multiple..duh
-	show_choices = models.BooleanField(default=False)
-	allow_multiple_selections = models.BooleanField(default=False)
-	
-	def el_template(self):
-		return 'els/mc.html'
-
-class MultipleChoice (models.Model):
-	choice = models.CharField(max_length=250)
-	action = models.ForeignKey(Action, blank=True, null=True)
-	inquiry = models.ForeignKey(MultipleChoiceInquiry)
-	def __unicode__(self):
-		return self.choice
-
-
-#numerical
-class NValueInquiry (InputElement):
-	min_value = models.FloatField(blank=True, null=True)
-	max_value = models.FloatField(blank=True, null=True)
-	increment_by = models.FloatField(blank=True, null=True)
-	default_value = models.FloatField(blank=True, null=True)
-	def el_template(self):
-		return 'els/nvalue.html'
-
-#text 
-class TValueInquiry (InputElement):
-	default_value = models.CharField(max_length=500, blank=True, null=True,)
-
-	def el_template(self):
-		return 'els/tvalue.html'
-
-#sensor
-class SValueInquiry (InputElement):
-	sensor_type = models.CharField(blank=True,  max_length=1, choices = SVALUEINQUIRY_TYPE)
-	def el_template(self):
-		return 'els/svalue.html'
-	
-
-class Timer (InputElement):
-	seconds = models.IntegerField(blank=True, null=True)
-	minutes = models.IntegerField(blank=True, null=True)
-	execute_action_when_done = models.BooleanField(default=True)
+# class MultipleChoiceInquiry (InputElement):
+# 	# choices = models.ForeignKey(MultipleChoices, blank=True, null=True) #deleted because we want multiple..duh
+# 	show_choices = models.BooleanField(default=False)
+# 	allow_multiple_selections = models.BooleanField(default=False)
+# 	
+# 	def el_template(self):
+# 		return 'els/mc.html'
+# 
+# class MultipleChoice (models.Model):
+# 	choice = models.CharField(max_length=250)
+# 	action = models.ForeignKey(Action, blank=True, null=True)
+# 	inquiry = models.ForeignKey(MultipleChoiceInquiry)
+# 	def __unicode__(self):
+# 		return self.choice
+# 
+# 
+# #numerical
+# class NValueInquiry (InputElement):
+# 	min_value = models.FloatField(blank=True, null=True)
+# 	max_value = models.FloatField(blank=True, null=True)
+# 	increment_by = models.FloatField(blank=True, null=True)
+# 	default_value = models.FloatField(blank=True, null=True)
+# 	def el_template(self):
+# 		return 'els/nvalue.html'
+# 
+# #text 
+# class TValueInquiry (InputElement):
+# 	default_value = models.CharField(max_length=500, blank=True, null=True,)
+# 
+# 	def el_template(self):
+# 		return 'els/tvalue.html'
+# 
+# #sensor
+# class SValueInquiry (InputElement):
+# 	sensor_type = models.CharField(blank=True,  max_length=1, choices = SVALUEINQUIRY_TYPE)
+# 	def el_template(self):
+# 		return 'els/svalue.html'
+# 	
+# class Timer (InputElement):
+# 	seconds = models.IntegerField(blank=True, null=True)
+# 	minutes = models.IntegerField(blank=True, null=True)
+# 	execute_action_when_done = models.BooleanField(default=True)
 
 
 

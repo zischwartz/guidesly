@@ -12,13 +12,13 @@ var mapping;
 
 // DOOOOCCCCCCCCCCCCCCCRRRRRRRRREEEEEEEEEADDDDDDDDDDDDDDDDDDDYYYYYYYYYYYYYYYY
 $(document).ready(function(){	
-	
 $(".uibutton").button();
+
 jQuery.easing.def = "easeOutQuart";
 
 //initial mapping
 // mapping = {
-//     'staticelements': {
+//     'mediaelements': {
 //         key: function(data) {
 // 			// console.log(data.resource_uri);
 //             return ko.utils.unwrapObservable(data.resource_uri);
@@ -29,7 +29,7 @@ initial_card_object= jQuery.parseJSON(initial_card_json);
 VM = ko.mapping.fromJS(initial_card_object, mapping);
 //// or
 // VM = ko.mapping.fromJSON(initial_card_json, mapping); 	// console.log(initial_card_object);
-// VM.staticelements.mappedRemove({ resource_uri : '/api/v1/staticelement/4/' });
+// VM.mediaelements.mappedRemove({ resource_uri : '/api/v1/staticelement/4/' });
 //this line works, so the mapping is infact, working, 
 
 
@@ -60,7 +60,7 @@ VM.addMedia2card = function() {
 	this.file= ko.observable(this.file);
 	itemToAdd.file=this; //this was equal simply to this, which works for adding'em, making it observable
 	itemToAdd.card= VM.resource_uri();
-	if (VM.staticelements().length==0)
+	if (VM.mediaelements().length==0)
 		itemToAdd.is_primary= ko.observable(true); //should primary default to true or false? 
 	else
 		itemToAdd.is_primary= ko.observable(false); 
@@ -78,7 +78,7 @@ VM.addMedia2card = function() {
 			itemToAdd.title=ko.observable('');
 			itemToAdd.resource_uri=ko.observable(postURL.getResponseHeader('location'));
 			//add the element to the card
-			VM.staticelements.push(itemToAdd);
+			VM.mediaelements.push(itemToAdd);
 			},
 		contentType: "application/json",
 	});
@@ -97,7 +97,14 @@ VM.deleteFromCard= function()
 		success:function(data) { console.log(data); },
 		contentType: "application/json",
 	});
-	VM.staticelements.remove(this);
+	// alert(VM.mediaelements.indexOf(this));
+	
+	//what kind of element are we deleting?
+	if (VM.mediaelements.indexOf(this)!=-1)
+		VM.mediaelements.remove(this);
+		
+	if (VM.inputelements.indexOf(this)!=-1)
+		VM.inputelements.remove(this);
 };
 
 
@@ -177,9 +184,6 @@ VM.inputTypeTemplate= function(element){
 }
 
 
-
-
-
 //**********************************************
 //******      APPLY MARKDOWN  MARKUP    ********
 //**********************************************
@@ -251,53 +255,52 @@ $("#add_input_group h4, #add_input img").click(function(event){
 	// VM.input_type($(this).data("input_type"));
 }); //end click
 
-
+VM.newCardTitle= ko.observable('');
 VM.newButtonText= ko.observable('');
 VM.newActionGotoCard = ko.observable('');
 
 inputToAdd= new Object();
 VM.addInput2card= function(){
+	
+	// console.log(newAction);
+	// var jsonData = ko.toJSON(newAction);
 	newAction = new Object();
 	newAction.goto =ko.observable(VM.newActionGotoCard());
 	
-	console.log(newAction);
-	var jsonData = ko.toJSON(newAction);
-	var postURL;
-	var postURL2;
-	postURL=$.ajax({
-		url: action_api_url,
+	var postURL_input;
+	inputToAdd.card= VM.resource_uri();
+	inputToAdd.button_text= ko.observable( VM.newButtonText());
+	inputToAdd.default_action= newAction;
+	jsonData = ko.toJSON(inputToAdd);
+
+	postURL_input=$.ajax({
+		url: input_api_url,
 		type: "POST",
 		data: jsonData,
 		success:function(data) {
-			console.log('success action added!'); 
-			console.log(postURL.getResponseHeader('location')); 
-			newAction.resource_uri=ko.observable(postURL.getResponseHeader('location'));
-			inputToAdd.card= VM.resource_uri();
-			inputToAdd.button_text= ko.observable( VM.newButtonText());
-			inputToAdd.default_action= newAction;
-			jsonData = ko.toJSON(inputToAdd);
-
-			postURL2=$.ajax({
-				url: input_api_url,
-				type: "POST",
-				data: jsonData,
-				success:function(data) {
-					console.log('success input added!'); 
-					console.log(postURL2.getResponseHeader('location')); 
-					inputToAdd.resource_uri=ko.observable(postURL2.getResponseHeader('location'));
-					//add the element to the card
-					VM.interactiveelements.push(inputToAdd); //WHAT? TODO
-					},
-				contentType: "application/json",
-				});
+			console.log('success: '); 
+			console.log(data); 
+			
+			// so data.default_action is the uri  TODO
+			
+			// console.log(postURL_input.getResponseHeader('location')); 
+			inputToAdd.resource_uri=ko.observable(postURL_input.getResponseHeader('location'));
+			//add the element to the card
+			// inputToAdd.default_action=newAction;
+			VM.inputelements.push(inputToAdd); //WHAT? TODO
 			},
 		contentType: "application/json",
-	});
+		});
+	}
+
 	
-} // end adding input function
+// } // end adding input function
+
 
 
 ko.applyBindings(VM);
+
+$(".uibutton").button();
 
 
 

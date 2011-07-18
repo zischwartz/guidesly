@@ -68,39 +68,7 @@ def BuildCard (request, gslug):
 from api import CardResource
 
 def EditCard (request, gslug, id):
-
-	if request.method == 'POST':
-		s= Card.objects.get(guide__slug=gslug, id=id)
-		sf = CardForm(request.POST, instance=s)
-		if sf.is_valid():
-			savecard=sf.save(commit=False)
-			savecard.brand_new=False
-			savecard.save()
-			if 'card_sub_add' in request.POST: #this is saving and adding a new card
-				messages.info(request, "Card Saved! Here's a new card to work with.")
-				return HttpResponseRedirect(reverse('BuildCard', kwargs={'gslug':gslug}))
-			else:
-				messages.info(request, 'Card Saved!')
-				return HttpResponseRedirect(reverse('EditCard', kwargs={'gslug':gslug, 'id': s.id}))
-		else:
-			# return HttpResponse(sf.errors)
-			return HttpResponse('that cardform did not validate, fool!')
-	else:
-		if request.user.is_authenticated():
-			current_user= request.user
-		
-		
 		s = get_object_or_404(Card, guide__slug=gslug, id=id)
-		sf= CardForm(instance=s)
-		current_media_elements = s.mediaelement_set.all()
-		current_input_elements=s.inputelement_set.all()
-		
-		static_element_form= StaticElementForm(initial={'card': s})
-		static_element_form_dict= {"image":static_element_form, "video":static_element_form, "audio": static_element_form}
-		
-		interactive_element_form= InteractiveElementForm(initial={'card': s})
-		interactive_element_form_dict = {"button": interactive_element_form, "timer":interactive_element_form}
-
 		# s.text=markup.markdown(s.text)
 		ur = CardResource()
 		# cardr = ur.obj_get_detail( id=s.id) #request, was included

@@ -22,7 +22,7 @@
 			{%endif%}
 			
 			<div class="card_media">
-				{%for el in static_elements%}
+				{%for el in media_elements%}
 					<div class="media_el {%if el.is_primary%}is_primary{%else%} is_thumb {%endif%}" style="background-image:url('{{el.file}}');"></div>
 				{%endfor%}
 			</div>
@@ -34,7 +34,7 @@
 			{%endif%}
 				
 			<div class="card_interactive_elements">	
-				{%for el in interactive_elements%}
+				{%for el in input_elements%}
 					<div class="interactive_element">
 						{%include el.el_template%}
 					</div>
