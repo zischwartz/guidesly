@@ -175,7 +175,7 @@ VM.uePostProcessing= function(element){
 	// if ($(element).hasClass('uibutton'))
 		// element.button();
 		
-	// $(element).find(".uibutton").button();
+	$(element).find(".uibutton").button();
 }
 
 //**********************************************
@@ -320,9 +320,7 @@ inputToAdd= new Object();
 			inputToAdd.resource_uri=ko.observable(postURL_input.getResponseHeader('location'));
 			console.log(postURL_input.getResponseHeader('location'));
 			inputToAdd.id = inputToAdd.resource_uri().match(/\/inputelement\/(.*)\//)[1];
-
 			// match(/\/inputelement\/(.*)\//)[1]
-			// inputToAdd.id
 			VM.inputelements.push(inputToAdd); //WHAT? TODO
 			},
 		contentType: "application/json",

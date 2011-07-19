@@ -194,7 +194,7 @@
 			 						afterRender: VM.uePostProcessing,
 					 				beforeRemove: function(elem) {$(elem).slideUp() },
 									afterAdd: function(elem) {$(elem).hide().slideDown() },
-									templateOptions: { default_goto : default_action.goto, input_num: id }
+									templateOptions: { selected : default_action.goto, input_num: id }
 									}">
 						</div>
 			<a class="uibutton delete" data-bind="click: VM.deleteFromCard">Remove</a>
@@ -217,13 +217,6 @@
 	</script>
 {%endverbatim%}
 
-{# 		${$item.default_goto} -- <span data-bind="text: $item.default_goto"></span> #}
-
-			{# <input type="radio" id="radiob-card-edit-${$item.xid}-${id}"  class="uibutton" data-bind="checked: $item.default_goto, value: resource_uri"> #}
-			{# 		<label for="radiob-card-edit-${$item.xid}-${id}">{{if title}}${title}{{else}}Untitled Card{{/if}} #}
-
-			{#		'${$item.default_goto}' == '${resource_uri}'
- 	 #}
 
 
 {%verbatim %}	
@@ -239,7 +232,7 @@
 	<script id='evenSmallerCardTemplate' type='text/html'>
 
 		<div class="smallercard"> 
-			<input type="radio" id="radiob-card-edit-${$item.input_num}-${id}"  class="zuibutton" data-bind="checked: $item.default_goto, value: resource_uri" name="editbutton-${$item.input_num}-pickcard">
+			<input type="radio" id="radiob-card-edit-${$item.input_num}-${id}"  class="uibutton" data-bind="checked: $item.selected, value: resource_uri, attr:{ checked: $item.selected() == resource_uri}" name="editbutton-${$item.input_num}-pickcard">
 			<label for="radiob-card-edit-${$item.input_num}-${id}">{{if title}}${title}{{else}}Untitled Card{{/if}}
 			{{if representative_media }}<br><img src="${representative_media}" style="width:40px"> 
 			{{/if}}</label>
