@@ -3,6 +3,8 @@ var staticel_api_url='/api/v1/mediaelement/';
 var input_api_url='/api/v1/inputelement/';
 var action_api_url='/api/v1/action/';
 var file_api_url='/api/v1/userfile/';
+var guide_api_url='/api/v1/guide/';
+var smallcard_api_url='/api/v1/smallcard/';
 
 var VM; //our viewmodel
 var converter = new Showdown.converter();
@@ -25,12 +27,15 @@ jQuery.easing.def = "easeOutQuart";
 //         					}
 // 						}
 // 			}
+
 initial_card_object= jQuery.parseJSON(initial_card_json);
 VM = ko.mapping.fromJS(initial_card_object, mapping);
 //// or
 // VM = ko.mapping.fromJSON(initial_card_json, mapping); 	// console.log(initial_card_object);
 // VM.mediaelements.mappedRemove({ resource_uri : '/api/v1/staticelement/4/' });
 //this line works, so the mapping is infact, working, 
+
+
 
 
 //************************
@@ -40,7 +45,7 @@ VM = ko.mapping.fromJS(initial_card_object, mapping);
 VM.save = function(formElelement)
 {
 	var jsonData = ko.mapping.toJSON(VM);
-	alert('hi');
+	// alert('hi');
 	$.ajax({
 		url: VM.resource_uri(),
 		type: "PUT",
@@ -165,9 +170,12 @@ VM.unflipEl=function(event){
 }
 
 //apply button() to media elements after they've been added
-VM.uePostProcessing= function(elements){
-	// console.log(elements);
-	$(elements).find(".uibutton").button();
+VM.uePostProcessing= function(element){
+	// console.log(element);
+	// if ($(element).hasClass('uibutton'))
+		// element.button();
+		
+	// $(element).find(".uibutton").button();
 }
 
 //**********************************************
@@ -192,6 +200,7 @@ VM.marked_text = ko.dependentObservable(function() {
 		return ''
 	return converter.makeHtml(this.text());
 },VM);
+
 
 //**********************************************
 //******      SIDEBAR CODE              ********
@@ -238,7 +247,7 @@ $("#add_media_group h4, #add_media img").click(function(event){
 	
 	$.getJSON(file_api_url + "?type="+VM.media_type(), function(data) {
 		$("#add_media_group h4").slideUp();
-		for (x in  data.objects)
+		for (x in data.objects)
 			{
 				VM.media_files.push(data.objects[x]);
 			}
@@ -246,24 +255,52 @@ $("#add_media_group h4, #add_media img").click(function(event){
 	// ko.applyBindings(VM);
 }); //end click
 
+
 // *************************************
-// ****     CREATE INPUT ELEMENTS    ***
+// ****     CREATE INPUT ELEMENTS   LOAD/show CARDS  ***
 // *************************************
+// VM.cards_in_guide = ko.observableArray(); 
+
+// VM.changeActionGotoCard = ko.dependentObservable(function() {
+// 	console.log(this);
+// 	// return 
+// 	// if (this.text() =='')
+// 		// return ''
+// 	// return converter.makeHtml(this.text());
+// // });
+// },VM);
+
 $("#add_input_group h4, #add_input img").click(function(event){
 	// stop it from opening and closing the acordian
 	event.stopPropagation();
-	// VM.input_type($(this).data("input_type"));
+	// $.getJSON(smallcard_api_url + "?guide="+ guide_id, function(data) {
+	// 	// console.log(data);
+	// 	// $("#add_media_group h4").slideUp();
+	// 	for (x in  data.objects)
+	// 		{
+	// 			VM.cards_in_guide.push(data.objects[x]);
+	// 		}
+	// 	});	 ///end json
+
 }); //end click
+
 
 VM.newCardTitle= ko.observable('');
 VM.newButtonText= ko.observable('');
-VM.newActionGotoCard = ko.observable('');
+VM.newActionGotoCard = ko.observable('false');
 
-inputToAdd= new Object();
+VM.all_cards = ko.observableArray();
+var json_all_cards = jQuery.parseJSON(all_cards);
+for (x in json_all_cards)
+	{
+		VM.all_cards.push(json_all_cards[x]);
+	}
+
+
 VM.addInput2card= function(){
-	
-	// console.log(newAction);
-	// var jsonData = ko.toJSON(newAction);
+inputToAdd= new Object();
+
+
 	newAction = new Object();
 	newAction.goto =ko.observable(VM.newActionGotoCard());
 	newAction.id = null;
@@ -271,7 +308,7 @@ VM.addInput2card= function(){
 	var postURL_input;
 	inputToAdd.card= VM.resource_uri();
 	inputToAdd.button_text= ko.observable( VM.newButtonText());
-	inputToAdd.default_action= newAction;
+	inputToAdd.default_action= newAction;  //maybe this should be observable?
 	jsonData = ko.toJSON(inputToAdd);
 
 	postURL_input=$.ajax({
@@ -279,30 +316,33 @@ VM.addInput2card= function(){
 		type: "POST",
 		data: jsonData,
 		success:function(data) {
-			console.log('success: '); 
-			console.log(data); 
-			
-			// so data.default_action is the uri  TODO
-			
-			// console.log(postURL_input.getResponseHeader('location')); 
+			// console.log(data); 
 			inputToAdd.resource_uri=ko.observable(postURL_input.getResponseHeader('location'));
-			//add the element to the card
-			// inputToAdd.default_action=newAction;
+			console.log(postURL_input.getResponseHeader('location'));
+			inputToAdd.id = inputToAdd.resource_uri().match(/\/inputelement\/(.*)\//)[1];
+
+			// match(/\/inputelement\/(.*)\//)[1]
+			// inputToAdd.id
 			VM.inputelements.push(inputToAdd); //WHAT? TODO
 			},
 		contentType: "application/json",
 		});
-	}
+	} //end input adding function
 
-	
-// } // end adding input function
+
+// VM.updateUI= function(el){
+// 	$(el.target).checked = true;
+// 	$(el.target).button("refresh");
+// 	console.log(el.target);
+// 	
+// }
+
 
 
 
 ko.applyBindings(VM);
 
 $(".uibutton").button();
-
 
 
 });// end docready

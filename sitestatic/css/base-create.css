@@ -442,7 +442,7 @@ input#title
 {
 	display: block;
 	padding: .5em;
-	border: 1px solid gray;
+/*	border: 1px solid gray;*/
 	margin: .5em auto;
 	text-align: center;
 	width: 50%;

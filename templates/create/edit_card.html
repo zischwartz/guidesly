@@ -3,8 +3,9 @@
 {%block extrahead%}
 		<script src="{{STATIC_URL}}create.js"></script>
 		<script type="text/javascript">
+		var guide_id = {{s.guide.id}};
 		var initial_card_json= '{{card_json|safe|escapejs}}';
-
+		var all_cards = '{{all_cards_json|safe|escapejs}}'; 
 </script>
 {%endblock%}
 
@@ -23,6 +24,7 @@
 {%load verbatim_templatetag%} 
 
 {%block content%}
+
 	<form action="" method="post" data-bind="submit: save">
 		<div id="card_being_edited" class="{%if s.brand_new%}brand_new{%endif%}">
 			
@@ -123,14 +125,19 @@
 		<div class="add_button_group">
 			{# <label for="adder_button_text">Button Text</label> #}
 			<input type="text" name="adder_button_text" placeholder="Button Text" id="adder_button_text" data-bind="value:newButtonText, valueUpdate: 'afterkeydown'">
-			<br>Action: <span data-bind="text:newButtonText"></span>
-			Go to:
 			<form data-bind="submit:addInput2card">
-			{%for card in s.guide.card_set.all %}<br>
-				<input type="radio" id="radiob-card-{{card.id}}" name="radio" class="uibutton" data-bind="checked: newActionGotoCard" value="{{card.resource_uri}}"/><label for="radiob-card-{{card.id}}">{%firstof card.title 'Untitled Card'%} {%if card.rep_media%}<br><img src="{{card.rep_media.file}}" style="width:50px">{%endif%}</label> 
-			{%endfor%}<br>
+			<span data-bind="text: newActionGotoCard"></span>
+			{# CARDS_IN_GUIDE JS TEMPLATE  #}
+			<div class="" data-bind="template: {name: 'smallCardTemplate',
+			  						foreach: VM.all_cards,
+			 						afterRender: uePostProcessing,
+					 				beforeRemove: function(elem) {$(elem).slideUp() },
+									afterAdd: function(elem) {$(elem).hide().slideDown() }
+			}"></div>
+			{# *************************** #}
+				
 			<br><br>
-				<input type="radio" id="radiob-card-new" name="radio" class="uibutton" data-bind="checked: newActionGotoCard" value="addcard"/><label for="radiob-card-new">A New Card</label> 
+				<input type="radio" id="radiob-card-new" class="uibutton" data-bind="checked: newActionGotoCard" value="addcard" name="addbutton-pickcard"/><label for="radiob-card-new">A New Card</label> 
 				<input type="text" data-bind="value:newCardTitle, visible: newActionGotoCard()=='addcard' " placeholder="New Card Title">
 			<br><br>
 			<button class=" uibutton" type="submit" data-input_type="button" data-bind="enable: newActionGotoCard(), css:{'ui-button-disabled': !newActionGotoCard(), 'ui-state-disabled': !newActionGotoCard()}">Add This Button to Card</button>
@@ -172,15 +179,24 @@
 	</script>
 {%endverbatim%}
 
+
 {% verbatim %} 		
 	<script id='buttonTemplate' type='text/html'>
 		<div class="ue" data-bind="event: { focusin: VM.flipEl, focusout: VM.unflipEl }, attr: { tabindex: typeof(id)!='undefined' ? id: -1 }">
-		
 			<div class="front input-button" data-bind="text:button_text"></div>
 			
 			<div class="back">
 			<input data-bind="value:button_text">
 			<input data-bind="value: default_action.goto">
+
+			<div data-bind="template: {name: 'evenSmallerCardTemplate',
+			  						foreach: VM.all_cards,
+			 						afterRender: VM.uePostProcessing,
+					 				beforeRemove: function(elem) {$(elem).slideUp() },
+									afterAdd: function(elem) {$(elem).hide().slideDown() },
+									templateOptions: { default_goto : default_action.goto, input_num: id }
+									}">
+						</div>
 			<a class="uibutton delete" data-bind="click: VM.deleteFromCard">Remove</a>
 
 			</div>
@@ -201,13 +217,35 @@
 	</script>
 {%endverbatim%}
 
+{# 		${$item.default_goto} -- <span data-bind="text: $item.default_goto"></span> #}
+
+			{# <input type="radio" id="radiob-card-edit-${$item.xid}-${id}"  class="uibutton" data-bind="checked: $item.default_goto, value: resource_uri"> #}
+			{# 		<label for="radiob-card-edit-${$item.xid}-${id}">{{if title}}${title}{{else}}Untitled Card{{/if}} #}
+
+			{#		'${$item.default_goto}' == '${resource_uri}'
+ 	 #}
+
 
 {%verbatim %}	
 	<script id='smallCardTemplate' type='text/html'>
-
-		<input type="radio" id="radiob-card-${card.id}" name="radio" class="uibutton" data-bind="checked: newActionGotoCard" value="${card.resource_uri}"/><label for="radiob-card-{{card.id}}">{%firstof card.title 'Untitled Card'%} {%if card.rep_media%}<br><img src="{{card.rep_media.file}}" style="width:50px">{%endif%}</label> 
-	{%endfor%}<br>
+		<div class="smallcard">
+			<input type="radio" id="radiob-card-${id}" class="uibutton" data-bind="checked: VM.newActionGotoCard , value: resource_uri" name="addbutton-pickcard">
+			<label for="radiob-card-${id}">{{if title}}${title}{{else}}Untitled Card{{/if}}
+			{{if representative_media }}<br><img src="${representative_media}" style="width:50px"> 
+			{{/if}}</label>
+		</div>
 	</script>
+	
+	<script id='evenSmallerCardTemplate' type='text/html'>
+
+		<div class="smallercard"> 
+			<input type="radio" id="radiob-card-edit-${$item.input_num}-${id}"  class="zuibutton" data-bind="checked: $item.default_goto, value: resource_uri" name="editbutton-${$item.input_num}-pickcard">
+			<label for="radiob-card-edit-${$item.input_num}-${id}">{{if title}}${title}{{else}}Untitled Card{{/if}}
+			{{if representative_media }}<br><img src="${representative_media}" style="width:40px"> 
+			{{/if}}</label>
+		</div>
+	</script>	
+	
 {%endverbatim%}
 	
 {%endblock%}

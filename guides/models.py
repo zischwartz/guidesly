@@ -74,7 +74,7 @@ class Card (models.Model):
 	title = models.CharField(max_length=500, blank=True, null=True, default="") #maybe add default=""
 	created = models.DateTimeField(auto_now_add=True)
 	modified = models.DateTimeField(auto_now=True)
-	slug = models.SlugField(blank=True)
+	slug = models.SlugField(blank=True, null=True)
 	text = models.TextField(blank=True, null=True)
 	guide= models.ForeignKey(Guide, null=True) #we'll use this as the default guide..., otherwise theres no absolute url
 	brand_new = models.BooleanField(default=True)
@@ -93,8 +93,8 @@ class Card (models.Model):
 		self.representative_media = self.rep_media
 		if self.title:
 			self.slug=slugify(self.title)
-		else:
-			self.slug = self.id # TODO this is hacky
+		# else:
+			# self.slug = self.id # TODO this is hacky
 		super(Card, self).save(*args, **kwargs)
 
 
@@ -112,11 +112,11 @@ class Card (models.Model):
 	def rep_media(self):
 		primary =  self.mediaelement_set.filter(is_primary=True);
 		if primary:
-			return primary[0].file
+			return primary[0].file.file
 			
 		somemedia=self.mediaelement_set.all()
 		if somemedia:
-			return somemedia[0].file
+			return somemedia[0].file.file
 		else:
 			return None
 
