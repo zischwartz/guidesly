@@ -57,6 +57,7 @@ class Guide (models.Model):
 	card_order =jsonfield.JSONField(blank=True, null=True)
 
 	def save(self, *args, **kwargs):
+		# TODO add something for if there is no title
 		self.slug= slugify(self.title)
 		super(Guide, self).save(*args, **kwargs)
 	
@@ -74,13 +75,14 @@ class Card (models.Model):
 	title = models.CharField(max_length=500, blank=True, null=True, default="") #maybe add default=""
 	created = models.DateTimeField(auto_now_add=True)
 	modified = models.DateTimeField(auto_now=True)
-	slug = models.SlugField(blank=True)
+	slug = models.SlugField(blank=True, null=True)
 	text = models.TextField(blank=True, null=True)
 	guide= models.ForeignKey(Guide, null=True) #we'll use this as the default guide..., otherwise theres no absolute url
 	brand_new = models.BooleanField(default=True)
 	has_lots_of_text = models.BooleanField(default=False)
 	tags = TagField()
-	# card_number = models.IntegerField(blank=True, null=True) #for default guide...
+	card_number = models.IntegerField(blank=True, null=True) #for default guide...
+	representative_media = models.URLField(blank=True, null=True)
 	
 	def __unicode__(self):
 		if self.title !="":
@@ -89,8 +91,11 @@ class Card (models.Model):
 			return "Untitled Card #" + str(self.id)
 
 	def save(self, *args, **kwargs):
+		self.representative_media = self.rep_media
 		if self.title:
 			self.slug=slugify(self.title)
+		# else:
+			# self.slug = self.card_number # TODO this is hacky
 		super(Card, self).save(*args, **kwargs)
 
 
@@ -108,10 +113,13 @@ class Card (models.Model):
 	def rep_media(self):
 		primary =  self.mediaelement_set.filter(is_primary=True);
 		if primary:
-			return primary[0]
+			return primary[0].file.file
+			
 		somemedia=self.mediaelement_set.all()
 		if somemedia:
-			return somemedia[0]
+			return somemedia[0].file.file
+		else:
+			return None
 
 	@property
 	def resource_uri(self):
@@ -125,7 +133,7 @@ class MediaElement (models.Model):
 	card = models.ForeignKey(Card)
 	created = models.DateTimeField(auto_now_add=True, blank=True, null=True)
 	type = models.CharField(blank=True, max_length=5, choices = SELEMENT_TYPE)
-	is_primary = models.BooleanField(default=True)
+	is_primary = models.BooleanField(default=False)
 	is_background = models.BooleanField(default=False)
 	autoplay = models.BooleanField(default=False)
 	length_seconds = models.IntegerField(blank=True, null=True)
@@ -176,7 +184,7 @@ class InputElement (models.Model):
 	card = models.ForeignKey(Card)
 	button_text = models.CharField(max_length=100)
 	required = models.BooleanField(default=False)
-	type = models.CharField(blank=True,  max_length=1, choices = IELEMENT_TYPE)
+	type = models.CharField(blank=True,  max_length=8, choices = IELEMENT_TYPE)
 	default_goto = models.ForeignKey(Card, blank=True, null=True, related_name="+") #not using this so far
 	default_action = models.OneToOneField(Action, blank=True, null=True)
 	# default_action = models.ForeignKey(Action, blank=True, null=True)

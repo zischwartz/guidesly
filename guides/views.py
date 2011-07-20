@@ -12,7 +12,7 @@ from django.core.urlresolvers import reverse
 
 from django.contrib import messages
 from log import getlogger
-
+from django.utils import simplejson
 from fileupload.models import UserFile
 
 # Viewing Guides
@@ -65,19 +65,29 @@ def BuildCard (request, gslug):
 	s.save()
 	return HttpResponseRedirect(reverse('EditCard', kwargs={'gslug':gslug, 'id': s.id}))
 
-from api import CardResource
+from api import CardResource, SmallCardResource
 
 def EditCard (request, gslug, id):
+		# send the card's data as json
 		s = get_object_or_404(Card, guide__slug=gslug, id=id)
-		# s.text=markup.markdown(s.text)
 		ur = CardResource()
-		# cardr = ur.obj_get_detail( id=s.id) #request, was included
-		# cardr = ur.obj_get(id=s.id)
-		ur_bundle = ur.build_bundle(obj=s, request=request)
+		ur_bundle = ur.build_bundle() #(obj=s, request=request) #turned out not to be neccesary
 		card_json= ur.serialize(None, ur.full_dehydrate(s), 'application/json') #with newer version, full dehyrate ur_bundle
-		# card_text=s.text
+
+		#and all the cards in the guide
+		all_cards = get_list_or_404(Card, guide__slug=gslug)
+		c=CardResource()
+		card_list = []
+		for card in all_cards:
+			card_list.append({'title':card.title, 'representative_media': card.representative_media,'resource_uri': c.get_resource_uri(card), 'id':card.id})
+		
+		# r.get_resource_uri(self)
+		all_cards_json = simplejson.dumps(card_list)
+
+
+
 		return render_to_response("create/edit_card.html", locals(), context_instance=RequestContext(request))
-		# return render_to_response("create/edit_card.html", locals(), context_instance=RequestContext(request))
+
 
 
 

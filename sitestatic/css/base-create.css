@@ -356,6 +356,7 @@ input#title
 {
 	font-size: 1.2em;
  	text-transform: capitalize ;
+/*	overflow: overlay;*/
 }
 
 
@@ -364,13 +365,11 @@ input#title
 	
 	width: 1.1em;
 	margin-top: -.2em;
-
-
 	padding: .2em;
 	border-radius: 2px;
 }
 
-#card_element_toolbar h4 img
+#card_element_toolbar h4 img, #card_element_toolbar button img
 {
 	width: 1.5em;
 	margin-bottom: -.5em;
@@ -378,11 +377,16 @@ input#title
 	border-radius: 2px;
 }
 
+#card_element_toolbar h4
+{
+	margin-bottom: 1em;
+}
 
+/*icons on the accordian header*/
 #card_element_toolbar .iconbuttons
 {
 	float: right;
-	margin-right: 7%;
+	margin-right: 5%;
 /*	clear: both;*/
 }
 
@@ -396,13 +400,16 @@ input#title
 
 #card_element_toolbar .userfiles .media
 { 
-	background-color: black;
-	padding: .3em .3em; 
+	background-color: #cdcdcd;
+	padding: .5em .5em; 
 	float: left;
 	display: block;
 	margin: .2em;
-	color:white;
+	color:black;
+	border: 1px solid gray;
 	cursor: pointer;
+	font-size: .7em;
+	text-align: center;
 
 }
 
@@ -430,24 +437,52 @@ input#title
 }
 
 
-
+.ui-accordion .ui-accordion-content
+{
+	padding: 1em;
+}
 
 
 
 /****************************************/
 /********* ADDING INPUTS ************/
 /****************************************/
+.all_card_holder
+{
+	display: block;
+	width: 100%;
+	float: left;
+}
 
 .smallcard
 {
 	display: block;
-	padding: .5em;
-	border: 1px solid gray;
-	margin: .5em auto;
+/*	padding: .5em;*/
+/*	border: 1px solid gray;*/
+	margin: .5em;
 	text-align: center;
-	width: 50%;
-
+	width: 6.2em;
+	height: 5em;
+	float: left;
+	overflow: hidden;
 }
+
+.smallcard .ui-button
+{
+	height: 4.5em;
+	width: 6em;
+}
+
+.smallcard .ui-state-default 
+{
+	background: none;
+	background-color: white;
+}
+.smallcard .ui-state-active
+{
+	background: -webkit-gradient( linear, left bottom, left top, color-stop(1, rgb(185,224,245)), color-stop(0, rgb(146,189,214)) );
+}
+
 
 .input-button
 {
@@ -455,6 +490,8 @@ input#title
 	margin: .5em;
 	padding: .5em;
 }
+
+
 
 
 

@@ -33,6 +33,7 @@ class UserResource(ModelResource):
 class CardResource(ModelResource):
 	mediaelements = fields.ToManyField('api.MediaElementResource', 'mediaelement_set', full=True, readonly=True, null=True )#, readonly=True))
 	inputelements = fields.ToManyField('api.InputElementResource', 'inputelement_set', full=True, readonly=True, null=True)
+	guide = fields.ForeignKey('api.GuideResource', 'guide', null=True)
 	class Meta:
 		authorization = Authorization()
 		# always_return_data = True
@@ -60,6 +61,22 @@ class CardResource(ModelResource):
 
 		return bundle
 	
+class SmallCardResource(ModelResource):
+	guide = fields.ForeignKey('api.GuideResource', 'guide')
+	class Meta:
+		fields = ['title', 'representative_media', 'guide', 'id']
+		# include_absolute_url =True
+		authorization = Authorization()
+		queryset= Card.objects.all()
+		filtering= {"guide": ALL_WITH_RELATIONS,}
+
+
+class GuideResource(ModelResource):
+	cards = fields.ToManyField('api.SmallCardResource', 'card_set', full=True, readonly=True, null=True )#, readonly=True))
+	class Meta:
+		authorization = Authorization()
+		queryset= Guide.objects.all()
+		filtering= {"slug": ('exact'),}
 
 
 class UserFileResource(ModelResource):
