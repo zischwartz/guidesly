@@ -57,6 +57,7 @@ class Guide (models.Model):
 	card_order =jsonfield.JSONField(blank=True, null=True)
 
 	def save(self, *args, **kwargs):
+		# TODO add something for if there is no title
 		self.slug= slugify(self.title)
 		super(Guide, self).save(*args, **kwargs)
 	
@@ -94,7 +95,7 @@ class Card (models.Model):
 		if self.title:
 			self.slug=slugify(self.title)
 		# else:
-			# self.slug = self.id # TODO this is hacky
+			# self.slug = self.card_number # TODO this is hacky
 		super(Card, self).save(*args, **kwargs)
 
 
@@ -132,7 +133,7 @@ class MediaElement (models.Model):
 	card = models.ForeignKey(Card)
 	created = models.DateTimeField(auto_now_add=True, blank=True, null=True)
 	type = models.CharField(blank=True, max_length=5, choices = SELEMENT_TYPE)
-	is_primary = models.BooleanField(default=True)
+	is_primary = models.BooleanField(default=False)
 	is_background = models.BooleanField(default=False)
 	autoplay = models.BooleanField(default=False)
 	length_seconds = models.IntegerField(blank=True, null=True)
@@ -179,7 +180,7 @@ class InputElement (models.Model):
 	card = models.ForeignKey(Card)
 	button_text = models.CharField(max_length=100)
 	required = models.BooleanField(default=False)
-	type = models.CharField(blank=True,  max_length=1, choices = IELEMENT_TYPE)
+	type = models.CharField(blank=True,  max_length=8, choices = IELEMENT_TYPE)
 	default_goto = models.ForeignKey(Card, blank=True, null=True, related_name="+") #not using this so far
 	default_action = models.OneToOneField(Action, blank=True, null=True)
 	# default_action = models.ForeignKey(Action, blank=True, null=True)

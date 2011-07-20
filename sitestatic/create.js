@@ -4,7 +4,7 @@ var input_api_url='/api/v1/inputelement/';
 var action_api_url='/api/v1/action/';
 var file_api_url='/api/v1/userfile/';
 var guide_api_url='/api/v1/guide/';
-var smallcard_api_url='/api/v1/smallcard/';
+// var smallcard_api_url='/api/v1/smallcard/';
 
 var VM; //our viewmodel
 var converter = new Showdown.converter();
@@ -37,7 +37,6 @@ VM = ko.mapping.fromJS(initial_card_object, mapping);
 
 
 
-
 //************************
 //****   SAVE THE CARD ***  - NO LONGER NECCESARY, THE UNFLIPING FUNCTION ENDED UP GENERALIZED! 
 //								huzzah i am smart?
@@ -55,20 +54,47 @@ VM.save = function(formElelement)
 		})
 };
 
-// ****************************************
-//Adding a file from user's media files to the card
-// ****************************************
+
+
+// TODO, restrict primary media to a single element
+// VM.the_primary_media = ko.dependentObservable({
+// 	read: function(){
+// 		for (x in VM.mediaelements())
+// 		{
+// 			if (VM.mediaelements()[x].is_primary())
+// 				return VM.mediaelements()[x];
+// 			}
+// 	},
+// 	// write: function(value){
+// 	// 	alert('hi');
+// 	// }
+// 
+// 
+// }, VM)
+
+
+// ****************************************************
+//       ADDING MEDIA FILE TO CARD AS MEDIA ELEMENT   *
+// ****************************************************
 itemToAdd= new Object();
 VM.media_files = ko.observableArray(); //this needs to be here as we're referencing it in addMedia2card
 VM.addMedia2card = function() {
 	// console.log(this);
 	this.file= ko.observable(this.file);
 	itemToAdd.file=this; //this was equal simply to this, which works for adding'em, making it observable
+	itemToAdd.type = this.type;
 	itemToAdd.card= VM.resource_uri();
 	if (VM.mediaelements().length==0)
 		itemToAdd.is_primary= ko.observable(true); //should primary default to true or false? 
 	else
 		itemToAdd.is_primary= ko.observable(false); 
+	
+	// itemToAdd.is_primary.subscribe(function(newvalue){
+	// 	alert('newvalue '+ newvalue + ' - ' + this);
+	// 	console.log(this);
+	// 	
+	// }, itemToAdd);
+	
 	itemToAdd.is_background=ko.observable(false);
 	itemToAdd.title=ko.observable('');
 	var jsonData = ko.toJSON(itemToAdd);
@@ -78,10 +104,12 @@ VM.addMedia2card = function() {
 		type: "POST",
 		data: jsonData,
 		success:function(data) {
-			console.log('success and'); 
-			console.log(postURL.getResponseHeader('location')); 
-			itemToAdd.title=ko.observable('');
+			// console.log('success and'); 
+			// console.log(postURL.getResponseHeader('location')); 
+			itemToAdd.title=ko.observable();
 			itemToAdd.resource_uri=ko.observable(postURL.getResponseHeader('location'));
+			itemToAdd.id = itemToAdd.resource_uri().match(/\/mediaelement\/(.*)\//)[1];
+
 			//add the element to the card
 			VM.mediaelements.push(itemToAdd);
 			},
@@ -150,10 +178,7 @@ VM.unflipEl=function(event){
 		complete: function() 
 			{ 	
 				var jsonData = ko.mapping.toJSON(this);
-				//save the changes on the elemnt to the server 
-				// TODO check if the data changed, duh!
-				// alert('hi');
-				// TODO also maybe keep it from sending the elements, that's wasteful 
+				//save the changes on the elemnt to the server // TODO check if the data changed, duh! TODO also maybe keep it from sending the elements, that's wasteful 
 				console.log(jsonData);
 				$.ajax({
 					url: this.resource_uri(),
@@ -174,7 +199,6 @@ VM.uePostProcessing= function(element){
 	// console.log(element);
 	// if ($(element).hasClass('uibutton'))
 		// element.button();
-		
 	$(element).find(".uibutton").button();
 }
 
@@ -196,8 +220,8 @@ VM.inputTypeTemplate= function(element){
 //******      APPLY MARKDOWN  MARKUP    ********
 //**********************************************
 VM.marked_text = ko.dependentObservable(function() {
-	if (this.text() =='')
-		return ''
+	if (!this.text())
+		return null;
 	return converter.makeHtml(this.text());
 },VM);
 
@@ -206,8 +230,6 @@ VM.marked_text = ko.dependentObservable(function() {
 //******      SIDEBAR CODE              ********
 //**********************************************
 
-// var icons = {header: "ui-icon-circle-arrow-e", headerSelected: "ui-icon-circle-arrow-s"};
-// var icons = {secondary: "photoIcon", headerSelected: "ui-icon-circle-arrow-s"};
 $("#card_element_toolbar").accordion({
 	autoHeight: false,
 	collapsible: true,
@@ -217,6 +239,8 @@ $("#card_element_toolbar").accordion({
 
 VM.media_type= ko.observable("Media");
 VM.input_type= ko.observable("Input");
+VM.currently_adding_input_type= ko.observable();
+VM.currently_adding_media_type= ko.observable();
 
 VM.changeMediaType= function(event){
 	VM.media_type($(event.currentTarget).data("media_type"));
@@ -225,16 +249,20 @@ VM.changeMediaType= function(event){
 VM.changeInputType= function(event){
 	VM.input_type($(event.currentTarget).data("input_type"));
 }
+
 VM.changeInputTypeBack= function(event){
-	// TODO don't change it back if the accordian is open to this. or rather, change it 
-	VM.input_type("Input")
+	if (!VM.currently_adding_input_type())
+		VM.input_type("Input");
+	else
+		VM.input_type(VM.currently_adding_input_type());
 }
 
 VM.changeMediaTypeBack= function(event){
-	VM.media_type("Media")
+	if (!VM.currently_adding_media_type())
+		VM.media_type("Media")
+	else
+		VM.media_type(VM.currently_adding_media_type());
 }
-
-
 
 
 // ******************************************
@@ -242,52 +270,55 @@ VM.changeMediaTypeBack= function(event){
 // ******************************************
 $("#add_media_group h4, #add_media img").click(function(event){
 	// stop it from opening and closing the acordian
-	event.stopPropagation(); 	
+	var current_accordian_index = $("#card_element_toolbar").accordion( "option", "active" )
+	// console.log(current_accordian_index);
+
+	 if (current_accordian_index===0) //so it's already open to the first element
+			event.stopPropagation(); 	
+	
 	VM.media_type($(this).data("media_type"));
+	VM.currently_adding_media_type($(this).data("media_type"));
+
+	if (VM.media_type()=='upload')
+		{
+			alert('upload some stuff, yo');
+			return false;
+		}
 	
 	$.getJSON(file_api_url + "?type="+VM.media_type(), function(data) {
-		$("#add_media_group h4").slideUp();
+	// $("#add_media_group h4").slideUp();
+		
+		VM.media_files.removeAll();
 		for (x in data.objects)
 			{
 				VM.media_files.push(data.objects[x]);
 			}
 		});	 ///end json
-	// ko.applyBindings(VM);
+	
 }); //end click
 
-
-// *************************************
-// ****     CREATE INPUT ELEMENTS   LOAD/show CARDS  ***
-// *************************************
-// VM.cards_in_guide = ko.observableArray(); 
-
-// VM.changeActionGotoCard = ko.dependentObservable(function() {
-// 	console.log(this);
-// 	// return 
-// 	// if (this.text() =='')
-// 		// return ''
-// 	// return converter.makeHtml(this.text());
-// // });
-// },VM);
 
 $("#add_input_group h4, #add_input img").click(function(event){
 	// stop it from opening and closing the acordian
-	event.stopPropagation();
-	// $.getJSON(smallcard_api_url + "?guide="+ guide_id, function(data) {
-	// 	// console.log(data);
-	// 	// $("#add_media_group h4").slideUp();
-	// 	for (x in  data.objects)
-	// 		{
-	// 			VM.cards_in_guide.push(data.objects[x]);
-	// 		}
-	// 	});	 ///end json
+	var current_accordian_index = $("#card_element_toolbar").accordion( "option", "active" )
+	VM.currently_adding_input_type($(this).data("input_type"));
+
+	// console.log(current_accordian_index);
+
+	 if (current_accordian_index===1) //so it's open to the second element
+		{
+			event.stopPropagation(); 	
+		}
+
+		// $("#add_input_group h4").slideUp();
+
 
 }); //end click
 
 
-VM.newCardTitle= ko.observable('');
-VM.newButtonText= ko.observable('');
-VM.newActionGotoCard = ko.observable('false');
+VM.newCardTitle= ko.observable();
+VM.newButtonText= ko.observable();
+VM.newActionGotoCard = ko.observable();
 
 VM.all_cards = ko.observableArray();
 var json_all_cards = jQuery.parseJSON(all_cards);
@@ -298,13 +329,66 @@ for (x in json_all_cards)
 
 
 VM.addInput2card= function(){
-inputToAdd= new Object();
 
 
+	if (VM.newActionGotoCard()=='addcard')
+		{	
+			console.log('addcarding');
+			cardToAdd= new Object();
+			cardToAdd.title= VM.newCardTitle();			
+			cardToAdd.guide= VM.guide();			
+			var postURL_newcard;
+			jsonData = ko.toJSON(cardToAdd);
+			
+			postURL_newcard=$.ajax({
+				url: card_api_url,
+				type: "POST",
+				data: jsonData,
+				success:function(data) {
+					console.log('--');
+					// console.log(postURL_newcard.getResponseHeader('content-location'));
+					new_card_uri= postURL_newcard.getResponseHeader('location');
+					uri_string_n=new_card_uri.indexOf('api');
+					new_card_uri= new_card_uri.slice(uri_string_n-1)
+					console.log(new_card_uri);
+					cardToAdd.resource_uri=ko.observable(new_card_uri);
+					cardToAdd.id = cardToAdd.resource_uri().match(/\/card\/(.*)\//)[1];
+					VM.all_cards.push(cardToAdd);
+					VM.newActionGotoCard(cardToAdd.resource_uri());
+					addInputHelper();
+				},
+			contentType: "application/json",	
+		});
+		
+	} //end if
+	
+	else
+	{
+		addInputHelper();
+	}
+	
+}// end addInput2card function
+
+
+
+
+ko.applyBindings(VM);
+
+$(".uibutton").button();
+
+
+});// end docready
+
+
+
+// HEEEEEEEEEEEEEEEEELLLLLLLLLLLLLLLLLLLLLLLLLLPPPPPPPPPPPPPPPPPPPEEEEEERRRRRRRRRRRRRRRRRRRs
+
+addInputHelper =function(){
+	
+	inputToAdd= new Object();
 	newAction = new Object();
 	newAction.goto =ko.observable(VM.newActionGotoCard());
 	newAction.id = null;
-	
 	var postURL_input;
 	inputToAdd.card= VM.resource_uri();
 	inputToAdd.button_text= ko.observable( VM.newButtonText());
@@ -318,7 +402,7 @@ inputToAdd= new Object();
 		success:function(data) {
 			// console.log(data); 
 			inputToAdd.resource_uri=ko.observable(postURL_input.getResponseHeader('location'));
-			console.log(postURL_input.getResponseHeader('location'));
+			// console.log(postURL_input.getResponseHeader('location'));
 			inputToAdd.id = inputToAdd.resource_uri().match(/\/inputelement\/(.*)\//)[1];
 			// match(/\/inputelement\/(.*)\//)[1]
 			VM.inputelements.push(inputToAdd); //WHAT? TODO
@@ -326,25 +410,5 @@ inputToAdd= new Object();
 		contentType: "application/json",
 		});
 	} //end input adding function
-
-
-// VM.updateUI= function(el){
-// 	$(el.target).checked = true;
-// 	$(el.target).button("refresh");
-// 	console.log(el.target);
-// 	
-// }
-
-
-
-
-ko.applyBindings(VM);
-
-$(".uibutton").button();
-
-
-});// end docready
-
-
 
 
