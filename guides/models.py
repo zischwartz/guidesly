@@ -132,7 +132,10 @@ class MediaElement (models.Model):
 	length_minutes = models.IntegerField(blank=True, null=True)
 	file = models.ForeignKey(UserFile)
 	external_file = models.URLField(blank=True) #,verify_exists=True)
+	
 
+    
+    
 	#deprecate
 	# @property
 	# def file_url(self):
