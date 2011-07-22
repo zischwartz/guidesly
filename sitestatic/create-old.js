@@ -1,5 +1,16 @@
 
 
+
+
+
+
+
+
+
+
+
+// -------------------------------------------------------------------------
+
 // cardViewModel.titleOrPlaceholder= ko.dependentObservable(function() {
 //     if (this.title()!=="")
 // 		{return this.title();}	

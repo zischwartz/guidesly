@@ -31,6 +31,7 @@ urlpatterns = patterns('',
     (r'^$', GuideListView),
     url(r'^g/(?P<slug>[^/]+)/?$', GuideDetailView, name='GuideDetailView'),
     url(r'^g/(?P<gslug>[^/]+)/(?P<slug>[^/]+)/?$', CardDetailView, name='CardDetailView'),
+    url(r'^n/(?P<gslug>[^/]+)/(?P<cnumber>[^/]+)/?$', CardDetailView, name='CardDetailViewByNum'),
     url(r'^c/(?P<id>[^/]+)/?$', CardDetailViewById, name='CardDetailViewById'),
     
     url(r'create/?$', CreateGuide, name='CreateGuide'),

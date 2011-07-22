@@ -23,9 +23,20 @@
 			
 			<div class="card_media">
 				{%for el in media_elements%}
+				    {%if el.type == "video"%}
+					<video autoplay="autoplay" controls preload="auto" width="514"> 
+			        <source src="{{el.file}}" type="video/mp4"/> 
+				    </video>
+				    {%endif%}
+				    
+					{%if el.type == "image"%}
 					<div class="media_el {%if el.is_primary%}is_primary{%else%} is_thumb {%endif%}" style="background-image:url('{{el.file}}');"></div>
+				    {%endif%}
 				{%endfor%}
 			</div>
+					
+	
+			
 			
 			{%if card.text and not card.text_on_top%}
 			<div class="card_text">

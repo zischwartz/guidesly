@@ -33,6 +33,7 @@ class UserResource(ModelResource):
 class CardResource(ModelResource):
 	mediaelements = fields.ToManyField('api.MediaElementResource', 'mediaelement_set', full=True, readonly=True, null=True )#, readonly=True))
 	inputelements = fields.ToManyField('api.InputElementResource', 'inputelement_set', full=True, readonly=True, null=True)
+	guide = fields.ForeignKey('api.GuideResource', 'guide', null=True)
 	class Meta:
 		authorization = Authorization()
 		# always_return_data = True
