@@ -15,9 +15,9 @@
 		{%else%}Edit Card
 		{%endif%}
 	</div>
-	<a href="{% url CardDetailViewById id=s.id %}" class="uibutton"> Preview <i data-bind="text: !title() ? 'Untitled Card {{s.id}}': title"></i></a>
+	<a href="{% url CardDetailViewByNum gslug=s.guide.slug cnumber=s.card_number %}" class="uibutton"> Preview <i data-bind="text: !title() ? 'Untitled Card {{s.card_number}}': title"></i></a>
+	{# <a href="{% url CardDetailViewById id=s.id %}" class="uibutton"> Preview <i data-bind="text: !title() ? 'Untitled Card {{s.card_number}}': title"></i></a> #}
 	<a href="{% url EditGuide gslug=s.guide.slug %}" class="uibutton"> Overview of <i>{{s.guide.title}}</i> </a>
-{# <i data-bind="text: title() == '' ? 'Card': title()"></i> #}
 
 {%endblock%}
 
@@ -59,20 +59,12 @@
 		 				beforeRemove: function(elem) {$(elem).slideUp() },
 						afterAdd: function(elem) {$(elem).hide().slideDown() }}"> </div>
 
-
-	{# INTERACTIVE ELEMENTS #}
-		{# {%for el in current_interactive_elements%} #}
-		{# 	<div class="an_element an_interactive_el" data-id="{{el.id}}" data-title="{{el.button_text}}"> #}
-		{# 		{%include el.el_template%}<br> #}
-		{# 	</div> #}
-		{# {%endfor%} #}
 	
 
-	</div> {# end #card_being_edited #}
-	{# -------------------------- #}
+	</div> {# end #card_being_edited  ------------------------ #}
+
 	{# <input class="uibutton" type="submit" value="Save Card" name ="card_sub_save"/> #}
 	<input class="uibutton" type="submit" value="Save Card &amp; Add New Card" name ="card_sub_save_and_add"/>
-	{# <input class="button" type="submit" value="Save &amp; Add Another Card" name="card_sub_add" /> #}
 </form> {# end card form #}
 
 {%endblock%}
@@ -81,12 +73,9 @@
 {%block sidebar%}
 
 
-
-
 <div id="card_element_toolbar">
 
 	<h3 id="add_media"> 
-		<div >
 		<a href="#">Add  <span data-bind="text:media_type">Media</span> 
 			<div class="iconbuttons">
 				<img src="{{STATIC_URL}}img/image-icon.png" data-media_type="image" class="uibutton" data-bind="event: {mouseover: changeMediaType, mouseout: changeMediaTypeBack}">
@@ -94,7 +83,6 @@
 				<img src="{{STATIC_URL}}img/audio-icon.png" data-media_type="audio" class="uibutton" data-bind="event: {mouseover: changeMediaType, mouseout: changeMediaTypeBack}">
 				<img src="{{STATIC_URL}}img/upload-icon.png" data-media_type="upload" class="uibutton" data-bind="event: {mouseover: changeMediaType, mouseout: changeMediaTypeBack}">
 			</div>
-		</div>
 		</a>
 	</h3>
 	<div id="add_media_group">
@@ -108,7 +96,7 @@
 		<span data-bind="visible: (media_files().length||!currently_adding_media_type()) ? 0: 1">You haven't uploaded any <span data-bind="text: currently_adding_media_type"></span> files yet.</span>
 
 		{# USERFILE MEDIA JS TEMPLATE  #}
-		<div class="userfiles" data-bind="template:{name: 'mediaTemplate',  foreach: VM.media_files}"></div>
+		<div class="userfiles" data-bind="template:{name: userFileDisplayMode,  foreach: VM.media_files}"></div>
 		{# *************************** #}
 		<br>
 		<button class="uibutton"><img src="{{STATIC_URL}}img/upload-icon.png"> Upload New Media Now</button>
@@ -178,12 +166,35 @@
 				<a class="uibutton delete" data-bind="click: VM.deleteFromCard">Remove</a>
 
 			</div>
+			
 		</div> 
 	</script>
-{%endverbatim%}
+	
+	<!-- Video Element template. TODO add thumbnail -->
+	<script id='videoTemplate' type='text/html'>
+		<div class="ue" data-bind="css: {is_primary: is_primary}, event: { focusin: VM.flipEl, focusout: VM.unflipEl }, attr: { tabindex: typeof(id)!='undefined' ? id: -1 }">
+			<figure class="front">
+				<div class="media_holder" style="background-image: url('/static/img/video-icon.png')"></div>
+				<div class="media_title" data-bind="text: title"></div>
+			</figure>
+			
+			<div class="back">
+				
+				<input type="text" data-bind="value:title, valueUpdate: 'change'" placeholder="Image title"> <br>
+				<img src="/static/img/video-icon.png" width="50px"> 
+				<br><input type="checkbox" id="checkb-is_primary-${id}" class="uibutton" data-bind="checked: is_primary" />
+				<label for="checkb-is_primary-${id}" data-bind="text: is_primary() ? 'Currently the Primary Media': 'Make the Primary Media'"></label>
+				<br><input type="checkbox" id="checkb-autoplay-${id}" class="uibutton" data-bind="checked: autoplay" />
+				<label for="checkb-autoplay-${id}" data-bind="text : autoplay() ? 'Currently Autoplaying ': 'Make Autoplay'"></label>
+				<br>
+				<a class="uibutton delete" data-bind="click: VM.deleteFromCard">Remove</a>
 
-
-{% verbatim %} 		
+			</div>
+			
+		</div> 
+	</script>
+	
+		
 	<script id='buttonTemplate' type='text/html'>
 		<div class="ue" data-bind="event: { focusin: VM.flipEl, focusout: VM.unflipEl }, attr: { tabindex: typeof(id)!='undefined' ? id: -1 }">
 			<div class="front input-button" data-bind="text:button_text"></div>
@@ -206,21 +217,41 @@
 			
 		</div>
 	</script>
-{%endverbatim%}
 
 
 
-{% verbatim %} 		
-	<script id='mediaTemplate' type='text/html'>
+<!-- USER FILE TEMPLATES, for the sidebar -->
+	
+	<script id='userFileImageTemplate' type='text/html'>
 		<div data-bind='click: VM.addMedia2card' class="media"> 
-		<div class="image_caption">${slug}</div>'
+		 	<img src="${file}">
+			<div class="image_caption">${slug}</div>
 		</div>
 	</script>
-{%endverbatim%}
-
-
-
-{%verbatim %}	
+	
+<!-- the vid icon needs to be replaced with a thumbnail, obvs TODO  -->
+	<script id='userFileVideoTemplate' type='text/html'>
+		<div data-bind='click: VM.addMedia2card' class="media"> 
+		 	<img src="/static/img/video-icon.png" />
+			<div>${slug}</div>
+			<div class="info">${length_minutes} minutes </div>
+		</div>
+	</script>
+	
+	<script id='userFileAudioTemplate' type='text/html'>
+		<div data-bind='click: VM.addMedia2card' class="media"> 
+		 	<img src="/static/img/audio-icon.png" />
+			<div> ${slug} </div>
+		</div>
+	</script>
+	
+	<script id='userFileOtherTemplate' type='text/html'>
+		<div data-bind='click: VM.addMedia2card' class="media"> 
+		 	<img src="/static/img/audio-icon.png" />
+			<div> ${slug} </div>
+		</div>
+	</script>
+	
 	<script id='smallCardTemplate' type='text/html'>
 		<div class="smallcard">
 			<input type="radio" id="radiob-card-${id}" class="uibutton" data-bind="checked: VM.newActionGotoCard , value: resource_uri" name="addbutton-pickcard">

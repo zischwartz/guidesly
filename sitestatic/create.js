@@ -82,7 +82,7 @@ VM.addMedia2card = function() {
 	// console.log(this);
 	this.file= ko.observable(this.file);
 	itemToAdd.file=this; //this was equal simply to this, which works for adding'em, making it observable
-	itemToAdd.type = this.type;
+	itemToAdd.type = ko.observable(this.type);
 	itemToAdd.card= VM.resource_uri();
 	if (VM.mediaelements().length==0)
 		itemToAdd.is_primary= ko.observable(true); //should primary default to true or false? 
@@ -206,8 +206,22 @@ VM.uePostProcessing= function(element){
 //******      DEFINE DIFFERENT MEDIA TEMPLATES, PRIMARY, BG OR NOT   (not currently implimented) ********
 //**********************************************
 VM.mediaTypeTemplate= function(element){
-// this will return differently based on if it's image, video, audio (or bg?)
+	if (element.type()=="image")
 		return 'imageTemplate';
+	if (element.type()=="video")
+		return 'videoTemplate';
+}
+
+//for the sidebar, add media
+VM.userFileDisplayMode= function(element){
+	if (VM.currently_adding_media_type()=="image")
+		return 'userFileImageTemplate';
+	if (VM.currently_adding_media_type()=="video")
+		return 'userFileVideoTemplate';
+	if (VM.currently_adding_media_type()=="audio")
+		return 'userFileAudioTemplate';	
+	if (VM.currently_adding_media_type()=="other")
+		return 'userFileOtherTemplate';	
 }
 
 VM.inputTypeTemplate= function(element){
@@ -378,7 +392,6 @@ $(".uibutton").button();
 
 
 });// end docready
-
 
 
 // HEEEEEEEEEEEEEEEEELLLLLLLLLLLLLLLLLLLLLLLLLLPPPPPPPPPPPPPPPPPPPEEEEEERRRRRRRRRRRRRRRRRRRs

@@ -50,11 +50,12 @@ class Guide (models.Model):
 	is_linear = models.BooleanField(default=False) #if true, we should auto add next and back buttons
 	enable_comments = models.BooleanField(default=True)
 	text_slugs_for_cards = models.BooleanField(default=True)
-	number_of_cards = models.IntegerField(default=1)
+	number_of_cards = models.IntegerField(default=0)
 	tags = TagField()
 	has_title_card = models.BooleanField(default=False)
 	cards = models.ManyToManyField('Card', blank=True, null=True, related_name="cards_in_guide")
 	card_order =jsonfield.JSONField(blank=True, null=True)
+	# thumbnail = models.ForeignKey(UserFile, null=True, blank=True)
 
 	def save(self, *args, **kwargs):
 		# TODO add something for if there is no title
@@ -88,14 +89,24 @@ class Card (models.Model):
 		if self.title !="":
 			return self.title
 		else:
-			return "Untitled Card #" + str(self.id)
+			return "Untitled Card #" + str(self.card_number)
+
+	def firstsave(self, *args, **kwargs):
+		num_in_guide= self.guide.number_of_cards
+		self.guide.number_of_cards= num_in_guide +1
+		self.guide.save()
+		self.card_number = num_in_guide +1
+		# self.slug = num_in_guide +1
+		super(Card, self).save(*args, **kwargs)
+
 
 	def save(self, *args, **kwargs):
 		self.representative_media = self.rep_media
+		self.brand_new = False
 		if self.title:
 			self.slug=slugify(self.title)
-		# else:
-			# self.slug = self.card_number # TODO this is hacky
+		else:
+			self.slug=None
 		super(Card, self).save(*args, **kwargs)
 
 
@@ -104,10 +115,14 @@ class Card (models.Model):
 	
 	@models.permalink
 	def get_absolute_url(self):
-		if self.slug:
-			return ('CardDetailView', (), {'gslug': self.guide.slug, 'slug':self.slug })
+		if not self.guide.text_slugs_for_cards:
+			return ('CardDetailViewByNum', (), {'gslug': self.guide.slug, 'cnumber':self.card_number })
 		else:
-			return ('CardDetailViewById', (), { 'id':self.id })
+			if self.slug:
+				return ('CardDetailView', (), {'gslug': self.guide.slug, 'slug':self.slug })
+			else:
+				return ('CardDetailViewByNum', (), {'gslug': self.guide.slug, 'cnumber':self.card_number })
+		
 
 	@property
 	def rep_media(self):
@@ -140,9 +155,7 @@ class MediaElement (models.Model):
 	length_minutes = models.IntegerField(blank=True, null=True)
 	file = models.ForeignKey(UserFile)
 	external_file = models.URLField(blank=True) #,verify_exists=True)
-	
-
-    
+	# action_when_complete= models.OneToOneField(Action, blank=True, null=True)
     
 	#deprecate
 	# @property
@@ -179,7 +192,6 @@ class ConditionalAction (models.Model):
 	play_static = models.ForeignKey(MediaElement, blank=True, null=True)
 
 
-
 class InputElement (models.Model):
 	card = models.ForeignKey(Card)
 	button_text = models.CharField(max_length=100)
@@ -187,14 +199,6 @@ class InputElement (models.Model):
 	type = models.CharField(blank=True,  max_length=8, choices = IELEMENT_TYPE)
 	default_goto = models.ForeignKey(Card, blank=True, null=True, related_name="+") #not using this so far
 	default_action = models.OneToOneField(Action, blank=True, null=True)
-	# default_action = models.ForeignKey(Action, blank=True, null=True)
-	
-	# def save(self, *args, **kwargs):
-	# 	if not self.default_action:
-	# 		someaction = Action()
-	# 		someaction.save()
-	# 		self.default_action=someaction
-	# 	super(InputElement, self).save(*args, **kwargs)
 	
 	def el_template(self):
 		return 'els/button.html'
@@ -203,6 +207,18 @@ class InputElement (models.Model):
 		return self.button_text
 
 
+
+
+
+
+
+from api import CardResource
+
+# USER PERMISSION PER OBJECT INSTANCE
+
+# from object_permissions import register
+
+# register(['permission'], Guide)
 
 
 
@@ -255,11 +271,3 @@ class InputElement (models.Model):
 
 
 
-
-from api import CardResource
-
-# USER PERMISSION PER OBJECT INSTANCE
-
-# from object_permissions import register
-
-# register(['permission'], Guide)
