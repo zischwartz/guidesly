@@ -94,14 +94,15 @@ SECRET_KEY = 'c*48h#!%y8(@lkasi*xs%m#s+kp&cf6e-&0sot8trzh-yjvd4i'
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
     'django.template.loaders.filesystem.Loader',
-    'django.template.loaders.app_directories.Loader',
+    'django.template.loaders.app_directories.Loader',      
+   
 #     'django.template.loaders.eggs.Loader',
 )
 
 MIDDLEWARE_CLASSES = (
-    'django.middleware.common.CommonMiddleware',
+    'django.middleware.common.CommonMiddleware',           
+	'django.middleware.csrf.CsrfViewMiddleware', 
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'debug_toolbar.middleware.DebugToolbarMiddleware',
@@ -146,7 +147,15 @@ INSTALLED_APPS = (
     'tastypie',
     'south',
     'debug_toolbar',
-)
+	'invitation',
+	'registration',
+)                  
+
+ACCOUNT_ACTIVATION_DAYS = 5
+
+ACCOUNT_INVITATION_DAYS = 7
+
+INVITATIONS_PER_USER = 5
 
 LOG_FILE = "log.log"
 
@@ -184,4 +193,18 @@ DEBUG_TOOLBAR_PANELS = (
     'debug_toolbar.panels.sql.SQLDebugPanel',
     'debug_toolbar.panels.signals.SignalDebugPanel',
     'debug_toolbar.panels.logger.LoggingPanel',
-)
+)  
+
+EMAIL_HOST = 'smtp.gmail.com'     
+
+EMAIL_HOST_USER = 'diana.huang@gmail.com'
+
+EMAIL_HOST_PASSWORD = 'lee11huang'
+
+
+EMAIL_PORT = 587
+
+EMAIL_SUBJECT_PREFIX = '[Django] '
+
+EMAIL_USE_TLS = True
+

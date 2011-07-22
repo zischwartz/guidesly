@@ -49,6 +49,8 @@ urlpatterns = patterns('',
     # url(r'^learny/', include('learny.foo.urls')),
     url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
     url(r'^admin/', include(admin.site.urls)),
+	url(r'^accounts/', include('invitation.urls')),
+	url(r'^accounts/', include('registration.backends.default.urls')),
 )
 
 
