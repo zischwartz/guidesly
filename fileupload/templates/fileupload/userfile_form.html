@@ -12,10 +12,11 @@
  * http://creativecommons.org/licenses/MIT/
  */
 -->
+{# THIS USES A DIFFERENT SET OF JS THAN THE FORM ON THE CREATE GUIDE PAGE. Which needs to be changed eventually, because they're fairly big files for js #}
 <html lang="en" class="no-js">
 <head>
 <meta charset="utf-8">
-<title>jQuery File Upload Example</title>
+<title>File Upload</title>
 <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.13/themes/base/jquery-ui.css" id="theme">
 <link rel="stylesheet" href="{{ STATIC_URL }}jquery.fileupload-ui.css">
 <link rel="stylesheet" href="{{ STATIC_URL }}style.css">
@@ -30,6 +31,8 @@
                 <span>Add files...</span>
                 <input type="file" name="file" multiple>
             </label>
+             <input type="hidden" name="owner" value="{{user.id}}">
+
             <button type="submit" class="start">Start upload</button>
             <button type="reset" class="cancel">Cancel upload</button>
             <button type="button" class="delete">Delete files</button>

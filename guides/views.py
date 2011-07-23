@@ -29,10 +29,10 @@ def GuideDetailView (request, slug):
 	return render_to_response("enjoy/guide_detail.html", locals(), context_instance=RequestContext(request))
 
 def CardDetailView (request, gslug, slug=None, cnumber=None):
-	logger=getlogger()
-	logger.debug("---------------")
-	logger.debug(cnumber)
-	logger.debug(slug)
+	# logger=getlogger()
+	# logger.debug("---------------")
+	# logger.debug(cnumber)
+	# logger.debug(slug)
 
 	if cnumber==None:
 		card = get_object_or_404(Card, guide__slug=gslug, slug=slug)
@@ -64,10 +64,13 @@ def CreateGuide (request):
 		form = GuideForm()
 	return render_to_response("create/create_guide.html", locals(), context_instance=RequestContext(request) )
 
+from api import CardResource, SmallCardResource, GuideResource
 
 def EditGuide (request, gslug):
 	guide = get_object_or_404(Guide, slug=gslug)
-	card_list= guide.card_set.all()
+	g = GuideResource()
+	guide_json = g.serialize(None, g.full_dehydrate(guide), 'application/json')
+	
 	return render_to_response("create/edit_guide.html", locals(), context_instance=RequestContext(request))
 
 
@@ -76,25 +79,27 @@ def BuildCard (request, gslug):
 	s.firstsave()
 	return HttpResponseRedirect(reverse('EditCard', kwargs={'gslug':gslug, 'id': s.id}))
 
-from api import CardResource, SmallCardResource
 
 def EditCard (request, gslug, id):
-		# send the card's data as json
-		s = get_object_or_404(Card, guide__slug=gslug, id=id)
-		ur = CardResource()
-		ur_bundle = ur.build_bundle() #(obj=s, request=request) #turned out not to be neccesary
-		card_json= ur.serialize(None, ur.full_dehydrate(s), 'application/json') #with newer version, full dehyrate ur_bundle
+	# send the card's data as json
+	s = get_object_or_404(Card, guide__slug=gslug, id=id)
+	ur = CardResource()
+	# ur_bundle = ur.build_bundle() #(obj=s, request=request) #turned out not to be neccesary
+	card_json= ur.serialize(None, ur.full_dehydrate(s), 'application/json') #with newer version, full dehyrate ur_bundle
 
-		#and all the cards in the guide
-		all_cards = get_list_or_404(Card, guide__slug=gslug)
-		c=CardResource()
-		card_list = []
-		for card in all_cards:
-			card_list.append({'title':card.title, 'representative_media': card.representative_media,'resource_uri': c.get_resource_uri(card), 'id':card.id})
-		
-		# r.get_resource_uri(self)
-		all_cards_json = simplejson.dumps(card_list)
-		return render_to_response("create/edit_card.html", locals(), context_instance=RequestContext(request))
+	#and all the cards in the guide
+	all_cards = get_list_or_404(Card, guide__slug=gslug)
+	c=CardResource()
+	card_list = []
+	for card in all_cards:
+		card_list.append({'title':card.title, 'representative_media': card.representative_media,'resource_uri': c.get_resource_uri(card), 'id':card.id})
+	all_cards_json = simplejson.dumps(card_list)
+
+	#should get the guide instead, that has the relevant card info TODO delete above and impliment the below
+	# guide = get_object_or_404(Guide, slug=gslug)
+	# g = GuideResource()
+	# guide_json = g.serialize(None, g.full_dehydrate(guide), 'application/json')
+	return render_to_response("create/edit_card.html", locals(), context_instance=RequestContext(request))
 
 
 # 

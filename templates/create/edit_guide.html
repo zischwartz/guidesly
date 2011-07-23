@@ -1,5 +1,16 @@
 {%extends "base-create.html"%} 
 
+{%block extrahead%}
+		<link rel="stylesheet" media="all" href="{{STATIC_URL}}css/edit-guide.css"/>
+
+	<script src="{{STATIC_URL}}create-edit_guide.js"></script>
+	<script type="text/javascript">
+		{# var all_cards_json = '{{all_cards_json|safe|escapejs}}'; #}
+		var guide_json = '{{guide_json|safe|escapejs}}'; 
+	</script>
+
+{%endblock%}
+
 {%block header%}
 	<div class="headerTitle">Edit Guide</div>
 {%endblock%}
@@ -7,12 +18,44 @@
 {% block content %} 
 
 <h1>{{guide.title}}</h1>
-<p>{{guide.description}}</p>
-<br>
-{%for card in card_list%}
-	<li><a href="{{card.get_absolute_url}}">{{card}}</a>  
-		<a href="{% url EditCard gslug=card.guide.slug, id=card.id %}"> EDIT</a>
-</li>
+<h2>{{guide.description}}</h2>
+<br><br>
+{%for card in guide.card_set.all%}
+		<div class="smallcardWrapper">
+		{{card.card_number}}
+			<div class="smallcard">
+				{{card}}
+				{%if card.representative_media%} <img src="{{card.representative_media}}" style="width:50px"> {%endif%}
+			</div>
+			<br><a href="{{card.get_absolute_url}}"> View</a> | <a href="{% url EditCard gslug=card.guide.slug, id=card.id %}"> Edit</a>
+
+		</div>
 {%endfor%}
 
-{% endblock %}
+{# <div data-bind="text:title"></div> #}
+
+
+{# <div class="all_card_holder" data-bind="template: {name: 'smallCardTemplate', #}
+{# 				  						foreach: VM.cards, #}
+{#  #}
+{# 						 				beforeRemove: function(elem) {$(elem).slideUp() }, #}
+{# 										afterAdd: function(elem) {$(elem).hide().slideDown() } }"></div> #}
+{# 	 #}									
+
+{%load verbatim_templatetag%} 
+
+
+{%verbatim%}
+	<script id='smallCardTemplate' type='text/html'>
+		<div class="smallcard">
+			<span data-bind="text: title() ? title: 'Untitled'"></span>
+			{{if representative_media }}<br><img src="${representative_media}" style="width:50px"> 
+			{{/if}} <a href="#">EDIT</a>
+		</div>
+	</script>
+{%endverbatim%}
+{% endblock %} {# end content #}
+
+{%block sidebar%}
+This would be a good place to edit the meta data about the guide, publishing options, etc.
+{%endblock %}
