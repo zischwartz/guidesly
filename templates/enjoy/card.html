@@ -118,6 +118,15 @@ VideoJS.setupAllWhenReady();
 
 
 
+			{%if card.show_last_and_next_buttons%}
+			<div class="prev_and_next">
+				{%if prev_card%}<div class="interactive_element" style="float:left"><a href="{{prev_card.get_absolute_url}}">← Previous</a></div>{%endif%}
+				
+				{%if next_card%}<div class="interactive_element"><a href="{{next_card.get_absolute_url}}">Next →</a></div>{%endif%}
+			
+			</div>
+			{%endif%}
+			
 			</div> {# end .card #}
 </div> {# end #card_wrap #}
 

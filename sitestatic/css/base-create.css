@@ -356,6 +356,7 @@ input#title
 {
 	font-size: 1.2em;
  	text-transform: capitalize ;
+padding-left: 1.5em;
 /*	overflow: overlay;*/
 }
 

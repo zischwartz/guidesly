@@ -1,0 +1,23 @@
+<div id="fileupload" class="hidden" data-bind="visible: currently_adding_media_type()=='upload'">
+    <form method="post" action="/upload/new/" enctype="multipart/form-data">
+        <div class="fileupload-buttonbar">
+            {% csrf_token %}
+            <label class="fileinput-button">
+                <span>To upload, drag files here from your computer.</span>
+
+                <input type="file" name="file" multiple>
+            </label>
+             <input type="hidden" name="owner" value="{{user.id}}">
+
+            {# <button type="submit" class="start">Start upload</button> #}
+            {# <button type="reset" class="cancel">Cancel upload</button> #}
+            {# <button type="button" class="delete">Delete files</button> #}
+        </div>
+    </form>
+    <div class="fileupload-content">
+        <table class="files"></table>
+        <div class="fileupload-progressbar"></div>
+    </div>
+</div>
+	{% load upload_tags %}
+	{% upload_js %}

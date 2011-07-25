@@ -15,12 +15,10 @@
 $(function () {
 
     // Initialize the jQuery File Upload widget:
-    $('#fileupload').fileupload(
-	// formData: [
-	// 	name: 'owner',
-	// 	value: 'test',
-	// ]
-	);
+    $('#fileupload').fileupload({
+	// options
+	autoUpload: true,
+	});
 
     // Load existing files:
     $.getJSON($('#fileupload form').prop('action'), function (files) {
