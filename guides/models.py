@@ -59,9 +59,10 @@ class Guide (models.Model):
 	def save(self, *args, **kwargs):
 		self.slug= slugify(self.title)
 		ordering={}
-		for c in self.cards.all():
-			ordering[c.card_number] = c.id
-		self.card_order= ordering
+		if self.number_of_cards:
+			for c in self.cards.all():
+				ordering[c.card_number] = c.id
+			self.card_order= ordering
 		# logger.debug("----order------")
 		# logger.debug(self.card_order)
 		# logger.debug("----@1------")
@@ -115,6 +116,7 @@ class Card (models.Model):
 	def firstsave(self, *args, **kwargs):
 		num_in_guide= self.guide.number_of_cards
 		self.card_number = num_in_guide +1
+		self.show_last_and_next_buttons= self.guide.is_linear
 		# self.slug = num_in_guide +1
 		super(Card, self).save(*args, **kwargs)
 		self.guide.number_of_cards= num_in_guide +1

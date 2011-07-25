@@ -35,12 +35,11 @@ def CardDetailView (request, gslug, slug=None, cnumber=None):
 		card = get_object_or_404(Card, guide__slug=gslug, card_number=cnumber)
 	media_elements = card.mediaelement_set.all()
 	input_elements=card.inputelement_set.all()
-	if card.guide.is_linear:
+	if card.show_last_and_next_buttons:
 		prev_card = card.guide.get_prev_card(card)
 		next_card = card.guide.get_next_card(card)
-	
-	# logger.debug(prev_card)
-	# logger.debug(next_card)
+		# logger.debug(prev_card)
+		# logger.debug(next_card)
 	return render_to_response("enjoy/card.html", locals(), context_instance=RequestContext(request))
 
 
@@ -54,8 +53,6 @@ def CardDetailViewById (request, id):
 # Creating Guides
 # -------------------------
 def CreateGuide (request):
-	# if request.user.is_authenticated():
-		# current_user= request.user
 	if request.method == 'POST':
 		form = GuideForm(request.POST)
 		if form.is_valid():
@@ -88,9 +85,13 @@ def BuildCard (request, gslug):
 
 
 def EditCard (request, gslug, id):
+	
 	# send the card's data as json
 	s = get_object_or_404(Card, guide__slug=gslug, id=id)
 	ur = CardResource()
+	# if s.guide.is_linear:
+	prev_card = s.guide.get_prev_card(s)
+	next_card = s.guide.get_next_card(s)	
 	# ur_bundle = ur.build_bundle() #(obj=s, request=request) #turned out not to be neccesary
 	card_json= ur.serialize(None, ur.full_dehydrate(s), 'application/json') #with newer version, full dehyrate ur_bundle
 

@@ -138,7 +138,7 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     'django.contrib.admindocs',
     'django.contrib.markup',
-    # 'photologue',
+    'photologue',
     'object_permissions',
     'accounts',
     'tagging',

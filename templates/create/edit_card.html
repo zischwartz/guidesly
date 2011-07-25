@@ -72,11 +72,15 @@
 						afterAdd: function(elem) {$(elem).hide().slideDown() }}"> </div>
 
 	
-
+		{# Prev and Next Buttons for linear guides #}
+		<div id="prev_and_nexts" data-bind="visible: show_last_and_next_buttons">
+			{%if prev_card%}<a href="#">Previous</a> {%endif%}
+			{%if next_card%}<a href="#">Next</a> {%endif%}
+		</div>
 	</div> {# end #card_being_edited  ------------------------ #}
 
 	{# <input class="uibutton" type="submit" value="Save Card" name ="card_sub_save"/> #}
-	<input class="uibutton" type="submit" value="Save Card &amp; Add New Card" name ="card_sub_save_and_add"/>
+	<a  href="{% url BuildCard gslug=s.guide.slug %}"class="uibutton"/>Save  &amp; Add New Card</a>
 </form> {# end card form #}
 
 {# <iframe src="/upload/new/"> #}
@@ -159,7 +163,12 @@
 	</div>
 	
 	<h3 id="add_static"><a href="#">Edit Card Options</a></h3>
-	<div id="edit_card_options_group"> Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua in volupta</div>
+	
+	<div id="edit_card_options_group"> 
+		<input type="checkbox" data-bind="checked: show_last_and_next_buttons" id="show_prev_and_next"> <label for="show_prev_and_next"> Previous and Next Card Buttons</label>
+		<br><br>
+		(These will only show up if they actually exist.)
+		</div>
 </div> {# end #card_element_toolbar #}
 
 
