@@ -36,8 +36,8 @@ VideoJS.setupAllWhenReady();
 			{%endif%}
 			
 			<div class="card_media">
-				{%for el in media_elements%}
-				    {%if el.type == "video"%}
+			
+				    {%if card.primary_media.type == "video"%}
 				        <div class="video-js-box">
       					<video id="example_video_1" 
       					class="video-js"
@@ -52,7 +52,7 @@ VideoJS.setupAllWhenReady();
   					    </div>    
 				    {%endif%}
 				    
-				    {%if el.type == "audio"%}
+				    {%if card.primary_media.type == "audio"%}
 				    	<div class="audio">
 				    	<audio 
 				    	src="{{el.file}}"  
@@ -61,13 +61,26 @@ VideoJS.setupAllWhenReady();
 						</audio>
 				    {%endif%}
 					
-					{%if el.type == "image"%}
-					<div class="media_el {%if el.is_primary%}is_primary{%else%} is_thumb {%endif%}" 
-					style="background-image:url('{{el.file}}');">
+					{%if card.primary_media.type == "image"%}
+					<div class="media_el is_primary" 
+					style="
+					background:url('{{card.primary_media.file}}') no-repeat center center;
+					background-size: contain;
+					padding: 20px 0px 20px 0px; 
+					">
 					</div>
+						{%if card.primary_media|length > 1 %}
+							{%for el in media_elements %}
+								<div class="media_el is_thumb" 
+								style="
+								background:url('{{el.file}}') no-repeat center center;
+								background-size: contain;
+								padding: 40px 20px 100px 20px; 
+								">
+								</div>
+					 		{%endfor%}
+				   		{%endif%}
 				    {%endif%}
-				    
-				{%endfor%}
 			</div>
 					
 			
@@ -97,10 +110,6 @@ VideoJS.setupAllWhenReady();
 			</div>
 			
 			<script>
-			
-			
-			
-			
 			$('#mutebutton').click(function() {
  		    if(($('video').prop('muted') == false) || ($('audio').prop('muted') == false))  {
 				$('video').prop('muted', true);
