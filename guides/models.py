@@ -104,8 +104,9 @@ class Card (models.Model):
 	has_lots_of_text = models.BooleanField(default=False)
 	tags = TagField()
 	card_number = models.IntegerField(blank=True, null=True) #for default guide...
+	
 	representative_media = models.URLField(blank=True, null=True)
-	primary_media = models.ForeignKey('MediaElement', blank=True, null=True, related_name='primary_media')
+	primary_media = models.ForeignKey('MediaElement', blank=True, null=True, related_name='primary_media', default="")
 	show_last_and_next_buttons = models.BooleanField(default=True)
 	
 	def __unicode__(self):
@@ -151,14 +152,14 @@ class Card (models.Model):
 
 	@property
 	def rep_media(self):
-		primary =  self.mediaelement_set.filter(is_primary=True);
-		if primary:
-			return primary[0].file.file
-			
-		somemedia=self.mediaelement_set.all()
-		if somemedia:
-			return somemedia[0].file.file
-		else:
+		# primary =  self.mediaelement_set.filter(is_primary=True);
+		# if primary:
+		# 	return primary[0].file.file
+		# 	
+		# somemedia=self.mediaelement_set.all()
+		# if somemedia:
+		# 	return somemedia[0].file.file
+		# else:
 			return None
 
 	@property

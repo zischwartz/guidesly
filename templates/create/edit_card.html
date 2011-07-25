@@ -49,6 +49,12 @@
 					<label for="title">Card's title: </label><input data-bind="value:title, valueUpdate: 'afterkeydown'" type="text" name="title" id="title" />
 				</div>
 			</div>	 {# end .ue #}
+			
+		{# Primary Media #}
+			<div data-bind="template:{name: VM.primarymediaTypeTemplate,  foreach:  VM.mediaelements,
+			  				afterRender: uePostProcessing,
+			 				beforeRemove: function(elem) {$(elem).slideUp() },
+							afterAdd: function(elem) {$(elem).hide().slideDown() }}"> </div>
 					
 	{#   MEDIA CLIENTSIDE TEMPLATE CALL  which is actually way down below, and perhaps should be a separate template file on the server#}
 			<div data-bind="template:{name: VM.mediaTypeTemplate,  foreach: VM.mediaelements,
@@ -173,24 +179,20 @@
 
 
 
-
-
 {% verbatim %} 		 
 	<script id='imageTemplate' type='text/html'>
-		<div class="ue" data-bind="css: {is_primary: is_primary}, event: { focusin: VM.flipEl, focusout: VM.unflipEl }, attr: { tabindex: typeof(id)!='undefined' ? id: -1 }">
+		<div class="ue" data-bind="event: { focusin: VM.flipEl, focusout: VM.unflipEl }, attr: { tabindex: typeof(id)!='undefined' ? id: -1 }">
 			<figure class="front">
 				<div class="media_holder"  data-bind="style: {background: 'url('+ file.file() +') center center no-repeat', backgroundSize: 'contain'}"></div>
 				<div class="media_title" data-bind="text: title"></div>
 			</figure>
 			
 			<div class="back">
-				
 				<input type="text" data-bind="value:title, valueUpdate: 'change'" placeholder="Image title"> <br>
 				<img src="${file.file}" width="50px"> 
-				<br><input type="checkbox" id="checkb-is_primary-${id}" class="uibutton" data-bind="checked: is_primary" />
-				<label for="checkb-is_primary-${id}" data-bind="text: is_primary() ? 'Currently the Primary Media': 'Make the Primary Media'"></label>
-				<br><input type="checkbox" id="checkb-is_background-${id}" class="uibutton" data-bind="checked: is_background" />
-				<label for="checkb-is_background-${id}" data-bind="text : is_background() ? 'Currently the Background ': 'Make this the Background'"></label>
+				<br>
+				<input type="radio" id="checkb-is_primary-${id}" class="uibutton" data-bind="checked: VM.primary_media" value="${resource_uri}" name="primary_media" />
+				<label for="checkb-is_primary-${id}">Primary Media</label>
 				<br>
 				<a class="uibutton delete" data-bind="click: VM.deleteFromCard">Remove</a>
 
@@ -199,6 +201,29 @@
 		</div> 
 	</script>
 	
+	
+		<script id='primaryImageTemplate' type='text/html'>
+		<div class="ue is_primary" data-bind="event: { focusin: VM.flipEl, focusout: VM.unflipEl }, attr: { tabindex: typeof(id)!='undefined' ? id: -1 }">
+			<figure class="front">
+				<div class="media_holder"  data-bind="style: {background: 'url('+ file.file() +') center center no-repeat', backgroundSize: 'contain'}"></div>
+				<div class="media_title" data-bind="text: title"></div>
+			</figure>
+			
+			<div class="back">
+				<input type="text" data-bind="value:title, valueUpdate: 'change'" placeholder="Image title"> <br>
+				<img src="${file.file}" width="50px"> 
+				<br>
+				<input type="radio" id="checkb-is_primary-${id}" class="uibutton" data-bind="checked: VM.primary_media" value="${resource_uri}" name="primary_media" />
+				<label for="checkb-is_primary-${id}">Primary Media</label>
+				<br>
+				<a class="uibutton delete" data-bind="click: VM.deleteFromCard">Remove</a>
+			</div>
+			
+		</div> 
+	</script>
+	
+	<script id='nodisplay' type='text/html'>
+	</script>	
 	<!-- Video Element template. TODO add thumbnail -->
 	<script id='videoTemplate' type='text/html'>
 		<div class="ue" data-bind="css: {is_primary: is_primary}, event: { focusin: VM.flipEl, focusout: VM.unflipEl }, attr: { tabindex: typeof(id)!='undefined' ? id: -1 }">
@@ -211,8 +236,9 @@
 				
 				<input type="text" data-bind="value:title, valueUpdate: 'change'" placeholder="Image title"> <br>
 				<img src="/static/img/video-icon.png" width="50px"> 
-				<br><input type="checkbox" id="checkb-is_primary-${id}" class="uibutton" data-bind="checked: is_primary" />
-				<label for="checkb-is_primary-${id}" data-bind="text: is_primary() ? 'Currently the Primary Media': 'Make the Primary Media'"></label>
+				<br>
+				<input type="radio" id="checkb-is_primary-${id}" class="uibutton" data-bind="checked: VM.primary_media" value="${resource_uri}" name="primary_media" />
+				<label for="checkb-is_primary-${id}">Primary Media</label>
 				<br><input type="checkbox" id="checkb-autoplay-${id}" class="uibutton" data-bind="checked: autoplay" />
 				<label for="checkb-autoplay-${id}" data-bind="text : autoplay() ? 'Currently Autoplaying ': 'Make Autoplay'"></label>
 				<br>

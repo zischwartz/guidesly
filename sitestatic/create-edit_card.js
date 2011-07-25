@@ -56,21 +56,6 @@ VM.save = function(formElelement)
 
 
 
-// TODO, restrict primary media to a single element
-// VM.the_primary_media = ko.dependentObservable({
-// 	read: function(){
-// 		for (x in VM.mediaelements())
-// 		{
-// 			if (VM.mediaelements()[x].is_primary())
-// 				return VM.mediaelements()[x];
-// 			}
-// 	},
-// 	// write: function(value){
-// 	// 	alert('hi');
-// 	// }
-// 
-// 
-// }, VM)
 
 
 // ****************************************************
@@ -84,16 +69,6 @@ VM.addMedia2card = function() {
 	itemToAdd.file=this; //this was equal simply to this, which works for adding'em, making it observable
 	itemToAdd.type = ko.observable(this.type);
 	itemToAdd.card= VM.resource_uri();
-	if (VM.mediaelements().length==0)
-		itemToAdd.is_primary= ko.observable(true); //should primary default to true or false? 
-	else
-		itemToAdd.is_primary= ko.observable(false); 
-	
-	// itemToAdd.is_primary.subscribe(function(newvalue){
-	// 	alert('newvalue '+ newvalue + ' - ' + this);
-	// 	console.log(this);
-	// 	
-	// }, itemToAdd);
 	
 	itemToAdd.is_background=ko.observable(false);
 	itemToAdd.title=ko.observable('');
@@ -109,13 +84,17 @@ VM.addMedia2card = function() {
 			itemToAdd.title=ko.observable();
 			itemToAdd.resource_uri=ko.observable(postURL.getResponseHeader('location'));
 			itemToAdd.id = itemToAdd.resource_uri().match(/\/mediaelement\/(.*)\//)[1];
-
+			uri_string_n=itemToAdd.resource_uri().indexOf('api');
+			rid= itemToAdd.resource_uri().slice(uri_string_n-1);
+			if (VM.mediaelements().length==0)
+				VM.primary_media(rid);
 			//add the element to the card
 			VM.mediaelements.push(itemToAdd);
 			},
 		contentType: "application/json",
 	});
 	//remove it from the media files. up for discussion
+	
 	VM.media_files.remove(this);
 
 };
@@ -203,13 +182,21 @@ VM.uePostProcessing= function(element){
 }
 
 //**********************************************
-//******      DEFINE DIFFERENT MEDIA TEMPLATES, PRIMARY, BG OR NOT   (not currently implimented) ********
+//******      DEFINE DIFFERENT MEDIA TEMPLATES, PRIMARY, BG OR NOT  ********
 //**********************************************
 VM.mediaTypeTemplate= function(element){
 	if (element.type()=="image")
 		return 'imageTemplate';
 	if (element.type()=="video")
 		return 'videoTemplate';
+}
+
+VM.primarymediaTypeTemplate= function(element){
+	if (element.resource_uri() == VM.primary_media())
+		return 'primaryImageTemplate';
+		
+	else 
+		return 'nodisplay';
 }
 
 //for the sidebar, add media
