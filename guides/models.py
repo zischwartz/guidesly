@@ -105,6 +105,7 @@ class Card (models.Model):
 	tags = TagField()
 	card_number = models.IntegerField(blank=True, null=True) #for default guide...
 	representative_media = models.URLField(blank=True, null=True)
+	primary_media = models.ForeignKey('MediaElement', blank=True, null=True, related_name='primary_media')
 	show_last_and_next_buttons = models.BooleanField(default=True)
 	
 	def __unicode__(self):
@@ -172,14 +173,14 @@ class MediaElement (models.Model):
 	card = models.ForeignKey(Card)
 	created = models.DateTimeField(auto_now_add=True, blank=True, null=True)
 	type = models.CharField(blank=True, max_length=5, choices = SELEMENT_TYPE)
-	is_primary = models.BooleanField(default=False)
-	is_background = models.BooleanField(default=False)
+	# is_primary = models.BooleanField(default=False)
+	# is_background = models.BooleanField(default=False)
 	autoplay = models.BooleanField(default=False)
 	length_seconds = models.IntegerField(blank=True, null=True)
 	length_minutes = models.IntegerField(blank=True, null=True)
 	file = models.ForeignKey(UserFile)
 	external_file = models.URLField(blank=True) #,verify_exists=True)
-	# action_when_complete= models.OneToOneField(Action, blank=True, null=True)
+	action_when_complete= models.OneToOneField('Action', blank=True, null=True)
 
 
 class Action (models.Model):
