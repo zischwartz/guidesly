@@ -113,15 +113,18 @@ showFileUploadForm= function(){
 		function (e){ 
 				console.log('drop it!');
 				$("#add_media_group").css({backgroundColor: "#feb912"});
+
 			}).bind('fileuploaddrop', 
 		function(e, data){
 				console.log('droped it!');				
 				$("#add_media_group").css({backgroundColor: "#ffffff"});
+
 		
 		}).bind('fileuploaddone',
 		function (e, data) {
 			
-			$("#add_media_group").css({backgroundColor: "#ffffff"}, 300);
+			$("#add_media_group").css({backgroundColor: "#ffffff"});
+
 			$("table.files").hide();
 			$("#fileupload, .fileupload-content").slideUp();
 			
@@ -131,9 +134,9 @@ showFileUploadForm= function(){
 
 			console.log('done uploading!');				
 			$.getJSON(file_api_url, function(data) {
-			VM.media_files.removeAll();
-			for (x in data.objects)
-				{VM.media_files.push(data.objects[x]);}
+				VM.media_files.removeAll();
+				for (x in data.objects)
+					{VM.media_files.push(data.objects[x]);}
 			});	 ///end json
 			return
 	});

@@ -57,5 +57,9 @@
 {% endblock %} {# end content #}
 
 {%block sidebar%}
-This would be a good place to edit the meta data about the guide, publishing options, etc.
+	<form action="" method="post">
+	{% csrf_token %}
+	<table>	{{form.as_table}}</table>
+	<input type="submit" value="Edit guide" />
+	</form>
 {%endblock %}

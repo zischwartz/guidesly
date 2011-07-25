@@ -12,7 +12,7 @@ from django.core.urlresolvers import reverse
 
 from django.contrib import messages
 from log import getlogger
-# logger=getlogger()
+logger=getlogger()
 # logger.debug("---------------")
 from django.utils import simplejson
 from fileupload.models import UserFile
@@ -29,17 +29,18 @@ def GuideDetailView (request, slug):
 	return render_to_response("enjoy/guide_detail.html", locals(), context_instance=RequestContext(request))
 
 def CardDetailView (request, gslug, slug=None, cnumber=None):
-	# logger=getlogger()
-	# logger.debug("---------------")
-	# logger.debug(cnumber)
-	# logger.debug(slug)
-
 	if cnumber==None:
 		card = get_object_or_404(Card, guide__slug=gslug, slug=slug)
 	elif slug==None:
 		card = get_object_or_404(Card, guide__slug=gslug, card_number=cnumber)
 	media_elements = card.mediaelement_set.all()
 	input_elements=card.inputelement_set.all()
+	if card.guide.is_linear:
+		prev_card = card.guide.get_prev_card(card)
+		next_card = card.guide.get_next_card(card)
+	
+	# logger.debug(prev_card)
+	# logger.debug(next_card)
 	return render_to_response("enjoy/card.html", locals(), context_instance=RequestContext(request))
 
 
@@ -53,8 +54,8 @@ def CardDetailViewById (request, id):
 # Creating Guides
 # -------------------------
 def CreateGuide (request):
-	if request.user.is_authenticated():
-		current_user= request.user
+	# if request.user.is_authenticated():
+		# current_user= request.user
 	if request.method == 'POST':
 		form = GuideForm(request.POST)
 		if form.is_valid():
@@ -68,9 +69,15 @@ from api import CardResource, SmallCardResource, GuideResource
 
 def EditGuide (request, gslug):
 	guide = get_object_or_404(Guide, slug=gslug)
-	g = GuideResource()
-	guide_json = g.serialize(None, g.full_dehydrate(guide), 'application/json')
-	
+	if request.method == 'POST':
+		form = GuideForm(request.POST, instance=guide)
+		if form.is_valid():
+			g =form.save()
+			return render_to_response("create/edit_guide.html", locals(), context_instance=RequestContext(request))
+	else:
+		form = GuideForm(instance= guide)
+		g = GuideResource()
+		guide_json = g.serialize(None, g.full_dehydrate(guide), 'application/json')
 	return render_to_response("create/edit_guide.html", locals(), context_instance=RequestContext(request))
 
 
@@ -95,81 +102,11 @@ def EditCard (request, gslug, id):
 		card_list.append({'title':card.title, 'representative_media': card.representative_media,'resource_uri': c.get_resource_uri(card), 'id':card.id})
 	all_cards_json = simplejson.dumps(card_list)
 
-	#should get the guide instead, that has the relevant card info TODO delete above and impliment the below
+	#should get the guide instead, that has the relevant card info and would be more consistant TODO delete above and impliment the below
 	# guide = get_object_or_404(Guide, slug=gslug)
 	# g = GuideResource()
 	# guide_json = g.serialize(None, g.full_dehydrate(guide), 'application/json')
 	return render_to_response("create/edit_card.html", locals(), context_instance=RequestContext(request))
-
-
-# 
-# 
-# 
-# 
-# 
-# def AddStaticElement (request, gslug, slug):
-# 	s= Card.objects.get(guide__slug=gslug, slug=slug)
-# 	if request.method == 'POST':
-# 		form= StaticElementForm(request.POST)
-# 		if form.is_valid():
-# 			form.save()
-# 			messages.info(request, "Media Added!")
-# 			return HttpResponseRedirect(reverse('EditCard', kwargs={'gslug':gslug, 'slug': s.slug}))
-# 		else:
-# 			return HttpResponse(form.errors)
-# 	else: 
-# 		static_element_form= StaticElementForm() 
-# 		return render_to_response("create/edit_card.html", locals(), context_instance=RequestContext(request))
-# 	
-# def EditStaticElement (request, gslug, slug, elementid):
-# 	element = StaticElement.objects.filter(card__slug=slug, id=elementid).select_subclasses()[0]
-# 	if request.method == 'POST':
-# 		form= StaticElementForm(request.POST, instance=element)
-# 		if form.is_valid():
-# 			form.save()
-# 			messages.info(request, "Media Saved!")
-# 			return HttpResponseRedirect(reverse('EditCard', kwargs={'gslug':gslug, 'slug': slug}))
-# 		else:
-# 			return HttpResponse(form.errors)
-# 	elif request.method == 'GET':
-# 		static_element_form= StaticElementForm(instance=element)
-# 		return render_to_response("create/add_static.html", locals(), context_instance=RequestContext(request))
-# 	elif request.method == 'DELETE':
-# 		element = StaticElement.objects.get(id=elementid)
-# 		element.delete()
-# 		return HttpResponseRedirect(reverse('EditCard', kwargs={'gslug':gslug, 'slug': slug}))
-# 
-# def AddInteractiveElement(request, gslug, slug):
-# 	s= Card.objects.get(guide__slug=gslug, slug=slug)
-# 	if request.method == 'POST':
-# 		form= InteractiveElementForm(request.POST)	
-# 		if form.is_valid():
-# 			form.save()
-# 			messages.info(request, "Interaction Added!")
-# 			return HttpResponseRedirect(reverse('EditCard', kwargs={'gslug':gslug, 'slug': s.slug}))
-# 		else:
-# 			return HttpResponse(form.errors)
-# 	else:
-# 		return HttpResponse(form.errors)
-# 
-# 
-# def EditInteractiveElement (request, gslug, slug, elementid):
-# 
-# 	element = InteractiveElement.objects.filter(card__slug=slug, id=elementid).select_subclasses()[0]
-# 	if request.method == 'POST':
-# 		form= InteractiveElementForm(request.POST, instance=element)
-# 		if form.is_valid():
-# 			form.save()
-# 			messages.info(request, "Interaction Saved!")
-# 			return HttpResponseRedirect(reverse('EditCard', kwargs={'gslug':gslug, 'slug': slug}))
-# 	elif request.method == 'GET':
-# 		interactive_element_form= InteractiveElementForm(instance=element)
-# 		return render_to_response("create/edit_interactive.html", locals(), context_instance=RequestContext(request))
-# 	elif request.method == 'DELETE':
-# 		element = InteractiveElement.objects.get(id=elementid)
-# 		element.delete()
-# 		return HttpResponseRedirect(reverse('EditCard', kwargs={'gslug':gslug, 'slug': slug}))
-# 		
 
 
 

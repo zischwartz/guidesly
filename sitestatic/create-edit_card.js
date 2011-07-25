@@ -302,7 +302,7 @@ $("#add_media_group h4, #add_media img").click(function(event){
 	var current_accordian_index = $("#card_element_toolbar").accordion( "option", "active" )
 	// console.log(current_accordian_index);
 
-	 if (current_accordian_index===0) //so it's already open to the first element
+	 if (current_accordian_index===0) //so it's already open to the first element, media
 			event.stopPropagation(); 	
 	
 	VM.media_type($(this).data("media_type"));

@@ -8,22 +8,18 @@ from django.template.defaultfilters import slugify
 import jsonfield 
 
 from fileupload.models import UserFile
+
+from log import getlogger
+logger=getlogger()
+logger.debug("---------------")
+
 # from learny.photologue.models import Photo
 
 
 # from tastypie.resources import ModelResource
 # from api.CardResource import CardResource
 
-# Create your models here.
-IELEMENT_TYPE = (
-	('B', 'Just a Button'),
-	('M', 'Multiple Choice'),
-	('Y', 'Yes/No'),
-	('V', 'Enter Value'),
-	('N', 'Enter Numerical Value'),
-	('S', 'Sensor'),
-	('T', 'Timer'),
-)
+
 
 SELEMENT_TYPE = (
 	('image', 'Image'),
@@ -32,11 +28,14 @@ SELEMENT_TYPE = (
 	('other', 'Other'),
 )
 
-SVALUEINQUIRY_TYPE = (
-	('L', 'Location'),
-	('A', 'Accelerometer'),
-	('T', 'Time'),
-	('D', 'Date'),
+IELEMENT_TYPE = (
+	('B', 'Just a Button'),
+	('M', 'Multiple Choice'),
+	('Y', 'Yes/No'),
+	('V', 'Enter Value'),
+	('N', 'Enter Numerical Value'),
+	('S', 'Sensor'),
+	('T', 'Timer'),
 )
 
 
@@ -58,8 +57,15 @@ class Guide (models.Model):
 	# thumbnail = models.ForeignKey(UserFile, null=True, blank=True)
 
 	def save(self, *args, **kwargs):
-		# TODO add something for if there is no title
 		self.slug= slugify(self.title)
+		ordering={}
+		for c in self.cards.all():
+			ordering[c.card_number] = c.id
+		self.card_order= ordering
+		# logger.debug("----order------")
+		# logger.debug(self.card_order)
+		# logger.debug("----@1------")
+		# logger.debug(self.card_order[1])
 		super(Guide, self).save(*args, **kwargs)
 	
 	def __unicode__(self):
@@ -71,6 +77,20 @@ class Guide (models.Model):
 	@models.permalink
 	def get_absolute_url(self):
 		return ('GuideDetailView', (), {'slug': self.slug })
+		
+	def get_prev_card(self, card):
+		prev_card_number = card.card_number -1
+		if prev_card_number:
+			return Card.objects.get(pk=(self.card_order[str(prev_card_number)]))
+		else: 
+			return None
+
+	def get_next_card(self, card):
+		next_card_number = card.card_number +1
+		if not next_card_number > self.number_of_cards:
+			return Card.objects.get(pk=(self.card_order[str(next_card_number)]))
+		else: 
+			return None
 
 class Card (models.Model):
 	title = models.CharField(max_length=500, blank=True, null=True, default="") #maybe add default=""
@@ -84,6 +104,7 @@ class Card (models.Model):
 	tags = TagField()
 	card_number = models.IntegerField(blank=True, null=True) #for default guide...
 	representative_media = models.URLField(blank=True, null=True)
+	show_last_and_next_buttons = models.BooleanField(default=True)
 	
 	def __unicode__(self):
 		if self.title !="":
@@ -93,11 +114,12 @@ class Card (models.Model):
 
 	def firstsave(self, *args, **kwargs):
 		num_in_guide= self.guide.number_of_cards
-		self.guide.number_of_cards= num_in_guide +1
-		self.guide.save()
 		self.card_number = num_in_guide +1
 		# self.slug = num_in_guide +1
 		super(Card, self).save(*args, **kwargs)
+		self.guide.number_of_cards= num_in_guide +1
+		self.guide.cards.add(self)
+		self.guide.save()
 
 
 	def save(self, *args, **kwargs):
@@ -111,7 +133,7 @@ class Card (models.Model):
 
 
 	class Meta:
-		ordering = ['created']
+		ordering = ['created'] #switch to card_number
 	
 	@models.permalink
 	def get_absolute_url(self):
@@ -156,13 +178,7 @@ class MediaElement (models.Model):
 	file = models.ForeignKey(UserFile)
 	external_file = models.URLField(blank=True) #,verify_exists=True)
 	# action_when_complete= models.OneToOneField(Action, blank=True, null=True)
-    
-	#deprecate
-	# @property
-	# def file_url(self):
-	# 	return self.file.url
-	
-	# comment
+
 
 class Action (models.Model):
 	goto = models.ForeignKey(Card, blank=True, null=True)
@@ -209,9 +225,6 @@ class InputElement (models.Model):
 
 
 
-
-
-
 from api import CardResource
 
 # USER PERMISSION PER OBJECT INSTANCE
@@ -225,6 +238,14 @@ from api import CardResource
 # ********************************************************
 # ***************         SIGH                ************
 # ********************************************************
+# 
+# SVALUEINQUIRY_TYPE = (
+# 	('L', 'Location'),
+# 	('A', 'Accelerometer'),
+# 	('T', 'Time'),
+# 	('D', 'Date'),
+# )
+
 
 # class MultipleChoiceInquiry (InputElement):
 # 	# choices = models.ForeignKey(MultipleChoices, blank=True, null=True) #deleted because we want multiple..duh
