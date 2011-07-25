@@ -29,7 +29,7 @@
 		<div id="card_being_edited" class="{%if s.brand_new%}brand_new{%endif%}">
 			
 			
-		{# CARD TITLE #}
+	{# CARD TITLE #}
 			<div class="ue" tabindex="3" data-bind="event: { focusin: VM.flipEl, focusout: VM.unflipEl}">
 				<h1 class="front" data-bind="text: !title()  ? 'Card Title': title, css: { optional: !title() }"></h1>
 				<div class="back">
