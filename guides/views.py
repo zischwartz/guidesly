@@ -17,6 +17,9 @@ logger=getlogger()
 from django.utils import simplejson
 from fileupload.models import UserFile
 
+from api import CardResource, SmallCardResource, GuideResource, MediaElementResource
+
+
 # Viewing Guides
 # -------------------------
 def GuideListView (request):
@@ -35,6 +38,7 @@ def CardDetailView (request, gslug, slug=None, cnumber=None):
 		card = get_object_or_404(Card, guide__slug=gslug, card_number=cnumber)
 	media_elements = card.mediaelement_set.all()
 	input_elements=card.inputelement_set.all()
+	primary_media=card.primary_media
 	if card.show_last_and_next_buttons:
 		prev_card = card.guide.get_prev_card(card)
 		next_card = card.guide.get_next_card(card)
@@ -62,7 +66,6 @@ def CreateGuide (request):
 		form = GuideForm()
 	return render_to_response("create/create_guide.html", locals(), context_instance=RequestContext(request) )
 
-from api import CardResource, SmallCardResource, GuideResource
 
 def EditGuide (request, gslug):
 	guide = get_object_or_404(Guide, slug=gslug)
@@ -89,11 +92,16 @@ def EditCard (request, gslug, id):
 	# send the card's data as json
 	s = get_object_or_404(Card, guide__slug=gslug, id=id)
 	ur = CardResource()
-	# if s.guide.is_linear:
 	prev_card = s.guide.get_prev_card(s)
 	next_card = s.guide.get_next_card(s)	
 	# ur_bundle = ur.build_bundle() #(obj=s, request=request) #turned out not to be neccesary
 	card_json= ur.serialize(None, ur.full_dehydrate(s), 'application/json') #with newer version, full dehyrate ur_bundle
+
+
+	
+	mr = MediaElementResource()
+	if s.primary_media is not None:
+		primary_media_json = mr.serialize(None, mr.full_dehydrate(s.primary_media),'application/json' )
 
 	#and all the cards in the guide
 	all_cards = get_list_or_404(Card, guide__slug=gslug)
@@ -103,6 +111,7 @@ def EditCard (request, gslug, id):
 		card_list.append({'title':card.title, 'representative_media': card.representative_media,'resource_uri': c.get_resource_uri(card), 'id':card.id})
 	all_cards_json = simplejson.dumps(card_list)
 
+	
 	#should get the guide instead, that has the relevant card info and would be more consistant TODO delete above and impliment the below
 	# guide = get_object_or_404(Guide, slug=gslug)
 	# g = GuideResource()

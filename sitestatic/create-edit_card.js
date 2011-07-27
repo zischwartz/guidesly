@@ -30,10 +30,6 @@ jQuery.easing.def = "easeOutQuart";
 
 initial_card_object= jQuery.parseJSON(initial_card_json);
 VM = ko.mapping.fromJS(initial_card_object, mapping);
-//// or
-// VM = ko.mapping.fromJSON(initial_card_json, mapping); 	// console.log(initial_card_object);
-// VM.mediaelements.mappedRemove({ resource_uri : '/api/v1/staticelement/4/' });
-//this line works, so the mapping is infact, working, 
 
 
 
@@ -41,7 +37,7 @@ VM = ko.mapping.fromJS(initial_card_object, mapping);
 //****   SAVE THE CARD ***  - NO LONGER NECCESARY, THE UNFLIPING FUNCTION ENDED UP GENERALIZED! 
 //								huzzah i am smart?
 //************************
-VM.save = function(formElelement)
+VM.save = function()
 {
 	var jsonData = ko.mapping.toJSON(VM);
 	// alert('hi');
@@ -69,8 +65,7 @@ VM.addMedia2card = function() {
 	itemToAdd.file=this; //this was equal simply to this, which works for adding'em, making it observable
 	itemToAdd.type = ko.observable(this.type);
 	itemToAdd.card= VM.resource_uri();
-	
-	itemToAdd.is_background=ko.observable(false);
+	// itemToAdd.is_background=ko.observable(false);
 	itemToAdd.title=ko.observable('');
 	var jsonData = ko.toJSON(itemToAdd);
 	var postURL;
@@ -79,15 +74,19 @@ VM.addMedia2card = function() {
 		type: "POST",
 		data: jsonData,
 		success:function(data) {
-			// console.log('success and'); 
-			// console.log(postURL.getResponseHeader('location')); 
+
 			itemToAdd.title=ko.observable();
-			itemToAdd.resource_uri=ko.observable(postURL.getResponseHeader('location'));
-			itemToAdd.id = itemToAdd.resource_uri().match(/\/mediaelement\/(.*)\//)[1];
-			uri_string_n=itemToAdd.resource_uri().indexOf('api');
-			rid= itemToAdd.resource_uri().slice(uri_string_n-1);
-			if (VM.mediaelements().length==0)
-				VM.primary_media(rid);
+			itemToAdd.id = postURL.getResponseHeader('location').match(/\/mediaelement\/(.*)\//)[1];
+			itemToAdd.resource_uri=ko.observable(staticel_api_url + itemToAdd.id +'/');
+			
+			//make primary if there is no other media
+			if (VM.mediaelements().length < 1)
+				{	VM.the_primary_media_object.push(itemToAdd);
+					VM.primary_media(staticel_api_url + itemToAdd.id + '/' );
+					console.log('made primary');
+					console.log(VM.primary_media());
+				}
+			
 			//add the element to the card
 			VM.mediaelements.push(itemToAdd);
 			},
@@ -96,7 +95,7 @@ VM.addMedia2card = function() {
 	//remove it from the media files. up for discussion
 	
 	VM.media_files.remove(this);
-
+	VM.save();
 };
 
 
@@ -111,13 +110,32 @@ VM.deleteFromCard= function()
 	});
 	// alert(VM.mediaelements.indexOf(this));
 	
-	//what kind of element are we deleting?
 	if (VM.mediaelements.indexOf(this)!=-1)
 		VM.mediaelements.remove(this);
+	
+	if (VM.the_primary_media_object.indexOf(this)!=-1)
+		{
+			VM.the_primary_media_object.remove(this);
+			VM.primary_media(null);
+		}
 		
 	if (VM.inputelements.indexOf(this)!=-1)
 		VM.inputelements.remove(this);
 };
+
+VM.the_primary_media_object = ko.observableArray();
+VM.the_primary_media_object.push(ko.mapping.fromJS(jQuery.parseJSON(primary_media_json)));
+// 
+
+
+VM.makePrimary = function()
+{
+	console.log("lets make it primary");
+	VM.the_primary_media_object.pop();
+	VM.the_primary_media_object.push(this);
+	VM.primary_media(this.resource_uri());
+	VM.save();
+}
 
 
 //********************************************
@@ -175,9 +193,6 @@ VM.unflipEl=function(event){
 
 //apply button() to media elements after they've been added
 VM.uePostProcessing= function(element){
-	// console.log(element);
-	// if ($(element).hasClass('uibutton'))
-		// element.button();
 	$(element).find(".uibutton").button();
 }
 
@@ -191,13 +206,13 @@ VM.mediaTypeTemplate= function(element){
 		return 'videoTemplate';
 }
 
-VM.primarymediaTypeTemplate= function(element){
-	if (element.resource_uri() == VM.primary_media())
-		return 'primaryImageTemplate';
-		
-	else 
-		return 'nodisplay';
-}
+// VM.primarymediaTypeTemplate= function(element){
+// 	if (element.resource_uri() == VM.primary_media())
+// 		return 'primaryImageTemplate';
+// 		
+// 	else 
+// 		return 'nodisplay';
+// }
 
 //for the sidebar, add media
 VM.userFileDisplayMode= function(element){
@@ -212,17 +227,6 @@ VM.userFileDisplayMode= function(element){
 		return 'userFileOtherTemplate';	
 
 
-
-	// if (VM.currently_adding_media_type()=="image")
-	// 	return 'userFileImageTemplate';
-	// if (VM.currently_adding_media_type()=="video")
-	// 	return 'userFileVideoTemplate';
-	// if (VM.currently_adding_media_type()=="audio")
-	// 	return 'userFileAudioTemplate';	
-	// if (VM.currently_adding_media_type()=="other")
-	// 	return 'userFileOtherTemplate';	
-	// if (VM.currently_adding_media_type()=="upload")
-	// 	return 'userFileUploadTemplate';
 
 }
 
@@ -354,6 +358,7 @@ for (x in json_all_cards)
 	{
 		VM.all_cards.push(json_all_cards[x]);
 	}
+
 
 
 VM.addInput2card= function(){

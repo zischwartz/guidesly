@@ -106,7 +106,7 @@ class Card (models.Model):
 	card_number = models.IntegerField(blank=True, null=True) #for default guide...
 	
 	representative_media = models.URLField(blank=True, null=True)
-	primary_media = models.ForeignKey('MediaElement', blank=True, null=True, related_name='primary_media', default="")
+	primary_media = models.ForeignKey('MediaElement', blank=True, null=True, related_name='primary_media', default="",  on_delete=models.SET_DEFAULT)
 	show_last_and_next_buttons = models.BooleanField(default=True)
 	
 	def __unicode__(self):
@@ -226,10 +226,10 @@ class InputElement (models.Model):
 	def __unicode__(self):
 		return self.button_text
 
-
-
-
 from api import CardResource
+
+
+	
 
 # USER PERMISSION PER OBJECT INSTANCE
 

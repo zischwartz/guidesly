@@ -22,6 +22,7 @@ v1_api.register(UserFileResource())
 v1_api.register(UserResource())
 v1_api.register(SmallCardResource())
 v1_api.register(GuideResource())
+v1_api.register(TheFResource())
 
 
 

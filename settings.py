@@ -149,6 +149,7 @@ INSTALLED_APPS = (
     'debug_toolbar',
 	'invitation',
 	'registration',
+	'thef',
 )                  
 
 ACCOUNT_ACTIVATION_DAYS = 5
@@ -194,6 +195,11 @@ DEBUG_TOOLBAR_PANELS = (
     'debug_toolbar.panels.signals.SignalDebugPanel',
     'debug_toolbar.panels.logger.LoggingPanel',
 )  
+
+DEBUG_TOOLBAR_CONFIG = {
+    'INTERCEPT_REDIRECTS': False,
+    'HIDE_DJANGO_SQL': False,
+}
 
 EMAIL_HOST = 'smtp.gmail.com'     
 

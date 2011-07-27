@@ -17,6 +17,7 @@
 			var guide_id = {{s.guide.id}};
 			var initial_card_json= '{{card_json|safe|escapejs}}';
 			var all_cards = '{{all_cards_json|safe|escapejs}}'; 
+			var primary_media_json = '{{primary_media_json|safe|escapejs}}'; 
 			// TODO replace with all_cards with guide
 </script>
 {%endblock%}
@@ -30,7 +31,6 @@
 	<a href="{% url CardDetailViewByNum gslug=s.guide.slug cnumber=s.card_number %}" class="uibutton"> Preview <i data-bind="text: !title() ? 'Untitled Card {{s.card_number}}': title"></i></a>
 	{# <a href="{% url CardDetailViewById id=s.id %}" class="uibutton"> Preview <i data-bind="text: !title() ? 'Untitled Card {{s.card_number}}': title"></i></a> #}
 	<a href="{% url EditGuide gslug=s.guide.slug %}" class="uibutton"> Overview of <i>{{s.guide.title}}</i> </a>
-
 {%endblock%}
 
 {%load verbatim_templatetag%} 
@@ -51,7 +51,7 @@
 			</div>	 {# end .ue #}
 			
 		{# Primary Media #}
-			<div data-bind="template:{name: VM.primarymediaTypeTemplate,  foreach:  VM.mediaelements,
+			<div data-bind="template:{name: 'primaryImageTemplate',  foreach: VM.the_primary_media_object,
 			  				afterRender: uePostProcessing,
 			 				beforeRemove: function(elem) {$(elem).slideUp() },
 							afterAdd: function(elem) {$(elem).hide().slideDown() }}"> </div>
@@ -60,7 +60,8 @@
 			<div data-bind="template:{name: VM.mediaTypeTemplate,  foreach: VM.mediaelements,
 			  				afterRender: uePostProcessing,
 			 				beforeRemove: function(elem) {$(elem).slideUp() },
-							afterAdd: function(elem) {$(elem).hide().slideDown() }}"> </div>
+							afterAdd: function(elem) {$(elem).hide().slideDown() }}"> </div> 
+							{# , visible: ((VM.mediaelements().length >1) || (VM.the_primary_media_object().length < 1))"> </div> #}
 
 	{# CARD TEXT #}
 		<div class="ue" tabindex="10" data-bind="event: { focusin: VM.flipEl, focusout: VM.unflipEl }">
@@ -83,14 +84,15 @@
 			{%if prev_card%}<a href="#">Previous</a> {%endif%}
 			{%if next_card%}<a href="#">Next</a> {%endif%}
 		</div>
+		<div class="F">F</div>
+
 	</div> {# end #card_being_edited  ------------------------ #}
 
 	{# <input class="uibutton" type="submit" value="Save Card" name ="card_sub_save"/> #}
 	<a  href="{% url BuildCard gslug=s.guide.slug %}"class="uibutton"/>Save &amp; Add New Card</a>
 </form> {# end card form #}
 
-{# <iframe src="/upload/new/"> #}
-{# </iframe> #}
+
 
 {%endblock%}
 
@@ -130,7 +132,8 @@
 		
 		
 		
-		
+		<br><div class="F">F</div>
+
 	</div> {# end #add_media_group #}
 	
 	
@@ -165,10 +168,11 @@
 			<button class="uibutton" type="submit" data-input_type="button" data-bind="enable:  newActionGotoCard()&&newButtonText() , css:{'ui-button-disabled': !(newActionGotoCard()&&newButtonText()), 'ui-state-disabled': !(newActionGotoCard()&&newButtonText())}">Add This Button to Card</button>
 			</form>
 		</div>
+		<br><div class="F">F</div>
 
-	</div>
+	</div> {# end #add_input_group #}
 	
-	<h3 id="add_static"><a href="#">Edit Card Options</a></h3>
+	<h3 id="card_options"><a href="#">Edit Card Options</a></h3>
 	
 	<div id="edit_card_options_group"> 
 		<input type="checkbox" data-bind="checked: show_last_and_next_buttons" id="show_prev_and_next"> <label for="show_prev_and_next"> Previous and Next Card Buttons</label>
@@ -191,8 +195,8 @@
 				<input type="text" data-bind="value:title, valueUpdate: 'change'" placeholder="Image title"> <br>
 				<img src="${file.file}" width="50px"> 
 				<br>
-				<input type="radio" id="checkb-is_primary-${id}" class="uibutton" data-bind="checked: VM.primary_media" value="${resource_uri}" name="primary_media" />
-				<label for="checkb-is_primary-${id}">Primary Media</label>
+				<a class="uibutton" data-bind="click: VM.makePrimary">Make Primary Media</a>
+
 				<br>
 				<a class="uibutton delete" data-bind="click: VM.deleteFromCard">Remove</a>
 
@@ -201,8 +205,7 @@
 		</div> 
 	</script>
 	
-	
-		<script id='primaryImageTemplate' type='text/html'>
+	<script id='primaryImageTemplate' type='text/html'>
 		<div class="ue is_primary" data-bind="event: { focusin: VM.flipEl, focusout: VM.unflipEl }, attr: { tabindex: typeof(id)!='undefined' ? id: -1 }">
 			<figure class="front">
 				<div class="media_holder"  data-bind="style: {background: 'url('+ file.file() +') center center no-repeat', backgroundSize: 'contain'}"></div>
@@ -220,13 +223,14 @@
 			</div>
 			
 		</div> 
-	</script>
+	</script>	
+
 	
 	<script id='nodisplay' type='text/html'>
 	</script>	
 	<!-- Video Element template. TODO add thumbnail -->
 	<script id='videoTemplate' type='text/html'>
-		<div class="ue" data-bind="css: {is_primary: is_primary}, event: { focusin: VM.flipEl, focusout: VM.unflipEl }, attr: { tabindex: typeof(id)!='undefined' ? id: -1 }">
+		<div class="ue" data-bind="event: { focusin: VM.flipEl, focusout: VM.unflipEl }, attr: { tabindex: typeof(id)!='undefined' ? id: -1 }">
 			<figure class="front">
 				<div class="media_holder" style="background-image: url('/static/img/video-icon.png')"></div>
 				<div class="media_title" data-bind="text: title"></div>

@@ -1,6 +1,7 @@
 from tastypie.resources import ModelResource
 
 from guides.models import *
+from thef.models import *
 from fileupload.models import UserFile
 from tastypie import fields
 from django.contrib.auth.models import User
@@ -109,26 +110,23 @@ class InputElementResource(ModelResource):
 		authorization = Authorization()
 
 
-		# always_return_data = True #so we can get the Action's resource uri
+class TheFResource(ModelResource):
+	class Meta:
+		queryset = theF.objects.all()
+		authorization = Authorization()
 
-	# def save_related(self, bundle):
+		
+	# def full_hydrate(self, bundle):
+	# 	# bundle.data['']
+	# 	
 	# 	from guides.log import *
-	# 	logger=getlogger()
-	# 	logger.debug("HELLO!")
-	# 	logger.debug(self)
+	# 	logger=getlogger()		
+	# 	logger.debug('XXXXYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYXXX')
 	# 	logger.debug(bundle)
-		
-	# def hydrate(self, bundle):
-		# bundle.data['']
-		
-		# from guides.log import *
-		# logger=getlogger()		
-		# logger.debug('XXXXYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYXXX')
-		# logger.debug(bundle)
-		# a = ActionResource()
-		# action_uri= a.get_resource_uri(bundle.obj.default_action) #get the uri of the default_action of the input
-		# bundle.data['default_action']=action_uri
-		# return bundle
+	# 	# a = ActionResource()
+	# 	# action_uri= a.get_resource_uri(bundle.obj.default_action) #get the uri of the default_action of the input
+	# 	# bundle.data['default_action']=action_uri
+	# 	return bundle
 
 # Maybe just start using default goto for now.
 #  Profile.objects.get_or_create(user=instance)

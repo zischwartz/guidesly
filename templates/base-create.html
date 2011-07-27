@@ -18,6 +18,9 @@
 		<script type="text/javascript" src="{{STATIC_URL}}js-libs/rotate3Di.js"></script>
 		<script type="text/javascript" src="{{STATIC_URL}}js-libs/showdown.js"></script>
 
+		<script type="text/javascript" src="{{STATIC_URL}}thef.js"></script>
+
+
 		
 		<link rel="stylesheet" media="all" href="{{STATIC_URL}}css/base-create.css"/>
 
@@ -51,11 +54,55 @@
 	</div>
 	
 	<footer id="footer">
-		<span>Yeah. This is a footer. That's right.</span>
+		<span>Yeah. This is a footer. That's right.</span> 
+		<br><div class="F">F</div>
 	</footer>
 	
 </div>	{# end container #}
-	
+
+<style>
+#thef-dialog
+{
+	text-align: center;
+}
+
+.F
+{
+	padding: 0px 5px 0px 5px;
+	border: 1px solid lightgray;
+	float: right;
+	clear: both;
+/*	right: 1px;*/
+/*	bottom: 1px;*/
+
+	font-size: 0.8em;
+	color: lightgray;
+}
+.F:hover
+{
+	color: #97c2da;
+	border: 1px solid blue;
+	background-color: #444;
+	cursor: pointer;
+}
+
+
+</style>
+
+<div id="thef-dialog" title="What The F?">
+	<h2>Please, Give Us Feedback</h2><br>
+	<input type="radio" id="thefLike" class="uibutton" value="like" name="feeling" data-bind="checked: Fvm.choice"/><label for="thefLike">I like this feature</label>
+	<input type="text" data-bind="visible: Fvm.choice()=='like', value: Fvm.like_reason"> <br>
+	-or-
+	<br>
+	<input type="radio" id="thefDislike" class="uibutton" value="dislike" data-bind="checked: Fvm.choice" name="feeling" /><label for="thefDislike">I don't like this feature</label>
+	<input type="text" data-bind="visible: Fvm.choice()=='dislike', value: Fvm.dislike_reason"> <br>
+
+	<br><br><br>
+	<input type="checkbox" id="thefBug" class="uibutton" data-bind="checked: Fvm.was_buggy"/><label for="thefBug">Report bug!</label>
+	<input type="text" value="It broke when" data-bind="visible: Fvm.was_buggy()"> <br>
+	<br><i>Thanks for your help!</i>
+</div>	{# end thef #}
 
 </body>
 </html>
