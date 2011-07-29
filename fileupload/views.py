@@ -6,6 +6,7 @@ from django.utils import simplejson
 from django.core.urlresolvers import reverse
 
 from django.conf import settings
+from photologue.models import Photo
 
 # from guides.log import *
 
@@ -21,6 +22,9 @@ class UserFileCreateView(CreateView):
 
 		if file_type == 'image':
 			self.object.type='image'
+			p=Photo(image=f, title=f.name)
+			p.save()
+			self.object.photo=p
 		elif file_type == 'audio':
 			self.object.type='audio'
 		elif file_type == 'video':
@@ -36,10 +40,10 @@ class UserFileCreateView(CreateView):
 		# logger.debug('-----------------------------------------------------------------------------------------------------------------')
 		# logger.debug(file_type)
 		
-		self.object.save()
+		self.object.realsave()
 		# logger.debug()	
 
-		data = [{'name': f.name, 'url': self.object.url, 'thumbnail_url': self.object.url, 'delete_url': reverse('upload-delete', args=[f.name]), 'delete_type': "DELETE"}]
+		data = [{'name': f.name, 'url': self.object.url, 'thumbnail_url': self.object.thumb_url, 'delete_url': reverse('upload-delete', args=[f.name]), 'delete_type': "DELETE"}]
 		return JSONResponse(data)
 
 	def form_invalid (self, form):

@@ -150,9 +150,19 @@ h2 {font-size:1.5em; font-weight: bold; padding: 3px 0 5px 0;}
 
 }
 
+#content.bigger
+{
+	width: 57%;
+}
+
+#content.smaller
+{
+	width:44%;
+}
+
 #content {
 	float:left;
-	width:57%;
+/*	width:57%;*/
 	padding:1em 5% 2em 5%;
 /*	background-color: #ccc;*/
 	background-color: #f9f9f9;
@@ -168,18 +178,30 @@ background-image: -moz-linear-gradient(
     rgb(204,204,204) 0%,
     rgb(249,249,249) 100%
 );
-
-
+	-moz-transition: width 0.5s ease-in-out;
+  -webkit-transition: width 0.5s ease-in-out;
 
 	min-height: 41em;
 }
 
 #sidebar {
 	float:left;
-	width:27%;
+/*	width:27%;*/
 	padding:1em 3% 1em 3%; 
 	background-color: white;
 	min-height: 42em;
+	
+	-moz-transition: width 0.5s ease-in-out;
+    -webkit-transition: width 0.5s ease-in-out;
+}
+
+#sidebar.smaller
+{
+	width: 27%;
+}
+#sidebar.bigger
+{
+	width:40%;
 }
 
 
@@ -198,7 +220,7 @@ background-image: -moz-linear-gradient(
 #card_being_edited
 {
 	width:90%;
-	min-height: 24em;
+/*	min-height: 24em;*/
 	padding: 1em 5%;
 /*	border: 1px solid white;*/
 	overflow: hidden;
@@ -294,7 +316,7 @@ background-image: -moz-linear-gradient(
 /******specific card elements*/
 textarea.cardtext
 {
-	width: 20em;
+	width: 30em;
 	height: 15em;
 	text-align: left;
 	font-size: 1em;
@@ -302,8 +324,8 @@ textarea.cardtext
 }
 .front.cardtext 
 { 
-	width: 20em; 
-	height: 15em; 
+	width: 30em; 
+	min-height: 5em; 
 	text-align: left;
 
 }
@@ -378,6 +400,27 @@ padding-left: 1.5em;
 	border-radius: 2px;
 }
 
+/*for upload */
+#card_element_toolbar label.fileinput-button img
+{
+	width: 2em;
+	margin-bottom: -0.7em;
+	padding-right: 0.8em;
+	border-radius: 2px;
+}
+.fileupload-content i
+{
+	font-size: .7em;
+}
+
+label.fileinput-button 
+{
+/*	background: none !important;*/
+/*	background-color: #aaaaaa !important;*/
+	color: #028c00 !important;
+}
+/*.fileupload-buttonbar */
+
 #card_element_toolbar h4
 {
 	margin-bottom: 1em;
@@ -431,7 +474,7 @@ padding-left: 1.5em;
 
 #card_element_toolbar .userfiles img
 {
-	width: 5em;
+/*	width: 5em;*/
 	margin-left: auto;
 	margin-right: auto;
 	display: block;

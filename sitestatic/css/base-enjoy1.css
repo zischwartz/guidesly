@@ -72,7 +72,10 @@ background-image: -moz-linear-gradient(
 
 #wrap
 {
-
+	width: 800px;
+	margin-left: auto;
+	margin-right: auto;
+	margin-top: 10px;
 }
 
 a
@@ -95,10 +98,7 @@ a:hover
 	margin-right: auto;
 	width: 850px;
 	background-color: white;
-		width: 800px;
-	margin-left: auto;
-	margin-right: auto;
-	margin-top: 10px;
+	
 }
 
 #messages
@@ -118,6 +118,7 @@ h2 {font-size:1.5em; font-weight: bold; padding: 3px 0 5px 0;}
 .clearfix { display: inline-block; }
 * html .clearfix { height: 1%; } /* Hides from IE-mac \*/
 .clearfix { display: block; }
+
 
 #header
 {
@@ -151,20 +152,11 @@ h2 {font-size:1.5em; font-weight: bold; padding: 3px 0 5px 0;}
 }
 
 
-
-.primary_media
-{
-
-	height:36em;   
-	background-size: contain;
-	background: no-repeat center center;
-	background-color: black;
-}
-
 #card_wrap
 {
 	margin-left: auto;
 	margin-right: auto;
+	width: 850px;
 /*	width: 950px;*/
 
 	background-color: #383838;
@@ -190,13 +182,13 @@ h2 {font-size:1.5em; font-weight: bold; padding: 3px 0 5px 0;}
 	letter-spacing: .2em;
 }
 
-/* the container pthjer of media */
-.other_card_media
+/* the container of media */
+.card_media
 {
 	overflow: auto;
 }
 
-.media_thumb
+.media_el.is_thumb
 {
 	height:5em; 
 	width: 5em; 
@@ -208,7 +200,14 @@ h2 {font-size:1.5em; font-weight: bold; padding: 3px 0 5px 0;}
 }
 
 
+.primary_media
+{
 
+	height:36em;   
+	background-size: contain;
+	background: no-repeat center center;
+	background-color: black;
+}
 
 
 .card .card_text

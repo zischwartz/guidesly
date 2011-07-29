@@ -12,6 +12,7 @@ class Migration(SchemaMigration):
         db.create_table('thef_thef', (
             ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('the_data', self.gf('jsonfield.fields.JSONField')(null=True, blank=True)),
+            ('the_data_text', self.gf('django.db.models.fields.TextField')(blank=True)),
             ('created', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, blank=True)),
             ('type', self.gf('django.db.models.fields.CharField')(max_length=128, blank=True)),
         ))
@@ -30,6 +31,7 @@ class Migration(SchemaMigration):
             'created': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'the_data': ('jsonfield.fields.JSONField', [], {'null': 'True', 'blank': 'True'}),
+            'the_data_text': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
             'type': ('django.db.models.fields.CharField', [], {'max_length': '128', 'blank': 'True'})
         }
     }

@@ -1,9 +1,10 @@
-<div id="fileupload" class="hidden" data-bind="visible: currently_adding_media_type()=='upload'">
+<div id="fileupload">
     <form method="post" action="/upload/new/" enctype="multipart/form-data">
         <div class="fileupload-buttonbar">
             {% csrf_token %}
             <label class="fileinput-button">
-                <span>To upload, drag files here from your computer.</span>
+                {# <span><img src="{{STATIC_URL}}img/upload-icon-green.png">Upload: Drag files here</span> #}
+                <span><img src="{{STATIC_URL}}img/upload-icon.png">Upload: Drag files here +</span>
 
                 <input type="file" name="file" multiple>
             </label>
@@ -15,6 +16,7 @@
         </div>
     </form>
     <div class="fileupload-content">
+	<i>In modern browsers, you can drag and drop files here to upload them. Otherwise, click the above button.</i>
         <table class="files"></table>
         <div class="fileupload-progressbar"></div>
     </div>

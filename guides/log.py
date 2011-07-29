@@ -8,12 +8,22 @@ def getlogger():
     
     hdlr.setFormatter(formatter)
     logger.addHandler(hdlr)
-    logger.setLevel(logging.NOTSET)
+    logger.setLevel(logging.INFO)
 
     return logger
 
-def debug(msg):
+# def debug(msg):
+#     logger = getlogger()
+#     logger.debug(msg)
+
+
+def info(msg):
     logger = getlogger()
-    logger.debug(msg)
+    logger.info(msg)
+
+
+def warning(msg):
+    logger = getlogger()
+    logger.warning(msg)
 
 # logger=getlogger()

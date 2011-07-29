@@ -98,61 +98,21 @@
 
 
 
-showFileUploadForm= function(){
-	$("#fileupload").slideDown();
-	console.log('showfileuploadform funct')
-	VM.currently_adding_media_type('upload');
-	VM.media_type('upload');
-	VM.media_files.removeAll();
-	$(".upmedmessage").hide();
-	
-	$('#fileupload').fileupload({
-	// options
-		autoUpload: true,
-	}).bind('fileuploaddragover', 
-		function (e){ 
-				console.log('drop it!');
-				$("#add_media_group").css({backgroundColor: "#feb912"});
-
-			}).bind('fileuploaddrop', 
-		function(e, data){
-				console.log('droped it!');				
-				$("#add_media_group").css({backgroundColor: "#ffffff"});
-
-		
-		}).bind('fileuploaddone',
-		function (e, data) {
-			
-			$("#add_media_group").css({backgroundColor: "#ffffff"});
-
-			$("table.files").hide();
-			$("#fileupload, .fileupload-content").slideUp();
-			
-			//this shouldn't be hardcoded, it should be all, and the templates should be per userfile, not by the VM.media_Type
-			VM.currently_adding_media_type('media');
-			VM.media_type('media');
-
-			console.log('done uploading!');				
-			$.getJSON(file_api_url, function(data) {
-				VM.media_files.removeAll();
-				for (x in data.objects)
-					{VM.media_files.push(data.objects[x]);}
-			});	 ///end json
-			return
-	});
+// showFileUploadForm= function(){
+	// $("#fileupload").slideDown();
+	// console.log('showfileuploadform funct')
+	// VM.currently_adding_media_type('upload');
+	// VM.media_type('upload');
+	// VM.media_files.removeAll();
+	// $(".upmedmessage").hide();
 	
 	
-} //end showFileUploadForm
+	
+
 
 
 
 $(function () {
-
-    // Initialize the jQuery File Upload widget:
-	//     $('#fileupload').fileupload().bind('fileuploadadd', function (e, data) {
-	// 	$("button.start").addClass("ui-state-highlight");
-	// });
-	
 
 
 
@@ -170,12 +130,7 @@ $(function () {
 
     // Open download dialogs via iframes,
     // to prevent aborting current uploads:
-    $('#fileupload .files a:not([target^=_blank])').live('click', function (e) {
-        e.preventDefault();
-        $('<iframe style="display:none;"></iframe>')
-            .prop('src', this.href)
-            .appendTo('body');
-    });
+
 
 });
 

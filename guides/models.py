@@ -104,8 +104,6 @@ class Card (models.Model):
 	has_lots_of_text = models.BooleanField(default=False)
 	tags = TagField()
 	card_number = models.IntegerField(blank=True, null=True) #for default guide...
-	
-	representative_media = models.URLField(blank=True, null=True)
 	primary_media = models.ForeignKey('MediaElement', blank=True, null=True, related_name='primary_media', default="",  on_delete=models.SET_DEFAULT)
 	show_last_and_next_buttons = models.BooleanField(default=True)
 	
@@ -127,7 +125,6 @@ class Card (models.Model):
 
 
 	def save(self, *args, **kwargs):
-		self.representative_media = self.rep_media
 		self.brand_new = False
 		if self.title:
 			self.slug=slugify(self.title)
@@ -148,19 +145,6 @@ class Card (models.Model):
 				return ('CardDetailView', (), {'gslug': self.guide.slug, 'slug':self.slug })
 			else:
 				return ('CardDetailViewByNum', (), {'gslug': self.guide.slug, 'cnumber':self.card_number })
-		
-
-	@property
-	def rep_media(self):
-		# primary =  self.mediaelement_set.filter(is_primary=True);
-		# if primary:
-		# 	return primary[0].file.file
-		# 	
-		# somemedia=self.mediaelement_set.all()
-		# if somemedia:
-		# 	return somemedia[0].file.file
-		# else:
-			return None
 
 	@property
 	def resource_uri(self):
@@ -174,8 +158,6 @@ class MediaElement (models.Model):
 	card = models.ForeignKey(Card)
 	created = models.DateTimeField(auto_now_add=True, blank=True, null=True)
 	type = models.CharField(blank=True, max_length=5, choices = SELEMENT_TYPE)
-	# is_primary = models.BooleanField(default=False)
-	# is_background = models.BooleanField(default=False)
 	autoplay = models.BooleanField(default=False)
 	length_seconds = models.IntegerField(blank=True, null=True)
 	length_minutes = models.IntegerField(blank=True, null=True)

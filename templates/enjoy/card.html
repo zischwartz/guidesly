@@ -1,123 +1,123 @@
 {%extends "base-enjoy.html"%} 
 
-
-<script src="{{STATIC_URL}}video.js" type="text/javascript" charset="utf-8"></script>
-<script src="{{STATIC_URL}}mute.js" type="text/javascript" charset="utf-8"></script>
-<link rel="stylesheet" href="{{STATIC_URL}}css/1video-js.css" type="text/css" media="screen" title="Video JS" charset="utf-8">
-<link rel="stylesheet" href="{{STATIC_URL}}css/card.css" type="text/css" media="screen" title="Video JS" charset="utf-8">
-<script type="text/javascript" charset="utf-8">
-VideoJS.setupAllWhenReady();
-</script>
-
-
-
+{%block extrahead%}
+	<script src="{{STATIC_URL}}video.js" type="text/javascript" charset="utf-8"></script>
+	<script src="{{STATIC_URL}}mute.js" type="text/javascript" charset="utf-8"></script>
+	<link rel="stylesheet" href="{{STATIC_URL}}css/video-js.css" type="text/css" media="screen" title="Video JS" charset="utf-8">
+	<link rel="stylesheet" href="{{STATIC_URL}}css/enjoy-card.css" type="text/css" media="screen"  charset="utf-8">
+	<script type="text/javascript" charset="utf-8">
+		VideoJS.setupAllWhenReady();
+	</script>
+{%endblock%}
 
 
 
-{%block topbar%}
+
+
+{%block header%}
 		<a href="{{card.guide.get_absolute_url}}">Back to {{card.guide.title|title}} Index</a>
 {%endblock%}
 
 {% block content %} 
-<img src="{{primary_media.file}}" class="primary_media">
+
 
 {%load markup%}
 
 <div id="card_wrap" class="box">
 	<div class="card" data-id="{{card.slug}}">
-
-			{%if card.title%}
+		{%if card.title%}
 			<h1>{{card.title}} </h1>
-			{%endif%}
-			
-			
-			<div class="card_media">
-			{# <img src="{{primary_media.file}}" class="primary_media"> #}
-			</div>
+		{%endif%}
+	    
+	
+		{%if primary_media.type == "image"%}
+			<img src="{{primary_media.file}}" class="primary_media">
 			{# <div class="primary_media" style="background-image:url('{{primary_media.file}}');"> #}
-				
+		{%endif%}
+		
+	    {%if primary_media.type == "video"%}
+        <div class="video-js-box">
+				<video id="vid_thumb_{{el.id}}" 
+				class="video-js"
+				width="800" 
+				height="600" 
+				{# poster=""  #}
+				{%if primary_media.autoplay%}autoplay{%endif%}
+				 preload>
+				<source src="{{primary_media.file}}" type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"' />
+				Browser doesn't support HTML5 video.
+				</video>
+		   </div>
+	    {%endif%}		
+	
+	    {%if primary_media.type == "audio"%}
+	    	<div class="audio">
+		    	<audio class="primary_media"
+		    	src="{{el.file}}"  
+				{%if el.autoplay%}autoplay{%endif%}
+		    	controls="controls">
+				</audio>
 			</div>
-			
-				{%for el in media_elements%}
-				    {%if el.type == "video"%}
-				        <div class="video-js-box">
-      					<video id="example_video_1" 
-      					class="video-js"
-      					width="640" 
-      					height="264" 
-      					poster="" 
-      					autoplay="{%if el.autoplay == "True"%} autoplay{%else%}false{%endif%}" 
-      					controls preload>
-       					<source src="{{el.file}}" type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"' />
-       					Browser doesn't support HTML5 video.
-      					</video>
-  					    </div>    
-				    {%endif%}
-				    
-				    {%if el.type == "audio"%}
-				    	<div class="audio">
-				    	<audio 
-				    	src="{{el.file}}"  
-				    	autoplay="{%if el.autoplay == "True"%}autoplay{%else%}false{%endif%}" 
-				    	controls="controls">
-						</audio>
-				    {%endif%}
-					
-					{%if el.type == "image"%}
-					<div class="media_el {%if el.is_primary%}is_primary{%else%} is_thumb {%endif%}" 
-					style="background-image:url('{{el.file}}');">
-					</div>
-				    {%endif%}
-				    
-				{%endfor%}
-			</div>
-					
-			
-			{%if card.text%}
-			<div class="card_text">
-				{{card.text|markdown}}
-			</div>
-			{%endif%}
-				
-			<div class="card_interactive_elements">	
-				{%for el in input_elements%}
-					<div class="interactive_element">
-						{%include el.el_template%}
-					</div>
-				{%endfor%}
-			</div>
-			
-			
-			
-			<div class="muteall" style="float: left">
-			<span class="mute">Mute All:</span>
-			</div>
-			<div id="mutebutton" class="mute" style="display:inline">
-			<form name="mute_checkbox">
-			<input type="checkbox" name="radio_mute">
-			</form>
-			</div>
-			
-			<script>
-			
-			
-			
-			
-			$('#mutebutton').click(function() {
- 		    if(($('video').prop('muted') == false) || ($('audio').prop('muted') == false))  {
-				$('video').prop('muted', true);
-				$('audio').prop('muted', true);
-				}
-			else{
-				$('video').prop('muted', false);
-				$('audio').prop('muted', false);			
-				}
-			});
-			</script>
-			
-						
+	    {%endif%}
+	
+	
+	{# THUMBs #}
+	<div class="other_card_media">
+		{%if media_elements|length > 1 %}	
+		{%for el in media_elements%}		
+		
+			{%if el.type == "video"%}
+	        <div class="video-js-box">
+					<video id="vid_thumb_{{el.id}}" 
+					class="video-js"
+					width="100" 
+					height="100" 
+					{# poster=""  #}
+					{%if el.autoplay%}autoplay{%endif%}
+					 preload>
+ 					<source src="{{el.file}}" type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"' />
+ 					Browser doesn't support HTML5 video.
+					</video>
+			   </div>    
+	    	{%endif%}		
+   
+		    {%if el.type == "audio"%}
+		    	<div class="audio">
+			    	<img 
+			    	src="{{el.file.thumb_url}}" >
 
+		    	</div>
+		    {%endif%}
 
+			{%if el.type == "image"%}
+			
+			<a href="{{el.file}}">
+				<img src="{{el.file.thumb_url}}">
+			
+			{# <div class="media_thumb" #}
+			{# style="background-image:url('{{el.file.thumb_url}}');"> #}
+			{# </div> #}
+		    {%endif%}
+				    
+		{%endfor%}
+		{%endif%} {# if greater than 1 #}
+
+		</div> {# end  .other_card_media#}
+					
+			
+		{%if card.text%}
+		<div class="card_text">
+			{{card.text|markdown}}
+		</div>
+		{%endif%}
+			
+		<div class="card_interactive_elements">	
+			{%for el in input_elements%}
+				<div class="interactive_element">
+					{%include el.el_template%}
+				</div>
+			{%endfor%}
+		</div>
 
 
 			{%if card.show_last_and_next_buttons%}
@@ -132,6 +132,28 @@ VideoJS.setupAllWhenReady();
 			</div> {# end .card #}
 </div> {# end #card_wrap #}
 
+			
+			<div class="muteall" style="float: left">
+			<span class="mute">Mute All:</span>
+			</div>
+			<div id="mutebutton" class="mute" style="display:inline">
+			<form name="mute_checkbox">
+			<input type="checkbox" name="radio_mute">
+			</form>
+			</div>
+			
+			<script>
+			$('#mutebutton').click(function() {
+ 		    if(($('video').prop('muted') == false) || ($('audio').prop('muted') == false))  {
+				$('video').prop('muted', true);
+				$('audio').prop('muted', true);
+				}
+			else{
+				$('video').prop('muted', false);
+				$('audio').prop('muted', false);			
+				}
+			});
+			</script>
 
 
 

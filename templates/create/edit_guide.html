@@ -25,7 +25,7 @@
 		{{card.card_number}}
 			<div class="smallcard">
 				{{card}}
-				{%if card.representative_media%} <img src="{{card.representative_media}}" style="width:50px"> {%endif%}
+				{%if card.primary_media%} <img src="{{card.primary_media.file.thumb_url}}" style="width:50px"> {%endif%}
 			</div>
 			<br><a href="{{card.get_absolute_url}}"> View</a> | <a href="{% url EditCard gslug=card.guide.slug, id=card.id %}"> Edit</a>
 
@@ -49,7 +49,7 @@
 	<script id='smallCardTemplate' type='text/html'>
 		<div class="smallcard">
 			<span data-bind="text: title() ? title: 'Untitled'"></span>
-			{{if representative_media }}<br><img src="${representative_media}" style="width:50px"> 
+			{{if primary_media }}<br><img src="${primary_media}" style="width:50px"> 
 			{{/if}} <a href="#">EDIT</a>
 		</div>
 	</script>

@@ -528,8 +528,8 @@
                 .addClass('ui-widget-header ui-corner-top');
             this.element.find('.fileinput-button').each(function () {
                 var fileInput = $(this).find('input:file').detach();
-                $(this).button({icons: {primary: 'ui-icon-plusthick'}})
-                    .append(fileInput);
+                // $(this).button({icons: {secondary: 'ui-icon-plusthick'}}).append(fileInput);
+                $(this).button().append(fileInput);
             });
             fileUploadButtonBar.find('.start')
                 .button({icons: {primary: 'ui-icon-circle-arrow-e'}})

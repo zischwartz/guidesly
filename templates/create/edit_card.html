@@ -7,7 +7,7 @@
 		<script type="text/javascript" src="{{STATIC_URL}}upload-plugin/jquery.fileupload.js"></script>
 		<script type="text/javascript" src="{{STATIC_URL}}upload-plugin/jquery.fileupload-ui.js"></script>
 		{# // <script type="text/javascript" src="{{STATIC_URL}}upload-plugin/jquery.tmpl.min.js"></script> #}
-		<script type="text/javascript" src="{{STATIC_URL}}upload-plugin/application.js"></script>
+		{# // <script type="text/javascript" src="{{STATIC_URL}}upload-plugin/application.js"></script> #}
 		<link rel="stylesheet" href="{{STATIC_URL}}upload-plugin/thumbnail-scaling.css">
 		
 
@@ -51,7 +51,7 @@
 			</div>	 {# end .ue #}
 			
 		{# Primary Media #}
-			<div data-bind="template:{name: 'primaryImageTemplate',  foreach: VM.the_primary_media_object,
+			<div data-bind="template:{name: 'primaryTemplate',  foreach: VM.the_primary_media_object,
 			  				afterRender: uePostProcessing,
 			 				beforeRemove: function(elem) {$(elem).slideUp() },
 							afterAdd: function(elem) {$(elem).hide().slideDown() }}"> </div>
@@ -60,8 +60,9 @@
 			<div data-bind="template:{name: VM.mediaTypeTemplate,  foreach: VM.mediaelements,
 			  				afterRender: uePostProcessing,
 			 				beforeRemove: function(elem) {$(elem).slideUp() },
-							afterAdd: function(elem) {$(elem).hide().slideDown() }}"> </div> 
-							{# , visible: ((VM.mediaelements().length >1) || (VM.the_primary_media_object().length < 1))"> </div> #}
+							afterAdd: function(elem) {$(elem).hide().slideDown() }},
+							visible: ((VM.mediaelements().length >1) || (!VM.the_primary_media_object().length))"> </div>
+
 
 	{# CARD TEXT #}
 		<div class="ue" tabindex="10" data-bind="event: { focusin: VM.flipEl, focusout: VM.unflipEl }">
@@ -126,11 +127,8 @@
 		<div class="userfiles" data-bind="template:{name: userFileDisplayMode,  foreach: VM.media_files}"></div>
 		{# *************************** #}
 		<br>
-		<button class="uibutton" data-bind="click: showFileUploadForm, visible: !(currently_adding_media_type()=='upload') "><img src="{{STATIC_URL}}img/upload-icon.png"> Upload New Media Now</button>
+		{# <button class="uibutton" data-bind="click: showFileUploadForm, visible: !(currently_adding_media_type()=='upload') "> Upload New Media Now</button> #}
 		{%include 'create/fileupload.html'%}
-		
-		
-		
 		
 		<br><div class="F">F</div>
 
@@ -177,13 +175,40 @@
 	<div id="edit_card_options_group"> 
 		<input type="checkbox" data-bind="checked: show_last_and_next_buttons" id="show_prev_and_next"> <label for="show_prev_and_next"> Previous and Next Card Buttons</label>
 		<br><br>
-		(These will only show up if they actually exist.)
+		(These will only show up if they already exist.)
 		</div>
 </div> {# end #card_element_toolbar #}
 
-
-
+				{#  #}
+				{# <input type="radio" id="checkb-is_primary-${id}" class="uibutton" data-bind="checked: VM.primary_media" value="${resource_uri}" name="primary_media" /> #}
+				{# <label for="checkb-is_primary-${id}">Primary Media</label> #}
 {% verbatim %} 		 
+
+
+	<script id='primaryTemplate' type='text/html'>
+		<div class="ue is_primary" data-bind="event: { focusin: VM.flipEl, focusout: VM.unflipEl }, attr: { tabindex: typeof(id)!='undefined' ? id: -1 }">
+			<figure class="front">
+				<div class="media_holder"  style="background: url( '${file.medium_url}' ) center center no-repeat; background-size: contain;"></div>
+				<div class="media_title" data-bind="text: title"></div>
+			</figure>
+			
+			<div class="back">
+				<input type="text" data-bind="value:title, valueUpdate: 'change'" placeholder="Image title"> <br>
+				<img src="${file.thumb_url}" width="50px"> 
+				<br>
+
+					<input type="checkbox" id="checkb-autoplay-${id}" class="uibutton" data-bind="checked: autoplay" />
+					<label for="checkb-autoplay-${id}" data-bind="text : autoplay() ? 'Currently Autoplaying ': 'Make Autoplay'"></label>
+					<br>
+
+				
+				<a class="uibutton delete" data-bind="click: VM.deleteFromCard">Remove</a>
+			</div>
+			
+		</div> 
+	</script>	
+
+
 	<script id='imageTemplate' type='text/html'>
 		<div class="ue" data-bind="event: { focusin: VM.flipEl, focusout: VM.unflipEl }, attr: { tabindex: typeof(id)!='undefined' ? id: -1 }">
 			<figure class="front">
@@ -205,30 +230,7 @@
 		</div> 
 	</script>
 	
-	<script id='primaryImageTemplate' type='text/html'>
-		<div class="ue is_primary" data-bind="event: { focusin: VM.flipEl, focusout: VM.unflipEl }, attr: { tabindex: typeof(id)!='undefined' ? id: -1 }">
-			<figure class="front">
-				<div class="media_holder"  data-bind="style: {background: 'url('+ file.file() +') center center no-repeat', backgroundSize: 'contain'}"></div>
-				<div class="media_title" data-bind="text: title"></div>
-			</figure>
-			
-			<div class="back">
-				<input type="text" data-bind="value:title, valueUpdate: 'change'" placeholder="Image title"> <br>
-				<img src="${file.file}" width="50px"> 
-				<br>
-				<input type="radio" id="checkb-is_primary-${id}" class="uibutton" data-bind="checked: VM.primary_media" value="${resource_uri}" name="primary_media" />
-				<label for="checkb-is_primary-${id}">Primary Media</label>
-				<br>
-				<a class="uibutton delete" data-bind="click: VM.deleteFromCard">Remove</a>
-			</div>
-			
-		</div> 
-	</script>	
 
-	
-	<script id='nodisplay' type='text/html'>
-	</script>	
-	<!-- Video Element template. TODO add thumbnail -->
 	<script id='videoTemplate' type='text/html'>
 		<div class="ue" data-bind="event: { focusin: VM.flipEl, focusout: VM.unflipEl }, attr: { tabindex: typeof(id)!='undefined' ? id: -1 }">
 			<figure class="front">
@@ -241,8 +243,7 @@
 				<input type="text" data-bind="value:title, valueUpdate: 'change'" placeholder="Image title"> <br>
 				<img src="/static/img/video-icon.png" width="50px"> 
 				<br>
-				<input type="radio" id="checkb-is_primary-${id}" class="uibutton" data-bind="checked: VM.primary_media" value="${resource_uri}" name="primary_media" />
-				<label for="checkb-is_primary-${id}">Primary Media</label>
+				<a class="uibutton" data-bind="click: VM.makePrimary">Make Primary Media</a>
 				<br><input type="checkbox" id="checkb-autoplay-${id}" class="uibutton" data-bind="checked: autoplay" />
 				<label for="checkb-autoplay-${id}" data-bind="text : autoplay() ? 'Currently Autoplaying ': 'Make Autoplay'"></label>
 				<br>
@@ -252,6 +253,30 @@
 			
 		</div> 
 	</script>
+	
+	<script id='audioTemplate' type='text/html'>
+		<div class="ue" data-bind="event: { focusin: VM.flipEl, focusout: VM.unflipEl }, attr: { tabindex: typeof(id)!='undefined' ? id: -1 }">
+			<figure class="front">
+				<div class="media_holder" style="background-image: url('/static/img/audio-icon.png')"></div>
+				<div class="media_title" data-bind="text: title"></div>
+			</figure>
+			
+			<div class="back">
+				
+				<input type="text" data-bind="value:title, valueUpdate: 'change'" placeholder="Image title"> <br>
+				<img src="/static/img/audio-icon.png" width="50px"> 
+				<br>
+				<a class="uibutton" data-bind="click: VM.makePrimary">Make Primary Media</a>
+				<br><input type="checkbox" id="checkb-autoplay-${id}" class="uibutton" data-bind="checked: autoplay" />
+				<label for="checkb-autoplay-${id}" data-bind="text : autoplay() ? 'Currently Autoplaying ': 'Make Autoplay'"></label>
+				<br>
+				<a class="uibutton delete" data-bind="click: VM.deleteFromCard">Remove</a>
+
+			</div>
+			
+		</div> 
+	</script>
+	
 	
 		
 	<script id='buttonTemplate' type='text/html'>
@@ -283,7 +308,7 @@
 	
 	<script id='userFileImageTemplate' type='text/html'>
 		<div data-bind='click: VM.addMedia2card' class="media"> 
-		 	<img src="${file}">
+		 	<img src="${thumb_url}">
 			<div class="image_caption">${slug}</div>
 		</div>
 	</script>
@@ -323,7 +348,7 @@
 		<div class="smallcard">
 			<input type="radio" id="radiob-card-${id}" class="uibutton" data-bind="checked: VM.newActionGotoCard , value: resource_uri" name="addbutton-pickcard">
 			<label for="radiob-card-${id}"><span data-bind="text: title ? title.slice(0,15): 'Untitled'"></span>
-			{{if representative_media }}<br><img src="${representative_media}" style="width:50px"> 
+			{{if primary_media }}<br><img src="${primary_media}" style="width:50px"> 
 			{{/if}}</label>
 		</div>
 	</script>
@@ -332,7 +357,7 @@
 		<div class="smallercard"> 
 			<input type="radio" id="radiob-card-edit-${$item.input_num}-${id}"  class="uibutton" data-bind="checked: $item.selected, value: resource_uri, attr:{ checked: $item.selected() == resource_uri}" name="editbutton-${$item.input_num}-pickcard">
 			<label for="radiob-card-edit-${$item.input_num}-${id}">{{if title}}${title}{{else}}Untitled Card{{/if}}
-			{{if representative_media }}<br><img src="${representative_media}" style="width:40px"> 
+			{{if primary_media }}<br><img src="${primary_media}" style="width:40px"> 
 			{{/if}}</label>
 		</div>
 	</script>	

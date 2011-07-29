@@ -72,8 +72,14 @@ background-image: -moz-linear-gradient(
 
 #wrap
 {
-
+/*	width: 800px;*/
+	width: 95%;
+	margin-left: auto;
+	margin-right: auto;
+	margin-top: 10px;
 }
+
+
 
 a
 {
@@ -87,24 +93,7 @@ a:hover
 }
 
 /*inside of the wrap*/
-.text_viewing_wrap
-{
-	background-color: white;
-	padding: 25px;
-	margin-left: auto;
-	margin-right: auto;
-	width: 850px;
-	background-color: white;
-		width: 800px;
-	margin-left: auto;
-	margin-right: auto;
-	margin-top: 10px;
-}
 
-#messages
-{
-	color: brown;
-}
 
 h1 {font-size:2em; font-weight: bold; padding: 4px 0 6px 0;}
 h2 {font-size:1.5em; font-weight: bold; padding: 3px 0 5px 0;}
@@ -118,6 +107,7 @@ h2 {font-size:1.5em; font-weight: bold; padding: 3px 0 5px 0;}
 .clearfix { display: inline-block; }
 * html .clearfix { height: 1%; } /* Hides from IE-mac \*/
 .clearfix { display: block; }
+
 
 #header
 {
@@ -150,33 +140,8 @@ h2 {font-size:1.5em; font-weight: bold; padding: 3px 0 5px 0;}
 	padding: 15px;
 }
 
-
-
-.primary_media
-{
-
-	height:36em;   
-	background-size: contain;
-	background: no-repeat center center;
-	background-color: black;
-}
-
-#card_wrap
-{
-	margin-left: auto;
-	margin-right: auto;
-/*	width: 950px;*/
-
-	background-color: #383838;
-}
-
-
-
 .card
 {
-/*	margin-left: auto;
-	margin-right: auto;
-	width: 850px;*/
 	background-color: white;
 	color: black;
 }
@@ -190,10 +155,20 @@ h2 {font-size:1.5em; font-weight: bold; padding: 3px 0 5px 0;}
 	letter-spacing: .2em;
 }
 
-/* the container pthjer of media */
-.other_card_media
+/* the container of media */
+.card_media
 {
 	overflow: auto;
+}
+
+img.primary_media
+{
+width: 100%;
+/* as long as height is less than total viewpoint -50px or somesuch depending on header and elastic footer*/
+
+/*	background-size: contain;*/
+/*	background: no-repeat center center;*/
+/*	background-color: black;*/
 }
 
 .media_thumb
