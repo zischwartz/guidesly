@@ -1,9 +1,9 @@
-{%extends "base-create.html"%} 
+{%extends "create/base.html" %}
 
 {%block extrahead%}
-		<link rel="stylesheet" media="all" href="{{STATIC_URL}}css/edit-guide.css"/>
+		<link rel="stylesheet" media="all" href="{{STATIC_URL}}create/guide.css"/>
 
-	<script src="{{STATIC_URL}}create-edit_guide.js"></script>
+	<script src="{{STATIC_URL}}create/guide.js"></script>
 	<script type="text/javascript">
 		{# var all_cards_json = '{{all_cards_json|safe|escapejs}}'; #}
 		var guide_json = '{{guide_json|safe|escapejs}}'; 

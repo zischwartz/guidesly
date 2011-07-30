@@ -112,7 +112,7 @@
 
 
 
-$(function () {
+// $(function () {
 
 
 
@@ -132,7 +132,7 @@ $(function () {
     // to prevent aborting current uploads:
 
 
-});
+// });
 
 
 

@@ -1,4 +1,4 @@
-{%extends "base-create.html"%}
+{%extends "create/base.html" %}
 
 {%block extrahead%}
 
@@ -11,7 +11,7 @@
 		<link rel="stylesheet" href="{{STATIC_URL}}upload-plugin/thumbnail-scaling.css">
 		
 
-		<script src="{{STATIC_URL}}create-edit_card.js"></script>
+		<script src="{{STATIC_URL}}create/card.js"></script>
 		<script type="text/javascript">
 			var current_card_id ="{{s.id}}";
 			var guide_id = {{s.guide.id}};
