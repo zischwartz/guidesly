@@ -11,7 +11,7 @@ from fileupload.models import UserFile
 
 from log import getlogger
 logger=getlogger()
-logger.debug("---------------")
+logger.info("-------z--------")
 
 # from learny.photologue.models import Photo
 
@@ -46,27 +46,16 @@ class Guide (models.Model):
 	description = models.TextField(blank=True)
 	created = models.DateTimeField(auto_now_add=True)
 	modified = models.DateTimeField(auto_now=True)
-	is_linear = models.BooleanField(default=False) #if true, we should auto add next and back buttons
+	is_linear = models.BooleanField(default=True) #if true, we should auto add next and back buttons
 	enable_comments = models.BooleanField(default=True)
 	text_slugs_for_cards = models.BooleanField(default=True)
-	number_of_cards = models.IntegerField(default=0)
 	tags = TagField()
 	has_title_card = models.BooleanField(default=False)
 	cards = models.ManyToManyField('Card', blank=True, null=True, related_name="cards_in_guide")
-	card_order =jsonfield.JSONField(blank=True, null=True)
-	# thumbnail = models.ForeignKey(UserFile, null=True, blank=True)
+	card_order =jsonfield.JSONField(blank=True, null=True, default="[]") 
 
 	def save(self, *args, **kwargs):
 		self.slug= slugify(self.title)
-		ordering={}
-		if self.number_of_cards:
-			for c in self.cards.all():
-				ordering[c.card_number] = c.id
-			self.card_order= ordering
-		# logger.debug("----order------")
-		# logger.debug(self.card_order)
-		# logger.debug("----@1------")
-		# logger.debug(self.card_order[1])
 		super(Guide, self).save(*args, **kwargs)
 	
 	def __unicode__(self):
@@ -80,16 +69,18 @@ class Guide (models.Model):
 		return ('GuideDetailView', (), {'slug': self.slug })
 		
 	def get_prev_card(self, card):
-		prev_card_number = card.card_number -1
-		if prev_card_number:
-			return Card.objects.get(pk=(self.card_order[str(prev_card_number)]))
+		prev_card_number = card.card_number -2 # 2 because the list card_order is zero based
+		if prev_card_number >=0:
+			return Card.objects.get(pk=(self.card_order[prev_card_number]))
 		else: 
 			return None
 
 	def get_next_card(self, card):
-		next_card_number = card.card_number +1
-		if not next_card_number > self.number_of_cards:
-			return Card.objects.get(pk=(self.card_order[str(next_card_number)]))
+		next_card_number = card.card_number  #no +1 because card_order is 0 based
+		# logger.info(next_card_number)
+		# logger.info(self.card_order)
+		if not next_card_number >= len(self.card_order):
+			return Card.objects.get(pk=(self.card_order[next_card_number]))
 		else: 
 			return None
 
@@ -103,48 +94,79 @@ class Card (models.Model):
 	brand_new = models.BooleanField(default=True)
 	has_lots_of_text = models.BooleanField(default=False)
 	tags = TagField()
-	card_number = models.IntegerField(blank=True, null=True) #for default guide...
+	card_number = models.IntegerField(blank=True, null=True) #for default guide.  1 based (not 0)
 	primary_media = models.ForeignKey('MediaElement', blank=True, null=True, related_name='primary_media', default="",  on_delete=models.SET_DEFAULT)
-	show_last_and_next_buttons = models.BooleanField(default=True)
+	is_floating_card = models.BooleanField(default=False)
 	
 	def __unicode__(self):
 		if self.title !="":
 			return self.title
 		else:
-			return "Untitled Card #" + str(self.card_number)
-
+			if not self.is_floating_card:
+				return "Untitled Card #" + str(self.card_number)
+			else: 
+				return "Untitled Floating Card"
+				
 	def firstsave(self, *args, **kwargs):
-		num_in_guide= self.guide.number_of_cards
-		self.card_number = num_in_guide +1
-		self.show_last_and_next_buttons= self.guide.is_linear
-		# self.slug = num_in_guide +1
+		number_of_cards = len(self.guide.card_order)
+		if not self.is_floating_card:
+			self.card_number = number_of_cards +1
 		super(Card, self).save(*args, **kwargs)
-		self.guide.number_of_cards= num_in_guide +1
+		if not self.is_floating_card:
+			self.guide.card_order.append(self.id)
 		self.guide.cards.add(self)
 		self.guide.save()
+		# logger.info("first save self.id")
+		# logger.info(self.id)
 
 
 	def save(self, *args, **kwargs):
 		self.brand_new = False
+		self.id=int(self.id) #quotes were messing up guide.card_order
+
 		if self.title:
 			self.slug=slugify(self.title)
 		else:
 			self.slug=None
+
+		if self.is_floating_card:
+			if self.id in self.guide.card_order:
+				self.guide.card_order.remove(self.id)
+				self.card_number = None
+				self.guide.save()
+		else: 
+			if self.id in self.guide.card_order:
+				pass
+			else:
+				number_of_cards = len(self.guide.card_order)
+				self.card_number = number_of_cards +1
+				self.guide.card_order.append(self.id)
+				self.guide.save()
+				# TODO this case is converting from a floating to a normal card. so where does it go? the end for now?
 		super(Card, self).save(*args, **kwargs)
 
+	
+	def delete(self, *arg, **kwargs):
+		if self.id in self.guide.card_order:
+			self.guide.card_order.remove(self.id)
+		super(Card, self).delete(*args, **kwargs)
 
+	
 	class Meta:
 		ordering = ['created'] #switch to card_number
 	
 	@models.permalink
 	def get_absolute_url(self):
 		if not self.guide.text_slugs_for_cards:
-			return ('CardDetailViewByNum', (), {'gslug': self.guide.slug, 'cnumber':self.card_number })
+			if card.is_floating_card:
+				return ('CardDetailViewById', (), {'gslug': self.guide.slug, 'id':self.id })
+			else:
+				return ('CardDetailViewByNum', (), {'gslug': self.guide.slug, 'id':self.card_number})
 		else:
 			if self.slug:
 				return ('CardDetailView', (), {'gslug': self.guide.slug, 'slug':self.slug })
 			else:
-				return ('CardDetailViewByNum', (), {'gslug': self.guide.slug, 'cnumber':self.card_number })
+				return ('CardDetailViewById', (), {'gslug': self.guide.slug, 'id':self.id })
 
 	@property
 	def resource_uri(self):

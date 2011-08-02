@@ -73,6 +73,7 @@ VM.addMedia2card = function() {
 	itemToAdd.title=ko.observable('');
 	var jsonData = ko.toJSON(itemToAdd);
 	var postURL;
+	
 	postURL=$.ajax({
 		url: staticel_api_url,
 		type: "POST",
@@ -144,7 +145,8 @@ VM.deleteFromCard= function()
 VM.makePrimary = function()
 {
 	console.log("lets make it primary");
-	VM.the_primary_media_object.pop();
+	d=VM.the_primary_media_object.pop();
+	console.log(d);
 	VM.the_primary_media_object.push(this);
 	VM.primary_media(this.resource_uri());
 	VM.save();

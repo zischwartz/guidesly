@@ -28,7 +28,7 @@
 		{%else%}Edit Card
 		{%endif%}
 	</div>
-	<a href="{% url CardDetailViewByNum gslug=s.guide.slug cnumber=s.card_number %}" class="uibutton"> Preview <i data-bind="text: !title() ? 'Untitled Card {{s.card_number}}': title"></i></a>
+	<a href="{% url CardDetailViewByIdRedirect id=s.id %}" class="uibutton"> Preview <i data-bind="text: !title() ? '{{s}}': title"></i></a>
 	{# <a href="{% url CardDetailViewById id=s.id %}" class="uibutton"> Preview <i data-bind="text: !title() ? 'Untitled Card {{s.card_number}}': title"></i></a> #}
 	<a href="{% url EditGuide gslug=s.guide.slug %}" class="uibutton"> Overview of <i>{{s.guide.title}}</i> </a>
 {%endblock%}
@@ -53,14 +53,14 @@
 		{# Primary Media #}
 			<div data-bind="template:{name: 'primaryTemplate',  foreach: VM.the_primary_media_object,
 			  				afterRender: uePostProcessing,
-			 				beforeRemove: function(elem) {$(elem).slideUp() },
+			 				beforeRemove: function(elem) {$(elem).slideUp(function(){ $(this).remove()}); },
 							afterAdd: function(elem) {$(elem).hide().slideDown() }}"> </div>
 					
 	{#   MEDIA CLIENTSIDE TEMPLATE CALL  which is actually way down below, and perhaps should be a separate template file on the server#}
 			<div data-bind="template:{name: VM.mediaTypeTemplate,  foreach: VM.mediaelements,
 			  				afterRender: uePostProcessing,
-			 				beforeRemove: function(elem) {$(elem).slideUp() },
-							afterAdd: function(elem) {$(elem).hide().slideDown() }},
+			 				beforeRemove: function(elem) {$(elem).slideUp(function(){ $(this).remove()}); },
+							afterAdd: function(elem) {$(elem).hide().slideDown() }},  
 							visible: ((VM.mediaelements().length >1) || (!VM.the_primary_media_object().length))"> </div>
 
 
@@ -81,9 +81,9 @@
 
 	
 		{# Prev and Next Buttons for linear guides #}
-		<div id="prev_and_nexts" data-bind="visible: show_last_and_next_buttons">
-			{%if prev_card%}<a href="#">Previous</a> {%endif%}
-			{%if next_card%}<a href="#">Next</a> {%endif%}
+		<div id="prev_and_nexts" data-bind="visible: !(is_floating_card())">
+			{%if prev_card%}<a href="{{prev_card.get_absolute_url}}">Previous</a> {%endif%}
+			{%if next_card%}<a href="{{next_card.get_absolute_url}}">Next</a> {%endif%}
 		</div>
 		<div class="F">F</div>
 
@@ -91,6 +91,10 @@
 
 	{# <input class="uibutton" type="submit" value="Save Card" name ="card_sub_save"/> #}
 	<a  href="{% url BuildCard gslug=s.guide.slug %}"class="uibutton"/>Save &amp; Add New Card</a>
+	<div id="edit_card_options_group"> 
+		<input type="checkbox" data-bind="checked: is_floating_card" id="is_floating_card"> <label for="is_floating_card"> Floating Card</label>
+		<br>A "floating card" is outside the normal flow of a guide.
+		</div>
 </form> {# end card form #}
 
 
@@ -172,11 +176,7 @@
 	
 	<h3 id="card_options"><a href="#">Edit Card Options</a></h3>
 	
-	<div id="edit_card_options_group"> 
-		<input type="checkbox" data-bind="checked: show_last_and_next_buttons" id="show_prev_and_next"> <label for="show_prev_and_next"> Previous and Next Card Buttons</label>
-		<br><br>
-		(These will only show up if they already exist.)
-		</div>
+
 </div> {# end #card_element_toolbar #}
 
 				{#  #}

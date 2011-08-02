@@ -3,6 +3,8 @@ from tastypie.resources import ModelResource
 from guides.models import *
 from thef.models import *
 from fileupload.models import UserFile
+from photologue.models import Photo
+
 from tastypie import fields
 from django.contrib.auth.models import User
 from tastypie.authorization import Authorization
@@ -54,8 +56,6 @@ class CardResource(ModelResource):
 			# statics.append(el['resource_uri'])
 		bundle.data['mediaelements']=emptylist
 		bundle.data['inputelements']=emptylist
-
-
 		return bundle
 	
 class SmallCardResource(ModelResource):
@@ -75,9 +75,16 @@ class GuideResource(ModelResource):
 		queryset= Guide.objects.all()
 		filtering= {"slug": ('exact'),}
 
+class PhotoResource(ModelResource):
+	class Meta:
+		authorization = Authorization()
+		queryset= Photo.objects.all()
+
 
 class UserFileResource(ModelResource):
 	owner = fields.ForeignKey(UserResource, 'owner' )#, full=True)
+	photo = fields.ForeignKey(PhotoResource, 'photo', null=True )#, full=True)
+
 	class Meta:
 		queryset= UserFile.objects.all()
 		authorization= myUserAuthorization()
@@ -88,7 +95,7 @@ class UserFileResource(ModelResource):
 		
 class MediaElementResource(ModelResource):
 	card = fields.ForeignKey(CardResource, 'card')
-	file = fields.ForeignKey(UserFileResource, 'file', full=True)
+	file = fields.ForeignKey(UserFileResource, 'file', full=True)#, readonly=True) #this really should be true
 	class Meta:
 		authorization = Authorization()
 		queryset= MediaElement.objects.all()

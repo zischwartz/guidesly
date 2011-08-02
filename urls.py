@@ -23,6 +23,7 @@ v1_api.register(UserResource())
 v1_api.register(SmallCardResource())
 v1_api.register(GuideResource())
 v1_api.register(TheFResource())
+v1_api.register(PhotoResource())
 
 
 
@@ -33,16 +34,13 @@ urlpatterns = patterns('',
     url(r'^g/(?P<slug>[^/]+)/?$', GuideDetailView, name='GuideDetailView'),
     url(r'^g/(?P<gslug>[^/]+)/(?P<slug>[^/]+)/?$', CardDetailView, name='CardDetailView'),
     url(r'^n/(?P<gslug>[^/]+)/(?P<cnumber>[^/]+)/?$', CardDetailView, name='CardDetailViewByNum'),
-    url(r'^c/(?P<id>[^/]+)/?$', CardDetailViewById, name='CardDetailViewById'),
-    
+    url(r'^c/(?P<gslug>[^/]+)/(?P<id>[^/]+)/?$', CardDetailView, name='CardDetailViewById'),
+    url(r'^i/(?P<id>[^/]+)/?$', CardDetailViewByIdRedirect, name='CardDetailViewByIdRedirect'),
+
     url(r'create/?$', CreateGuide, name='CreateGuide'),
     url(r'create/(?P<gslug>[^/]+)/?$', EditGuide, name='EditGuide'),
     url(r'create/(?P<gslug>[^/]+)/add/?$', BuildCard, name='BuildCard'),
     url(r'create/(?P<gslug>[^/]+)/(?P<id>[^/]+)/?$', EditCard, name='EditCard'),
-    # url(r'create/(?P<gslug>[^/]+)/(?P<slug>[^/]+)/addmedia$', AddMediaElement, name='AddMediaElement'),
-    # url(r'create/(?P<gslug>[^/]+)/(?P<slug>[^/]+)/editmedia/(?P<elementid>[^/]+)$', EditMediaElement, name='EditMediaElement'),
-    # url(r'create/(?P<gslug>[^/]+)/(?P<slug>[^/]+)/addinput$', AddInputElement, name='AddInputElement'),
-    # url(r'create/(?P<gslug>[^/]+)/(?P<slug>[^/]+)/editinput/(?P<elementid>[^/]+)$', EditInputElement, name='EditInputElement'),
     url(r'^upload/', include('fileupload.urls')),
     url(r'^user/', include('accounts.urls')),
     (r'^api/', include(v1_api.urls)),

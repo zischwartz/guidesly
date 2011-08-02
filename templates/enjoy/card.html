@@ -1,9 +1,9 @@
 {%extends "enjoy/base.html"%} 
 
 {%block extrahead%}
-	<script src="{{STATIC_URL}}enjoy/card.js"></script>
 	<script src="{{STATIC_URL}}js-libs/video.js" type="text/javascript" charset="utf-8"></script>
 	<script src="{{STATIC_URL}}enjoy/mute.js" type="text/javascript" charset="utf-8"></script>
+	<script src="{{STATIC_URL}}enjoy/card.js"></script>
 	<link rel="stylesheet" href="{{STATIC_URL}}js-libs/video-js.css" type="text/css" media="screen" title="Video JS" charset="utf-8">
 	<link rel="stylesheet" href="{{STATIC_URL}}enjoy/card.css" type="text/css" media="screen"  charset="utf-8">
 	<script type="text/javascript" charset="utf-8">
@@ -34,14 +34,18 @@
 		{# ***       PRIMARY MEDIA        ****#}
 		{# ********************************** #}
 		{%if primary_media.type == "image"%}
+			{# width:{{primary_media.file.photo.image.width}} #}
+			{# <br>height:{{primary_media.file.photo.image.height}} #}
 			<img src="{{primary_media.file}}" class="primary_media">
+			{# {{primary_media.photo}} #}
+			{# <img src="{{primary_media.file.photo.get_large_url}}" class="primary_media"> #}
 			{# <div class="primary_media" style="background-image:url('{{primary_media.file}}');"> #}
 		{%endif%}
 		
 	    {%if primary_media.type == "video"%}
-        <div class="video-js-box">
+        <div class="video-js-box primary_media">
 				<video id="vid_thumb_{{el.id}}" 
-				class="video-js"
+				class="video-js "
 				width="800" 
 				height="600" 
 				{# poster=""  #}
@@ -63,6 +67,7 @@
 			</div>
 	    {%endif%}
 	
+	
 	{# ********************************** #}	
 	{# ***           THUMBS           ****#}
 	{# ********************************** #}
@@ -83,13 +88,14 @@
 					{#  					Browser doesn't support HTML5 video. #}
 					{# </video> #}
 					{# 			   </div>     #}
-				<a href="{{el.file}}"class="thumb video">
+				<a href="{{el.file}}" class="thumb video" data-media_type="video">
 					<img src="{{el.file.thumb_url}}"/>
 				</a>
 	    	{%endif%}		
    
+
 		    {%if el.type == "audio"%}
-		    	<a class="audio" href="{{el.file}}">
+		    	<a class="thumb audio" href="{{el.file}}" data-media_type="audio">
 			    	<img 
 			    	src="{{el.file.thumb_url}}" >
 
@@ -97,8 +103,8 @@
 		    {%endif%}
 
 			{%if el.type == "image"%}
-			
-			<a href="{{el.file}}">
+				
+			<a href="{{el.file}}" class="thumb image" data-media_type="image">
 				<img src="{{el.file.thumb_url}}">
 			</a>
 		    {%endif%}
@@ -124,11 +130,11 @@
 		</div>
 
 
-			{%if card.show_last_and_next_buttons%}
+			{%if not card.is_floating_card%}
 			<div class="prev_and_next">
-				{%if prev_card%}<div class="interactive_element" style="float:left"><a href="{{prev_card.get_absolute_url}}">← Previous</a></div>{%endif%}
+				{%if prev_card%}<div class="interactive_element" style="float:left"><a href="{{prev_card.get_absolute_url}}" class="goto">← Previous</a></div>{%endif%}
 				
-				{%if next_card%}<div class="interactive_element"><a href="{{next_card.get_absolute_url}}">Next →</a></div>{%endif%}
+				{%if next_card%}<div class="interactive_element"><a href="{{next_card.get_absolute_url}}" class="goto">Next →</a></div>{%endif%}
 			
 			</div>
 			{%endif%}
@@ -137,27 +143,27 @@
 </div> {# end #card_wrap #}
 
 			
-			<div class="muteall" style="float: left">
-			<span class="mute">Mute All:</span>
-			</div>
-			<div id="mutebutton" class="mute" style="display:inline">
-			<form name="mute_checkbox">
-			<input type="checkbox" name="radio_mute">
-			</form>
-			</div>
-			
-			<script>
-			$('#mutebutton').click(function() {
- 		    if(($('video').prop('muted') == false) || ($('audio').prop('muted') == false))  {
-				$('video').prop('muted', true);
-				$('audio').prop('muted', true);
-				}
-			else{
-				$('video').prop('muted', false);
-				$('audio').prop('muted', false);			
-				}
-			});
-			</script>
+			{# <div class="muteall" style="float: left"> #}
+			{# <span class="mute">Mute All:</span> #}
+			{# </div> #}
+			{# <div id="mutebutton" class="mute" style="display:inline"> #}
+			{# <form name="mute_checkbox"> #}
+			{# <input type="checkbox" name="radio_mute"> #}
+			{# </form> #}
+			{# </div> #}
+			{#  #}
+			{# <script> #}
+			{# $('#mutebutton').click(function() { #}
+			{#  		    if(($('video').prop('muted') == false) || ($('audio').prop('muted') == false))  { #}
+			{# 	$('video').prop('muted', true); #}
+			{# 	$('audio').prop('muted', true); #}
+			{# 	} #}
+			{# else{ #}
+			{# 	$('video').prop('muted', false); #}
+			{# 	$('audio').prop('muted', false);			 #}
+			{# 	} #}
+			{# }); #}
+			{# </script> #}
 
 
 
