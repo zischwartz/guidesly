@@ -145,7 +145,11 @@ INSTALLED_APPS = (
     'fileupload',
     'guides',
     'tastypie',
+
     # 'south',
+    # 'debug_toolbar',
+
+    #'south',
     # 'debug_toolbar',
 	'invitation',
 	'registration',

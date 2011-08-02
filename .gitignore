@@ -5,3 +5,4 @@ userstatic/
 log.log
 db
 .DS_Store
+sitestatic/.DS_Store
