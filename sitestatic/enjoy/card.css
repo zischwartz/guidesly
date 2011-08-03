@@ -145,6 +145,7 @@ h2 {font-size:1.5em; font-weight: bold; padding: 3px 0 5px 0;}
 {
 	background-color: white;
 	color: black;
+	text-align: center;
 
 }
 
@@ -163,7 +164,7 @@ h2 {font-size:1.5em; font-weight: bold; padding: 3px 0 5px 0;}
 /*img.*/
 .primary_media
 {
-	max-width: 100%;
+/*	max-width: 100%;*/
 	max-height: 70%;
 	margin-left: auto;
 	margin-right: auto;
@@ -188,7 +189,7 @@ h2 {font-size:1.5em; font-weight: bold; padding: 3px 0 5px 0;}
 
 .card .card_text
 {
-	text-align: justify;
+	text-align: left;
 	color: #ededed;
 	width:60%;
 	font-size: 1.1em;
