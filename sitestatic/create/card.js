@@ -97,6 +97,7 @@ VM.addMedia2card = function() {
 			
 			//add the element to the card
 			VM.mediaelements.push(itemToAdd);
+			
 			},
 		contentType: "application/json",
 	});
@@ -194,7 +195,7 @@ VM.unflipEl=function(event){
 			{ 	
 				var jsonData = ko.mapping.toJSON(this);
 				//save the changes on the elemnt to the server // TODO check if the data changed, duh! TODO also maybe keep it from sending the elements, that's wasteful 
-				console.log(jsonData);
+				// console.log(jsonData);
 				$.ajax({
 					url: this.resource_uri(),
 					type: "PUT",
@@ -206,7 +207,7 @@ VM.unflipEl=function(event){
 	});//end 3d spin
 
 
-	console.log('bye');
+	console.log('saved' + el);
 }
 
 //apply button() to media elements after they've been added

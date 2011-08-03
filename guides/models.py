@@ -13,13 +13,6 @@ from log import getlogger
 logger=getlogger()
 logger.info("-------z--------")
 
-# from learny.photologue.models import Photo
-
-
-# from tastypie.resources import ModelResource
-# from api.CardResource import CardResource
-
-
 
 SELEMENT_TYPE = (
 	('image', 'Image'),
@@ -38,7 +31,11 @@ IELEMENT_TYPE = (
 	('T', 'Timer'),
 )
 
-
+class Theme (models.Model):
+	name = models.CharField(max_length=512)
+	text = models.TextField(blank=True, null=True)
+	def __unicode__(self):
+		return self.name
 
 class Guide (models.Model):
 	title = models.CharField(max_length=500)
@@ -53,7 +50,8 @@ class Guide (models.Model):
 	has_title_card = models.BooleanField(default=False)
 	cards = models.ManyToManyField('Card', blank=True, null=True, related_name="cards_in_guide")
 	card_order =jsonfield.JSONField(blank=True, null=True, default="[]") 
-
+	theme = models.ForeignKey(Theme, blank=True, null=True)
+	
 	def save(self, *args, **kwargs):
 		self.slug= slugify(self.title)
 		super(Guide, self).save(*args, **kwargs)
@@ -77,8 +75,6 @@ class Guide (models.Model):
 
 	def get_next_card(self, card):
 		next_card_number = card.card_number  #no +1 because card_order is 0 based
-		# logger.info(next_card_number)
-		# logger.info(self.card_order)
 		if not next_card_number >= len(self.card_order):
 			return Card.objects.get(pk=(self.card_order[next_card_number]))
 		else: 
@@ -97,6 +93,8 @@ class Card (models.Model):
 	card_number = models.IntegerField(blank=True, null=True) #for default guide.  1 based (not 0)
 	primary_media = models.ForeignKey('MediaElement', blank=True, null=True, related_name='primary_media', default="",  on_delete=models.SET_DEFAULT)
 	is_floating_card = models.BooleanField(default=False)
+	theme = models.ForeignKey(Theme, blank=True, null=True)
+	
 	
 	def __unicode__(self):
 		if self.title !="":
@@ -128,7 +126,6 @@ class Card (models.Model):
 			self.slug=slugify(self.title)
 		else:
 			self.slug=None
-
 		if self.is_floating_card:
 			if self.id in self.guide.card_order:
 				self.guide.card_order.remove(self.id)
@@ -232,9 +229,7 @@ class InputElement (models.Model):
 
 from api import CardResource
 
-
 	
-
 # USER PERMISSION PER OBJECT INSTANCE
 
 # from object_permissions import register
