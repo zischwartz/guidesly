@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}Create Profile - {{ block.super }}{% endblock %}
+	 
+{% block content %}
+		<h1>Create Profile for {{ user }} </h1>
+	<div id="create_profile">
+	   <form method="POST" action="" enctype="multipart/form-data">  
+		 {% csrf_token %}
+	      <dl>
+	      {% for field in form %}
+		         <dt>{{ field.label_tag }}</dt>
+	         <dd>{{ field }}</dd>
+	         {% if field.help_text %}<dd>{{ field.help_text }}</dd>{% endif %}
+	         {% if field.errors %}<dd class="form_errors">{{ field.errors }}</dd>{% endif %}
+	      {% endfor %}
+	      </dl>
+	      <input type="submit" name="submit" value="Update" id="submit">
+	   </form>
+	</div>
+	
+	{% endblock content %}
+
+
+

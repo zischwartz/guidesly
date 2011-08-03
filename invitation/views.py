@@ -16,7 +16,7 @@ is_key_valid = InvitationKey.objects.is_key_valid
 remaining_invitations_for_user = InvitationKey.objects.remaining_invitations_for_user
 
 def invited(request, invitation_key=None, extra_context=None):
-    if getattr(settings, 'INVITE_MODE', False):
+    if getattr(settings, 'INVITE_MODE', True):
         if invitation_key and is_key_valid(invitation_key):
             template_name = 'invitation/invited.html'
         else:
@@ -35,7 +35,7 @@ def register(request, backend, success_url=None,
             wrong_template_name='invitation/wrong_invitation_key.html',
             extra_context=None):
     extra_context = extra_context is not None and extra_context.copy() or {}
-    if getattr(settings, 'INVITE_MODE', False):
+    if getattr(settings, 'INVITE_MODE', True):
         invitation_key = request.REQUEST.get('invitation_key', False)
         if invitation_key:
             extra_context.update({'invitation_key': invitation_key})

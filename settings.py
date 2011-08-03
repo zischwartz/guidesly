@@ -1,4 +1,3 @@
-# Django settings for learny project.
 
 import os
 
@@ -101,7 +100,8 @@ TEMPLATE_LOADERS = (
 
 MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',           
-	'django.middleware.csrf.CsrfViewMiddleware', 
+	'django.middleware.csrf.CsrfViewMiddleware',    
+	'django.middleware.csrf.CsrfResponseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
@@ -120,7 +120,7 @@ TEMPLATE_DIRS = (
     # Don't forget to use absolute paths, not relative paths.
 )
 
-AUTH_PROFILE_MODULE = 'accounts.UserProfile'
+AUTH_PROFILE_MODULE = 'accounts.userprofile'
 
 # AUTHENTICATION_BACKENDS= 'object_permissions.backend.ObjectPermBackend',
 
@@ -138,24 +138,29 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     'django.contrib.admindocs',
     'django.contrib.markup',
-    # 'photologue',
+    'photologue',
     'object_permissions',
-    'accounts',
+    'accounts', 
+	'profiles',
     'tagging',
     'fileupload',
     'guides',
     'tastypie',
-    'south',
+    #'south',
     'debug_toolbar',
 	'invitation',
 	'registration',
 )                  
+            
+INVITE_MODE = True 
 
 ACCOUNT_ACTIVATION_DAYS = 5
 
 ACCOUNT_INVITATION_DAYS = 7
 
-INVITATIONS_PER_USER = 5
+INVITATIONS_PER_USER = 5   
+
+LOGIN_REDIRECT_URL = '/accounts/'
 
 LOG_FILE = "log.log"
 
@@ -207,4 +212,3 @@ EMAIL_PORT = 587
 EMAIL_SUBJECT_PREFIX = '[Django] '
 
 EMAIL_USE_TLS = True
-

@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+	{% block title %}{{ profile.user.username }} - {{ block.super }}{% endblock %}
+	
+	{% block content %}
+	
+	{% if profile %}
+	   <div id="profile_info">
+	      <h1>{{ profile.user.username }}</h1>
+	      
+	      <div id="profile_table">
+		 <table>
+		    <ul>
+		       <li>Name: {{ profile.user.first_name }}</li>
+		       <li>Gender: {{ profile.gender }}</li>
+		       <li>Location:
+			  {% if profile.location %}
+			     {{ profile.location }},
+			  {% endif %} </li> 
+			   <li>About: {{profile.about}}</li>
+		       <li>Last Login: {{ profile.user.last_login|date:"F j, Y" }}</li>
+		       <li>Member since: {{ profile.user.date_joined|date:"F j, Y" }}</li>
+		    </ul>
+		 </table>
+	      </div>
+	      
+	      <div id="profile_bio">
+		 <p>Bio: {{ profile.bio }}</p>
+	      </div>
+	      
+	      <div id="user_details">
+	      <ul>
+		 {% if user.is_authenticated %}
+		    {% ifequal user profile.user %}
+		 <li><a href="{% url profiles_edit_profile %}">Edit Profile</a></li>
+		    {% endifequal %}
+		 {% endif %}
+		 <li><a href="/{{ profile.user.username }}/guides/">Guides</a></li>
+		 <li><a href="/{{ profile.user.username }}/activity/">Activity</a></li>
+		 <li><a href="/{{ profile.user.username }}/store/">Store</a></li>
+	      </ul>
+	   </div>
+	   
+	   <hr />
+	   
+	   <div id="profile_nav">
+	      <ul>
+		 <li>Profile</li>
+		 <li>Guides</li>
+		 <li>Activity</li>
+		 <li>Tags</li>
+		 <li>Store</li>
+	      </ul>
+	   </div>
+	
+	{% else %}
+	
+	<p>This profile is not publicly accessible</p>
+	
+	{% endif %}
+	
+	{% endblock %}

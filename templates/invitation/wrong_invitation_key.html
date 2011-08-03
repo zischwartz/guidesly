@@ -1,7 +1,8 @@
-{% extends "page_base.html" %}
+{% extends "invitation/base.html" %}  
+{% load i18n %}    
 
-{% block page_content %}
+{% block invitation_content %}
+                                    
+<h2>{% trans "Invalid invitation key!" %}</h2>    
 
-Invalid invitation key!
-
-{% endblock %}
+{% endblock %}                   
