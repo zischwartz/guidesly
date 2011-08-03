@@ -8,13 +8,26 @@ from django.template.defaultfilters import slugify
 import jsonfield 
 
 from fileupload.models import UserFile
+
+from log import getlogger
+logger=getlogger()
+logger.info("-------z--------")
+
 # from learny.photologue.models import Photo
 
 
 # from tastypie.resources import ModelResource
 # from api.CardResource import CardResource
 
-# Create your models here.
+
+
+SELEMENT_TYPE = (
+	('image', 'Image'),
+	('audio', 'Audio'),
+	('video', 'Video'),
+	('other', 'Other'),
+)
+
 IELEMENT_TYPE = (
 	('B', 'Just a Button'),
 	('M', 'Multiple Choice'),
@@ -25,20 +38,6 @@ IELEMENT_TYPE = (
 	('T', 'Timer'),
 )
 
-SELEMENT_TYPE = (
-	('image', 'Image'),
-	('audio', 'Audio'),
-	('video', 'Video'),
-	('other', 'Other'),
-)
-
-SVALUEINQUIRY_TYPE = (
-	('L', 'Location'),
-	('A', 'Accelerometer'),
-	('T', 'Time'),
-	('D', 'Date'),
-)
-
 
 
 class Guide (models.Model):
@@ -47,18 +46,15 @@ class Guide (models.Model):
 	description = models.TextField(blank=True)
 	created = models.DateTimeField(auto_now_add=True)
 	modified = models.DateTimeField(auto_now=True)
-	is_linear = models.BooleanField(default=False) #if true, we should auto add next and back buttons
+	is_linear = models.BooleanField(default=True) #if true, we should auto add next and back buttons
 	enable_comments = models.BooleanField(default=True)
 	text_slugs_for_cards = models.BooleanField(default=True)
-	number_of_cards = models.IntegerField(default=0)
 	tags = TagField()
 	has_title_card = models.BooleanField(default=False)
 	cards = models.ManyToManyField('Card', blank=True, null=True, related_name="cards_in_guide")
-	card_order =jsonfield.JSONField(blank=True, null=True)
-	# thumbnail = models.ForeignKey(UserFile, null=True, blank=True)
+	card_order =jsonfield.JSONField(blank=True, null=True, default="[]") 
 
 	def save(self, *args, **kwargs):
-		# TODO add something for if there is no title
 		self.slug= slugify(self.title)
 		super(Guide, self).save(*args, **kwargs)
 	
@@ -71,6 +67,22 @@ class Guide (models.Model):
 	@models.permalink
 	def get_absolute_url(self):
 		return ('GuideDetailView', (), {'slug': self.slug })
+		
+	def get_prev_card(self, card):
+		prev_card_number = card.card_number -2 # 2 because the list card_order is zero based
+		if prev_card_number >=0:
+			return Card.objects.get(pk=(self.card_order[prev_card_number]))
+		else: 
+			return None
+
+	def get_next_card(self, card):
+		next_card_number = card.card_number  #no +1 because card_order is 0 based
+		# logger.info(next_card_number)
+		# logger.info(self.card_order)
+		if not next_card_number >= len(self.card_order):
+			return Card.objects.get(pk=(self.card_order[next_card_number]))
+		else: 
+			return None
 
 class Card (models.Model):
 	title = models.CharField(max_length=500, blank=True, null=True, default="") #maybe add default=""
@@ -82,59 +94,79 @@ class Card (models.Model):
 	brand_new = models.BooleanField(default=True)
 	has_lots_of_text = models.BooleanField(default=False)
 	tags = TagField()
-	card_number = models.IntegerField(blank=True, null=True) #for default guide...
-	representative_media = models.URLField(blank=True, null=True)
+	card_number = models.IntegerField(blank=True, null=True) #for default guide.  1 based (not 0)
+	primary_media = models.ForeignKey('MediaElement', blank=True, null=True, related_name='primary_media', default="",  on_delete=models.SET_DEFAULT)
+	is_floating_card = models.BooleanField(default=False)
 	
 	def __unicode__(self):
 		if self.title !="":
 			return self.title
 		else:
-			return "Untitled Card #" + str(self.card_number)
-
+			if not self.is_floating_card:
+				return "Untitled Card #" + str(self.card_number)
+			else: 
+				return "Untitled Floating Card"
+				
 	def firstsave(self, *args, **kwargs):
-		num_in_guide= self.guide.number_of_cards
-		self.guide.number_of_cards= num_in_guide +1
-		self.guide.save()
-		self.card_number = num_in_guide +1
-		# self.slug = num_in_guide +1
+		number_of_cards = len(self.guide.card_order)
+		if not self.is_floating_card:
+			self.card_number = number_of_cards +1
 		super(Card, self).save(*args, **kwargs)
+		if not self.is_floating_card:
+			self.guide.card_order.append(self.id)
+		self.guide.cards.add(self)
+		self.guide.save()
+		# logger.info("first save self.id")
+		# logger.info(self.id)
 
 
 	def save(self, *args, **kwargs):
-		self.representative_media = self.rep_media
 		self.brand_new = False
+		self.id=int(self.id) #quotes were messing up guide.card_order
+
 		if self.title:
 			self.slug=slugify(self.title)
 		else:
 			self.slug=None
+
+		if self.is_floating_card:
+			if self.id in self.guide.card_order:
+				self.guide.card_order.remove(self.id)
+				self.card_number = None
+				self.guide.save()
+		else: 
+			if self.id in self.guide.card_order:
+				pass
+			else:
+				number_of_cards = len(self.guide.card_order)
+				self.card_number = number_of_cards +1
+				self.guide.card_order.append(self.id)
+				self.guide.save()
+				# TODO this case is converting from a floating to a normal card. so where does it go? the end for now?
 		super(Card, self).save(*args, **kwargs)
 
+	
+	def delete(self, *arg, **kwargs):
+		if self.id in self.guide.card_order:
+			self.guide.card_order.remove(self.id)
+		super(Card, self).delete(*args, **kwargs)
 
+	
 	class Meta:
-		ordering = ['created']
+		ordering = ['created'] #switch to card_number
 	
 	@models.permalink
 	def get_absolute_url(self):
 		if not self.guide.text_slugs_for_cards:
-			return ('CardDetailViewByNum', (), {'gslug': self.guide.slug, 'cnumber':self.card_number })
+			if card.is_floating_card:
+				return ('CardDetailViewById', (), {'gslug': self.guide.slug, 'id':self.id })
+			else:
+				return ('CardDetailViewByNum', (), {'gslug': self.guide.slug, 'id':self.card_number})
 		else:
 			if self.slug:
 				return ('CardDetailView', (), {'gslug': self.guide.slug, 'slug':self.slug })
 			else:
-				return ('CardDetailViewByNum', (), {'gslug': self.guide.slug, 'cnumber':self.card_number })
-		
-
-	@property
-	def rep_media(self):
-		primary =  self.mediaelement_set.filter(is_primary=True);
-		if primary:
-			return primary[0].file.file
-			
-		somemedia=self.mediaelement_set.all()
-		if somemedia:
-			return somemedia[0].file.file
-		else:
-			return None
+				return ('CardDetailViewById', (), {'gslug': self.guide.slug, 'id':self.id })
 
 	@property
 	def resource_uri(self):
@@ -148,21 +180,13 @@ class MediaElement (models.Model):
 	card = models.ForeignKey(Card)
 	created = models.DateTimeField(auto_now_add=True, blank=True, null=True)
 	type = models.CharField(blank=True, max_length=5, choices = SELEMENT_TYPE)
-	is_primary = models.BooleanField(default=False)
-	is_background = models.BooleanField(default=False)
 	autoplay = models.BooleanField(default=False)
 	length_seconds = models.IntegerField(blank=True, null=True)
 	length_minutes = models.IntegerField(blank=True, null=True)
 	file = models.ForeignKey(UserFile)
 	external_file = models.URLField(blank=True) #,verify_exists=True)
-	# action_when_complete= models.OneToOneField(Action, blank=True, null=True)
-    
-	#deprecate
-	# @property
-	# def file_url(self):
-	# 	return self.file.url
-	
-	# comment
+	action_when_complete= models.OneToOneField('Action', blank=True, null=True)
+
 
 class Action (models.Model):
 	goto = models.ForeignKey(Card, blank=True, null=True)
@@ -206,13 +230,10 @@ class InputElement (models.Model):
 	def __unicode__(self):
 		return self.button_text
 
-
-
-
-
-
-
 from api import CardResource
+
+
+	
 
 # USER PERMISSION PER OBJECT INSTANCE
 
@@ -225,6 +246,14 @@ from api import CardResource
 # ********************************************************
 # ***************         SIGH                ************
 # ********************************************************
+# 
+# SVALUEINQUIRY_TYPE = (
+# 	('L', 'Location'),
+# 	('A', 'Accelerometer'),
+# 	('T', 'Time'),
+# 	('D', 'Date'),
+# )
+
 
 # class MultipleChoiceInquiry (InputElement):
 # 	# choices = models.ForeignKey(MultipleChoices, blank=True, null=True) #deleted because we want multiple..duh

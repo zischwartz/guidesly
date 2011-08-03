@@ -18,12 +18,14 @@
 		<script type="text/javascript" src="{{STATIC_URL}}js-libs/rotate3Di.js"></script>
 		<script type="text/javascript" src="{{STATIC_URL}}js-libs/showdown.js"></script>
 
+		<script type="text/javascript" src="{{STATIC_URL}}create/thef.js"></script>
+
+
 		
-		<link rel="stylesheet" media="all" href="{{STATIC_URL}}css/base-create.css"/>
+		<link rel="stylesheet" media="all" href="{{STATIC_URL}}create/base.css"/>
 
 		<script type="text/javascript">
 			var current_url ="{{request.path}}";
-			var current_card_id ="{{s.id}}";
 		</script>
 		
 		
@@ -41,22 +43,66 @@
 <div id="container">
 	<header id="header"><span class="inner">{%block header%}{%endblock%} <span class="right">Hey {{user}} ! Logout</span></span></header>
 
-	<div id="content">
+	<div id="content" class="bigger">
 		{% if messages %}<div id="messages">{%for message in messages%}<p{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>{% endfor %}</div>{%endif%}
 
-		{% block content %}Hi. If you're seeing this, something messed up. This is the base template...{% endblock %}
+		{% block content %}Hi. If you're seeing this, something messed up. This is the base template dude...{% endblock %}
 	</div>
 	
-	<div id="sidebar">
+	<div id="sidebar" class="smaller">
 		{% block sidebar %}<p>Sidebar</p> You probably shouldn't be seeing this. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.{%endblock%}
 	</div>
 	
 	<footer id="footer">
-		<span>Yeah. This is a footer. That's right.</span>
+		<span>Yeah. This is a footer. That's right.</span> 
+		<br><div class="F">F</div>
 	</footer>
 	
 </div>	{# end container #}
-	
+
+<style>
+#thef-dialog
+{
+	text-align: center;
+}
+
+.F
+{
+	padding: 0px 5px 0px 5px;
+	border: 1px solid lightgray;
+	float: right;
+	clear: both;
+/*	right: 1px;*/
+/*	bottom: 1px;*/
+
+	font-size: 0.8em;
+	background-color: rgba(255, 255, 255, 0.6);
+}
+.F:hover
+{
+	color: #97c2da;
+	border: 1px solid blue;
+	background-color: #444;
+	cursor: pointer;
+}
+
+
+</style>
+
+<div id="thef-dialog" title="What The F?">
+	<h2>Please, Give Us Feedback</h2><br>
+	<input type="radio" id="thefLike" class="uibutton" value="like" name="feeling" data-bind="checked: Fvm.choice"/><label for="thefLike">I like this feature</label>
+	<input type="text" data-bind="visible: Fvm.choice()=='like', value: Fvm.like_reason"> <br>
+	-or-
+	<br>
+	<input type="radio" id="thefDislike" class="uibutton" value="dislike" data-bind="checked: Fvm.choice" name="feeling" /><label for="thefDislike">I don't like this feature</label>
+	<input type="text" data-bind="visible: Fvm.choice()=='dislike', value: Fvm.dislike_reason"> <br>
+
+	<br><br><br>
+	<input type="checkbox" id="thefBug" class="uibutton" data-bind="checked: Fvm.was_buggy"/><label for="thefBug">Report bug!</label>
+	<input type="text" value="It broke when" data-bind="visible: Fvm.was_buggy()"> <br>
+	<br><i>Thanks for your help!</i>
+</div>	{# end thef #}
 
 </body>
 </html>

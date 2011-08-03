@@ -1,11 +1,24 @@
-{%extends "base-create.html"%}
+{%extends "create/base.html" %}
 
 {%block extrahead%}
-		<script src="{{STATIC_URL}}create.js"></script>
+
+		<link rel="stylesheet" media="all" href="{{STATIC_URL}}upload-plugin/jquery.fileupload-ui.css"/>
+		<script type="text/javascript" src="{{STATIC_URL}}upload-plugin/jquery.iframe-transport.js"></script>
+		<script type="text/javascript" src="{{STATIC_URL}}upload-plugin/jquery.fileupload.js"></script>
+		<script type="text/javascript" src="{{STATIC_URL}}upload-plugin/jquery.fileupload-ui.js"></script>
+		{# // <script type="text/javascript" src="{{STATIC_URL}}upload-plugin/jquery.tmpl.min.js"></script> #}
+		{# // <script type="text/javascript" src="{{STATIC_URL}}upload-plugin/application.js"></script> #}
+		<link rel="stylesheet" href="{{STATIC_URL}}upload-plugin/thumbnail-scaling.css">
+		
+
+		<script src="{{STATIC_URL}}create/card.js"></script>
 		<script type="text/javascript">
-		var guide_id = {{s.guide.id}};
-		var initial_card_json= '{{card_json|safe|escapejs}}';
-		var all_cards = '{{all_cards_json|safe|escapejs}}'; 
+			var current_card_id ="{{s.id}}";
+			var guide_id = {{s.guide.id}};
+			var initial_card_json= '{{card_json|safe|escapejs}}';
+			var all_cards = '{{all_cards_json|safe|escapejs}}'; 
+			var primary_media_json = '{{primary_media_json|safe|escapejs}}'; 
+			// TODO replace with all_cards with guide
 </script>
 {%endblock%}
 
@@ -15,10 +28,9 @@
 		{%else%}Edit Card
 		{%endif%}
 	</div>
-	<a href="{% url CardDetailViewByNum gslug=s.guide.slug cnumber=s.card_number %}" class="uibutton"> Preview <i data-bind="text: !title() ? 'Untitled Card {{s.card_number}}': title"></i></a>
+	<a href="{% url CardDetailViewByIdRedirect id=s.id %}" class="uibutton"> Preview <i data-bind="text: !title() ? '{{s}}': title"></i></a>
 	{# <a href="{% url CardDetailViewById id=s.id %}" class="uibutton"> Preview <i data-bind="text: !title() ? 'Untitled Card {{s.card_number}}': title"></i></a> #}
 	<a href="{% url EditGuide gslug=s.guide.slug %}" class="uibutton"> Overview of <i>{{s.guide.title}}</i> </a>
-
 {%endblock%}
 
 {%load verbatim_templatetag%} 
@@ -29,7 +41,7 @@
 		<div id="card_being_edited" class="{%if s.brand_new%}brand_new{%endif%}">
 			
 			
-		{# CARD TITLE #}
+	{# CARD TITLE #}
 			<div class="ue" tabindex="3" data-bind="event: { focusin: VM.flipEl, focusout: VM.unflipEl}">
 				<h1 class="front" data-bind="text: !title()  ? 'Card Title': title, css: { optional: !title() }"></h1>
 				<div class="back">
@@ -37,12 +49,20 @@
 					<label for="title">Card's title: </label><input data-bind="value:title, valueUpdate: 'afterkeydown'" type="text" name="title" id="title" />
 				</div>
 			</div>	 {# end .ue #}
+			
+		{# Primary Media #}
+			<div data-bind="template:{name: 'primaryTemplate',  foreach: VM.the_primary_media_object,
+			  				afterRender: uePostProcessing,
+			 				beforeRemove: function(elem) {$(elem).slideUp(function(){ $(this).remove()}); },
+							afterAdd: function(elem) {$(elem).hide().slideDown() }}"> </div>
 					
 	{#   MEDIA CLIENTSIDE TEMPLATE CALL  which is actually way down below, and perhaps should be a separate template file on the server#}
 			<div data-bind="template:{name: VM.mediaTypeTemplate,  foreach: VM.mediaelements,
 			  				afterRender: uePostProcessing,
-			 				beforeRemove: function(elem) {$(elem).slideUp() },
-							afterAdd: function(elem) {$(elem).hide().slideDown() }}"> </div>
+			 				beforeRemove: function(elem) {$(elem).slideUp(function(){ $(this).remove()}); },
+							afterAdd: function(elem) {$(elem).hide().slideDown() }},  
+							visible: ((VM.mediaelements().length >1) || (!VM.the_primary_media_object().length))"> </div>
+
 
 	{# CARD TEXT #}
 		<div class="ue" tabindex="10" data-bind="event: { focusin: VM.flipEl, focusout: VM.unflipEl }">
@@ -60,12 +80,24 @@
 						afterAdd: function(elem) {$(elem).hide().slideDown() }}"> </div>
 
 	
+		{# Prev and Next Buttons for linear guides #}
+		<div id="prev_and_nexts" data-bind="visible: !(is_floating_card())">
+			{%if prev_card%}<a href="{{prev_card.get_absolute_url}}">Previous</a> {%endif%}
+			{%if next_card%}<a href="{{next_card.get_absolute_url}}">Next</a> {%endif%}
+		</div>
+		<div class="F">F</div>
 
 	</div> {# end #card_being_edited  ------------------------ #}
 
 	{# <input class="uibutton" type="submit" value="Save Card" name ="card_sub_save"/> #}
-	<input class="uibutton" type="submit" value="Save Card &amp; Add New Card" name ="card_sub_save_and_add"/>
+	<a  href="{% url BuildCard gslug=s.guide.slug %}"class="uibutton"/>Save &amp; Add New Card</a>
+	<div id="edit_card_options_group"> 
+		<input type="checkbox" data-bind="checked: is_floating_card" id="is_floating_card"> <label for="is_floating_card"> Floating Card</label>
+		<br>A "floating card" is outside the normal flow of a guide.
+		</div>
 </form> {# end card form #}
+
+
 
 {%endblock%}
 
@@ -86,20 +118,23 @@
 		</a>
 	</h3>
 	<div id="add_media_group">
-		<button class="uibutton" data-bind="visible:currently_adding_media_type(), click: function(){currently_adding_media_type(null); media_type('media'); media_files.removeAll();} "> ←</button>
-		<h5>Media you've already uploaded:</h5><br>
+		<button class="uibutton" data-bind="visible:currently_adding_media_type(), click: function(){VM.media_files.removeAll(); currently_adding_media_type(null); media_type('media');} "> ←</button>
+		<h5 class="upmedmessage" data-bind="visible: (media_files().length||!currently_adding_media_type())">From media you've uploaded:</h5><br>
 		<h4 class="uibutton" data-media_type="image" data-bind="visible: !currently_adding_media_type()"><img src="{{STATIC_URL}}img/image-icon.png"> Add Image</h4>
 		<h4 class="uibutton" data-media_type="video" data-bind="visible: !currently_adding_media_type()"><img src="{{STATIC_URL}}img/video-icon.png"> Add Video</h4>
 		<h4 class="uibutton" data-media_type="audio" data-bind="visible: !currently_adding_media_type()"><img src="{{STATIC_URL}}img/audio-icon.png"> Add Audio</h4>
 		<h4 class="uibutton" data-media_type="other" data-bind="visible: !currently_adding_media_type()"> <img src="{{STATIC_URL}}img/document-icon.png"> Add Other</h4>
 
-		<span data-bind="visible: (media_files().length||!currently_adding_media_type()) ? 0: 1">You haven't uploaded any <span data-bind="text: currently_adding_media_type"></span> files yet.</span>
+		<span class="upmedmessage" data-bind="visible: (media_files().length||!currently_adding_media_type()) ? 0: 1">You haven't uploaded any <span data-bind="text: currently_adding_media_type"></span> files yet.</span>
 
 		{# USERFILE MEDIA JS TEMPLATE  #}
 		<div class="userfiles" data-bind="template:{name: userFileDisplayMode,  foreach: VM.media_files}"></div>
 		{# *************************** #}
 		<br>
-		<button class="uibutton"><img src="{{STATIC_URL}}img/upload-icon.png"> Upload New Media Now</button>
+		{# <button class="uibutton" data-bind="click: showFileUploadForm, visible: !(currently_adding_media_type()=='upload') "> Upload New Media Now</button> #}
+		{%include 'create/fileupload.html'%}
+		
+		<br><div class="F">F</div>
 
 	</div> {# end #add_media_group #}
 	
@@ -135,33 +170,58 @@
 			<button class="uibutton" type="submit" data-input_type="button" data-bind="enable:  newActionGotoCard()&&newButtonText() , css:{'ui-button-disabled': !(newActionGotoCard()&&newButtonText()), 'ui-state-disabled': !(newActionGotoCard()&&newButtonText())}">Add This Button to Card</button>
 			</form>
 		</div>
+		<br><div class="F">F</div>
 
-	</div>
+	</div> {# end #add_input_group #}
 	
-	<h3 id="add_static"><a href="#">Edit Card Options</a></h3>
-	<div id="edit_card_options_group"> Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua in volupta</div>
+	<h3 id="card_options"><a href="#">Edit Card Options</a></h3>
+	
+
 </div> {# end #card_element_toolbar #}
 
-
-
-
-
+				{#  #}
+				{# <input type="radio" id="checkb-is_primary-${id}" class="uibutton" data-bind="checked: VM.primary_media" value="${resource_uri}" name="primary_media" /> #}
+				{# <label for="checkb-is_primary-${id}">Primary Media</label> #}
 {% verbatim %} 		 
+
+
+	<script id='primaryTemplate' type='text/html'>
+		<div class="ue is_primary" data-bind="event: { focusin: VM.flipEl, focusout: VM.unflipEl }, attr: { tabindex: typeof(id)!='undefined' ? id: -1 }">
+			<figure class="front">
+				<div class="media_holder"  style="background: url( '${file.medium_url}' ) center center no-repeat; background-size: contain;"></div>
+				<div class="media_title" data-bind="text: title"></div>
+			</figure>
+			
+			<div class="back">
+				<input type="text" data-bind="value:title, valueUpdate: 'change'" placeholder="Image title"> <br>
+				<img src="${file.thumb_url}" width="50px"> 
+				<br>
+
+					<input type="checkbox" id="checkb-autoplay-${id}" class="uibutton" data-bind="checked: autoplay" />
+					<label for="checkb-autoplay-${id}" data-bind="text : autoplay() ? 'Currently Autoplaying ': 'Make Autoplay'"></label>
+					<br>
+
+				
+				<a class="uibutton delete" data-bind="click: VM.deleteFromCard">Remove</a>
+			</div>
+			
+		</div> 
+	</script>	
+
+
 	<script id='imageTemplate' type='text/html'>
-		<div class="ue" data-bind="css: {is_primary: is_primary}, event: { focusin: VM.flipEl, focusout: VM.unflipEl }, attr: { tabindex: typeof(id)!='undefined' ? id: -1 }">
+		<div class="ue" data-bind="event: { focusin: VM.flipEl, focusout: VM.unflipEl }, attr: { tabindex: typeof(id)!='undefined' ? id: -1 }">
 			<figure class="front">
 				<div class="media_holder"  data-bind="style: {background: 'url('+ file.file() +') center center no-repeat', backgroundSize: 'contain'}"></div>
 				<div class="media_title" data-bind="text: title"></div>
 			</figure>
 			
 			<div class="back">
-				
 				<input type="text" data-bind="value:title, valueUpdate: 'change'" placeholder="Image title"> <br>
 				<img src="${file.file}" width="50px"> 
-				<br><input type="checkbox" id="checkb-is_primary-${id}" class="uibutton" data-bind="checked: is_primary" />
-				<label for="checkb-is_primary-${id}" data-bind="text: is_primary() ? 'Currently the Primary Media': 'Make the Primary Media'"></label>
-				<br><input type="checkbox" id="checkb-is_background-${id}" class="uibutton" data-bind="checked: is_background" />
-				<label for="checkb-is_background-${id}" data-bind="text : is_background() ? 'Currently the Background ': 'Make this the Background'"></label>
+				<br>
+				<a class="uibutton" data-bind="click: VM.makePrimary">Make Primary Media</a>
+
 				<br>
 				<a class="uibutton delete" data-bind="click: VM.deleteFromCard">Remove</a>
 
@@ -170,9 +230,9 @@
 		</div> 
 	</script>
 	
-	<!-- Video Element template. TODO add thumbnail -->
+
 	<script id='videoTemplate' type='text/html'>
-		<div class="ue" data-bind="css: {is_primary: is_primary}, event: { focusin: VM.flipEl, focusout: VM.unflipEl }, attr: { tabindex: typeof(id)!='undefined' ? id: -1 }">
+		<div class="ue" data-bind="event: { focusin: VM.flipEl, focusout: VM.unflipEl }, attr: { tabindex: typeof(id)!='undefined' ? id: -1 }">
 			<figure class="front">
 				<div class="media_holder" style="background-image: url('/static/img/video-icon.png')"></div>
 				<div class="media_title" data-bind="text: title"></div>
@@ -182,8 +242,8 @@
 				
 				<input type="text" data-bind="value:title, valueUpdate: 'change'" placeholder="Image title"> <br>
 				<img src="/static/img/video-icon.png" width="50px"> 
-				<br><input type="checkbox" id="checkb-is_primary-${id}" class="uibutton" data-bind="checked: is_primary" />
-				<label for="checkb-is_primary-${id}" data-bind="text: is_primary() ? 'Currently the Primary Media': 'Make the Primary Media'"></label>
+				<br>
+				<a class="uibutton" data-bind="click: VM.makePrimary">Make Primary Media</a>
 				<br><input type="checkbox" id="checkb-autoplay-${id}" class="uibutton" data-bind="checked: autoplay" />
 				<label for="checkb-autoplay-${id}" data-bind="text : autoplay() ? 'Currently Autoplaying ': 'Make Autoplay'"></label>
 				<br>
@@ -193,6 +253,30 @@
 			
 		</div> 
 	</script>
+	
+	<script id='audioTemplate' type='text/html'>
+		<div class="ue" data-bind="event: { focusin: VM.flipEl, focusout: VM.unflipEl }, attr: { tabindex: typeof(id)!='undefined' ? id: -1 }">
+			<figure class="front">
+				<div class="media_holder" style="background-image: url('/static/img/audio-icon.png')"></div>
+				<div class="media_title" data-bind="text: title"></div>
+			</figure>
+			
+			<div class="back">
+				
+				<input type="text" data-bind="value:title, valueUpdate: 'change'" placeholder="Image title"> <br>
+				<img src="/static/img/audio-icon.png" width="50px"> 
+				<br>
+				<a class="uibutton" data-bind="click: VM.makePrimary">Make Primary Media</a>
+				<br><input type="checkbox" id="checkb-autoplay-${id}" class="uibutton" data-bind="checked: autoplay" />
+				<label for="checkb-autoplay-${id}" data-bind="text : autoplay() ? 'Currently Autoplaying ': 'Make Autoplay'"></label>
+				<br>
+				<a class="uibutton delete" data-bind="click: VM.deleteFromCard">Remove</a>
+
+			</div>
+			
+		</div> 
+	</script>
+	
 	
 		
 	<script id='buttonTemplate' type='text/html'>
@@ -224,7 +308,7 @@
 	
 	<script id='userFileImageTemplate' type='text/html'>
 		<div data-bind='click: VM.addMedia2card' class="media"> 
-		 	<img src="${file}">
+		 	<img src="${thumb_url}">
 			<div class="image_caption">${slug}</div>
 		</div>
 	</script>
@@ -247,16 +331,24 @@
 	
 	<script id='userFileOtherTemplate' type='text/html'>
 		<div data-bind='click: VM.addMedia2card' class="media"> 
-		 	<img src="/static/img/audio-icon.png" />
+		 	<img src="/static/img/document-icon.png" />
 			<div> ${slug} </div>
 		</div>
 	</script>
+	
+	<script id='userFileUploadTemplate' type='text/html'>
+		<div data-bind='click: VM.addMedia2card' class="media"> 
+		 	<img src="/static/img/audio-icon.png" />UPd
+			<div> ${slug} </div>
+		</div>
+	</script>
+	
 	
 	<script id='smallCardTemplate' type='text/html'>
 		<div class="smallcard">
 			<input type="radio" id="radiob-card-${id}" class="uibutton" data-bind="checked: VM.newActionGotoCard , value: resource_uri" name="addbutton-pickcard">
 			<label for="radiob-card-${id}"><span data-bind="text: title ? title.slice(0,15): 'Untitled'"></span>
-			{{if representative_media }}<br><img src="${representative_media}" style="width:50px"> 
+			{{if primary_media }}<br><img src="${primary_media}" style="width:50px"> 
 			{{/if}}</label>
 		</div>
 	</script>
@@ -265,7 +357,7 @@
 		<div class="smallercard"> 
 			<input type="radio" id="radiob-card-edit-${$item.input_num}-${id}"  class="uibutton" data-bind="checked: $item.selected, value: resource_uri, attr:{ checked: $item.selected() == resource_uri}" name="editbutton-${$item.input_num}-pickcard">
 			<label for="radiob-card-edit-${$item.input_num}-${id}">{{if title}}${title}{{else}}Untitled Card{{/if}}
-			{{if representative_media }}<br><img src="${representative_media}" style="width:40px"> 
+			{{if primary_media }}<br><img src="${primary_media}" style="width:40px"> 
 			{{/if}}</label>
 		</div>
 	</script>	

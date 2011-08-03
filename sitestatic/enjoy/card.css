@@ -72,11 +72,15 @@ background-image: -moz-linear-gradient(
 
 #wrap
 {
-	width: 800px;
+/*	width: 800px;*/
+	width: 95%;
 	margin-left: auto;
 	margin-right: auto;
 	margin-top: 10px;
+
 }
+
+
 
 a
 {
@@ -90,21 +94,7 @@ a:hover
 }
 
 /*inside of the wrap*/
-.text_viewing_wrap
-{
-	background-color: white;
-	padding: 25px;
-	margin-left: auto;
-	margin-right: auto;
-	width: 850px;
-	background-color: white;
-	
-}
 
-#messages
-{
-	color: brown;
-}
 
 h1 {font-size:2em; font-weight: bold; padding: 4px 0 6px 0;}
 h2 {font-size:1.5em; font-weight: bold; padding: 3px 0 5px 0;}
@@ -151,26 +141,11 @@ h2 {font-size:1.5em; font-weight: bold; padding: 3px 0 5px 0;}
 	padding: 15px;
 }
 
-
-#card_wrap
-{
-	margin-left: auto;
-	margin-right: auto;
-	width: 850px;
-/*	width: 950px;*/
-
-	background-color: #383838;
-}
-
-
-
 .card
 {
-/*	margin-left: auto;
-	margin-right: auto;
-	width: 850px;*/
 	background-color: white;
 	color: black;
+
 }
 
 .card h1
@@ -182,31 +157,32 @@ h2 {font-size:1.5em; font-weight: bold; padding: 3px 0 5px 0;}
 	letter-spacing: .2em;
 }
 
-/* the container of media */
-.card_media
+
+
+
+/*img.*/
+.primary_media
 {
-	overflow: auto;
+	max-width: 100%;
+	max-height: 70%;
+	margin-left: auto;
+	margin-right: auto;
+	width: auto;
+	display: block;
+/* as long as height is less than total viewpoint -50px or somesuch depending on header and elastic footer*/
+/*	background-size: contain;*/
+/*	background: no-repeat center center;*/
+/*	background-color: black;*/
 }
 
-.media_el.is_thumb
+/*contains the thumbs*/
+.other_card_media
 {
-	height:5em; 
-	width: 5em; 
-	background-size: contain;
-
-	background: no-repeat center center;
-/*	border: 1px solid green;*/
-	float: left;
-}
-
-
-.media_el.is_primary
-{
-
-	height:36em;   
-	background-size: contain;
-	background: no-repeat center center;
-	background-color: black;
+/*	background-color: yellow;*/
+/*	width: 90%;*/
+	text-align: center;
+	margin-left: auto;
+	margin-right: auto;
 }
 
 
@@ -227,7 +203,10 @@ h2 {font-size:1.5em; font-weight: bold; padding: 3px 0 5px 0;}
 	padding-bottom: 15px;
 }
 
-
+.card .card_text p
+{
+	margin-bottom: 1em;
+}
 
 .card_interactive_elements
 {
@@ -243,7 +222,7 @@ h2 {font-size:1.5em; font-weight: bold; padding: 3px 0 5px 0;}
 	padding:15px;
 	margin: 10px;
 	background-color: #ededed;
-/*	border: 1px solid black;*/
+
 	text-decoration: none;
 	color: black;
 	border-radius: 4px;
@@ -256,7 +235,12 @@ h2 {font-size:1.5em; font-weight: bold; padding: 3px 0 5px 0;}
 	box-shadow: 0px 0px 4px orange;
 
 }
-
+a.thumb
+{
+	margin-left: 1em;
+	margin-top: 1em;
+	display: inline-block;
+}
 
 
 

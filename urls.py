@@ -23,21 +23,21 @@ v1_api.register(UserFileResource())
 v1_api.register(UserResource())
 v1_api.register(SmallCardResource())
 v1_api.register(GuideResource())
+v1_api.register(TheFResource())
+v1_api.register(PhotoResource())
 
 
 
 urlpatterns = patterns('',
-	# Examples:
-	# (r'^$', ListView.as_view(model=Guide)),
-	(r'^$', GuideListView),
-	url(r'^g/(?P<slug>[^/]+)/?$', GuideDetailView, name='GuideDetailView'),
-	url(r'^g/(?P<gslug>[^/]+)/(?P<slug>[^/]+)/?$', CardDetailView, name='CardDetailView'),
-	url(r'^n/(?P<gslug>[^/]+)/(?P<cnumber>[^/]+)/?$', CardDetailView, name='CardDetailViewByNum'),
-	url(r'^c/(?P<id>[^/]+)/?$', CardDetailViewById, name='CardDetailViewById'),	  
+    # Examples:
+    # (r'^$', ListView.as_view(model=Guide)),
+    (r'^$', GuideListView),
+    url(r'^g/(?P<slug>[^/]+)/?$', GuideDetailView, name='GuideDetailView'),
+    url(r'^g/(?P<gslug>[^/]+)/(?P<slug>[^/]+)/?$', CardDetailView, name='CardDetailView'),
+    url(r'^n/(?P<gslug>[^/]+)/(?P<cnumber>[^/]+)/?$', CardDetailView, name='CardDetailViewByNum'),
+    url(r'^c/(?P<gslug>[^/]+)/(?P<id>[^/]+)/?$', CardDetailView, name='CardDetailViewById'),
+    url(r'^i/(?P<id>[^/]+)/?$', CardDetailViewByIdRedirect, name='CardDetailViewByIdRedirect'),
 
-	#url(r'^profiles/', include('profiles.urls')),		
-	#url(r'^profiles/edit', 'profiles.views.edit_profile'),
-	
 	url(r'create/?$', CreateGuide, name='CreateGuide'),
 	url(r'create/(?P<gslug>[^/]+)/?$', EditGuide, name='EditGuide'),
 	url(r'create/(?P<gslug>[^/]+)/add/?$', BuildCard, name='BuildCard'),
@@ -56,11 +56,11 @@ urlpatterns = patterns('',
 	url(r'^accounts/', include('invitation.urls')),
 	url(r'^accounts/', include('registration.backends.default.urls')), 
 	url(r'^accounts/', include('registration.urls')),				
-	url(r'^accounts/', include('registration.auth_urls')),    
-    #url(r'^accounts/$', 'django.contrib.auth.views.login', {'template_name': 'login.html'},),      
+	url(r'^accounts/', include('registration.auth_urls')),        
 	url(r'^accounts/', include('accounts.urls')),	    
 	url(r'^user/', include('accounts.urls')),  
   
+	url(r'^photologue/', include('photologue.urls')),
 
 )
 

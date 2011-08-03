@@ -9,7 +9,7 @@
 	    <script type="text/javascript" src="{{STATIC_URL}}js-libs/jquery-ui-1.8.13.custom.min.js"></script>
 		
 
-		<link rel="stylesheet" media="all" href="{{STATIC_URL}}css/base-enjoy.css"/>
+		{# <link rel="stylesheet" media="all" href="{{STATIC_URL}}enjoy/base.css"/> #}
 
 
 		
@@ -17,7 +17,6 @@
 			var current_url ="{{request.path}}";
 		</script>
 		
-        <script src="{{STATIC_URL}}enjoy.js"></script>
         {# // <script src="{{STATIC_URL}}create.js"></script> #}
 
 
@@ -29,7 +28,7 @@
 	</head>
 
 <body>
-	<header id="header"><span>Hey {{user}} !{%block header%}{%endblock%}</span></header>
+	{# <header id="header"><span>Hey {{user}} !{%block header%}{%endblock%}</span></header> #}
 
 	<div id="wrap">
 		

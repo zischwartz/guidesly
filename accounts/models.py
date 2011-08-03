@@ -1,12 +1,15 @@
 from django.db import models
+
 from django.conf import settings
 from django.contrib.auth.models import User	 
+
 
 from guides.models import Guide 
 from django.db.models.signals import post_save
 from django.utils.translation import ugettext_lazy as _
 
 class UserProfile(models.Model):
+
 	user = models.ForeignKey(User, unique=True, verbose_name=_('user')) 
 	
 	name = models.CharField(_('name'), max_length=50, null=True, blank=True)
@@ -29,17 +32,29 @@ class UserProfile(models.Model):
 		verbose_name_plural = _('profiles')	  
                                                   
 '''
+
+	user = models.OneToOneField(User)
+	viewings = models.ManyToManyField(Guide, through='Viewing', related_name="viewingByUser")
+	upvote = models.ManyToManyField(Guide, through='Upvote', related_name="upvoteByUser")
+	
+
 class Viewing(models.Model):
 	userprofile = models.ForeignKey(UserProfile, related_name="userWhoViewed")
 	guide = models.ForeignKey(Guide)
 	models.DateTimeField(auto_now=True)
+
 	card_num = models.IntegerField(blank=True,null=True)
 	hidden = models.BooleanField(default=False)
 	
 
+	card_num = models.IntegerField(blank=True, null=True)
+	hidden = models.BooleanField(default=False)
+
+
 class Upvote(models.Model):
 	userprofile = models.ForeignKey(UserProfile, related_name="userWhoVoted")
 	guide = models.ForeignKey(Guide)
+
 	models.DateTimeField(auto_now=True)	 
 '''   
 	
@@ -50,3 +65,6 @@ def create_profile(sender, instance=None, **kwargs):
 	profile, created = UserProfile.objects.get_or_create(user=instance)
 
 post_save.connect(create_profile, sender=User)
+
+	models.DateTimeField(auto_now=True)
+

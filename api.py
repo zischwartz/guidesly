@@ -1,7 +1,10 @@
 from tastypie.resources import ModelResource
 
 from guides.models import *
+from thef.models import *
 from fileupload.models import UserFile
+from photologue.models import Photo
+
 from tastypie import fields
 from django.contrib.auth.models import User
 from tastypie.authorization import Authorization
@@ -34,6 +37,7 @@ class CardResource(ModelResource):
 	mediaelements = fields.ToManyField('api.MediaElementResource', 'mediaelement_set', full=True, readonly=True, null=True )#, readonly=True))
 	inputelements = fields.ToManyField('api.InputElementResource', 'inputelement_set', full=True, readonly=True, null=True)
 	guide = fields.ForeignKey('api.GuideResource', 'guide', null=True)
+	primary_media = fields.ForeignKey('api.MediaElementResource', 'primary_media', null=True)
 	class Meta:
 		authorization = Authorization()
 		# always_return_data = True
@@ -44,11 +48,6 @@ class CardResource(ModelResource):
 		"slug": ('exact'),
 		}
 	def hydrate_mediaelements(self, bundle):
-		# from guides.log import *
-		# logger=getlogger()		
-		# 	logger.debug('XXXXYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYXXX')
-		# 	logger.debug('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')
-		# 	logger.debug(bundle.data['mediaelements'])
 		
 		emptylist = []
 		# the below was totally unncessary, but a nice idea.
@@ -57,8 +56,6 @@ class CardResource(ModelResource):
 			# statics.append(el['resource_uri'])
 		bundle.data['mediaelements']=emptylist
 		bundle.data['inputelements']=emptylist
-
-
 		return bundle
 	
 class SmallCardResource(ModelResource):
@@ -78,9 +75,16 @@ class GuideResource(ModelResource):
 		queryset= Guide.objects.all()
 		filtering= {"slug": ('exact'),}
 
+class PhotoResource(ModelResource):
+	class Meta:
+		authorization = Authorization()
+		queryset= Photo.objects.all()
+
 
 class UserFileResource(ModelResource):
 	owner = fields.ForeignKey(UserResource, 'owner' )#, full=True)
+	photo = fields.ForeignKey(PhotoResource, 'photo', null=True )#, full=True)
+
 	class Meta:
 		queryset= UserFile.objects.all()
 		authorization= myUserAuthorization()
@@ -91,7 +95,7 @@ class UserFileResource(ModelResource):
 		
 class MediaElementResource(ModelResource):
 	card = fields.ForeignKey(CardResource, 'card')
-	file = fields.ForeignKey(UserFileResource, 'file', full=True)
+	file = fields.ForeignKey(UserFileResource, 'file', full=True)#, readonly=True) #this really should be true
 	class Meta:
 		authorization = Authorization()
 		queryset= MediaElement.objects.all()
@@ -113,26 +117,23 @@ class InputElementResource(ModelResource):
 		authorization = Authorization()
 
 
-		# always_return_data = True #so we can get the Action's resource uri
+class TheFResource(ModelResource):
+	class Meta:
+		queryset = theF.objects.all()
+		authorization = Authorization()
 
-	# def save_related(self, bundle):
+		
+	# def full_hydrate(self, bundle):
+	# 	# bundle.data['']
+	# 	
 	# 	from guides.log import *
-	# 	logger=getlogger()
-	# 	logger.debug("HELLO!")
-	# 	logger.debug(self)
+	# 	logger=getlogger()		
+	# 	logger.debug('XXXXYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYXXX')
 	# 	logger.debug(bundle)
-		
-	# def hydrate(self, bundle):
-		# bundle.data['']
-		
-		# from guides.log import *
-		# logger=getlogger()		
-		# logger.debug('XXXXYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYXXX')
-		# logger.debug(bundle)
-		# a = ActionResource()
-		# action_uri= a.get_resource_uri(bundle.obj.default_action) #get the uri of the default_action of the input
-		# bundle.data['default_action']=action_uri
-		# return bundle
+	# 	# a = ActionResource()
+	# 	# action_uri= a.get_resource_uri(bundle.obj.default_action) #get the uri of the default_action of the input
+	# 	# bundle.data['default_action']=action_uri
+	# 	return bundle
 
 # Maybe just start using default goto for now.
 #  Profile.objects.get_or_create(user=instance)

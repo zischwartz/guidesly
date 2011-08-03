@@ -1,17 +1,36 @@
 
-/////////////////////////////////////////////////////////////////////////////
-///  Card transition code  /////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////
 
 var _jqCardFrameId = "DIV.card";
 
 $(function() {
+
+    $("a.thumb").live('click', function(event) {
+		$(".active_thumb").removeClass("active_thumb");
+		$(this).addClass("active_thumb");
+		event.preventDefault();
+		var media_type = $(this).data("media_type");
+        var url = this.href;
+		// alert(media_type);
+		
+		if (media_type == 'image')
+		{
+			$(".primary_media").attr({ src: url});
+		}
+		
+		
+});
+
+
+
+/////////////////////////////////////////////////////////////////////////////
+///  Card transition code  /////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
     if (typeof history.pushState === 'undefined') {
         alert("Warning -- your browser doesn't support HTML 5");
     } else {
         // jQuery binding to replace the click() event on
         // a link inside the card frame.
-        $(_jqCardFrameId+" A").live('click', function(event) {
+        $(_jqCardFrameId+" A.goto").live('click', function(event) {
             event.preventDefault();
 
             var url = this.href;
@@ -19,7 +38,8 @@ $(function() {
             cardToUrl(url, true);
         });
     }
-});
+	
+}); //end docready
 
 // The purpose of this function is to do a card
 // transition between the div that's currently in

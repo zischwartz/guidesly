@@ -30,18 +30,17 @@ jQuery.easing.def = "easeOutQuart";
 
 initial_card_object= jQuery.parseJSON(initial_card_json);
 VM = ko.mapping.fromJS(initial_card_object, mapping);
-//// or
-// VM = ko.mapping.fromJSON(initial_card_json, mapping); 	// console.log(initial_card_object);
-// VM.mediaelements.mappedRemove({ resource_uri : '/api/v1/staticelement/4/' });
-//this line works, so the mapping is infact, working, 
 
+VM.the_primary_media_object = ko.observableArray();
+if (primary_media_json)
+	VM.the_primary_media_object.push(ko.mapping.fromJS(jQuery.parseJSON(primary_media_json)));
 
 
 //************************
 //****   SAVE THE CARD ***  - NO LONGER NECCESARY, THE UNFLIPING FUNCTION ENDED UP GENERALIZED! 
 //								huzzah i am smart?
 //************************
-VM.save = function(formElelement)
+VM.save = function()
 {
 	var jsonData = ko.mapping.toJSON(VM);
 	// alert('hi');
@@ -56,71 +55,58 @@ VM.save = function(formElelement)
 
 
 
-// TODO, restrict primary media to a single element
-// VM.the_primary_media = ko.dependentObservable({
-// 	read: function(){
-// 		for (x in VM.mediaelements())
-// 		{
-// 			if (VM.mediaelements()[x].is_primary())
-// 				return VM.mediaelements()[x];
-// 			}
-// 	},
-// 	// write: function(value){
-// 	// 	alert('hi');
-// 	// }
-// 
-// 
-// }, VM)
 
 
 // ****************************************************
 //       ADDING MEDIA FILE TO CARD AS MEDIA ELEMENT   *
 // ****************************************************
-itemToAdd= new Object();
+
 VM.media_files = ko.observableArray(); //this needs to be here as we're referencing it in addMedia2card
 VM.addMedia2card = function() {
+	itemToAdd= new Object();
 	// console.log(this);
 	this.file= ko.observable(this.file);
 	itemToAdd.file=this; //this was equal simply to this, which works for adding'em, making it observable
 	itemToAdd.type = ko.observable(this.type);
 	itemToAdd.card= VM.resource_uri();
-	if (VM.mediaelements().length==0)
-		itemToAdd.is_primary= ko.observable(true); //should primary default to true or false? 
-	else
-		itemToAdd.is_primary= ko.observable(false); 
-	
-	// itemToAdd.is_primary.subscribe(function(newvalue){
-	// 	alert('newvalue '+ newvalue + ' - ' + this);
-	// 	console.log(this);
-	// 	
-	// }, itemToAdd);
-	
-	itemToAdd.is_background=ko.observable(false);
+	// itemToAdd.is_background=ko.observable(false);
 	itemToAdd.title=ko.observable('');
 	var jsonData = ko.toJSON(itemToAdd);
 	var postURL;
+	
 	postURL=$.ajax({
 		url: staticel_api_url,
 		type: "POST",
 		data: jsonData,
 		success:function(data) {
-			// console.log('success and'); 
-			// console.log(postURL.getResponseHeader('location')); 
-			itemToAdd.title=ko.observable();
-			itemToAdd.resource_uri=ko.observable(postURL.getResponseHeader('location'));
-			itemToAdd.id = itemToAdd.resource_uri().match(/\/mediaelement\/(.*)\//)[1];
 
+			itemToAdd.title=ko.observable();
+			itemToAdd.autoplay=ko.observable();
+			itemToAdd.id = postURL.getResponseHeader('location').match(/\/mediaelement\/(.*)\//)[1];
+			itemToAdd.resource_uri=ko.observable(staticel_api_url + itemToAdd.id +'/');
+			console.log('itemToAdd:');
+			console.log(itemToAdd);
+			//make primary if there is no other media
+			if (VM.mediaelements().length < 1)
+				{	VM.the_primary_media_object.push(itemToAdd);
+					VM.primary_media(staticel_api_url + itemToAdd.id + '/' );
+					console.log('made primary');
+					console.log(VM.primary_media());
+					VM.save();
+				}
+			
 			//add the element to the card
 			VM.mediaelements.push(itemToAdd);
 			},
 		contentType: "application/json",
 	});
 	//remove it from the media files. up for discussion
+	
 	VM.media_files.remove(this);
 
 };
 
-
+// TODO BUG when loading from an existing card, deleting the primary media doesn't delete the thumb of it.
 VM.deleteFromCard= function()
 {
 	console.log("yess lets delete this:");
@@ -132,13 +118,39 @@ VM.deleteFromCard= function()
 	});
 	// alert(VM.mediaelements.indexOf(this));
 	
-	//what kind of element are we deleting?
 	if (VM.mediaelements.indexOf(this)!=-1)
 		VM.mediaelements.remove(this);
-		
+	
+
+	if (VM.the_primary_media_object().length)
+	{
+		if (VM.the_primary_media_object()[0].resource_uri()==this.resource_uri())
+			{
+				VM.the_primary_media_object.pop();
+				VM.primary_media(null);
+				for (el in VM.mediaelements())
+					{
+						console.log(el);
+						if (VM.mediaelements()[el].resource_uri()==this.resource_uri())
+							VM.mediaelements.splice(el, 1);
+					}
+			}
+	}
+	
 	if (VM.inputelements.indexOf(this)!=-1)
 		VM.inputelements.remove(this);
 };
+
+
+VM.makePrimary = function()
+{
+	console.log("lets make it primary");
+	d=VM.the_primary_media_object.pop();
+	console.log(d);
+	VM.the_primary_media_object.push(this);
+	VM.primary_media(this.resource_uri());
+	VM.save();
+}
 
 
 //********************************************
@@ -169,6 +181,9 @@ VM.flipEl=function(event){
 			complete: function() {if (flip_focal==0) {$(el).find("textarea:first").focus(); $(el).find("input:first").focus(); flip_focal=1;}},
 			easing: 'easeOutBack' //easeInQuint also good
 			}); //end of rotate()
+		
+			emphasizeContent();
+		
 		} 
 
 VM.unflipEl=function(event){
@@ -196,32 +211,45 @@ VM.unflipEl=function(event){
 
 //apply button() to media elements after they've been added
 VM.uePostProcessing= function(element){
-	// console.log(element);
-	// if ($(element).hasClass('uibutton'))
-		// element.button();
 	$(element).find(".uibutton").button();
 }
 
 //**********************************************
-//******      DEFINE DIFFERENT MEDIA TEMPLATES, PRIMARY, BG OR NOT   (not currently implimented) ********
+//******      DEFINE DIFFERENT MEDIA TEMPLATES, PRIMARY, BG OR NOT  ********
 //**********************************************
 VM.mediaTypeTemplate= function(element){
 	if (element.type()=="image")
 		return 'imageTemplate';
 	if (element.type()=="video")
 		return 'videoTemplate';
+	if (element.type()=="audio")
+		return 'audioTemplate';
+	if (element.type()=="other")
+		return 'otherTemplate';		
 }
+
+// VM.primarymediaTypeTemplate= function(element){
+// 	if (element.resource_uri() == VM.primary_media())
+// 		return 'primaryImageTemplate';
+// 		
+// 	else 
+// 		return 'nodisplay';
+// }
 
 //for the sidebar, add media
 VM.userFileDisplayMode= function(element){
-	if (VM.currently_adding_media_type()=="image")
+	console.log(element);
+	if (element.type=="image")
 		return 'userFileImageTemplate';
-	if (VM.currently_adding_media_type()=="video")
+	if (element.type=="video")
 		return 'userFileVideoTemplate';
-	if (VM.currently_adding_media_type()=="audio")
+	if (element.type=="audio")
 		return 'userFileAudioTemplate';	
-	if (VM.currently_adding_media_type()=="other")
+	else (element.type=="other")
 		return 'userFileOtherTemplate';	
+
+
+
 }
 
 VM.inputTypeTemplate= function(element){
@@ -244,12 +272,22 @@ VM.marked_text = ko.dependentObservable(function() {
 //******      SIDEBAR CODE              ********
 //**********************************************
 
+
 $("#card_element_toolbar").accordion({
 	autoHeight: false,
 	collapsible: true,
 	// icons: icons,
 	active: false,
-});
+}).bind("accordionchangestart", function(event, ui){
+	console.log('accordian startchange!');
+
+	if (ui.newHeader.length)
+		emphasizeSidebar();
+	else
+		emphasizeContent();
+}); //end bind to accordian changestart
+
+
 
 VM.media_type= ko.observable("Media");
 VM.input_type= ko.observable("Input");
@@ -285,9 +323,10 @@ VM.changeMediaTypeBack= function(event){
 $("#add_media_group h4, #add_media img").click(function(event){
 	// stop it from opening and closing the acordian
 	var current_accordian_index = $("#card_element_toolbar").accordion( "option", "active" )
-	// console.log(current_accordian_index);
 
-	 if (current_accordian_index===0) //so it's already open to the first element
+	emphasizeSidebar();
+
+	 if (current_accordian_index===0) //so it's already open to the first element, media
 			event.stopPropagation(); 	
 	
 	VM.media_type($(this).data("media_type"));
@@ -295,18 +334,27 @@ $("#add_media_group h4, #add_media img").click(function(event){
 
 	if (VM.media_type()=='upload')
 		{
-			alert('upload some stuff, yo');
-			return false;
+			VM.media_files.removeAll();
+
 		}
 	
-	$.getJSON(file_api_url + "?type="+VM.media_type(), function(data) {
-	// $("#add_media_group h4").slideUp();
-		
+	if (VM.media_type()=='media')
+	{
+		$.getJSON(file_api_url, function(data) {
 		VM.media_files.removeAll();
 		for (x in data.objects)
-			{
-				VM.media_files.push(data.objects[x]);
-			}
+			{VM.media_files.push(data.objects[x]);}
+		});	 ///end json
+		console.log('alllll media files?')
+		return;
+	}
+
+	
+	
+	$.getJSON(file_api_url + "?type="+VM.media_type(), function(data) {
+		VM.media_files.removeAll();
+		for (x in data.objects)
+			{VM.media_files.push(data.objects[x]);}
 		});	 ///end json
 	
 }); //end click
@@ -316,6 +364,8 @@ $("#add_input_group h4, #add_input img").click(function(event){
 	// stop it from opening and closing the acordian
 	var current_accordian_index = $("#card_element_toolbar").accordion( "option", "active" )
 	VM.currently_adding_input_type($(this).data("input_type"));
+	
+	emphasizeSidebar();
 
 	// console.log(current_accordian_index);
 
@@ -334,12 +384,16 @@ VM.newCardTitle= ko.observable();
 VM.newButtonText= ko.observable();
 VM.newActionGotoCard = ko.observable();
 
+
+
+//REPLACE CARDS WITH GUIDE TODO because guide has the relevant info about each card anyway
 VM.all_cards = ko.observableArray();
 var json_all_cards = jQuery.parseJSON(all_cards);
 for (x in json_all_cards)
 	{
 		VM.all_cards.push(json_all_cards[x]);
 	}
+
 
 
 VM.addInput2card= function(){
@@ -384,6 +438,55 @@ VM.addInput2card= function(){
 }// end addInput2card function
 
 
+// **************************************
+// ******      File Upload Plugin    ****
+// **************************************
+
+$('#fileupload').fileupload({
+// options
+	autoUpload: true,
+}).bind('fileuploaddragover', 
+	function (e){ 
+			console.log('drop it!');
+			$("#add_media_group").css({backgroundColor: "#feb912"});
+
+		}).bind('fileuploaddrop', 
+	function(e, data){
+			console.log('dropped it!');				
+			$("#add_media_group").css({backgroundColor: "#ffffff"});
+
+	}).bind('fileuploaddone',
+	function (e, data) {
+		
+		$("#add_media_group").css({backgroundColor: "#ffffff"});
+
+		$("table.files").hide();
+		$("#fileupload, .fileupload-content").slideUp();
+		
+		//this shouldn't be hardcoded, it should be all, and the templates should be per userfile, not by the VM.media_Type
+		VM.currently_adding_media_type('media');
+		VM.media_type('media');
+
+		console.log('done uploading!');				
+		$.getJSON(file_api_url, function(data) {
+			VM.media_files.removeAll();
+			for (x in data.objects)
+				{VM.media_files.push(data.objects[x]);}
+		});	 ///end json
+		return
+}); //end blind
+
+
+
+$('#fileupload .files a:not([target^=_blank])').live('click', function (e) {
+    e.preventDefault();
+    $('<iframe style="display:none;"></iframe>')
+        .prop('src', this.href)
+        .appendTo('body');
+});
+
+
+
 
 
 ko.applyBindings(VM);
@@ -392,6 +495,8 @@ $(".uibutton").button();
 
 
 });// end docready
+
+
 
 
 // HEEEEEEEEEEEEEEEEELLLLLLLLLLLLLLLLLLLLLLLLLLPPPPPPPPPPPPPPPPPPPEEEEEERRRRRRRRRRRRRRRRRRRs
@@ -424,4 +529,15 @@ addInputHelper =function(){
 		});
 	} //end input adding function
 
+emphasizeContent = function()
+{
+	// $("#content").removeClass("smaller").addClass("bigger");
+	// $("#sidebar").removeClass("bigger").addClass("smaller");
+}
+
+emphasizeSidebar= function()
+{
+	// $("#content").removeClass("bigger").addClass("smaller");
+	// $("#sidebar").removeClass("smaller").addClass("bigger");
+}
 

@@ -473,9 +473,9 @@ class ImageModel(models.Model):
 
 
 class Photo(ImageModel):
-    title = models.CharField(_('title'), max_length=100, unique=True)
-    title_slug = models.SlugField(_('slug'), unique=True,
-                                  help_text=('A "slug" is a unique URL-friendly title for an object.'))
+    title = models.CharField(_('title'), max_length=100, blank=True, null=True)#, unique=True)
+    title_slug = models.SlugField(_('slug'), blank=True, null=True)#, unique=True,
+#                                  help_text=('A "slug" is a unique URL-friendly title for an object.'))
     caption = models.TextField(_('caption'), blank=True)
     date_added = models.DateTimeField(_('date added'), default=datetime.now, editable=False)
     is_public = models.BooleanField(_('is public'), default=True, help_text=_('Public photographs will be displayed in the default views.'))

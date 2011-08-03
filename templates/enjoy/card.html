@@ -1,61 +1,169 @@
-{%extends "base-enjoy.html"%} 
+{%extends "enjoy/base.html"%} 
 
-{%block topbar%}
+{%block extrahead%}
+	<script src="{{STATIC_URL}}js-libs/video.js" type="text/javascript" charset="utf-8"></script>
+	<script src="{{STATIC_URL}}enjoy/mute.js" type="text/javascript" charset="utf-8"></script>
+	<script src="{{STATIC_URL}}enjoy/card.js"></script>
+	<link rel="stylesheet" href="{{STATIC_URL}}js-libs/video-js.css" type="text/css" media="screen" title="Video JS" charset="utf-8">
+	<link rel="stylesheet" href="{{STATIC_URL}}enjoy/card.css" type="text/css" media="screen"  charset="utf-8">
+	<script type="text/javascript" charset="utf-8">
+		VideoJS.setupAllWhenReady();
+	</script>
+{%endblock%}
+
+
+
+
+
+{%block header%}
 		<a href="{{card.guide.get_absolute_url}}">Back to {{card.guide.title|title}} Index</a>
 {%endblock%}
 
 {% block content %} 
 
+
 {%load markup%}
 
 <div id="card_wrap" class="box">
 	<div class="card" data-id="{{card.slug}}">
-
-			{%if card.title%}
+		{%if card.title%}
 			<h1>{{card.title}} </h1>
-			{%endif%}
-			
-			{%if card.text and card.text_on_top%}
-			<div class="card_text">
-				{{card.text}}
-			</div>
-			{%endif%}
-			
-			<div class="card_media">
-				{%for el in media_elements%}
-				    {%if el.type == "video"%}
-					<video autoplay="autoplay" controls preload="auto" width="514"> 
-			        <source src="{{el.file}}" type="video/mp4"/> 
-				    </video>
-				    {%endif%}
-				    
-					{%if el.type == "image"%}
-					<div class="media_el {%if el.is_primary%}is_primary{%else%} is_thumb {%endif%}" style="background-image:url('{{el.file}}');"></div>
-				    {%endif%}
-				{%endfor%}
-			</div>
-					
+		{%endif%}
+	    
+		{# ********************************** #}	
+		{# ***       PRIMARY MEDIA        ****#}
+		{# ********************************** #}
+		{%if primary_media.type == "image"%}
+			{# width:{{primary_media.file.photo.image.width}} #}
+			{# <br>height:{{primary_media.file.photo.image.height}} #}
+			<img src="{{primary_media.file}}" class="primary_media">
+			{# {{primary_media.photo}} #}
+			{# <img src="{{primary_media.file.photo.get_large_url}}" class="primary_media"> #}
+			{# <div class="primary_media" style="background-image:url('{{primary_media.file}}');"> #}
+		{%endif%}
+		
+	    {%if primary_media.type == "video"%}
+        <div class="video-js-box primary_media">
+				<video id="vid_thumb_{{el.id}}" 
+				class="video-js "
+				width="800" 
+				height="600" 
+				{# poster=""  #}
+				{%if primary_media.autoplay%}autoplay{%endif%}
+				 preload>
+				<source src="{{primary_media.file}}" type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"' />
+				Browser doesn't support HTML5 video.
+				</video>
+		   </div>
+	    {%endif%}		
 	
+	    {%if primary_media.type == "audio"%}
+	    	<div class="audio">
+		    	<audio class="primary_media"
+		    	src="{{el.file}}"  
+				{%if el.autoplay%}autoplay{%endif%}
+		    	controls="controls">
+				</audio>
+			</div>
+<<<<<<< HEAD
+	    {%endif%}
+	
+	
+	{# ********************************** #}	
+	{# ***           THUMBS           ****#}
+	{# ********************************** #}
+	<div class="other_card_media">
+		{%if media_elements|length > 1 %}	
+		{%for el in media_elements%}		
+		
+			{%if el.type == "video"%}
+					{# 	        <div class="video-js-box" href="{{el.file}}"> #}
+					{# <video id="vid_thumb_{{el.id}}"  #}
+					{# class="video-js" #}
+					{# width="100"  #}
+					{# height="100"  #}
+					{# {# poster=""  #} 
+					{# {%if el.autoplay%}autoplay{%endif%} #}
+					{#  preload> #}
+					{#  					<source src="{{el.file}}" type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"' /> #}
+					{#  					Browser doesn't support HTML5 video. #}
+					{# </video> #}
+					{# 			   </div>     #}
+				<a href="{{el.file}}" class="thumb video" data-media_type="video">
+					<img src="{{el.file.thumb_url}}"/>
+				</a>
+	    	{%endif%}		
+   
+
+		    {%if el.type == "audio"%}
+		    	<a class="thumb audio" href="{{el.file}}" data-media_type="audio">
+			    	<img 
+			    	src="{{el.file.thumb_url}}" >
+
+		    	</a>
+		    {%endif%}
+
+			{%if el.type == "image"%}
+				
+			<a href="{{el.file}}" class="thumb image" data-media_type="image">
+				<img src="{{el.file.thumb_url}}">
+			</a>
+		    {%endif%}
+				    
+		{%endfor%}
+		{%endif%} {# if greater than 1 #}
+
+		</div> {# end  .other_card_media#}
+					
 			
+		{%if card.text%}
+		<div class="card_text">
+			{{card.text|markdown}}
+		</div>
+		{%endif%}
 			
-			{%if card.text and not card.text_on_top%}
-			<div class="card_text">
-				{{card.text|markdown}}
+		<div class="card_interactive_elements">	
+			{%for el in input_elements%}
+				<div class="interactive_element">
+					{%include el.el_template%}
+				</div>
+			{%endfor%}
+		</div>
+
+			{%if not card.is_floating_card%}
+			<div class="prev_and_next">
+				{%if prev_card%}<div class="interactive_element" style="float:left"><a href="{{prev_card.get_absolute_url}}" class="goto">← Previous</a></div>{%endif%}
+				
+				{%if next_card%}<div class="interactive_element"><a href="{{next_card.get_absolute_url}}" class="goto">Next →</a></div>{%endif%}
+			
 			</div>
 			{%endif%}
-				
-			<div class="card_interactive_elements">	
-				{%for el in input_elements%}
-					<div class="interactive_element">
-						{%include el.el_template%}
-					</div>
-				{%endfor%}
-			</div>
 			
 			</div> {# end .card #}
 </div> {# end #card_wrap #}
 
-
+			
+			{# <div class="muteall" style="float: left"> #}
+			{# <span class="mute">Mute All:</span> #}
+			{# </div> #}
+			{# <div id="mutebutton" class="mute" style="display:inline"> #}
+			{# <form name="mute_checkbox"> #}
+			{# <input type="checkbox" name="radio_mute"> #}
+			{# </form> #}
+			{# </div> #}
+			{#  #}
+			{# <script> #}
+			{# $('#mutebutton').click(function() { #}
+			{#  		    if(($('video').prop('muted') == false) || ($('audio').prop('muted') == false))  { #}
+			{# 	$('video').prop('muted', true); #}
+			{# 	$('audio').prop('muted', true); #}
+			{# 	} #}
+			{# else{ #}
+			{# 	$('video').prop('muted', false); #}
+			{# 	$('audio').prop('muted', false);			 #}
+			{# 	} #}
+			{# }); #}
+			{# </script> #}
 
 
 
