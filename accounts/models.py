@@ -63,8 +63,6 @@ def create_profile(sender, instance=None, **kwargs):
 	if instance is None:
 		return
 	profile, created = UserProfile.objects.get_or_create(user=instance)
+                                          
 
-post_save.connect(create_profile, sender=User)
-
-	models.DateTimeField(auto_now=True)
-
+post_save.connect(create_profile, sender=User)  
