@@ -51,6 +51,7 @@ class Guide (models.Model):
 	cards = models.ManyToManyField('Card', blank=True, null=True, related_name="cards_in_guide")
 	card_order =jsonfield.JSONField(blank=True, null=True, default="[]") 
 	theme = models.ForeignKey(Theme, blank=True, null=True)
+	owner = models.ForeignKey(User, blank=True, null=True)
 	
 	def save(self, *args, **kwargs):
 		self.slug= slugify(self.title)
@@ -94,6 +95,7 @@ class Card (models.Model):
 	primary_media = models.ForeignKey('MediaElement', blank=True, null=True, related_name='primary_media', default="",  on_delete=models.SET_DEFAULT)
 	is_floating_card = models.BooleanField(default=False)
 	theme = models.ForeignKey(Theme, blank=True, null=True)
+	owner = models.ForeignKey(User, blank=True, null=True)
 	
 	
 	def __unicode__(self):
@@ -107,6 +109,7 @@ class Card (models.Model):
 				
 	def firstsave(self, *args, **kwargs):
 		number_of_cards = len(self.guide.card_order)
+		self.owner= self.guide.owner
 		if not self.is_floating_card:
 			self.card_number = number_of_cards +1
 		super(Card, self).save(*args, **kwargs)

@@ -8,7 +8,10 @@
 	<link rel="stylesheet" href="{{STATIC_URL}}enjoy/card.css" type="text/css" media="screen"  charset="utf-8">
 	<script type="text/javascript" charset="utf-8">
 		VideoJS.setupAllWhenReady();
-	</script>
+	</script>	
+	<style>
+	{{card.guide.theme.text}}
+	</style>
 {%endblock%}
 
 
@@ -34,17 +37,14 @@
 		{# ***       PRIMARY MEDIA        ****#}
 		{# ********************************** #}
 		{%if primary_media.type == "image"%}
-			{# width:{{primary_media.file.photo.image.width}} #}
-			{# <br>height:{{primary_media.file.photo.image.height}} #}
-			<img src="{{primary_media.file}}" class="primary_media">
-			{# {{primary_media.photo}} #}
-			{# <img src="{{primary_media.file.photo.get_large_url}}" class="primary_media"> #}
-			{# <div class="primary_media" style="background-image:url('{{primary_media.file}}');"> #}
+			{# width:{{primary_media.file.photo.image.width}} #} {# <br>height:{{primary_media.file.photo.image.height}} #}
+			{# <img src="{{primary_media.file}}" class="primary_media"> #}
+			<img src="{{primary_media.file.photo.get_large_url}}" class="primary_media">
 		{%endif%}
 		
 	    {%if primary_media.type == "video"%}
         <div class="video-js-box primary_media">
-				<video id="vid_thumb_{{el.id}}" 
+				<video id="vid_{{el.id}}" 
 				class="video-js "
 				width="800" 
 				height="600" 
@@ -65,7 +65,7 @@
 		    	controls="controls">
 				</audio>
 			</div>
-<<<<<<< HEAD
+
 	    {%endif%}
 	
 	
@@ -77,18 +77,6 @@
 		{%for el in media_elements%}		
 		
 			{%if el.type == "video"%}
-					{# 	        <div class="video-js-box" href="{{el.file}}"> #}
-					{# <video id="vid_thumb_{{el.id}}"  #}
-					{# class="video-js" #}
-					{# width="100"  #}
-					{# height="100"  #}
-					{# {# poster=""  #} 
-					{# {%if el.autoplay%}autoplay{%endif%} #}
-					{#  preload> #}
-					{#  					<source src="{{el.file}}" type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"' /> #}
-					{#  					Browser doesn't support HTML5 video. #}
-					{# </video> #}
-					{# 			   </div>     #}
 				<a href="{{el.file}}" class="thumb video" data-media_type="video">
 					<img src="{{el.file.thumb_url}}"/>
 				</a>
