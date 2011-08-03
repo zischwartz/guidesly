@@ -2,13 +2,7 @@ from django.conf.urls.defaults import *
 from views import *        
 from accounts import views   
 from django.contrib.auth import views as auth_views    
-  
-
-#urlpatterns = patterns('',
-#    (r'^profile/$', YourProfile),
-    #(r'^profile/$', UserFileCreateView.as_view(), {}, 'upload-new'),
-
-#)        
+      
 
 
 urlpatterns = patterns('',	
