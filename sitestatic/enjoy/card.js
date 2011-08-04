@@ -1,6 +1,6 @@
 
-
 var _jqCardFrameId = "DIV.card";
+
 
 $(function() {
 
@@ -20,7 +20,7 @@ $(function() {
 		
 });
 
-
+ 
 
 /////////////////////////////////////////////////////////////////////////////
 ///  Card transition code  /////////////////////////////////////////////////
@@ -36,10 +36,13 @@ $(function() {
             var url = this.href;
             history.pushState({path: url}, '', url);
             cardToUrl(url, true);
+			
         });
     }
 	
 }); //end docready
+
+
 
 // The purpose of this function is to do a card
 // transition between the div that's currently in
@@ -59,6 +62,9 @@ function cardTo(jqNewDiv, goForward) {
         var newNode = parent.find(_jqCardFrameId);
         newNode.hide();
         newNode.fadeIn(300);
+        newNode.show();
+       	$( '.video-js' ).VideoJS();
+	
     };
 
 //    if (goForward) {
@@ -75,6 +81,7 @@ function cardToUrl(url, goForward) {
     var callback = function(data) {
         var jqCardFrame = $(data).find(_jqCardFrameId);
         cardTo(jqCardFrame, goForward);
+
     };
     $.get(url, null, callback, "html");
 }
@@ -96,3 +103,5 @@ $(window).bind('popstate', function(event) {
 /////////////////////////////////////////////////////////////////////////////
 ///  End card transition code  /////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////
+
+
