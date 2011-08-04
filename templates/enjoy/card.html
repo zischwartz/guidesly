@@ -17,6 +17,7 @@
 
 
 
+<body>
 
 {%block header%}
 		<a href="{{card.guide.get_absolute_url}}">Back to {{card.guide.title|title}} Index</a>
@@ -43,18 +44,21 @@
 		{%endif%}
 		
 	    {%if primary_media.type == "video"%}
+	    <div id="content">
         <div class="video-js-box primary_media">
-				<video id="vid_{{el.id}}" 
+				<video id="video" 
 				class="video-js "
 				width="800" 
 				height="600" 
 				{# poster=""  #}
 				{%if primary_media.autoplay%}autoplay{%endif%}
-				 preload>
+				 preload = "auto">
 				<source src="{{primary_media.file}}" type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"' />
 				Browser doesn't support HTML5 video.
 				</video>
-		   </div>
+				
+		</div>
+		</div>
 	    {%endif%}		
 	
 	    {%if primary_media.type == "audio"%}
@@ -65,7 +69,6 @@
 		    	controls="controls">
 				</audio>
 			</div>
-
 	    {%endif%}
 	
 	
@@ -151,10 +154,10 @@
 			{# 	$('audio').prop('muted', false);			 #}
 			{# 	} #}
 			{# }); #}
-			{# </script> #}
 
 
 
 
+</body>
 
 {% endblock %}
