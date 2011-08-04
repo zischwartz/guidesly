@@ -9,14 +9,12 @@ from django.views.generic import ListView, DetailView
 from forms import *
 from django.core.urlresolvers import reverse
 
-
 from django.contrib import messages
 from log import getlogger
 logger=getlogger()
 # logger.debug("---------------")
 from django.utils import simplejson
 from fileupload.models import UserFile
-
 from api import CardResource, SmallCardResource, GuideResource, MediaElementResource
 
 

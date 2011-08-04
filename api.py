@@ -60,8 +60,9 @@ class CardResource(ModelResource):
 	
 class SmallCardResource(ModelResource):
 	guide = fields.ForeignKey('api.GuideResource', 'guide')
+	primary_media = fields.ForeignKey('api.MediaElementResource', 'primary_media', null=True, blank=True, full=True)
 	class Meta:
-		fields = ['title', 'representative_media', 'guide', 'id']
+		# fields = ['title', 'representative_media', 'guide', 'id']
 		# include_absolute_url =True
 		authorization = Authorization()
 		queryset= Card.objects.all()

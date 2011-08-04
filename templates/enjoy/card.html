@@ -118,14 +118,14 @@
 			{%endfor%}
 		</div>
 
-			{%if not card.is_floating_card%}
-			<div class="prev_and_next">
-				{%if prev_card%}<div class="interactive_element" style="float:left"><a href="{{prev_card.get_absolute_url}}" class="goto">← Previous</a></div>{%endif%}
-				
-				{%if next_card%}<div class="interactive_element"><a href="{{next_card.get_absolute_url}}" class="goto">Next →</a></div>{%endif%}
+		{%if not card.is_floating_card%}
+		<div class="prev_and_next">
+			{%if prev_card%}<div class="interactive_element" style="float:left"><a href="{{prev_card.get_absolute_url}}" class="goto">← Previous</a></div>{%endif%}
 			
-			</div>
-			{%endif%}
+			{%if next_card%}<div class="interactive_element"><a href="{{next_card.get_absolute_url}}" class="goto">Next →</a></div>{%endif%}
+		
+		</div>
+		{%endif%}
 			
 			</div> {# end .card #}
 </div> {# end #card_wrap #}
