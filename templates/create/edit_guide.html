@@ -35,23 +35,32 @@
 {# <div data-bind="text:title"></div> #}
 
 
-<div class="all_card_holder" data-bind="template: {name: 'smallCardTemplate',
-				  						foreach: VM.cards,
+<div class="normal_card_container connectedSortable" data-bind="template: {name: 'smallCardTemplate',
+				  						foreach: VM.normal_cards, templateOptions: { parentList: VM.normal_cards}},
+				 						sortableList: VM.normal_cards"></div>
 
-						 				beforeRemove: function(elem) {$(elem).slideUp() },
-										afterAdd: function(elem) {$(elem).hide().slideDown() } }"></div>
-										
+
+<div class="floating_card_container" >
+	<h2>Side Cards</h2> 
+	<h3>These cards are outside the normal flow of your guide. More explanation here. </h3>
+	<div data-bind="template: {name: 'smallCardTemplate',
+				  						foreach: VM.floating_cards, templateOptions: { parentList: VM.floating_cards}},
+										sortableList: VM.floating_cards" class="connectedSortable "></div>
+									</div>
 
 {%load verbatim_templatetag%} 
 
 
 {%verbatim%}
 	<script id='smallCardTemplate' type='text/html'>
+	<div class="smallcardWrapper" id="${id}" data-bind="sortableItem: { item: $data, parentList: $item.parentList }"> 
+		<div class="cardNumber"><span data-bind="text: card_number"></span> </div>
 		<div class="smallcard">
-			<span data-bind="text: title() ? title: 'Untitled'"></span>
-			{{if primary_media }}<br><img src="${primary_media.file.thumb_url}"> 
-			{{/if}} <a href="#">EDIT</a>
+			<span data-bind="text: title() ? title: 'Untitled Card '"></span>
+			{{if primary_media }}<br><img src="${primary_media.file.thumb_url}">{{/if}} 
 		</div>
+		<div class="controls"><a href="${edit_url}">Edit</a>  <a href="${absolute_url}">Preview</a>  <a href="#">Delete</a></div>
+	</div>
 	</script>
 {%endverbatim%}
 {% endblock %} {# end content #}

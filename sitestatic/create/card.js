@@ -43,7 +43,6 @@ if (primary_media_json)
 VM.save = function()
 {
 	var jsonData = ko.mapping.toJSON(VM);
-	// alert('hi');
 	$.ajax({
 		url: VM.resource_uri(),
 		type: "PUT",

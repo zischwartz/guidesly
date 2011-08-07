@@ -66,6 +66,7 @@ background-image: -moz-linear-gradient(
     rgb(56,56,56) 100%
 );
 	font-family: 'Helvetica Neue', Arial, sans-serif;
+	font-weight: 300;
 
 }
 
@@ -231,18 +232,20 @@ h2 {font-size:1.5em; font-weight: bold; padding: 3px 0 5px 0;}
 	padding:15px;
 	margin: 10px;
 	overflow: auto;
-	background-color: #ededed;
-
+	background-color: #add5ea;
 	text-decoration: none;
 	color: black;
 	border-radius: 4px;
-	box-shadow: 0px 0px 4px black;
+	border: 1px solid gray;
+	font-weight: bold;
+	
 }
 .interactive_element a:hover
 {
-	background-color: #ffefd1;
-	text-decoration: underline;
-	box-shadow: 0px 0px 4px orange;
+	background-color: #5656ff;
+	font-weight: bold;
+	border: 1px solid black;
+	text-shadow: 1px 0px 4px white;
 
 }
 a.thumb
@@ -250,10 +253,8 @@ a.thumb
 	margin-left: 1em;
 	margin-top: 1em;
 	display: inline-block;
+	
 }
-
-
-
 
 
 .box

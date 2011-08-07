@@ -63,9 +63,9 @@ body
 
 	background-color: #383838;
 	background-color: black;
-
 	font: 16px/1.5em 'Helvetica Neue',helvetica,arial,sans-serif;
 	width: 100%;
+	font-weight: 300;
 }
 
 
