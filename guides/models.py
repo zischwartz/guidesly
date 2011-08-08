@@ -55,6 +55,13 @@ class Guide (models.Model):
 	
 	def save(self, *args, **kwargs):
 		self.slug= slugify(self.title)
+		i=0
+		for c in self.card_order: #this is inefficient but works
+			i+=1
+			card=Card.objects.get(pk=c)
+			card.card_number = i
+			card.save()
+			
 		super(Guide, self).save(*args, **kwargs)
 	
 	def __unicode__(self):
@@ -153,7 +160,7 @@ class Card (models.Model):
 
 	
 	class Meta:
-		ordering = ['created'] #switch to card_number
+		ordering = ['card_number'] #switch to card_number
 	
 	@models.permalink
 	def get_absolute_url(self):

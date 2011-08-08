@@ -83,7 +83,8 @@ def EditGuide (request, gslug):
 	else:
 		form = GuideForm(instance= guide)
 		g = GuideResource()
-		guide_json = g.serialize(None, g.full_dehydrate(guide), 'application/json')
+		guide_bundle= g.build_bundle(obj=guide, request=request)
+		guide_json = g.serialize(request, g.full_dehydrate(guide_bundle), 'application/json')
 	return render_to_response("create/edit_guide.html", locals(), context_instance=RequestContext(request))
 
 
@@ -97,17 +98,19 @@ def EditCard (request, gslug, id):
 	# logger.info("---------------")
 	# send the card's data as json
 	s = get_object_or_404(Card, guide__slug=gslug, id=id)
-	ur = CardResource()
+	cr = CardResource()
 	if not s.is_floating_card:
 		prev_card = s.guide.get_prev_card(s)
 		next_card = s.guide.get_next_card(s)	
-	# ur_bundle = ur.build_bundle() #(obj=s, request=request) #turned out not to be neccesary
-	card_json= ur.serialize(None, ur.full_dehydrate(s), 'application/json') #with newer version, full dehyrate ur_bundle
+
+	card_bundle= cr.build_bundle(obj=s, request=request)
+	card_json= cr.serialize(request, cr.full_dehydrate(card_bundle), 'application/json') #with newer version, full dehyrate ur_bundle
 	# logger.info(card_json)
 	
 	mr = MediaElementResource()
 	if s.primary_media is not None:
-		primary_media_json = mr.serialize(None, mr.full_dehydrate(s.primary_media),'application/json' )
+		primary_media_bundle= mr.build_bundle(obj=s.primary_media, request=request)
+		primary_media_json = mr.serialize(request, mr.full_dehydrate(primary_media_bundle),'application/json' )
 
 	#and all the cards in the guide
 	all_cards = get_list_or_404(Card, guide__slug=gslug)
