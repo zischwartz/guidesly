@@ -11,7 +11,8 @@ from tastypie.authorization import Authorization
 from tastypie.authorization import DjangoAuthorization
 from tastypie.constants import ALL, ALL_WITH_RELATIONS
 from django.core.urlresolvers import reverse
-
+from guides.log import *
+logger=getlogger()
 
 
 class myUserAuthorization(Authorization):
@@ -48,8 +49,7 @@ class CardResource(ModelResource):
 		filtering = {
 		"slug": ('exact'),
 		}
-	def hydrate_mediaelements(self, bundle):
-		
+	def hydrate_mediaelements(self, bundle):	
 		emptylist = []
 		# the below was totally unncessary, but a nice idea.
 		# for el in bundle.data['mediaelements']:
@@ -63,20 +63,29 @@ class SmallCardResource(ModelResource):
 	guide = fields.ForeignKey('api.GuideResource', 'guide')
 	primary_media = fields.ForeignKey('api.MediaElementResource', 'primary_media', null=True, blank=True, full=True)
 	class Meta:
-		excludes = ['created', 'modified', 'absolute_url']
-		# fields = ['title', 'representative_media', 'guide', 'id']
-		include_absolute_url =True
+		# excludes = ['created', 'modified', "edit_url", "absolute_url"]
+		# fields = ['title', 'representative_media', 'guide', 'id', 'card_order', 'card_number', 'is_floating_card']
+		# include_absolute_url =True
 		authorization = Authorization()
 		queryset= Card.objects.all()
 		filtering= {"guide": ALL_WITH_RELATIONS,}
+	
+	# def hydrate(self, bundle):
+		# logger.info("HYDRATEEEEEEE/EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEd")
+		# logger.info(bundle.data)
+		# bundle.data['edit_url'] = None
+		# bundle.data['absolute_url'] = None
+		
 
 	def dehydrate(self, bundle):
+		# logger.info("dehydrated---------------------------------")
+		# logger.info(bundle.data)
 		bundle.data['edit_url'] = reverse('EditCard', kwargs={'gslug':bundle.obj.guide.slug, 'id': bundle.obj.id})
-		# bundle.data['absolute_url'] = bundle.obj.get_absolute_url()
+		bundle.data['absolute_url'] = bundle.obj.get_absolute_url()
 		return bundle
 
 class GuideResource(ModelResource):
-	cards = fields.ToManyField('api.SmallCardResource', 'card_set', full=True, null=True )#, readonly=True))
+	cards = fields.ToManyField('api.SmallCardResource', 'card_set', full=True, null=True, readonly=True)
 	class Meta:
 		authorization = Authorization()
 		excludes = ['created', 'modified']

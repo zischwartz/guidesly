@@ -8,8 +8,6 @@ class HttpCreated(HttpResponse):
     status_code = 201
     
     def __init__(self, *args, **kwargs):
-        location = ''
-
         if 'location' in kwargs:
             location = kwargs['location']
             del(kwargs['location'])

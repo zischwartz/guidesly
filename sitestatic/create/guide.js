@@ -36,7 +36,8 @@ ko.bindingHandlers.sortableList = {
                         newParent.splice(position, 0, item);
                     }
 					//my code follows (above is knockmeout guy's)
-					new_order = $.map($(".normal_card_container").sortable('toArray'), function(n) {return parseInt(n);}); 
+					new_order = $.map($(".normal_card_container").sortable('toArray'), function(n) {return parseInt(n);});
+					VM.card_order(new_order);
 					// console.log(new_order);
 					for (i in VM.normal_cards())
 						{VM.normal_cards()[i].card_number(parseInt(i)+1);}

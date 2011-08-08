@@ -155,6 +155,8 @@ INSTALLED_APPS = (
 	'thef',
 )                  
             
+TASTYPIE_FULL_DEBUG = True
+
 INVITE_MODE = True 
 
 ACCOUNT_ACTIVATION_DAYS = 5
