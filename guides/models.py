@@ -11,7 +11,7 @@ from fileupload.models import UserFile
 
 from log import getlogger
 logger=getlogger()
-logger.info("-------z--------")
+# logger.info("-------z--------")
 
 
 SELEMENT_TYPE = (
@@ -50,6 +50,7 @@ class Guide (models.Model):
 	has_title_card = models.BooleanField(default=False)
 	cards = models.ManyToManyField('Card', blank=True, null=True, related_name="cards_in_guide")
 	card_order =jsonfield.JSONField(blank=True, null=True, default="[]") 
+	floating_list =jsonfield.JSONField(blank=True, null=True, default="[]") 
 	theme = models.ForeignKey(Theme, blank=True, null=True)
 	owner = models.ForeignKey(User, blank=True, null=True)
 	
@@ -60,8 +61,13 @@ class Guide (models.Model):
 			i+=1
 			card=Card.objects.get(pk=c)
 			card.card_number = i
-			card.save()
-			
+			card.is_floating_card= False
+			card.saved_by_guide()
+		for c in self.floating_list:
+			card=Card.objects.get(pk=c)
+			card.is_floating_card= True
+			card.card_number= 0
+			card.saved_by_guide()
 		super(Guide, self).save(*args, **kwargs)
 	
 	def __unicode__(self):
@@ -89,9 +95,9 @@ class Guide (models.Model):
 			return None
 
 class Card (models.Model):
-	title = models.CharField(max_length=500, blank=True, null=True, default="") #maybe add default=""
-	created = models.DateTimeField(auto_now_add=True)
-	modified = models.DateTimeField(auto_now=True)
+	title = models.CharField(max_length=500, blank=True, null=True, default="")
+	created = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+	modified = models.DateTimeField(auto_now=True, blank=True, null=True) #TODO ADD BACK IN
 	slug = models.SlugField(blank=True, null=True)
 	text = models.TextField(blank=True, null=True)
 	guide= models.ForeignKey(Guide, null=True) #we'll use this as the default guide..., otherwise theres no absolute url
@@ -124,10 +130,13 @@ class Card (models.Model):
 			self.guide.card_order.append(self.id)
 		self.guide.cards.add(self)
 		self.guide.save()
-		# logger.info("first save self.id")
-		# logger.info(self.id)
 
 
+
+	def saved_by_guide(self, *args, **kwargs):
+		super(Card, self).save(*args, **kwargs)
+		
+	#when the guide is saving the cards, it deals with the ordering.
 	def save(self, *args, **kwargs):
 		self.brand_new = False
 		self.id=int(self.id) #quotes were messing up guide.card_order
@@ -136,20 +145,22 @@ class Card (models.Model):
 			self.slug=slugify(self.title)
 		else:
 			self.slug=None
+
 		if self.is_floating_card:
 			if self.id in self.guide.card_order:
+				logger.info("switched from ordered to floating- saved")
 				self.guide.card_order.remove(self.id)
 				self.card_number = None
 				self.guide.save()
 		else: 
 			if self.id in self.guide.card_order:
-				pass
+				logger.info("saved an ordered card, it was already ordered")
 			else:
+				logger.info("was unordered, now it is, adding it to order as last card")
 				number_of_cards = len(self.guide.card_order)
 				self.card_number = number_of_cards +1
 				self.guide.card_order.append(self.id)
 				self.guide.save()
-				# TODO this case is converting from a floating to a normal card. so where does it go? the end for now?
 		super(Card, self).save(*args, **kwargs)
 
 	

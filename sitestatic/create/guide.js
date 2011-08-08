@@ -37,11 +37,25 @@ ko.bindingHandlers.sortableList = {
                     }
 					//my code follows (above is knockmeout guy's)
 					new_order = $.map($(".normal_card_container").sortable('toArray'), function(n) {return parseInt(n);});
+					just_floating_list= $.map($(".floating_card_container").sortable('toArray'), function(n) {return parseInt(n);});
 					VM.card_order(new_order);
+					VM.floating_list(just_floating_list);
 					// console.log(new_order);
 					for (i in VM.normal_cards())
 						{VM.normal_cards()[i].card_number(parseInt(i)+1);}
-						
+					
+					// This is good code, for the future, but with readonly true on cards in the api, not neccesary
+					// var cards = ko.toJS(VM.cards);
+					// var mapped_cards = ko.utils.arrayMap(cards, function(card) {
+					//     delete card.absolute_url;
+					//     delete card.edit_url;
+					//     delete card.primary_media;
+					//     delete card.resource_uri;
+					//     return card;
+					// });
+					// VM.cards(mapped_cards) ;
+					// console.log(just_floating)
+					// VM.just_floating_cards(just_floating);
 						var jsonData = ko.mapping.toJSON(VM);
 						$.ajax({
 							url: VM.resource_uri(),

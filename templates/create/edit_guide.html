@@ -38,6 +38,7 @@
 <div class="normal_card_container connectedSortable" data-bind="template: {name: 'smallCardTemplate',
 				  						foreach: VM.normal_cards, templateOptions: { parentList: VM.normal_cards}},
 				 						sortableList: VM.normal_cards"></div>
+					<a  href="{% url BuildCard gslug=guide.slug %}"class="uibutton"/>Add a New Card</a>
 
 
 <div class="floating_card_container" >
@@ -47,6 +48,7 @@
 				  						foreach: VM.floating_cards, templateOptions: { parentList: VM.floating_cards}},
 										sortableList: VM.floating_cards" class="connectedSortable "></div>
 									</div>
+	<a  href="{% url BuildCard gslug=guide.slug %}"class="uibutton"/>Add a New Side Card</a>
 
 {%load verbatim_templatetag%} 
 

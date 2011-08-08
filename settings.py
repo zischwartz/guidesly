@@ -155,7 +155,7 @@ INSTALLED_APPS = (
 	'thef',
 )                  
             
-TASTYPIE_FULL_DEBUG = True
+# TASTYPIE_FULL_DEBUG = True
 
 INVITE_MODE = True 
 
@@ -205,10 +205,10 @@ LOG_FILE = "log.log"
 #     'debug_toolbar.panels.logger.LoggingPanel',
 # )  
 
-DEBUG_TOOLBAR_CONFIG = {
-    'INTERCEPT_REDIRECTS': False,
-    'HIDE_DJANGO_SQL': False,
-}
+# DEBUG_TOOLBAR_CONFIG = {
+#     'INTERCEPT_REDIRECTS': False,
+#     'HIDE_DJANGO_SQL': False,
+# }
 
 EMAIL_HOST = 'smtp.gmail.com'     
 

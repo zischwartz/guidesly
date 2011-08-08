@@ -61,10 +61,9 @@ class CardResource(ModelResource):
 	
 class SmallCardResource(ModelResource):
 	guide = fields.ForeignKey('api.GuideResource', 'guide')
-	primary_media = fields.ForeignKey('api.MediaElementResource', 'primary_media', null=True, blank=True, full=True)
+	primary_media = fields.ForeignKey('api.MediaElementResource', 'primary_media', null=True, blank=True, full=True, readonly=True)
 	class Meta:
-		# excludes = ['created', 'modified', "edit_url", "absolute_url"]
-		# fields = ['title', 'representative_media', 'guide', 'id', 'card_order', 'card_number', 'is_floating_card']
+		excludes = ['created', 'modified']
 		# include_absolute_url =True
 		authorization = Authorization()
 		queryset= Card.objects.all()
@@ -75,8 +74,6 @@ class SmallCardResource(ModelResource):
 		# logger.info(bundle.data)
 		# bundle.data['edit_url'] = None
 		# bundle.data['absolute_url'] = None
-		
-
 	def dehydrate(self, bundle):
 		# logger.info("dehydrated---------------------------------")
 		# logger.info(bundle.data)
@@ -85,7 +82,7 @@ class SmallCardResource(ModelResource):
 		return bundle
 
 class GuideResource(ModelResource):
-	cards = fields.ToManyField('api.SmallCardResource', 'card_set', full=True, null=True, readonly=True)
+	cards = fields.ToManyField('api.SmallCardResource', 'card_set', full=True, null=True, readonly=True) #eventually get rid of readonly true
 	class Meta:
 		authorization = Authorization()
 		excludes = ['created', 'modified']
