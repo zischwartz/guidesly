@@ -39,25 +39,22 @@ class CardResource(ModelResource):
 	mediaelements = fields.ToManyField('api.MediaElementResource', 'mediaelement_set', full=True, readonly=True, null=True )#, readonly=True))
 	inputelements = fields.ToManyField('api.InputElementResource', 'inputelement_set', full=True, readonly=True, null=True)
 	guide = fields.ForeignKey('api.GuideResource', 'guide', null=True)
-	primary_media = fields.ForeignKey('api.MediaElementResource', 'primary_media', null=True)
+	primary_media = fields.ForeignKey('api.MediaElementResource', 'primary_media', null=True, blank=True)
 	class Meta:
 		authorization = Authorization()
-		# always_return_data = True
-		# allowed_methods =   ['get', 'post', 'put', 'delete']
-		# include_resource_uri =False
 		queryset= Card.objects.all()
 		filtering = {
 		"slug": ('exact'),
 		}
-	def hydrate_mediaelements(self, bundle):	
-		emptylist = []
-		# the below was totally unncessary, but a nice idea.
-		# for el in bundle.data['mediaelements']:
-			# statics.append("id")
-			# statics.append(el['resource_uri'])
-		bundle.data['mediaelements']=emptylist
-		bundle.data['inputelements']=emptylist
-		return bundle
+	# def hydrate_mediaelements(self, bundle):	
+	# 	emptylist = []
+	# 	# the below was totally unncessary, but a nice idea.
+	# 	# for el in bundle.data['mediaelements']:
+	# 		# statics.append("id")
+	# 		# statics.append(el['resource_uri'])
+	# 	bundle.data['mediaelements']=emptylist
+	# 	bundle.data['inputelements']=emptylist
+	# 	return bundle
 	
 class SmallCardResource(ModelResource):
 	guide = fields.ForeignKey('api.GuideResource', 'guide')
@@ -129,6 +126,7 @@ class InputElementResource(ModelResource):
 	class Meta:
 		queryset= InputElement.objects.all()
 		authorization = Authorization()
+
 
 
 class TheFResource(ModelResource):

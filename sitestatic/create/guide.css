@@ -11,13 +11,15 @@
 	overflow: hidden;
 	background-color: white;
 	border-radius: 3px;
+	cursor: move;
+	
 }
 
 .smallcardWrapper
 {
 	display: block;
 	float: left;
-	padding: .3em;
+/*	padding: .3em;*/
 	margin: .3em;
 	margin-bottom: 1em;
 	text-align: center;
@@ -29,7 +31,17 @@
 .smallcardWrapper:hover
 {
 	background-color: #e0e0e0;
-/*	cursor: default;*/
+}
+
+.smallcardWrapper:hover .cardNumber
+{
+	background-color: #f3f3f3;
+
+}
+
+.smallcardWrapper .cardNumber:hover
+{
+	cursor: move;
 }
 
 .smallcardWrapper:hover .controls a
@@ -42,6 +54,8 @@
 {
 	height: 1em;
 	font-size: 1.2em;
+	background-color: #e8e8e8;
+	padding: 3px;
 }
 
 
@@ -56,15 +70,11 @@
 
 .floating_card_container
 {
-/*	float: right;*/
-/*	width: 23%;*/
-	background-color: #f3f3f3;
-	padding: .5em;
 	overflow: auto;
 	display:block;
 	width: 100%;
-	margin-top: 3em;
-/*	margin-right: -5%;*/
+	margin-top: 1em;
+
 }
 
 .connectedSortable
@@ -99,7 +109,7 @@
 	float: left;
 	border-radius: 3px;
 }
-.ui-sortable-helper:hover
+.ui-sortable-helper:hover, .ui-sortable-helper .cardNumber
 {
 	background: rgba(255, 255, 0, 0.5);
 	cursor: move;

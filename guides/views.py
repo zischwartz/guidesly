@@ -93,6 +93,11 @@ def BuildCard (request, gslug):
 	s.firstsave()
 	return HttpResponseRedirect(reverse('EditCard', kwargs={'gslug':gslug, 'id': s.id}))
 
+def BuildFloatingCard (request, gslug):
+	s = Card(guide=get_object_or_404(Guide, slug=gslug), is_floating_card=True)
+	s.firstsave()
+	return HttpResponseRedirect(reverse('EditCard', kwargs={'gslug':gslug, 'id': s.id}))
+
 
 def EditCard (request, gslug, id):
 	# logger.info("---------------")

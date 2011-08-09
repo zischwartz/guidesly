@@ -155,7 +155,7 @@ INSTALLED_APPS = (
 	'thef',
 )                  
             
-# TASTYPIE_FULL_DEBUG = True
+TASTYPIE_FULL_DEBUG = True
 
 INVITE_MODE = True 
 

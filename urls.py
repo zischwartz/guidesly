@@ -28,6 +28,7 @@ v1_api.register(PhotoResource())
 
 
 
+
 urlpatterns = patterns('',
     # Examples:
     # (r'^$', ListView.as_view(model=Guide)),
@@ -41,6 +42,7 @@ urlpatterns = patterns('',
 	url(r'create/?$', CreateGuide, name='CreateGuide'),
 	url(r'create/(?P<gslug>[^/]+)/?$', EditGuide, name='EditGuide'),
 	url(r'create/(?P<gslug>[^/]+)/add/?$', BuildCard, name='BuildCard'),
+	url(r'create/(?P<gslug>[^/]+)/addfloating/?$', BuildFloatingCard, name='BuildFloatingCard'),
 	url(r'create/(?P<gslug>[^/]+)/(?P<id>[^/]+)/?$', EditCard, name='EditCard'),
 	# url(r'create/(?P<gslug>[^/]+)/(?P<slug>[^/]+)/addmedia$', AddMediaElement, name='AddMediaElement'),
 	# url(r'create/(?P<gslug>[^/]+)/(?P<slug>[^/]+)/editmedia/(?P<elementid>[^/]+)$', EditMediaElement, name='EditMediaElement'),

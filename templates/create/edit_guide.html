@@ -41,14 +41,7 @@
 					<a  href="{% url BuildCard gslug=guide.slug %}"class="uibutton"/>Add a New Card</a>
 
 
-<div class="floating_card_container" >
-	<h2>Side Cards</h2> 
-	<h3>These cards are outside the normal flow of your guide. More explanation here. </h3>
-	<div data-bind="template: {name: 'smallCardTemplate',
-				  						foreach: VM.floating_cards, templateOptions: { parentList: VM.floating_cards}},
-										sortableList: VM.floating_cards" class="connectedSortable "></div>
-									</div>
-	<a  href="{% url BuildCard gslug=guide.slug %}"class="uibutton"/>Add a New Side Card</a>
+
 
 {%load verbatim_templatetag%} 
 
@@ -61,16 +54,26 @@
 			<span data-bind="text: title() ? title: 'Untitled Card '"></span>
 			{{if primary_media }}<br><img src="${primary_media.file.thumb_url}">{{/if}} 
 		</div>
-		<div class="controls"><a href="${edit_url}">Edit</a>  <a href="${absolute_url}">Preview</a>  <a href="#">Delete</a></div>
+		<div class="controls"><a href="${edit_url}">Edit</a>  <a href="${absolute_url}">Preview</a>  <a href="#" data-bind="click: deleteCard">Delete</a></div>
 	</div>
 	</script>
 {%endverbatim%}
 {% endblock %} {# end content #}
 
 {%block sidebar%}
-	<form action="" method="post">
-	{% csrf_token %}
-	<table>	{{form.as_table}}</table>
-	<input type="submit" value="Edit guide" />
-	</form>
+
+<div class="floating_card_container" >
+	<h2>Side Cards</h2> 
+	<h3>These cards are outside the normal flow of your guide. More explanation here. </h3>
+	<div data-bind="template: {name: 'smallCardTemplate',
+				  						foreach: VM.floating_cards, templateOptions: { parentList: VM.floating_cards}},
+										sortableList: VM.floating_cards" class="connectedSortable "></div>
+									</div>
+	<a  href="{% url BuildFloatingCard gslug=guide.slug %}"class="uibutton"/>Add a New Side Card</a>
+
+	{# <form action="" method="post"> #}
+	{# {% csrf_token %} #}
+	{# <table>	{{form.as_table}}</table> #}
+	{# <input type="submit" value="Edit guide" /> #}
+	{# </form> #}
 {%endblock %}
