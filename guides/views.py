@@ -16,6 +16,7 @@ logger=getlogger()
 from django.utils import simplejson
 from fileupload.models import UserFile
 from api import CardResource, SmallCardResource, GuideResource, MediaElementResource
+from django.contrib.auth.decorators import login_required
 
 
 # Viewing Guides
@@ -24,6 +25,7 @@ def GuideListView (request):
 	guide_list = Guide.objects.all()
 	return render_to_response("enjoy/home.html", locals(), context_instance=RequestContext(request))
 
+@login_required
 def GuideDetailView (request, slug):
 	guide = get_object_or_404(Guide, slug=slug)
 	card_list= guide.card_set.all()
