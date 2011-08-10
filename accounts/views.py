@@ -29,6 +29,7 @@ def create_profile(request, form_class=None, success_url=None,
         success_url = reverse('profiles_profile_detail',
                               kwargs={ 'username': request.user.username })
     if form_class is None:
+	##form class needs to be written - supposed to be for validating user profile 
         form_class = utils.get_profile_form()
     if request.method == 'POST':
         form = form_class(data=request.POST, files=request.FILES)

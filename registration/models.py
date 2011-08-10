@@ -60,7 +60,7 @@ class RegistrationManager(models.Manager):
 		return False
 	
 	def create_inactive_user(self, username, email, password,
-							 site, send_email=True):
+							 site, send_email=False, profile_callback=None):
 		"""
 		Create a new, inactive ``User``, generate a
 		``RegistrationProfile`` and email its activation key to the
