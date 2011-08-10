@@ -129,6 +129,19 @@ class InputElementResource(ModelResource):
 	class Meta:
 		queryset= InputElement.objects.all()
 		authorization = Authorization()
+		
+class MapPointElementResource(ModelResource):
+	default_action= fields.ToOneField(ActionResource, 'default_action', null=True, full=True) #, full=True) #full being true made a mess on PUT 
+	class Meta:
+		queryset= InputElement.objects.all()
+		authorization = Authorization()
+		
+class MapElementResource(ModelResource):
+	card= fields.ForeignKey(CardResource, 'card')
+	default_action= fields.ToOneField(ActionResource, 'default_action', null=True, full=True) #, full=True) #full being true made a mess on PUT 
+	class Meta:
+		queryset= InputElement.objects.all()
+		authorization = Authorization()
 
 
 class TheFResource(ModelResource):

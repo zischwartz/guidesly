@@ -2,19 +2,18 @@
 
 {%block extrahead%}
 	<script src="{{STATIC_URL}}js-libs/video.js" type="text/javascript" charset="utf-8"></script>
-	<script src="{{STATIC_URL}}enjoy/mute.js" type="text/javascript" charset="utf-8"></script>
+	<script src="{{STATIC_URL}}enjoy/nav.js" type="text/javascript" charset="utf-8"></script>
 	<script src="{{STATIC_URL}}enjoy/card.js"></script>
 	<link rel="stylesheet" href="{{STATIC_URL}}js-libs/video-js.css" type="text/css" media="screen" title="Video JS" charset="utf-8">
 	<link rel="stylesheet" href="{{STATIC_URL}}enjoy/card.css" type="text/css" media="screen"  charset="utf-8">
 	<script type="text/javascript" charset="utf-8">
 		VideoJS.setupAllWhenReady();
 	</script>	
+
 	<style>
 	{{card.guide.theme.text}}
 	</style>
 {%endblock%}
-
-
 
 
 <body>
@@ -50,24 +49,29 @@
 				class="video-js "
 				width="800" 
 				height="600" 
-				{# poster=""  #}
+				{# poster=""#}
 				{%if primary_media.autoplay%}autoplay{%endif%}
-				 preload = "auto">
-				<source src="{{primary_media.file}}" type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"' />
+				preload = "auto">
+				<source src="{{primary_media.file}}" type="video/mp4; codecs='avc1.42E01E, mp4a.40.2'" />
 				Browser doesn't support HTML5 video.
-				</video>
-				
+				<object class="vjs-flash-fallback" width="640" height="264" type="application/x-shockwave-flash"
+      			  data="http://releases.flowplayer.org/swf/flowplayer-3.2.1.swf">
+     			  <param name="movie" value="http://releases.flowplayer.org/swf/flowplayer-3.2.1.swf" />
+        		  <param name="allowfullscreen" value="true" />
+        		  <param name="flashvars" value='config={"playlist":[{"url": "{{primary_media.file}}","autoPlay":false,"autoBuffering":true}]}' />
+      			</object>
+				</video>				
 		</div>
 		</div>
 	    {%endif%}		
 	
 	    {%if primary_media.type == "audio"%}
-	    	<div class="audio">
-		    	<audio class="primary_media"
-		    	src="{{el.file}}"  
-				{%if el.autoplay%}autoplay{%endif%}
-		    	controls="controls">
-				</audio>
+	    	<div class="audio primary_media">
+	    		<audio src="{{primary_media.file}}" 
+	    		controls 
+	    		preload="auto" 
+	    		autobuffer>
+	    		</audio>		  
 			</div>
 	    {%endif%}
 	
@@ -131,30 +135,22 @@
 		{%endif%}
 			
 			</div> {# end .card #}
+			
 </div> {# end #card_wrap #}
 
-			
-			{# <div class="muteall" style="float: left"> #}
-			{# <span class="mute">Mute All:</span> #}
-			{# </div> #}
-			{# <div id="mutebutton" class="mute" style="display:inline"> #}
-			{# <form name="mute_checkbox"> #}
-			{# <input type="checkbox" name="radio_mute"> #}
-			{# </form> #}
-			{# </div> #}
-			{#  #}
-			{# <script> #}
-			{# $('#mutebutton').click(function() { #}
-			{#  		    if(($('video').prop('muted') == false) || ($('audio').prop('muted') == false))  { #}
-			{# 	$('video').prop('muted', true); #}
-			{# 	$('audio').prop('muted', true); #}
-			{# 	} #}
-			{# else{ #}
-			{# 	$('video').prop('muted', false); #}
-			{# 	$('audio').prop('muted', false);			 #}
-			{# 	} #}
-			{# }); #}
-
+{%if primary_media.type == "video" or primary_media.type == "audio" %}
+<br>
+<div id="footer">
+  <div id="tag">Media Controls</div>
+  <div id="bottom_nav">
+    <div class="button" id="play">Play</div>
+    <div class="button" id="pause">Pause</div>
+    <div class="button" id="vUp">Vol Up</div>
+    <div class="button" id="vDown">Vol Down</div>
+    <div class="button" id="mute"><input type="checkbox" id="mute_check"/>  Mute</div> 
+  </div>
+</div>
+{%endif%}
 
 
 

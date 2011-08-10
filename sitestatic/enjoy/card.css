@@ -71,6 +71,102 @@ background-image: -moz-linear-gradient(
 }
 
 
+/* Bottom Nav */
+
+#footer
+{
+position:fixed;
+bottom:0px;
+width:800px;
+
+}
+#bottom_nav
+{
+text-align:center;
+
+}
+
+#tag
+{
+	-moz-border-radius: 90px 90px 0px 0px;
+	border-radius: 90px 90px 0px 0px;
+	font-size:.8em;
+	width:200px;
+	font-weight:bold;
+	color:#FFFFFF;
+	background-color:#AEAEAE;
+	text-align:center;
+	padding:4px;
+	text-decoration:none;
+	text-transform:uppercase;
+}
+
+#tag:hover
+{
+background-color:#6D7B8D;
+}
+
+
+.button
+{
+	float:left;
+	display:block;
+	width:120px;
+	height: 20px;
+	font-weight:bold;
+	color:#FFFFFF;
+	background-color:#736F6E;
+	text-align:center;
+	padding:4px;
+	text-decoration:none;
+	text-transform:uppercase;
+}
+
+#mute
+{
+	-moz-border-radius: 0px 90px 0px 0px;
+	border-radius: 0px 90px 0px 0px;
+}
+
+.button_muted
+{
+	display:block;
+	width:120px;
+
+	font-weight:bold;
+	color:#6D7B8D;
+	background-color:#736F6E;
+	text-align:center;
+	padding:4px;
+	text-decoration:none;
+	text-transform:uppercase;
+}
+
+.button:link,.button:visited
+{
+	display:block;
+	width:120px;
+	font-weight:bold;
+	color:#FFFFFF;
+	background-color:#736F6E;
+	text-align:center;
+	padding:4px;
+	text-decoration:none;
+	text-transform:uppercase;
+}
+
+.button:hover
+{
+	background-color:#6D7B8D;
+}
+.button:active
+{
+	background-color:#646D7E;
+}
+/* End Bottom Nav */
+
+
+
 #wrap
 {
 /*	width: 800px;*/
@@ -78,7 +174,6 @@ background-image: -moz-linear-gradient(
 	margin-left: auto;
 	margin-right: auto;
 	margin-top: 10px;
-
 }
 
 
@@ -93,6 +188,9 @@ a:hover
 {
 	text-decoration: underline;
 }
+
+
+
 
 /*inside of the wrap*/
 
