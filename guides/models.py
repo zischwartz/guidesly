@@ -22,13 +22,13 @@ SELEMENT_TYPE = (
 )
 
 IELEMENT_TYPE = (
-	('B', 'Just a Button'),
+	('button', 'Button'),
 	('M', 'Multiple Choice'),
 	('Y', 'Yes/No'),
 	('V', 'Enter Value'),
 	('N', 'Enter Numerical Value'),
 	('S', 'Sensor'),
-	('T', 'Timer'),
+	('timer', 'Timer'),
 )
 
 class Theme (models.Model):
@@ -105,11 +105,12 @@ class Card (models.Model):
 	has_lots_of_text = models.BooleanField(default=False)
 	tags = TagField()
 	card_number = models.IntegerField(blank=True, null=True) #for default guide.  1 based (not 0)
-	primary_media = models.ForeignKey('MediaElement', blank=True, null=True, related_name='primary_media', default="",  on_delete=models.SET_DEFAULT)
+	primary_media = models.ForeignKey('MediaElement', blank=True, null=True, related_name='primary_media', default=None,  on_delete=models.SET_DEFAULT)
 	is_floating_card = models.BooleanField(default=False)
 	theme = models.ForeignKey(Theme, blank=True, null=True)
 	owner = models.ForeignKey(User, blank=True, null=True)
-	
+	custom_prev_text = models.CharField(max_length=500, blank=True, null=True)
+	custom_next_text = models.CharField(max_length=500, blank=True, null=True)
 	
 	def __unicode__(self):
 		if self.title !="":
@@ -124,7 +125,7 @@ class Card (models.Model):
 		number_of_cards = len(self.guide.card_order)
 		self.owner= self.guide.owner
 		if not self.is_floating_card:
-			self.card_number = number_of_cards +1
+			self.card_number = number_of_cards #+1
 		super(Card, self).save(*args, **kwargs)
 		if not self.is_floating_card:
 			self.guide.card_order.append(self.id)
@@ -139,12 +140,15 @@ class Card (models.Model):
 	#when the guide is saving the cards, it deals with the ordering.
 	def save(self, *args, **kwargs):
 		self.brand_new = False
-		self.id=int(self.id) #quotes were messing up guide.card_order
-
 		if self.title:
 			self.slug=slugify(self.title)
 		else:
 			self.slug=None
+			
+		if self.id:
+			self.id=int(self.id) #quotes were messing up guide.card_order
+		else: #if it doesn't have an id, just save the damn thing
+			self.firstsave(*args, **kwargs)
 
 		if self.is_floating_card:
 			if self.id in self.guide.card_order:
@@ -164,9 +168,13 @@ class Card (models.Model):
 		super(Card, self).save(*args, **kwargs)
 
 	
-	def delete(self, *arg, **kwargs):
+	def delete(self, *args, **kwargs):
 		if self.id in self.guide.card_order:
 			self.guide.card_order.remove(self.id)
+			self.guide.save()
+		if self.id in self.guide.floating_list:
+			self.guide.floating_list.remove(self.id)
+			self.guide.save()
 		super(Card, self).delete(*args, **kwargs)
 
 	
@@ -234,6 +242,7 @@ class ConditionalAction (models.Model):
 	play_static = models.ForeignKey(MediaElement, blank=True, null=True)
 
 
+<<<<<<< HEAD
 class MapPointElement (models.Model):
 	point = models.CharField(max_length=500)
 	point_title = models.CharField(max_length=100)
@@ -245,20 +254,35 @@ class MapElement (models.Model):
 	map_title = models.CharField(max_length=100)
 	points = models.ManyToManyField(MapPointElement)
 	
+=======
+
+>>>>>>> ae64ceb87716838361858586fcd926bba9205bb8
 
 class InputElement (models.Model):
 	card = models.ForeignKey(Card)
-	button_text = models.CharField(max_length=100)
+	big = models.BooleanField(default=False)
 	required = models.BooleanField(default=False)
+	button_text = models.CharField(max_length=100)
 	type = models.CharField(blank=True,  max_length=8, choices = IELEMENT_TYPE)
-	default_goto = models.ForeignKey(Card, blank=True, null=True, related_name="+") #not using this so far
 	default_action = models.OneToOneField(Action, blank=True, null=True)
 	
+	# for timer
+	seconds = models.IntegerField(default=0)
+	minutes = models.IntegerField(default=0)
+	execute_action_when_done = models.BooleanField(default=True)
+	# ding_when_done = models.BooleanField(default=False)
+	# auto_start = models.BooleanField(default=True) #or start on click
+	
+	
 	def el_template(self):
+		if self.type=="timer":
+			return 'els/timer.html'
+		
 		return 'els/button.html'
-		# return "<a class='ielement' href='%s'>%s</a>" % (self.default_action.goto.get_absolute_url(), self.button_text)
+		
 	def __unicode__(self):
 		return self.button_text
+
 
 from api import CardResource
 

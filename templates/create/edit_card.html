@@ -82,8 +82,9 @@
 	
 		{# Prev and Next Buttons for linear guides #}
 		<div id="prev_and_nexts" data-bind="visible: !(is_floating_card())">
-			{%if prev_card%}<a href="{{prev_card.get_absolute_url}}">Previous</a> {%endif%}
-			{%if next_card%}<a href="{{next_card.get_absolute_url}}">Next</a> {%endif%}
+			<br>
+			{%if prev_card%}<a class="front input-button" href="{{prev_card.get_absolute_url}}">Previous</a> {%endif%}
+			{%if next_card%}<a class= "front input-button" href="{{next_card.get_absolute_url}}">Next</a> {%endif%}
 		</div>
 		<div class="F">F</div>
 
@@ -153,20 +154,29 @@
 		</div>
 		
 		<div id="add_button_group" data-bind="visible: currently_adding_input_type()=='button' ">
-			<label for="adder_button_text">Button Text:</label>
-			<input type="text" name="adder_button_text" placeholder="Button Text" id="adder_button_text" data-bind="value:newButtonText, valueUpdate: 'afterkeydown'"><br>
-			<label> Pick a card for the button to go to:</label>
-			<form data-bind="submit:addInput2card">
-
-			{# CARDS_IN_GUIDE JS TEMPLATE  #}
-				<div class="all_card_holder" data-bind="template: {name: 'smallCardTemplate',
-				  						foreach: VM.all_cards,
-				 						afterRender: uePostProcessing,
-						 				beforeRemove: function(elem) {$(elem).slideUp() },
-										afterAdd: function(elem) {$(elem).hide().slideDown() } }"></div>
-			{# *************************** #}
-				
+			<label for="adder_button_text">Button Label:</label>
+			<input type="text" name="adder_button_text" placeholder="Do Something" id="adder_button_text" data-bind="value:newButtonText, valueUpdate: 'afterkeydown'"><br>
+			<br>
+		</div> {# end #add_button_group #}
+		
+		<div id="add_timer_group" data-bind="visible: currently_adding_input_type()=='timer' ">	
+			<label for="adder_timer_text">Timer Label:</label>	<input id="adder_timer_text" type="text" data-bind="value:newButtonText, valueUpdate: 'afterkeydown'" placeholder="Do something sometime"><br>
+			<label for="timer_seconds">Seconds : </label><input id="timer_seconds" type="number" step="1" min="0" max="60" value="0" data-bind="value: newTimerSeconds, valueUpdate: 'afterkeydown' ">
+			<label for="timer_minutes">Minutes : </label><input id="timer_minutes" type="number" step="1" min="0" max="60" value="0" data-bind="value: newTimerMinutes, valueUpdate: 'afterkeydown' ">
+		</div> {# end timer group #}
+	
+		
+		<form data-bind="submit:addInput2card, visible: newButtonText">
+		<label>Pick a card for the <span data-bind="text:currently_adding_input_type"></span> to go to:</label>
+		{# CARDS_IN_GUIDE JS TEMPLATE  #}
+			<div class="all_card_holder" data-bind="template: {name: 'smallCardTemplate',
+			  						foreach: VM.all_cards,
+			 						afterRender: uePostProcessing,
+					 				beforeRemove: function(elem) {$(elem).slideUp() },
+									afterAdd: function(elem) {$(elem).hide().slideDown() } }"></div>
+		{# *************************** #}
 			<br><br>
+<<<<<<< HEAD
 				<input type="radio" id="radiob-card-new" class="uibutton" data-bind="checked: newActionGotoCard" value="addcard" name="addbutton-pickcard"/><label for="radiob-card-new">A New Card</label> 
 				<input type="text" data-bind="value:newCardTitle, visible: newActionGotoCard()=='addcard' " placeholder="New Card Title">
 
@@ -176,9 +186,19 @@
 		</div>
 		<br><div class="F">F</div>
 
+=======
+			<div class="smallcard goto_new_card_button">
+			<input type="radio" id="radiob-card-new" class="uibutton" data-bind="checked: newActionGotoCard" value="addcard" name="addbutton-pickcard"/><label for="radiob-card-new">An Entirely New Card</label> 
+			</div> <br>
+			<input type="text" data-bind="value:newCardTitle, visible: newActionGotoCard()=='addcard' " placeholder="New Card Title">
+		<div class="clearfix"></div>
+		<button class="uibutton" type="submit" data-input_type="button" data-bind="enable:  newActionGotoCard()&&newButtonText() , css:{'ui-button-disabled': !(newActionGotoCard()&&newButtonText()), 'ui-state-disabled': !(newActionGotoCard()&&newButtonText())}">Add This Button to Card</button>
+		</form>
+	<br><div class="F">F</div>
+>>>>>>> ae64ceb87716838361858586fcd926bba9205bb8
 	</div> {# end #add_input_group #}
 	
-	<h3 id="card_options"><a href="#">Edit Card Options</a></h3>
+	{# <h3 id="card_options"><a href="#">Edit Card Options</a></h3> #}
 	
 
 </div> {# end #card_element_toolbar #}
@@ -186,6 +206,8 @@
 				{#  #}
 				{# <input type="radio" id="checkb-is_primary-${id}" class="uibutton" data-bind="checked: VM.primary_media" value="${resource_uri}" name="primary_media" /> #}
 				{# <label for="checkb-is_primary-${id}">Primary Media</label> #}
+				
+				{# for input template debugging       <input data-bind="value: default_action.goto">    #}
 {% verbatim %} 		 
 
 
@@ -202,6 +224,7 @@
 				<br>
 
 					<input type="checkbox" id="checkb-autoplay-${id}" class="uibutton" data-bind="checked: autoplay" />
+
 					<label for="checkb-autoplay-${id}" data-bind="text : autoplay() ? 'Currently Autoplaying ': 'Make Autoplay'"></label>
 					<br>
 
@@ -289,8 +312,7 @@
 			<div class="front input-button" data-bind="text:button_text"></div>
 			
 			<div class="back">
-			<input data-bind="value:button_text">
-			<input data-bind="value: default_action.goto">
+			<input class="button_text" data-bind="value:button_text">
 
 			<div data-bind="template: {name: 'evenSmallerCardTemplate',
 			  						foreach: VM.all_cards,
@@ -299,7 +321,7 @@
 									afterAdd: function(elem) {$(elem).hide().slideDown() },
 									templateOptions: { selected : default_action.goto, input_num: id }
 									}"></div>
-			
+			<div class="clearfix"></div>
 			<a class="uibutton delete" data-bind="click: VM.deleteFromCard">Remove</a>
 
 			</div>
@@ -309,6 +331,30 @@
 	
 	
 
+
+	<script id='timerTemplate' type='text/html'>
+		<div class="ue" data-bind="event: { focusin: VM.flipEl, focusout: VM.unflipEl }, attr: { tabindex: typeof(id)!='undefined' ? id: -1 }">
+			<div class="front input-button"><span data-bind="text:button_text"></span> <br><span data-bind="text:minutes"></span>:<span data-bind="text:seconds"></span></div>
+			
+			<div class="back">
+			<input class="button_text" data-bind="value:button_text">
+			<input class="button_text" data-bind="value:minutes">
+			<input class="button_text" data-bind="value:seconds">
+
+			<div data-bind="template: {name: 'evenSmallerCardTemplate',
+			  						foreach: VM.all_cards,
+			 						afterRender: VM.uePostProcessing,
+					 				beforeRemove: function(elem) {$(elem).slideUp() },
+									afterAdd: function(elem) {$(elem).hide().slideDown() },
+									templateOptions: { selected : default_action.goto, input_num: id }
+									}"></div>
+			<div class="clearfix"></div>
+			<a class="uibutton delete" data-bind="click: VM.deleteFromCard">Remove</a>
+
+			</div>
+			
+		</div>
+	</script>
 
 
 <!-- USER FILE TEMPLATES, for the sidebar -->
@@ -361,7 +407,7 @@
 	</script>
 	
 	<script id='evenSmallerCardTemplate' type='text/html'>
-		<div class="smallercard"> 
+		<div class="smallcard"> 
 			<input type="radio" id="radiob-card-edit-${$item.input_num}-${id}"  class="uibutton" data-bind="checked: $item.selected, value: resource_uri, attr:{ checked: $item.selected() == resource_uri}" name="editbutton-${$item.input_num}-pickcard">
 			<label for="radiob-card-edit-${$item.input_num}-${id}">{{if title}}${title}{{else}}Untitled Card{{/if}}
 			{{if primary_media }}<br><img src="${primary_media}" style="width:40px"> 

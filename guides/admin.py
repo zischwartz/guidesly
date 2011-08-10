@@ -38,4 +38,4 @@ admin.site.register(ConditionalAction)
 # admin.site.register(YNInquiry)
 # admin.site.register(NValueInquiry)
 # admin.site.register(TValueInquiry)
-# admin.site.register(Timer)
+

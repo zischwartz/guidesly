@@ -80,6 +80,27 @@ ko.bindingHandlers.sortableItem = {
     }
 };
 
+var deleteCard= function(event)
+{
+	console.log(event.target.parents(".smallcardWrapper"));
+	$.ajax({
+		url: this.resource_uri(),
+		type: "DELETE",
+		success:function(data) { console.log(data); },
+		contentType: "application/json",
+	});
+	
+	console.log($(this));
+	
+	VM.cards.remove(this);
+	if (VM.floating_cards.indexOf(this)!=-1)
+		VM.floating_cards.remove(this);
+		
+	if (VM.normal_cards.indexOf(this)!=-1)
+		VM.normal_cards.remove(this);
+
+};
+
 
 $(document).ready(function(){	
 
@@ -112,6 +133,7 @@ $(document).ready(function(){
 		placeholder: "smallcardWrapperPlaceHolder",
 		tolerance: 'pointer',
 		items: '.smallcardWrapper',
+		handle: '.cardNumber, .smallcard',
 	}).disableSelection();
 
 	ko.applyBindings(VM);
