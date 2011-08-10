@@ -36,15 +36,20 @@ def CardDetailView (request, gslug, id=None, slug=None, cnumber=None):
 		card = get_object_or_404(Card, guide__slug=gslug, card_number=cnumber)		
 	elif id:
 		card = get_object_or_404(Card, id=id)
-		
-	media_elements = card.mediaelement_set.all()
+	
+	images = []
+	audio= None
+	for element in card.mediaelement_set.all():
+		if element.type=='image':
+			images.append(element)
+		if element.type == 'audio':
+			audio=element
+	# media_elements = card.mediaelement_set.all()
 	input_elements=card.inputelement_set.all()
 	primary_media=card.primary_media
 	if not card.is_floating_card:
 		prev_card = card.guide.get_prev_card(card)
 		next_card = card.guide.get_next_card(card)
-		# logger.debug(prev_card)
-		# logger.debug(next_card)
 	return render_to_response("enjoy/card.html", locals(), context_instance=RequestContext(request))
 
 
