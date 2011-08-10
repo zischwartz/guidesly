@@ -1,25 +1,40 @@
 
-
 var _jqCardFrameId = "DIV.card";
 
-$(function() {
 
+$(document).ready(function(){	
+
+
+///  THUMBS /////////////////////////////////////////////////
     $("a.thumb").live('click', function(event) {
 		$(".active_thumb").removeClass("active_thumb");
 		$(this).addClass("active_thumb");
 		event.preventDefault();
 		var media_type = $(this).data("media_type");
         var url = this.href;
-		// alert(media_type);
 		
 		if (media_type == 'image')
 		{
 			$(".primary_media").attr({ src: url});
 		}
-		
-		
-});
+	
+	}); //end thumbs
+	
+	//keydown back and forth
+	$("body").keydown(function(event) {
+		 if (event.keyCode == '39') 
+			var url = $(".next a").addClass("pressed").attr('href');
+		if (event.keyCode == '37')
+			var url = $(".prev a").addClass("pressed").attr('href');
+		if (url)
+		{
+			event.preventDefault();
+		 	cardToUrl(url, true);
+			history.pushState({path: url}, '', url);
+		}
+	});//end keydown
 
+	activateTimers();
 
 
 /////////////////////////////////////////////////////////////////////////////
@@ -36,10 +51,13 @@ $(function() {
             var url = this.href;
             history.pushState({path: url}, '', url);
             cardToUrl(url, true);
+			
         });
     }
 	
 }); //end docready
+
+
 
 // The purpose of this function is to do a card
 // transition between the div that's currently in
@@ -59,6 +77,9 @@ function cardTo(jqNewDiv, goForward) {
         var newNode = parent.find(_jqCardFrameId);
         newNode.hide();
         newNode.fadeIn(300);
+        newNode.show();
+       	$( '.video-js' ).VideoJS();
+		activateTimers();
     };
 
 //    if (goForward) {
@@ -75,6 +96,7 @@ function cardToUrl(url, goForward) {
     var callback = function(data) {
         var jqCardFrame = $(data).find(_jqCardFrameId);
         cardTo(jqCardFrame, goForward);
+
     };
     $.get(url, null, callback, "html");
 }
@@ -96,3 +118,26 @@ $(window).bind('popstate', function(event) {
 /////////////////////////////////////////////////////////////////////////////
 ///  End card transition code  /////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////
+
+
+
+
+
+function activateTimers(){
+	$("a.timer").each(function(index) {
+		var seconds = $(this).data("seconds") + $(this).data("minutes")*60 ;
+		var timeBar = $("<div class='timeBar'></div>");
+		$(this).append(timeBar);
+		var timer_link = $(this);
+		$(timeBar).animate({
+		    width: 0
+		  }, seconds*1000, function() {
+		    // Animation complete.
+			var url = $(timer_link).attr('href');
+			cardToUrl(url, true);
+			history.pushState({path: url}, '', url);
+		  });
+	}); //end timer	
+	
+}
+

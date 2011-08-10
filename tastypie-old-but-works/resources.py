@@ -629,11 +629,13 @@ class Resource(object):
     
     # Data preparation.
     
-    def full_dehydrate(self, bundle):
+    def full_dehydrate(self, obj):
         """
-        Given a bundle with an object instance, extract the information from it
-        to populate the resource.
+        Given an object instance, extract the information from it to populate
+        the resource.
         """
+        bundle = Bundle(obj=obj)
+        
         # Dehydrate each field.
         for field_name, field_object in self.fields.items():
             # A touch leaky but it makes URI resolution work.
@@ -673,9 +675,6 @@ class Resource(object):
             bundle.obj = self._meta.object_class()
         
         for field_name, field_object in self.fields.items():
-            if field_object.readonly is True:
-                continue
-
             if field_object.attribute:
                 value = field_object.hydrate(bundle)
                 
@@ -844,17 +843,6 @@ class Resource(object):
         allowed = set(self._meta.list_allowed_methods + self._meta.detail_allowed_methods)
         return 'delete' in allowed
     
-    def apply_filters(self, request, applicable_filters):
-        """
-        A hook to alter how the filters are applied to the object list.
-        
-        This needs to be implemented at the user level.
-        
-        ``ModelResource`` includes a full working version specific to Django's
-        ``Models``.
-        """
-        raise NotImplementedError()
-    
     def obj_get_list(self, request=None, **kwargs):
         """
         Fetches the list of objects available on the resource.
@@ -1016,8 +1004,7 @@ class Resource(object):
         to_be_serialized = paginator.page()
         
         # Dehydrate the bundles in preparation for serialization.
-        bundles = [self.build_bundle(obj=obj, request=request) for obj in to_be_serialized['objects']]
-        to_be_serialized['objects'] = [self.full_dehydrate(bundle) for bundle in bundles]
+        to_be_serialized['objects'] = [self.full_dehydrate(obj=obj) for obj in to_be_serialized['objects']]
         to_be_serialized = self.alter_list_data_to_serialize(request, to_be_serialized)
         return self.create_response(request, to_be_serialized)
     
@@ -1037,8 +1024,7 @@ class Resource(object):
         except MultipleObjectsReturned:
             return HttpMultipleChoices("More than one resource is found at this URI.")
         
-        bundle = self.build_bundle(obj=obj, request=request)
-        bundle = self.full_dehydrate(bundle)
+        bundle = self.full_dehydrate(obj)
         bundle = self.alter_detail_data_to_serialize(request, bundle)
         return self.create_response(request, bundle)
     
@@ -1075,14 +1061,14 @@ class Resource(object):
                 self.rollback(bundles_seen)
                 raise
             
-            self.obj_create(bundle, request=request, **self.remove_api_resource_names(kwargs))
+            self.obj_create(bundle, request=request)
             bundles_seen.append(bundle)
         
         if not self._meta.always_return_data:
             return HttpNoContent()
         else:
             to_be_serialized = {}
-            to_be_serialized['objects'] = [self.full_dehydrate(bundle) for bundle in bundles_seen]
+            to_be_serialized['objects'] = [self.full_dehydrate(obj=bundle.obj) for bundle in bundles_seen]
             to_be_serialized = self.alter_list_data_to_serialize(request, to_be_serialized)
             return self.create_response(request, to_be_serialized, response_class=HttpAccepted)
     
@@ -1111,23 +1097,19 @@ class Resource(object):
         self.is_valid(bundle, request)
         
         try:
-            updated_bundle = self.obj_update(bundle, request=request, **self.remove_api_resource_names(kwargs))
+            updated_bundle = self.obj_update(bundle, request=request, pk=kwargs.get('pk'))
             
             if not self._meta.always_return_data:
                 return HttpNoContent()
             else:
-                updated_bundle = self.full_dehydrate(updated_bundle)
-                updated_bundle = self.alter_detail_data_to_serialize(request, updated_bundle)
                 return self.create_response(request, updated_bundle, response_class=HttpAccepted)
         except (NotFound, MultipleObjectsReturned):
-            updated_bundle = self.obj_create(bundle, request=request, **self.remove_api_resource_names(kwargs))
+            updated_bundle = self.obj_create(bundle, request=request, pk=kwargs.get('pk'))
             location = self.get_resource_uri(updated_bundle)
             
             if not self._meta.always_return_data:
                 return HttpCreated(location=location)
             else:
-                updated_bundle = self.full_dehydrate(updated_bundle)
-                updated_bundle = self.alter_detail_data_to_serialize(request, updated_bundle)
                 return self.create_response(request, updated_bundle, response_class=HttpCreated, location=location)
     
     def post_list(self, request, **kwargs):
@@ -1145,14 +1127,12 @@ class Resource(object):
         deserialized = self.alter_deserialized_detail_data(request, deserialized)
         bundle = self.build_bundle(data=dict_strip_unicode_keys(deserialized), request=request)
         self.is_valid(bundle, request)
-        updated_bundle = self.obj_create(bundle, request=request, **self.remove_api_resource_names(kwargs))
+        updated_bundle = self.obj_create(bundle, request=request)
         location = self.get_resource_uri(updated_bundle)
         
         if not self._meta.always_return_data:
             return HttpCreated(location=location)
         else:
-            updated_bundle = self.full_dehydrate(updated_bundle)
-            updated_bundle = self.alter_detail_data_to_serialize(request, updated_bundle)
             return self.create_response(request, updated_bundle, response_class=HttpCreated, location=location)
     
     def post_detail(self, request, **kwargs):
@@ -1229,8 +1209,7 @@ class Resource(object):
         for pk in obj_pks:
             try:
                 obj = self.obj_get(request, pk=pk)
-                bundle = self.build_bundle(obj=obj, request=request)
-                bundle = self.full_dehydrate(bundle)
+                bundle = self.full_dehydrate(obj)
                 objects.append(bundle)
             except ObjectDoesNotExist:
                 not_found.append(pk)
@@ -1548,15 +1527,6 @@ class ModelResource(Resource):
         
         return obj_list.order_by(*order_by_args)
     
-    def apply_filters(self, request, applicable_filters):
-        """
-        An ORM-specific implementation of ``apply_filters``.
-        
-        The default simply applies the ``applicable_filters`` as ``**kwargs``,
-        but should make it possible to do more advanced things.
-        """
-        return self.get_object_list(request).filter(**applicable_filters)
-        
     def get_object_list(self, request):
         """
         An ORM-specific implementation of ``get_object_list``.
@@ -1583,7 +1553,7 @@ class ModelResource(Resource):
         applicable_filters = self.build_filters(filters=filters)
         
         try:
-            base_object_list = self.apply_filters(request, applicable_filters)
+            base_object_list = self.get_object_list(request).filter(**applicable_filters)
             return self.apply_authorization_limits(request, base_object_list)
         except ValueError, e:
             raise BadRequest("Invalid resource lookup data provided (mismatched type).")
@@ -1762,9 +1732,6 @@ class ModelResource(Resource):
                 continue
             
             if not field_object.attribute:
-                continue
-              
-            if field_object.readonly:
                 continue
             
             # Get the manager.

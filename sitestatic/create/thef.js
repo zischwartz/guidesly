@@ -35,8 +35,8 @@ sendFData = function() {
 					// console.log(data);	
 					Fvm.choice(null);
 					Fvm.was_buggy(null);
-					Fvm.like_reason("It allows me to");
-					Fvm.dislike_reason("It doesn't allow me to");
+					Fvm.like_reason("It allows me to ");
+					Fvm.dislike_reason("It doesn't allow me to ");
 					Fvm.the_parent(null);
 				},	
 			contentType: "application/json",	
@@ -58,8 +58,8 @@ $('.ui-widget-overlay').live('click', function() {
 Fvm ={
 	choice: ko.observable(),
 	was_buggy: ko.observable(),
-	like_reason: ko.observable("It allows me to"),
-	dislike_reason: ko.observable("It doesn't allow me to"),
+	like_reason: ko.observable("It allows me to "),
+	dislike_reason: ko.observable("It doesn't allow me to "),
 	the_parent: ko.observable(),
 }
 

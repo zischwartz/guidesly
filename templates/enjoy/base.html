@@ -36,7 +36,6 @@
 		<div id="messages">{% for message in messages %}
 		<p{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>{% endfor %}</div>
 	{%endif%}
-	
 		{# WOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO #}
 		{% block content %} 
 		Hi. If you're seeing this, something messed up. This is the base template dude...

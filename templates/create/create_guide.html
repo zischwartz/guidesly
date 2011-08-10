@@ -17,10 +17,17 @@
 {%endblock%}
 
 {%block content%}
-	{# <div class="h"> #}
+
 	<form action="" method="post">
 	{% csrf_token %}
-	<table>	{{form.as_table}}</table>
+	<label for="id_title">Title</label>{{form.title}}
+	<br>
+	<label for="id_is_linear">Ordered</label>{{form.is_linear}}
+	<br>
+	<input type="hidden" name="owner" id="id_owner" value="{{user}}">
+
+	<p>--------</p>
+	{# <table>	{{form.as_table}}</table> #}
 	<input type="submit" value="Create guide" />
 	</form>
 

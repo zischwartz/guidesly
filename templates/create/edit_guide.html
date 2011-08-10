@@ -20,46 +20,60 @@
 <h1>{{guide.title}}</h1>
 <h2>{{guide.description}}</h2>
 <br><br>
-{%for card in guide.card_set.all%}
-		<div class="smallcardWrapper">
-		{{card.card_number}}
-			<div class="smallcard">
-				{{card}}
-				{%if card.primary_media%} <img src="{{card.primary_media.file.thumb_url}}" style="width:50px"> {%endif%}
-			</div>
-			<br><a href="{{card.get_absolute_url}}"> View</a> | <a href="{% url EditCard gslug=card.guide.slug, id=card.id %}"> Edit</a>
-
-		</div>
-{%endfor%}
+{# {%for card in guide.card_set.all%} #}
+{# 		<div class="smallcardWrapper"> #}
+{# 		{{card.card_number}} #}
+{# 			<div class="smallcard"> #}
+{# 				{{card}} #}
+{# 				{%if card.primary_media%} <img src="{{card.primary_media.file.thumb_url}}" style="width:50px"> {%endif%} #}
+{# 			</div> #}
+{# 			<br><a href="{{card.get_absolute_url}}"> View</a> | <a href="{% url EditCard gslug=card.guide.slug, id=card.id %}"> Edit</a> #}
+{#  #}
+{# 		</div> #}
+{# {%endfor%} #}
 
 {# <div data-bind="text:title"></div> #}
 
 
-{# <div class="all_card_holder" data-bind="template: {name: 'smallCardTemplate', #}
-{# 				  						foreach: VM.cards, #}
-{#  #}
-{# 						 				beforeRemove: function(elem) {$(elem).slideUp() }, #}
-{# 										afterAdd: function(elem) {$(elem).hide().slideDown() } }"></div> #}
-{# 	 #}									
+<div class="normal_card_container connectedSortable" data-bind="template: {name: 'smallCardTemplate',
+				  						foreach: VM.normal_cards, templateOptions: { parentList: VM.normal_cards}},
+				 						sortableList: VM.normal_cards"></div>
+					<a  href="{% url BuildCard gslug=guide.slug %}"class="uibutton"/>Add a New Card</a>
+
+
+
 
 {%load verbatim_templatetag%} 
 
 
 {%verbatim%}
 	<script id='smallCardTemplate' type='text/html'>
+	<div class="smallcardWrapper" id="${id}" data-bind="sortableItem: { item: $data, parentList: $item.parentList }"> 
+		<div class="cardNumber"><span data-bind="text: card_number"></span> </div>
 		<div class="smallcard">
-			<span data-bind="text: title() ? title: 'Untitled'"></span>
-			{{if primary_media }}<br><img src="${primary_media}" style="width:50px"> 
-			{{/if}} <a href="#">EDIT</a>
+			<span data-bind="text: title() ? title: 'Untitled Card '"></span>
+			{{if primary_media }}<br><img src="${primary_media.file.thumb_url}">{{/if}} 
 		</div>
+		<div class="controls"><a href="${edit_url}">Edit</a>  <a href="${absolute_url}">Preview</a>  <a href="#" data-bind="click: deleteCard">Delete</a></div>
+	</div>
 	</script>
 {%endverbatim%}
 {% endblock %} {# end content #}
 
 {%block sidebar%}
-	<form action="" method="post">
-	{% csrf_token %}
+
+<div class="floating_card_container" >
+	<h2>Side Cards</h2> 
+	<h3>These cards are outside the normal flow of your guide. More explanation here. </h3>
+	<div data-bind="template: {name: 'smallCardTemplate',
+				  						foreach: VM.floating_cards, templateOptions: { parentList: VM.floating_cards}},
+										sortableList: VM.floating_cards" class="connectedSortable "></div>
+									</div>
+	<a  href="{% url BuildFloatingCard gslug=guide.slug %}"class="uibutton"/>Add a New Side Card</a>
+
+	{# <form action="" method="post"> #}
+	{# {% csrf_token %} #}
 	{# <table>	{{form.as_table}}</table> #}
-	<input type="submit" value="Edit guide" />
-	</form>
+	{# <input type="submit" value="Edit guide" /> #}
+	{# </form> #}
 {%endblock %}

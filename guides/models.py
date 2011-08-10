@@ -11,7 +11,7 @@ from fileupload.models import UserFile
 
 from log import getlogger
 logger=getlogger()
-logger.info("-------z--------")
+# logger.info("-------z--------")
 
 
 SELEMENT_TYPE = (
@@ -22,13 +22,13 @@ SELEMENT_TYPE = (
 )
 
 IELEMENT_TYPE = (
-	('B', 'Just a Button'),
+	('button', 'Button'),
 	('M', 'Multiple Choice'),
 	('Y', 'Yes/No'),
 	('V', 'Enter Value'),
 	('N', 'Enter Numerical Value'),
 	('S', 'Sensor'),
-	('T', 'Timer'),
+	('timer', 'Timer'),
 )
 
 class Theme (models.Model):
@@ -50,10 +50,24 @@ class Guide (models.Model):
 	has_title_card = models.BooleanField(default=False)
 	cards = models.ManyToManyField('Card', blank=True, null=True, related_name="cards_in_guide")
 	card_order =jsonfield.JSONField(blank=True, null=True, default="[]") 
+	floating_list =jsonfield.JSONField(blank=True, null=True, default="[]") 
 	theme = models.ForeignKey(Theme, blank=True, null=True)
+	owner = models.ForeignKey(User, blank=True, null=True)
 	
 	def save(self, *args, **kwargs):
 		self.slug= slugify(self.title)
+		i=0
+		for c in self.card_order: #this is inefficient but works
+			i+=1
+			card=Card.objects.get(pk=c)
+			card.card_number = i
+			card.is_floating_card= False
+			card.saved_by_guide()
+		for c in self.floating_list:
+			card=Card.objects.get(pk=c)
+			card.is_floating_card= True
+			card.card_number= 0
+			card.saved_by_guide()
 		super(Guide, self).save(*args, **kwargs)
 	
 	def __unicode__(self):
@@ -81,9 +95,9 @@ class Guide (models.Model):
 			return None
 
 class Card (models.Model):
-	title = models.CharField(max_length=500, blank=True, null=True, default="") #maybe add default=""
-	created = models.DateTimeField(auto_now_add=True)
-	modified = models.DateTimeField(auto_now=True)
+	title = models.CharField(max_length=500, blank=True, null=True, default="")
+	created = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+	modified = models.DateTimeField(auto_now=True, blank=True, null=True) #TODO ADD BACK IN
 	slug = models.SlugField(blank=True, null=True)
 	text = models.TextField(blank=True, null=True)
 	guide= models.ForeignKey(Guide, null=True) #we'll use this as the default guide..., otherwise theres no absolute url
@@ -91,10 +105,12 @@ class Card (models.Model):
 	has_lots_of_text = models.BooleanField(default=False)
 	tags = TagField()
 	card_number = models.IntegerField(blank=True, null=True) #for default guide.  1 based (not 0)
-	primary_media = models.ForeignKey('MediaElement', blank=True, null=True, related_name='primary_media', default="",  on_delete=models.SET_DEFAULT)
+	primary_media = models.ForeignKey('MediaElement', blank=True, null=True, related_name='primary_media', default=None,  on_delete=models.SET_DEFAULT)
 	is_floating_card = models.BooleanField(default=False)
 	theme = models.ForeignKey(Theme, blank=True, null=True)
-	
+	owner = models.ForeignKey(User, blank=True, null=True)
+	custom_prev_text = models.CharField(max_length=500, blank=True, null=True)
+	custom_next_text = models.CharField(max_length=500, blank=True, null=True)
 	
 	def __unicode__(self):
 		if self.title !="":
@@ -107,50 +123,63 @@ class Card (models.Model):
 				
 	def firstsave(self, *args, **kwargs):
 		number_of_cards = len(self.guide.card_order)
+		self.owner= self.guide.owner
 		if not self.is_floating_card:
-			self.card_number = number_of_cards +1
+			self.card_number = number_of_cards #+1
 		super(Card, self).save(*args, **kwargs)
 		if not self.is_floating_card:
 			self.guide.card_order.append(self.id)
 		self.guide.cards.add(self)
 		self.guide.save()
-		# logger.info("first save self.id")
-		# logger.info(self.id)
 
 
+
+	def saved_by_guide(self, *args, **kwargs):
+		super(Card, self).save(*args, **kwargs)
+		
+	#when the guide is saving the cards, it deals with the ordering.
 	def save(self, *args, **kwargs):
 		self.brand_new = False
-		self.id=int(self.id) #quotes were messing up guide.card_order
-
 		if self.title:
 			self.slug=slugify(self.title)
 		else:
 			self.slug=None
+			
+		if self.id:
+			self.id=int(self.id) #quotes were messing up guide.card_order
+		else: #if it doesn't have an id, just save the damn thing
+			self.firstsave(*args, **kwargs)
+
 		if self.is_floating_card:
 			if self.id in self.guide.card_order:
+				logger.info("switched from ordered to floating- saved")
 				self.guide.card_order.remove(self.id)
 				self.card_number = None
 				self.guide.save()
 		else: 
 			if self.id in self.guide.card_order:
-				pass
+				logger.info("saved an ordered card, it was already ordered")
 			else:
+				logger.info("was unordered, now it is, adding it to order as last card")
 				number_of_cards = len(self.guide.card_order)
 				self.card_number = number_of_cards +1
 				self.guide.card_order.append(self.id)
 				self.guide.save()
-				# TODO this case is converting from a floating to a normal card. so where does it go? the end for now?
 		super(Card, self).save(*args, **kwargs)
 
 	
-	def delete(self, *arg, **kwargs):
+	def delete(self, *args, **kwargs):
 		if self.id in self.guide.card_order:
 			self.guide.card_order.remove(self.id)
+			self.guide.save()
+		if self.id in self.guide.floating_list:
+			self.guide.floating_list.remove(self.id)
+			self.guide.save()
 		super(Card, self).delete(*args, **kwargs)
 
 	
 	class Meta:
-		ordering = ['created'] #switch to card_number
+		ordering = ['card_number'] #switch to card_number
 	
 	@models.permalink
 	def get_absolute_url(self):
@@ -213,19 +242,33 @@ class ConditionalAction (models.Model):
 	play_static = models.ForeignKey(MediaElement, blank=True, null=True)
 
 
+
+
 class InputElement (models.Model):
 	card = models.ForeignKey(Card)
-	button_text = models.CharField(max_length=100)
+	big = models.BooleanField(default=False)
 	required = models.BooleanField(default=False)
+	button_text = models.CharField(max_length=100)
 	type = models.CharField(blank=True,  max_length=8, choices = IELEMENT_TYPE)
-	default_goto = models.ForeignKey(Card, blank=True, null=True, related_name="+") #not using this so far
 	default_action = models.OneToOneField(Action, blank=True, null=True)
 	
+	# for timer
+	seconds = models.IntegerField(default=0)
+	minutes = models.IntegerField(default=0)
+	execute_action_when_done = models.BooleanField(default=True)
+	# ding_when_done = models.BooleanField(default=False)
+	# auto_start = models.BooleanField(default=True) #or start on click
+	
+	
 	def el_template(self):
+		if self.type=="timer":
+			return 'els/timer.html'
+		
 		return 'els/button.html'
-		# return "<a class='ielement' href='%s'>%s</a>" % (self.default_action.goto.get_absolute_url(), self.button_text)
+		
 	def __unicode__(self):
 		return self.button_text
+
 
 from api import CardResource
 

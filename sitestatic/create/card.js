@@ -4,6 +4,7 @@ var input_api_url='/api/v1/inputelement/';
 var action_api_url='/api/v1/action/';
 var file_api_url='/api/v1/userfile/';
 var guide_api_url='/api/v1/guide/';
+var timer_api_url='/api/v1/timer/';
 // var smallcard_api_url='/api/v1/smallcard/';
 
 var VM; //our viewmodel
@@ -43,7 +44,6 @@ if (primary_media_json)
 VM.save = function()
 {
 	var jsonData = ko.mapping.toJSON(VM);
-	// alert('hi');
 	$.ajax({
 		url: VM.resource_uri(),
 		type: "PUT",
@@ -254,8 +254,12 @@ VM.userFileDisplayMode= function(element){
 }
 
 VM.inputTypeTemplate= function(element){
-// this will return differently based on if it's image, video, audio (or bg?)
-		return 'buttonTemplate';
+	console.log(element);
+	
+		if (element.type()=="button")
+			return 'buttonTemplate';
+		if (element.type() == 'timer')
+			return 'timerTemplate';
 }
 
 
@@ -384,7 +388,8 @@ $("#add_input_group h4, #add_input img").click(function(event){
 VM.newCardTitle= ko.observable();
 VM.newButtonText= ko.observable();
 VM.newActionGotoCard = ko.observable();
-
+VM.newTimerSeconds = ko.observable(00)
+VM.newTimerMinutes = ko.observable(00)
 
 
 //REPLACE CARDS WITH GUIDE TODO because guide has the relevant info about each card anyway
@@ -405,16 +410,16 @@ VM.addInput2card= function(){
 			console.log('addcarding');
 			cardToAdd= new Object();
 			cardToAdd.title= VM.newCardTitle();			
-			cardToAdd.guide= VM.guide();			
+			cardToAdd.guide= VM.guide();
 			var postURL_newcard;
 			jsonData = ko.toJSON(cardToAdd);
-			
+			console.log(jsonData);
 			postURL_newcard=$.ajax({
 				url: card_api_url,
 				type: "POST",
 				data: jsonData,
 				success:function(data) {
-					console.log('--');
+					console.log('success creating a new card');
 					// console.log(postURL_newcard.getResponseHeader('content-location'));
 					new_card_uri= postURL_newcard.getResponseHeader('location');
 					uri_string_n=new_card_uri.indexOf('api');
@@ -510,6 +515,12 @@ addInputHelper =function(){
 	newAction.id = null;
 	var postURL_input;
 	inputToAdd.card= VM.resource_uri();
+	inputToAdd.type= ko.observable(VM.currently_adding_input_type());
+	if (inputToAdd.type() == 'timer')
+		{
+			inputToAdd.seconds= VM.newTimerSeconds();
+			inputToAdd.minutes= VM.newTimerMinutes();
+		}
 	inputToAdd.button_text= ko.observable( VM.newButtonText());
 	inputToAdd.default_action= newAction;  //maybe this should be observable?
 	jsonData = ko.toJSON(inputToAdd);
@@ -524,10 +535,20 @@ addInputHelper =function(){
 			// console.log(postURL_input.getResponseHeader('location'));
 			inputToAdd.id = inputToAdd.resource_uri().match(/\/inputelement\/(.*)\//)[1];
 			// match(/\/inputelement\/(.*)\//)[1]
-			VM.inputelements.push(inputToAdd); //WHAT? TODO
+			VM.inputelements.push(inputToAdd); 
 			},
 		contentType: "application/json",
 		});
+		
+		VM.newCardTitle('');
+		VM.newButtonText('');
+		VM.newActionGotoCard('');
+		VM.newTimerMinutes(0);
+		VM.newTimerSeconds(0);
+		$("#card_element_toolbar").accordion("activate", false);
+		VM.input_type("Input");
+		VM.currently_adding_input_type('');
+	
 	} //end input adding function
 
 emphasizeContent = function()

@@ -63,9 +63,9 @@ body
 
 	background-color: #383838;
 	background-color: black;
-
 	font: 16px/1.5em 'Helvetica Neue',helvetica,arial,sans-serif;
 	width: 100%;
+	font-weight: 300;
 }
 
 
@@ -511,16 +511,29 @@ label.fileinput-button
 	margin: .5em;
 	text-align: center;
 	width: 6.2em;
-	height: 5em;
+	height: 6.2em;
 	float: left;
 	overflow: hidden;
 }
 
 .smallcard .ui-button
 {
-	height: 4.5em;
+	height: 6em;
 	width: 6em;
 }
+
+.goto_new_card_button
+{
+	background-color: gray;
+	height: 4.2em;
+	border: 1px dashed gray;
+	
+}
+.goto_new_card_button .ui-button
+{
+	height: 4em;
+}
+
 
 .smallcard .ui-state-default 
 {
@@ -540,7 +553,10 @@ label.fileinput-button
 	padding: .5em;
 }
 
-
+.ue .button_text
+{
+	font-size: 1em;
+}
 
 
 

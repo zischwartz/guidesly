@@ -9,14 +9,12 @@ from django.views.generic import ListView, DetailView
 from forms import *
 from django.core.urlresolvers import reverse
 
-
 from django.contrib import messages
 from log import getlogger
 logger=getlogger()
 # logger.debug("---------------")
 from django.utils import simplejson
 from fileupload.models import UserFile
-
 from api import CardResource, SmallCardResource, GuideResource, MediaElementResource
 
 
@@ -38,15 +36,20 @@ def CardDetailView (request, gslug, id=None, slug=None, cnumber=None):
 		card = get_object_or_404(Card, guide__slug=gslug, card_number=cnumber)		
 	elif id:
 		card = get_object_or_404(Card, id=id)
-		
-	media_elements = card.mediaelement_set.all()
+	
+	images = []
+	audio= None
+	for element in card.mediaelement_set.all():
+		if element.type=='image':
+			images.append(element)
+		if element.type == 'audio':
+			audio=element
+	# media_elements = card.mediaelement_set.all()
 	input_elements=card.inputelement_set.all()
 	primary_media=card.primary_media
 	if not card.is_floating_card:
 		prev_card = card.guide.get_prev_card(card)
 		next_card = card.guide.get_next_card(card)
-		# logger.debug(prev_card)
-		# logger.debug(next_card)
 	return render_to_response("enjoy/card.html", locals(), context_instance=RequestContext(request))
 
 
@@ -85,7 +88,8 @@ def EditGuide (request, gslug):
 	else:
 		form = GuideForm(instance= guide)
 		g = GuideResource()
-		guide_json = g.serialize(None, g.full_dehydrate(guide), 'application/json')
+		guide_bundle= g.build_bundle(obj=guide, request=request)
+		guide_json = g.serialize(request, g.full_dehydrate(guide_bundle), 'application/json')
 	return render_to_response("create/edit_guide.html", locals(), context_instance=RequestContext(request))
 
 
@@ -94,22 +98,29 @@ def BuildCard (request, gslug):
 	s.firstsave()
 	return HttpResponseRedirect(reverse('EditCard', kwargs={'gslug':gslug, 'id': s.id}))
 
+def BuildFloatingCard (request, gslug):
+	s = Card(guide=get_object_or_404(Guide, slug=gslug), is_floating_card=True)
+	s.firstsave()
+	return HttpResponseRedirect(reverse('EditCard', kwargs={'gslug':gslug, 'id': s.id}))
+
 
 def EditCard (request, gslug, id):
 	# logger.info("---------------")
 	# send the card's data as json
 	s = get_object_or_404(Card, guide__slug=gslug, id=id)
-	ur = CardResource()
+	cr = CardResource()
 	if not s.is_floating_card:
 		prev_card = s.guide.get_prev_card(s)
 		next_card = s.guide.get_next_card(s)	
-	# ur_bundle = ur.build_bundle() #(obj=s, request=request) #turned out not to be neccesary
-	card_json= ur.serialize(None, ur.full_dehydrate(s), 'application/json') #with newer version, full dehyrate ur_bundle
+
+	card_bundle= cr.build_bundle(obj=s, request=request)
+	card_json= cr.serialize(request, cr.full_dehydrate(card_bundle), 'application/json') #with newer version, full dehyrate ur_bundle
 	# logger.info(card_json)
 	
 	mr = MediaElementResource()
 	if s.primary_media is not None:
-		primary_media_json = mr.serialize(None, mr.full_dehydrate(s.primary_media),'application/json' )
+		primary_media_bundle= mr.build_bundle(obj=s.primary_media, request=request)
+		primary_media_json = mr.serialize(request, mr.full_dehydrate(primary_media_bundle),'application/json' )
 
 	#and all the cards in the guide
 	all_cards = get_list_or_404(Card, guide__slug=gslug)

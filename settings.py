@@ -155,13 +155,15 @@ INSTALLED_APPS = (
 	'thef',
 )                  
             
+TASTYPIE_FULL_DEBUG = True
+
 INVITE_MODE = True 
 
 ACCOUNT_ACTIVATION_DAYS = 5
 
 ACCOUNT_INVITATION_DAYS = 7
 
-INVITATIONS_PER_USER = 5   
+INVITATIONS_PER_USER = 0   
 
 LOGIN_REDIRECT_URL = '/accounts/'
 
@@ -203,10 +205,10 @@ LOG_FILE = "log.log"
 #     'debug_toolbar.panels.logger.LoggingPanel',
 # )  
 
-DEBUG_TOOLBAR_CONFIG = {
-    'INTERCEPT_REDIRECTS': False,
-    'HIDE_DJANGO_SQL': False,
-}
+# DEBUG_TOOLBAR_CONFIG = {
+#     'INTERCEPT_REDIRECTS': False,
+#     'HIDE_DJANGO_SQL': False,
+# }
 
 EMAIL_HOST = 'smtp.gmail.com'     
 
