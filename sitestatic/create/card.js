@@ -261,6 +261,10 @@ VM.inputTypeTemplate= function(element){
 			return 'buttonTemplate';
 		if (element.type() == 'timer')
 			return 'timerTemplate';
+		if (element.type() == 'map')
+			return 'mapTemplate';
+			
+		return 'errorNoTemplate';
 }
 
 
@@ -449,6 +453,7 @@ VM.addMap2Card= function(){
 	alert('addMap2Card');
 	inputToAdd= new Object();
 	var postURL_input;
+	inputToAdd.type= ko.observable('map');
 	inputToAdd.card= VM.resource_uri();
 	inputToAdd.map_title="Map";
 	jsonData = ko.toJSON(inputToAdd);
@@ -544,7 +549,7 @@ addInputHelper =function(){
 	inputToAdd.button_text= ko.observable( VM.newButtonText());
 	inputToAdd.default_action= newAction;  //maybe this should be observable?
 	jsonData = ko.toJSON(inputToAdd);
-alert(jsonData);
+	console.log(jsonData);
 	postURL_input=$.ajax({
 		url: input_api_url,
 		type: "POST",

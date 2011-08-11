@@ -19,19 +19,7 @@
 <h1>{{guide.title}}</h1>
 <h2>{{guide.description}}</h2>
 <br><br>
-{# {%for card in guide.card_set.all%} #}
-{# 		<div class="smallcardWrapper"> #}
-{# 		{{card.card_number}} #}
-{# 			<div class="smallcard"> #}
-{# 				{{card}} #}
-{# 				{%if card.primary_media%} <img src="{{card.primary_media.file.thumb_url}}" style="width:50px"> {%endif%} #}
-{# 			</div> #}
-{# 			<br><a href="{{card.get_absolute_url}}"> View</a> | <a href="{% url EditCard gslug=card.guide.slug, id=card.id %}"> Edit</a> #}
-{#  #}
-{# 		</div> #}
-{# {%endfor%} #}
 
-{# <div data-bind="text:title"></div> #}
 
 
 <div class="normal_card_container connectedSortable" data-bind="template: {name: 'smallCardTemplate',

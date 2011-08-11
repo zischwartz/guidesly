@@ -144,56 +144,57 @@
 	
 	
 	<h3 id="add_input"><a href="#">Add <span data-bind="text:input_type">Input</span>
-		<div class="iconbuttons">
-			<img src="{{STATIC_URL}}img/button-icon.png" data-input_type="button" class="uibutton" data-bind="event: {mouseover: changeInputType, mouseout: changeInputTypeBack}">
-			<img src="{{STATIC_URL}}img/timer-icon.png" data-input_type="timer" class="uibutton" data-bind="event: {mouseover: changeInputType, mouseout: changeInputTypeBack}">
-		</div>
-		</a></h3>
-		
-		<div id="add_map_group">
-			<form data-bind="submit:addMap2Card">
-			<input type="submit" value="Add Map">
-			</form>
-		</div>
-		
-		<div id="add_button_group" data-bind="visible: currently_adding_input_type()=='button' ">
-			<label for="adder_button_text">Button Label:</label>
-			<input type="text" name="adder_button_text" placeholder="Do Something" id="adder_button_text" data-bind="value:newButtonText, valueUpdate: 'afterkeydown'"><br>
-			<br>
-		</div> {# end #add_button_group #}
-		
-		<div id="add_timer_group" data-bind="visible: currently_adding_input_type()=='timer' ">	
-			<label for="adder_timer_text">Timer Label:</label>	<input id="adder_timer_text" type="text" data-bind="value:newButtonText, valueUpdate: 'afterkeydown'" placeholder="Do something sometime"><br>
-			<label for="timer_seconds">Seconds : </label><input id="timer_seconds" type="number" step="1" min="0" max="60" value="0" data-bind="value: newTimerSeconds, valueUpdate: 'afterkeydown' ">
-			<label for="timer_minutes">Minutes : </label><input id="timer_minutes" type="number" step="1" min="0" max="60" value="0" data-bind="value: newTimerMinutes, valueUpdate: 'afterkeydown' ">
-		</div> {# end timer group #}
-	
-		
-		<form data-bind="submit:addInput2card, visible: newButtonText">
-		<label>Pick a card for the <span data-bind="text:currently_adding_input_type"></span> to go to:</label>
-		{# CARDS_IN_GUIDE JS TEMPLATE  #}
-			<div class="all_card_holder" data-bind="template: {name: 'smallCardTemplate',
-			  						foreach: VM.all_cards,
-			 						afterRender: uePostProcessing,
-					 				beforeRemove: function(elem) {$(elem).slideUp() },
-									afterAdd: function(elem) {$(elem).hide().slideDown() } }"></div>
-		{# *************************** #}
-			<br><br>
-			<div class="smallcard goto_new_card_button">
-			<input type="radio" id="radiob-card-new" class="uibutton" data-bind="checked: newActionGotoCard" value="addcard" name="addbutton-pickcard"/><label for="radiob-card-new">An Entirely New Card</label> 
-			</div> <br>
-			<input type="text" data-bind="value:newCardTitle, visible: newActionGotoCard()=='addcard' " placeholder="New Card Title">
-		<div class="clearfix"></div>
-		<button class="uibutton" type="submit" data-input_type="button" data-bind="enable:  newActionGotoCard()&&newButtonText() , css:{'ui-button-disabled': !(newActionGotoCard()&&newButtonText()), 'ui-state-disabled': !(newActionGotoCard()&&newButtonText())}">Add This Button to Card</button>
-		</form>
-	<br><div class="F">F</div>
->>>>>>> ae64ceb87716838361858586fcd926bba9205bb8
-	</div> {# end #add_input_group #}
-	
-	{# <h3 id="card_options"><a href="#">Edit Card Options</a></h3> #}
-	
+			<div class="iconbuttons">
+				<img src="{{STATIC_URL}}img/button-icon.png" data-input_type="button" class="uibutton" data-bind="event: {mouseover: changeInputType, mouseout: changeInputTypeBack}">
+				<img src="{{STATIC_URL}}img/timer-icon.png" data-input_type="timer" class="uibutton" data-bind="event: {mouseover: changeInputType, mouseout: changeInputTypeBack}">
+			</div>
+			</a></h3>
+		<div id="add_input_group">
+			<h4 class="uibutton" data-input_type="button" data-bind="visible: !currently_adding_input_type()"><img src="{{STATIC_URL}}img/button-icon.png"> Add Button</h4>
+			<h4 class="uibutton" data-input_type="timer" data-bind="visible: !currently_adding_input_type()"><img src="{{STATIC_URL}}img/timer-icon.png"> Add Timer</h4>
+			{# <h4 class=" uibutton" data-input_type="text_question"><img src="{{STATIC_URL}}img/button-icon.png"> Add Text Question</h4> #}
+			<div id="add_button_group" data-bind="visible: currently_adding_input_type()=='button' ">
+				<label for="adder_button_text">Button Label:</label>
+				<input type="text" name="adder_button_text" placeholder="Do Something" id="adder_button_text" data-bind="value:newButtonText, valueUpdate: 'afterkeydown'"><br>
+				<br>
+			</div> {# end #add_button_group #}
 
-</div> {# end #card_element_toolbar #}
+			<div id="add_timer_group" data-bind="visible: currently_adding_input_type()=='timer' ">	
+				<label for="adder_timer_text">Timer Label:</label>	<input id="adder_timer_text" type="text" data-bind="value:newButtonText, valueUpdate: 'afterkeydown'" placeholder="Do something sometime"><br>
+				<label for="timer_seconds">Seconds : </label><input id="timer_seconds" type="number" step="1" min="0" max="60" value="0" data-bind="value: newTimerSeconds, valueUpdate: 'afterkeydown' ">
+				<label for="timer_minutes">Minutes : </label><input id="timer_minutes" type="number" step="1" min="0" max="60" value="0" data-bind="value: newTimerMinutes, valueUpdate: 'afterkeydown' ">
+			</div> {# end timer group #}
+
+			<div id="add_map_group">
+				<form data-bind="submit:addMap2Card">
+				<input type="submit" value="Add Map">
+				</form>
+			</div>
+
+			<form data-bind="submit:addInput2card, visible: newButtonText">
+			<label>Pick a card for the <span data-bind="text:currently_adding_input_type"></span> to go to:</label>
+			{# CARDS_IN_GUIDE JS TEMPLATE  #}
+				<div class="all_card_holder" data-bind="template: {name: 'smallCardTemplate',
+				  						foreach: VM.all_cards,
+				 						afterRender: uePostProcessing,
+						 				beforeRemove: function(elem) {$(elem).slideUp() },
+										afterAdd: function(elem) {$(elem).hide().slideDown() } }"></div>
+			{# *************************** #}
+				<br><br>
+				<div class="smallcard goto_new_card_button">
+				<input type="radio" id="radiob-card-new" class="uibutton" data-bind="checked: newActionGotoCard" value="addcard" name="addbutton-pickcard"/><label for="radiob-card-new">An Entirely New Card</label> 
+				</div> <br>
+				<input type="text" data-bind="value:newCardTitle, visible: newActionGotoCard()=='addcard' " placeholder="New Card Title">
+			<div class="clearfix"></div>
+			<button class="uibutton" type="submit" data-input_type="button" data-bind="enable:  newActionGotoCard()&&newButtonText() , css:{'ui-button-disabled': !(newActionGotoCard()&&newButtonText()), 'ui-state-disabled': !(newActionGotoCard()&&newButtonText())}">Add This Button to Card</button>
+			</form>
+		<br><div class="F">F</div>
+		</div> {# end #add_input_group #}
+
+		{# <h3 id="card_options"><a href="#">Edit Card Options</a></h3> #}
+
+
+	</div> {# end #card_element_toolbar #}
 
 				{#  #}
 				{# <input type="radio" id="checkb-is_primary-${id}" class="uibutton" data-bind="checked: VM.primary_media" value="${resource_uri}" name="primary_media" /> #}
@@ -406,6 +407,12 @@
 			{{/if}}</label>
 		</div>
 	</script>	
+	
+	<script id='errorNoTemplate' type='text/html'>
+		<div class="smallcard"> 
+		ERROR NO TEMPLATE. You gota have one....
+		</div>
+	</script>
 	
 {%endverbatim%}
 	
