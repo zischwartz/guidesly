@@ -242,7 +242,7 @@ class ConditionalAction (models.Model):
 	play_static = models.ForeignKey(MediaElement, blank=True, null=True)
 
 
-<<<<<<< HEAD
+
 class MapPointElement (models.Model):
 	point = models.CharField(max_length=500)
 	point_title = models.CharField(max_length=100)
@@ -253,10 +253,7 @@ class MapElement (models.Model):
 	card = models.ForeignKey(Card)
 	map_title = models.CharField(max_length=100)
 	points = models.ManyToManyField(MapPointElement)
-	
-=======
 
->>>>>>> ae64ceb87716838361858586fcd926bba9205bb8
 
 class InputElement (models.Model):
 	card = models.ForeignKey(Card)

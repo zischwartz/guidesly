@@ -48,7 +48,7 @@ table {
 }
 
 /*END RESET*/
-<<<<<<< HEAD
+
 
 html {min-height: 100%;}
 
@@ -206,8 +206,7 @@ h2 {font-size:1.5em; font-weight: bold; padding: 3px 0 5px 0;}
 
 
 
-=======
->>>>>>> ae64ceb87716838361858586fcd926bba9205bb8
+
 .hidden {display:none;}
 .clearfix:after { content: "."; display: block; height: 0; clear: both; visibility: hidden;  font-size: 0;}
 .clearfix { display: inline-block; }
