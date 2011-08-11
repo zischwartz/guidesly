@@ -34,6 +34,8 @@ IELEMENT_TYPE = (
 class Theme (models.Model):
 	name = models.CharField(max_length=512)
 	text = models.TextField(blank=True, null=True)
+	owner = models.ForeignKey(User)
+	is_public = models.BooleanField(default=True)
 	def __unicode__(self):
 		return self.name
 
@@ -49,8 +51,8 @@ class Guide (models.Model):
 	tags = TagField()
 	has_title_card = models.BooleanField(default=False)
 	cards = models.ManyToManyField('Card', blank=True, null=True, related_name="cards_in_guide")
-	card_order =jsonfield.JSONField(blank=True, null=True, default="[]") 
-	floating_list =jsonfield.JSONField(blank=True, null=True, default="[]") 
+	card_order =jsonfield.JSONField(default="[]", blank=True) 
+	floating_list =jsonfield.JSONField(default="[]", blank=True) 
 	theme = models.ForeignKey(Theme, blank=True, null=True)
 	owner = models.ForeignKey(User, blank=True, null=True)
 	
@@ -125,10 +127,12 @@ class Card (models.Model):
 		number_of_cards = len(self.guide.card_order)
 		self.owner= self.guide.owner
 		if not self.is_floating_card:
-			self.card_number = number_of_cards #+1
+			self.card_number = number_of_cards
 		super(Card, self).save(*args, **kwargs)
 		if not self.is_floating_card:
 			self.guide.card_order.append(self.id)
+		else:
+			self.guide.floating_list.append(self.id)
 		self.guide.cards.add(self)
 		self.guide.save()
 
@@ -152,8 +156,9 @@ class Card (models.Model):
 
 		if self.is_floating_card:
 			if self.id in self.guide.card_order:
-				logger.info("switched from ordered to floating- saved")
+				# logger.info("switched from ordered to floating- saved")
 				self.guide.card_order.remove(self.id)
+				self.guide.floating_list.append(self.id)
 				self.card_number = None
 				self.guide.save()
 		else: 
@@ -184,10 +189,10 @@ class Card (models.Model):
 	@models.permalink
 	def get_absolute_url(self):
 		if not self.guide.text_slugs_for_cards:
-			if card.is_floating_card:
-				return ('CardDetailViewById', (), {'gslug': self.guide.slug, 'id':self.id })
+			if self.is_floating_card:
+				return ('CardDetailViewById', (), {'gslug': self.guide.slug, 'id':self.id }) 
 			else:
-				return ('CardDetailViewByNum', (), {'gslug': self.guide.slug, 'id':self.card_number})
+				return ('CardDetailViewByNum', (), {'gslug': self.guide.slug, 'cnumber':self.card_number}) #small bug here, if card goes from ordered to floating 
 		else:
 			if self.slug:
 				return ('CardDetailView', (), {'gslug': self.guide.slug, 'slug':self.slug })
@@ -256,8 +261,8 @@ class InputElement (models.Model):
 	seconds = models.IntegerField(default=0)
 	minutes = models.IntegerField(default=0)
 	execute_action_when_done = models.BooleanField(default=True)
-	# ding_when_done = models.BooleanField(default=False)
-	# auto_start = models.BooleanField(default=True) #or start on click
+	ding_when_done = models.BooleanField(default=False)
+	auto_start = models.BooleanField(default=True) #or start on click
 	
 	
 	def el_template(self):

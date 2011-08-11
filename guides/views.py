@@ -21,6 +21,12 @@ from django.contrib.auth.decorators import login_required
 
 # Viewing Guides
 # -------------------------
+
+def Landing (request):
+	return render_to_response("enjoy/landing.html", locals(), context_instance=RequestContext(request))
+	
+
+@login_required
 def GuideListView (request):
 	guide_list = Guide.objects.all()
 	return render_to_response("enjoy/home.html", locals(), context_instance=RequestContext(request))
@@ -31,6 +37,7 @@ def GuideDetailView (request, slug):
 	card_list= guide.card_set.all()
 	return render_to_response("enjoy/guide_detail.html", locals(), context_instance=RequestContext(request))
 
+@login_required
 def CardDetailView (request, gslug, id=None, slug=None, cnumber=None):
 	if slug:
 		card = get_object_or_404(Card, guide__slug=gslug, slug=slug)
@@ -54,7 +61,7 @@ def CardDetailView (request, gslug, id=None, slug=None, cnumber=None):
 		next_card = card.guide.get_next_card(card)
 	return render_to_response("enjoy/card.html", locals(), context_instance=RequestContext(request))
 
-
+@login_required
 def CardDetailViewByIdRedirect (request, id):
 	card = get_object_or_404(Card, id=id)
 
@@ -69,17 +76,23 @@ def CardDetailViewByIdRedirect (request, id):
 
 # Creating Guides
 # -------------------------
+@login_required
 def CreateGuide (request):
 	if request.method == 'POST':
+		logger.info('posted')
 		form = GuideForm(request.POST)
 		if form.is_valid():
+			logger.info('is_valid')
 			g =form.save()
 			return HttpResponseRedirect(reverse('BuildCard', kwargs={'gslug':g.slug}))
+		else:
+			messages.add_message(request, messages.INFO, form.errors)
+			return render_to_response("create/create_guide.html", locals(), context_instance=RequestContext(request) )
 	else:
 		form = GuideForm()
 	return render_to_response("create/create_guide.html", locals(), context_instance=RequestContext(request) )
 
-
+@login_required
 def EditGuide (request, gslug):
 	guide = get_object_or_404(Guide, slug=gslug)
 	if request.method == 'POST':
@@ -105,7 +118,7 @@ def BuildFloatingCard (request, gslug):
 	s.firstsave()
 	return HttpResponseRedirect(reverse('EditCard', kwargs={'gslug':gslug, 'id': s.id}))
 
-
+@login_required
 def EditCard (request, gslug, id):
 	# logger.info("---------------")
 	# send the card's data as json

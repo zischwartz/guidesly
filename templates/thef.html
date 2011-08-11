@@ -1,0 +1,50 @@
+<style>
+#thef-dialog
+{
+	text-align: center;
+}
+
+#thef-dialog textarea
+{
+	width: 80%;
+	height: 5em;
+}
+
+.F
+{
+	padding: 0px 5px 0px 5px;
+	border: 1px solid lightgray;
+	float: right;
+	clear: both;
+/*	right: 1px;*/
+/*	bottom: 1px;*/
+
+	font-size: 0.8em;
+	background-color: rgba(255, 255, 255, 0.6);
+}
+.F:hover
+{
+	color: #97c2da;
+	border: 1px solid blue;
+	background-color: #444;
+	cursor: pointer;
+}
+
+
+</style>
+
+<div id="thef-dialog" title="What The F?">
+	<h2>Please, Give Us Feedback</h2><br>
+	<input type="radio" id="thefLike" class="uibutton" value="like" name="feeling" data-bind="checked: Fvm.choice"/><label for="thefLike">I like this feature</label>
+	<br><textarea type="text" data-bind="visible: Fvm.choice()=='like', value: Fvm.like_reason"></textarea> <br>
+	-or-
+	<br>
+	<input type="radio" id="thefDislike" class="uibutton" value="dislike" data-bind="checked: Fvm.choice" name="feeling" /><label for="thefDislike">I don't like this feature</label>
+	<br><textarea type="text" data-bind="visible: Fvm.choice()=='dislike', value: Fvm.dislike_reason"></textarea> <br>
+
+	<br><br><br>
+	<input type="checkbox" id="thefBug" class="uibutton" data-bind="checked: Fvm.was_buggy"/><label for="thefBug">Report bug!</label>
+	<br><textarea type="text" value="It broke when" data-bind="visible: Fvm.was_buggy()"></textarea> <br>
+	<br><i>Thanks for your help!</i>
+</div>	{# end thef #}
+

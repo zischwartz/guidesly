@@ -5,14 +5,13 @@
 
 	<script src="{{STATIC_URL}}create/guide.js"></script>
 	<script type="text/javascript">
-		{# var all_cards_json = '{{all_cards_json|safe|escapejs}}'; #}
 		var guide_json = '{{guide_json|safe|escapejs}}'; 
 	</script>
 
 {%endblock%}
 
 {%block header%}
-	<div class="headerTitle">Edit Guide</div>
+	<div class="headerTitle"> Edit Guide</div>
 {%endblock%}
 
 {% block content %} 
@@ -76,4 +75,5 @@
 	{# <table>	{{form.as_table}}</table> #}
 	{# <input type="submit" value="Edit guide" /> #}
 	{# </form> #}
+	
 {%endblock %}

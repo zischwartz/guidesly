@@ -32,7 +32,9 @@ v1_api.register(PhotoResource())
 urlpatterns = patterns('',
     # Examples:
     # (r'^$', ListView.as_view(model=Guide)),
-    (r'^$', GuideListView),
+
+    (r'^$', Landing),
+    (r'^home/$', GuideListView),
     url(r'^g/(?P<slug>[^/]+)/?$', GuideDetailView, name='GuideDetailView'),
     url(r'^g/(?P<gslug>[^/]+)/(?P<slug>[^/]+)/?$', CardDetailView, name='CardDetailView'),
     url(r'^n/(?P<gslug>[^/]+)/(?P<cnumber>[^/]+)/?$', CardDetailView, name='CardDetailViewByNum'),

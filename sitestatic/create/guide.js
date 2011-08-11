@@ -82,7 +82,7 @@ ko.bindingHandlers.sortableItem = {
 
 var deleteCard= function(event)
 {
-	console.log(event.target.parents(".smallcardWrapper"));
+	// console.log(event.target.parents(".smallcardWrapper"));
 	$.ajax({
 		url: this.resource_uri(),
 		type: "DELETE",

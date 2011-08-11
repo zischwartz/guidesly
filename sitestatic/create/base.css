@@ -96,6 +96,7 @@ h2 {font-size:1.5em; font-weight: bold; padding: 3px 0 5px 0;}
 	min-width: 45em;
 	height: 100%;
 	margin: 0 auto;
+	background-color: white;
 }
 
 
@@ -111,25 +112,35 @@ h2 {font-size:1.5em; font-weight: bold; padding: 3px 0 5px 0;}
 	
 }
 
-#header span.inner, #footer span.inner
+#header
 {
-/*	padding: 0 5%;*/
+	height: 2em;
 }
 
-#header a .ui-button-text{ font-size: .6em !important;}
+/*#header a .ui-button-text{ font-size: .6em !important;}*/
 
-#header span.right
+#header .right
 {
 	float: right;
 }
 
-/*Replace this with breadchrumbs that link...maybe?*/
-.headerTitle
+/*#header .right .headerTitle
 {
-	margin: -1em 2em 0 0;
-	padding: .8em;
-	padding-top: 1em;
-	background-image: -webkit-gradient(
+	margin-top: -3em;
+}*/
+
+
+.headerTitle
+{	
+	
+	text-decoration: none !important;
+/*	height: 20px;*/
+	margin: -1em 1.5em 0.3em 0;
+	padding: .5em .8em .3em .8em;
+	-webkit-transition: all 0.2s ease-in-out;
+	transition: all 0.2s ease-in-out;
+	
+/*	background-image: -webkit-gradient(
 	    linear,
 	    left bottom,
 	    left top,
@@ -140,31 +151,61 @@ h2 {font-size:1.5em; font-weight: bold; padding: 3px 0 5px 0;}
 	    center bottom,
 	    rgb(232,232,232) 37%,
 	    rgb(255,255,255) 69%
-	);
+	);*/
 	color: black;
 
 	float: left;
 	text-align: center;
 	box-shadow: 1px 1px 5px #3f3f3f;
 	letter-spacing: .2em;
-
+	font-size: .8em;
 }
 
-#content.bigger
+a.headerTitle
 {
-	width: 57%;
+	background-image: -webkit-gradient(
+	    linear,
+	    left bottom,
+	    left top,
+	    color-stop(0.37, rgb(212,212,212)),
+	    color-stop(0.69, rgb(245,245,245))
+	);
+	background-image: -moz-linear-gradient(
+	    center bottom,
+	    rgb(212,212,212) 37%,
+	    rgb(245,245,245) 69%
+	);
 }
 
-#content.smaller
+a.headerTitle:hover
 {
-	width:44%;
+	padding-top: .9em;
+	margin-bottom: 0em;
+
+	background-image: -webkit-gradient(
+	    linear,
+	    left bottom,
+	    left top,
+	    color-stop(0.01, rgb(166,166,166)),
+	    color-stop(0.51, rgb(230,230,230))
+	);
+	background-image: -moz-linear-gradient(
+	    center bottom,
+	    rgb(166,166,166) 1%,
+	    rgb(230,230,230) 51%
+	);
+
 }
+
+#content.bigger{width: 57%;}
+
+#content.smaller{width:44%;}
 
 #content {
 	float:left;
 /*	width:57%;*/
 	padding:1em 5% 2em 5%;
-/*	background-color: #ccc;*/
+
 	background-color: #f9f9f9;
 background-image: -webkit-gradient(
     linear,

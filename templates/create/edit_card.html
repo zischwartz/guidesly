@@ -23,14 +23,14 @@
 {%endblock%}
 
 {%block header%}
+<a href="{% url EditGuide gslug=s.guide.slug %}" class="headerTitle"> Overview of <i>{{s.guide.title}}</i> </a>
 	<div class="headerTitle">
 		{%if s.brand_new%}Add Card
 		{%else%}Edit Card
 		{%endif%}
 	</div>
-	<a href="{% url CardDetailViewByIdRedirect id=s.id %}" class="uibutton"> Preview <i data-bind="text: !title() ? '{{s}}': title"></i></a>
-	{# <a href="{% url CardDetailViewById id=s.id %}" class="uibutton"> Preview <i data-bind="text: !title() ? 'Untitled Card {{s.card_number}}': title"></i></a> #}
-	<a href="{% url EditGuide gslug=s.guide.slug %}" class="uibutton"> Overview of <i>{{s.guide.title}}</i> </a>
+	{# <a href="{% url CardDetailViewByIdRedirect id=s.id %}" class="uibutton"> Preview <i data-bind="text: !title() ? '{{s}}': title"></i></a> #}
+	{# <a href="{% url EditGuide gslug=s.guide.slug %}" class="uibutton"> Overview of <i>{{s.guide.title}}</i> </a> #}
 {%endblock%}
 
 {%load verbatim_templatetag%} 
@@ -92,9 +92,12 @@
 
 	{# <input class="uibutton" type="submit" value="Save Card" name ="card_sub_save"/> #}
 	<a  href="{% url BuildCard gslug=s.guide.slug %}"class="uibutton"/>Save &amp; Add New Card</a>
+	
+	<a href="{% url CardDetailViewByIdRedirect id=s.id %}" class="uibutton"> Preview <i data-bind="text: !title() ? '{{s}}': title"></i></a>
+	
 	<div id="edit_card_options_group"> 
-		<input type="checkbox" data-bind="checked: is_floating_card" id="is_floating_card"> <label for="is_floating_card"> Floating Card</label>
-		<br>A "floating card" is outside the normal flow of a guide.
+		<input type="checkbox" data-bind="checked: is_floating_card" id="is_floating_card"> <label for="is_floating_card"> Side Card</label>
+		<br>A "side card" is outside the normal flow of a guide.
 		</div>
 </form> {# end card form #}
 

@@ -14,14 +14,11 @@
 		<script type="text/javascript" src="{{STATIC_URL}}js-libs/knockout-1.2.1.debug.js"></script>
 		<script type="text/javascript" src="{{STATIC_URL}}js-libs/knockout.mapping.js"></script>
 		
+		<script type="text/javascript" src="{{STATIC_URL}}create/thef.js"></script>
+		
 		<script type="text/javascript" src="{{STATIC_URL}}js-libs/jquery-css-transform.js"></script>
 		<script type="text/javascript" src="{{STATIC_URL}}js-libs/rotate3Di.js"></script>
-		<script type="text/javascript" src="{{STATIC_URL}}js-libs/showdown.js"></script>
-
-		<script type="text/javascript" src="{{STATIC_URL}}create/thef.js"></script>
-
-
-		
+		<script type="text/javascript" src="{{STATIC_URL}}js-libs/showdown.js"></script>	
 		<link rel="stylesheet" media="all" href="{{STATIC_URL}}create/base.css"/>
 
 		<script type="text/javascript">
@@ -41,12 +38,18 @@
 	
 	
 <div id="container">
-	<header id="header"><span class="inner">{%block header%}{%endblock%} <span class="right">Hey {{user}} ! <a href="/accounts/logout">Logout</a></span></span></header>
+	<header id="header">
+		
+		
+		<a href="/home" class="headerTitle">⌂ Home</a>
+		{%block header%}{%endblock%} 
+		
+		<div class="right"> <div class="headerTitle">Hey {{user}} !</div><a href="/accounts/logout" class="headerTitle">Logout</a></div></header>
 
 	<div id="content" class="bigger">
 		{% if messages %}<div id="messages">{%for message in messages%}<p{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>{% endfor %}</div>{%endif%}
 
-		<a href="/accounts/login">LOG IN</a>
+
 
 
 		{% block content %}Hi. If you're seeing this, something messed up. This is the base template dude...{% endblock %}
@@ -63,55 +66,7 @@
 	
 </div>	{# end container #}
 
-<style>
-#thef-dialog
-{
-	text-align: center;
-}
-
-#thef-dialog textarea
-{
-	width: 80%;
-	height: 5em;
-}
-
-.F
-{
-	padding: 0px 5px 0px 5px;
-	border: 1px solid lightgray;
-	float: right;
-	clear: both;
-/*	right: 1px;*/
-/*	bottom: 1px;*/
-
-	font-size: 0.8em;
-	background-color: rgba(255, 255, 255, 0.6);
-}
-.F:hover
-{
-	color: #97c2da;
-	border: 1px solid blue;
-	background-color: #444;
-	cursor: pointer;
-}
-
-
-</style>
-
-<div id="thef-dialog" title="What The F?">
-	<h2>Please, Give Us Feedback</h2><br>
-	<input type="radio" id="thefLike" class="uibutton" value="like" name="feeling" data-bind="checked: Fvm.choice"/><label for="thefLike">I like this feature</label>
-	<br><textarea type="text" data-bind="visible: Fvm.choice()=='like', value: Fvm.like_reason"></textarea> <br>
-	-or-
-	<br>
-	<input type="radio" id="thefDislike" class="uibutton" value="dislike" data-bind="checked: Fvm.choice" name="feeling" /><label for="thefDislike">I don't like this feature</label>
-	<br><textarea type="text" data-bind="visible: Fvm.choice()=='dislike', value: Fvm.dislike_reason"></textarea> <br>
-
-	<br><br><br>
-	<input type="checkbox" id="thefBug" class="uibutton" data-bind="checked: Fvm.was_buggy"/><label for="thefBug">Report bug!</label>
-	<br><textarea type="text" value="It broke when" data-bind="visible: Fvm.was_buggy()"></textarea> <br>
-	<br><i>Thanks for your help!</i>
-</div>	{# end thef #}
+{%include "thef.html"%}
 
 </body>
 </html>

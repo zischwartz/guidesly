@@ -1,3 +1,29 @@
+/*CREATING a guide*/
+table#createGuide
+{
+	font-size: 1.5em;
+	letter-spacing: 1px;
+
+}
+table#createGuide textarea {height: 3em;}
+table#createGuide, table#createGuide textarea, table#createGuide input
+{
+	font-size: 1.1em;
+}
+
+table#createGuide td 
+{
+	vertical-align: top;
+	padding-bottom: 1em;	
+}
+
+table#createGuide td.labels
+{
+	width:30%;
+}
+
+
+/*EDITINGcentric*/
 .smallcard
 {
 	display: block;

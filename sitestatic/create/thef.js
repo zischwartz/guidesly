@@ -64,6 +64,6 @@ Fvm ={
 }
 
 
-ko.applyBindings(Fvm, document.getElementById('thef-dialog'))
+ko.applyBindings(Fvm, document.getElementById('thef-dialog'));
 
 }); //end docready

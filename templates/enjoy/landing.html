@@ -1,0 +1,318 @@
+
+<!doctype html>
+<html lang="en">
+
+<!-- Yeah, this is quick and dirty. Give me a break, this is temporary. -z   -->
+
+	<head>
+		<title>Guides.ly</title>
+		<script src="{{STATIC_URL}}js-libs/jquery-1.6.1.min.js"></script>
+		<link rel="shortcut icon" href="assets/favicon.ico" type="image/gif"> 
+
+	<script type="text/javascript" charset="utf-8">
+	$(document).ready(function(){
+
+
+$(".showform").click(function(){
+		$("#googform").toggle('fast');});
+	});	
+	</script>
+
+		<style type="text/css" media="screen">
+	
+	
+		html {min-height: 100%;}
+		body{
+ font-family: 'helvetica neue', arial, serif;
+font-size:1.2em;
+	letter-spacing: .1em;
+			min-height: 100%;
+/*			overflow: hidden;*/
+
+background-image: -webkit-gradient(
+    linear,
+    left bottom,
+    left top,
+    color-stop(0.28, rgb(241,245,209)),
+    color-stop(0.64, rgb(255,255,251)),
+    color-stop(0.82, rgb(255,255,255)),
+    color-stop(1, rgb(255,242,212))
+);
+background-image: -moz-linear-gradient(
+    center bottom,
+    rgb(241,245,209) 28%,
+    rgb(255,255,251) 64%,
+    rgb(255,255,255) 82%,
+    rgb(255,242,212) 100%
+);
+
+
+
+
+
+
+/*background-color: white;*/
+			
+		}
+		#wrap
+		{
+			margin-left: auto;
+			margin-right: auto;
+			width: 620px;
+			padding: 10px;
+			background-color: white;
+			margin-top: 50px;
+/*			-moz-box-shadow: 0 0 5px #888;
+			-webkit-box-shadow: 0 0 5px#888;
+			box-shadow: 0 0 5px #888;*/
+			border-radius: 3px;
+			text-align: center;
+
+		}	
+		
+		img#dog 
+		{
+/*		 margin-left: auto;	*/
+/*		 margin-right: auto;*/
+/*		display: absolute;	*/
+		float: right;
+		margin-right: 4px;
+/*		border: 1px solid red;*/
+
+
+		}
+		
+		.hidden
+		{
+			display: none;
+		}
+		
+		h1, h2
+		{
+			text-align: center;
+			margin: 0px auto 10px auto;
+/* font-family: 'helvetica neue', arial, serif;*/
+			display: block;
+			font-weight: normal;
+/*			width: 400px;*/			
+/*			float: left;*/
+
+		}
+		h2 {font-size: 1.3em;}
+		h1
+		{
+			font-size: 4.2em;
+			font-weight: 500;
+			font-weight: bold;
+		}
+		
+		#headwrap
+		{
+			width: 440px;
+			margin-left: 20px;
+			margin-top: 55px;
+			position: absolute;
+		}
+		
+		a
+		{
+			color: #d67c07;
+			font-weight: bold;
+			text-shadow: 0px 0px 1px gray;
+		}
+		a:hover
+		{
+			color: orange;
+			text-shadow: 0px 0px 4px yellow;
+
+		}
+		
+		a.showform
+		{
+			padding:10px;
+			display: block;
+			text-shadow:none;
+			color: black;
+			border-radius: 3px;
+			width: 400px;
+/*			font-size: 1.2em;*/
+			letter-spacing: 1px;
+			text-decoration: none;
+			margin-left: auto;
+			margin-right: auto;
+			font-weight: normal;
+background-image: -webkit-gradient(
+    linear,
+    left bottom,
+    left top,
+    color-stop(0.11, rgb(191,136,27)),
+    color-stop(0.73, rgb(242,212,94)),
+    color-stop(1, rgb(255,245,130))
+);
+background-image: -moz-linear-gradient(
+    center bottom,
+    rgb(191,136,27) 11%,
+    rgb(242,212,94) 73%,
+    rgb(255,245,130) 100%
+);
+box-shadow: 0px 0px 4px black;
+
+/*text-shadow: 0px 0px 4px black;*/
+
+		}
+		a.showform:hover
+		{
+			background-image: -webkit-gradient(
+    linear,
+    left bottom,
+    left top,
+    color-stop(0.11, rgb(252,142,25)),
+    color-stop(0.73, rgb(227,245,66)),
+    color-stop(0.92, rgb(238,255,125))
+);
+background-image: -moz-linear-gradient(
+    center bottom,
+    rgb(252,142,25) 11%,
+    rgb(227,245,66) 73%,
+    rgb(238,255,125) 92%
+);
+
+		}
+
+p
+{
+	text-align: center;
+}
+
+
+.box
+{
+	position: relative;
+	-moz-box-shadow: #7f7f7f 0px 1px 3px;
+	-webkit-box-shadow: #7f7f7f 0px 1px 3px;
+	box-shadow: #7f7f7f 0px 1px 3px;
+
+
+}
+
+.box:before, .box:after
+{
+	position: absolute;
+	width: 40%;
+	height: 10px;
+	content: ' ';
+	left: 12px;
+	bottom: 12px;
+	background: transparent;
+	-webkit-transform: skew(-5deg) rotate(-5deg);
+	-moz-transform: skew(-5deg) rotate(-5deg);
+	-ms-transform: skew(-5deg) rotate(-5deg);
+	-o-transform: skew(-5deg) rotate(-5deg);
+	transform: skew(-5deg) rotate(-5deg);
+	-webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, 0.5);
+	-moz-box-shadow: 0 6px 12px rgba(0, 0, 0, 0.5);
+	box-shadow: 0 6px 12px rgba(0, 0, 0, 0.5);
+	z-index: -1;
+} 
+
+.box:after
+{
+	left: auto;
+	right: 12px;
+	-webkit-transform: skew(5deg) rotate(5deg);
+	-moz-transform: skew(5deg) rotate(5deg);
+	-ms-transform: skew(5deg) rotate(5deg);
+	-o-transform: skew(5deg) rotate(5deg);
+	transform: skew(5deg) rotate(5deg);
+}
+
+#login_top
+{
+	box-shadow: 0px 0px 4px black;
+	text-decoration: none;
+	top: 0px;
+	right: 25%;
+	position: absolute;
+	display: block;
+
+	width: 100px;
+	text-align: center;
+	padding: 3px;
+	color: black;
+	
+	
+	background-image: -webkit-gradient(
+	    linear,
+	    left bottom,
+	    left top,
+	    color-stop(0.11, rgb(191,136,27)),
+	    color-stop(0.73, rgb(242,212,94)),
+	    color-stop(1, rgb(255,245,130))
+	);
+	background-image: -moz-linear-gradient(
+	    center bottom,
+	    rgb(191,136,27) 11%,
+	    rgb(242,212,94) 73%,
+	    rgb(255,245,130) 100%
+	);
+}
+
+#login_top:hover
+{
+	cursor: pointer;
+				background-image: -webkit-gradient(
+	    linear,
+	    left bottom,
+	    left top,
+	    color-stop(0.11, rgb(252,142,25)),
+	    color-stop(0.73, rgb(227,245,66)),
+	    color-stop(0.92, rgb(238,255,125))
+	);
+	background-image: -moz-linear-gradient(
+	    center bottom,
+	    rgb(252,142,25) 11%,
+	    rgb(227,245,66) 73%,
+	    rgb(238,255,125) 92%
+	);
+}
+		</style>
+		
+		<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-24018749-1']);
+  _gaq.push(['_setDomainName', 'none']);
+  _gaq.push(['_setAllowLinker', true]);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+<meta name="google-site-verification" content="9nrjWKBt2WEmGrbIoyAireIY9aD4WwtNUnT03CGJpkY" />
+
+	</head>
+
+<body>
+	<a id="login_top" href="/accounts/login/"> Log in</a>
+	<div id="wrap" class="box">
+			<img src="{{STATIC_URL}}img/thedog.png" id="dog">
+			<div id="headwrap">
+			<h1>Guides.ly</h1>
+			<h2>Create guides <br> with your knowledge</h2>
+			</div>
+<div style="clear:both"></div>
+	Guides.ly <strike>hasn't launched yet</strike> is in private beta.  <br><br>We'll be with you shortly.
+<br><br>
+	<a href="#" class="showform"><b>Interested?</b><br> Click here to sign up for an invite.</a><br>
+	
+
+	<iframe id="googform" class="hidden" src="https://spreadsheets.google.com/spreadsheet/embeddedform?formkey=dFRFZnVxbV8xZUhkZk1fZTFEdVhVTWc6MQ" width="500"  height="400" frameborder="0" marginheight="0" marginwidth="0">Loading...</iframe>
+	</div> 	 
+	<br><p>Follow us on <a href="http://twitter.com/guidesly">twitter</a>. Or give us a shout over <a href="mailto:guidesly@gmail.com">email</a>.</p>
+<br><br>
+</body>
+</html>
