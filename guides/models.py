@@ -3,7 +3,7 @@ import datetime
 import tagging
 from tagging.fields import TagField
 from django.contrib.auth.models import User
-from model_utils.managers import InheritanceManager
+# from model_utils.managers import InheritanceManager
 from django.template.defaultfilters import slugify
 import jsonfield 
 
