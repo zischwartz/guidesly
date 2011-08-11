@@ -61,7 +61,7 @@
 				</video>				
 		</div>
 		</div>
-<<<<<<< HEAD
+
 	    {%endif%}		
 	
 	    {%if primary_media.type == "audio"%}
@@ -72,8 +72,7 @@
 	    		autobuffer>
 	    		</audio>		  
 			</div>
-=======
->>>>>>> ae64ceb87716838361858586fcd926bba9205bb8
+
 	    {%endif%}
 	
 	
@@ -130,7 +129,6 @@
 
 
 			
-<<<<<<< HEAD
 			</div> {# end .card #}
 			
 </div> {# end #card_wrap #}
@@ -148,41 +146,6 @@
   </div>
 </div>
 {%endif%}
-=======
-	</div> {# end .card #}
-</div> {# end #card_wrap #}
 
-			
-			<div class="muteall" style="float: left">
->>>>>>> ae64ceb87716838361858586fcd926bba9205bb8
-
-			</div>
-			<div id="mutebuttonwrap" class="mute" style="display:inline">
-				<form name="mute_checkbox">
-				<label for="mutebutton">Mute All</label><input id="mutebutton" type="checkbox" name="radio_mute">
-				</form>
-			</div>
-			
-			<script>
-			$('#mutebuttonwrap').click(function() {
-			 
-			if(($('video').prop('muted') == false) || ($('audio').prop('muted') == false))
-			  {
-				console.log('attempting mute');
-				$('video').prop('muted', true);
-				$('audio').prop('muted', true);
-			  }
-				
-			else{
-				console.log('attempting unmute');
-				$('video').prop('muted', false);
-				$('audio').prop('muted', false);			
-				}
-			});
-
-</script>
-
-
-</body>
 
 {% endblock %}
