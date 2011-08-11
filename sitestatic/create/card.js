@@ -1,6 +1,7 @@
 var card_api_url='/api/v1/card/';
 var staticel_api_url='/api/v1/mediaelement/';
 var input_api_url='/api/v1/inputelement/';
+var map_api_url='/api/v1/mapelement/';
 var action_api_url='/api/v1/action/';
 var file_api_url='/api/v1/userfile/';
 var guide_api_url='/api/v1/guide/';
@@ -444,6 +445,25 @@ VM.addInput2card= function(){
 }// end addInput2card function
 
 
+VM.addMap2Card= function(){
+	alert('addMap2Card');
+	inputToAdd= new Object();
+	var postURL_input;
+	inputToAdd.card= VM.resource_uri();
+	inputToAdd.map_title="Map";
+	jsonData = ko.toJSON(inputToAdd);
+	alert(jsonData);
+	postURL_input=$.ajax({
+		url: map_api_url,
+		type: "POST",
+		data: jsonData,
+		success:function(data) {
+			
+			},
+		contentType: "application/json",
+		});
+} 
+
 // **************************************
 // ******      File Upload Plugin    ****
 // **************************************
@@ -524,7 +544,7 @@ addInputHelper =function(){
 	inputToAdd.button_text= ko.observable( VM.newButtonText());
 	inputToAdd.default_action= newAction;  //maybe this should be observable?
 	jsonData = ko.toJSON(inputToAdd);
-
+alert(jsonData);
 	postURL_input=$.ajax({
 		url: input_api_url,
 		type: "POST",

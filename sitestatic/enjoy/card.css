@@ -48,6 +48,165 @@ table {
 }
 
 /*END RESET*/
+
+
+html {min-height: 100%;}
+
+body
+{
+
+background-image: -webkit-gradient(
+    linear,
+    left bottom,
+    left top,
+    color-stop(0, rgb(20,20,20)),
+    color-stop(0.59, rgb(36,36,36)),
+    color-stop(1, rgb(56,56,56))
+);
+background-image: -moz-linear-gradient(
+    center bottom,
+    rgb(20,20,20) 0%,
+    rgb(36,36,36) 59%,
+    rgb(56,56,56) 100%
+);
+	font-family: 'Helvetica Neue', Arial, sans-serif;
+	font-weight: 300;
+
+}
+
+
+/* Bottom Nav */
+
+#footer
+{
+position:fixed;
+bottom:0px;
+width:800px;
+
+}
+#bottom_nav
+{
+text-align:center;
+
+}
+
+#tag
+{
+	-moz-border-radius: 90px 90px 0px 0px;
+	border-radius: 90px 90px 0px 0px;
+	font-size:.8em;
+	width:200px;
+	font-weight:bold;
+	color:#FFFFFF;
+	background-color:#AEAEAE;
+	text-align:center;
+	padding:4px;
+	text-decoration:none;
+	text-transform:uppercase;
+}
+
+#tag:hover
+{
+background-color:#6D7B8D;
+}
+
+
+.button
+{
+	float:left;
+	display:block;
+	width:120px;
+	height: 20px;
+	font-weight:bold;
+	color:#FFFFFF;
+	background-color:#736F6E;
+	text-align:center;
+	padding:4px;
+	text-decoration:none;
+	text-transform:uppercase;
+}
+
+#mute
+{
+	-moz-border-radius: 0px 90px 0px 0px;
+	border-radius: 0px 90px 0px 0px;
+}
+
+.button_muted
+{
+	display:block;
+	width:120px;
+
+	font-weight:bold;
+	color:#6D7B8D;
+	background-color:#736F6E;
+	text-align:center;
+	padding:4px;
+	text-decoration:none;
+	text-transform:uppercase;
+}
+
+.button:link,.button:visited
+{
+	display:block;
+	width:120px;
+	font-weight:bold;
+	color:#FFFFFF;
+	background-color:#736F6E;
+	text-align:center;
+	padding:4px;
+	text-decoration:none;
+	text-transform:uppercase;
+}
+
+.button:hover
+{
+	background-color:#6D7B8D;
+}
+.button:active
+{
+	background-color:#646D7E;
+}
+/* End Bottom Nav */
+
+
+
+#wrap
+{
+/*	width: 800px;*/
+	width: 95%;
+	margin-left: auto;
+	margin-right: auto;
+	margin-top: 10px;
+}
+
+
+
+a
+{
+	text-decoration: none;
+	color: blue;
+}
+
+a:hover
+{
+	text-decoration: underline;
+}
+
+
+
+
+/*inside of the wrap*/
+
+
+h1 {font-size:2em; font-weight: bold; padding: 4px 0 6px 0;}
+h2 {font-size:1.5em; font-weight: bold; padding: 3px 0 5px 0;}
+
+
+
+
+
+
 .hidden {display:none;}
 .clearfix:after { content: "."; display: block; height: 0; clear: both; visibility: hidden;  font-size: 0;}
 .clearfix { display: inline-block; }

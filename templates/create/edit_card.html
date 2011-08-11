@@ -149,10 +149,13 @@
 			<img src="{{STATIC_URL}}img/timer-icon.png" data-input_type="timer" class="uibutton" data-bind="event: {mouseover: changeInputType, mouseout: changeInputTypeBack}">
 		</div>
 		</a></h3>
-	<div id="add_input_group">
-		<h4 class="uibutton" data-input_type="button" data-bind="visible: !currently_adding_input_type()"><img src="{{STATIC_URL}}img/button-icon.png"> Add Button</h4>
-		<h4 class="uibutton" data-input_type="timer" data-bind="visible: !currently_adding_input_type()"><img src="{{STATIC_URL}}img/timer-icon.png"> Add Timer</h4>
-		{# <h4 class=" uibutton" data-input_type="text_question"><img src="{{STATIC_URL}}img/button-icon.png"> Add Text Question</h4> #}
+		
+		<div id="add_map_group">
+			<form data-bind="submit:addMap2Card">
+			<input type="submit" value="Add Map">
+			</form>
+		</div>
+		
 		<div id="add_button_group" data-bind="visible: currently_adding_input_type()=='button' ">
 			<label for="adder_button_text">Button Label:</label>
 			<input type="text" name="adder_button_text" placeholder="Do Something" id="adder_button_text" data-bind="value:newButtonText, valueUpdate: 'afterkeydown'"><br>
@@ -184,6 +187,7 @@
 		<button class="uibutton" type="submit" data-input_type="button" data-bind="enable:  newActionGotoCard()&&newButtonText() , css:{'ui-button-disabled': !(newActionGotoCard()&&newButtonText()), 'ui-state-disabled': !(newActionGotoCard()&&newButtonText())}">Add This Button to Card</button>
 		</form>
 	<br><div class="F">F</div>
+>>>>>>> ae64ceb87716838361858586fcd926bba9205bb8
 	</div> {# end #add_input_group #}
 	
 	{# <h3 id="card_options"><a href="#">Edit Card Options</a></h3> #}
@@ -222,6 +226,8 @@
 			
 		</div> 
 	</script>	
+
+
 
 
 	<script id='imageTemplate' type='text/html'>
@@ -265,7 +271,6 @@
 				<a class="uibutton delete" data-bind="click: VM.deleteFromCard">Remove</a>
 
 			</div>
-			
 		</div> 
 	</script>
 	
@@ -315,6 +320,8 @@
 			
 		</div>
 	</script>
+	
+	
 
 
 	<script id='timerTemplate' type='text/html'>

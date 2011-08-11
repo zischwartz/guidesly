@@ -248,6 +248,17 @@ class ConditionalAction (models.Model):
 
 
 
+class MapPointElement (models.Model):
+	point = models.CharField(max_length=500)
+	point_title = models.CharField(max_length=100)
+	manual_addy = models.CharField(max_length=100)
+	default_action = models.OneToOneField(Action, blank=True, null=True)
+
+class MapElement (models.Model):
+	card = models.ForeignKey(Card)
+	map_title = models.CharField(max_length=100)
+	points = models.ManyToManyField(MapPointElement)
+
 
 class InputElement (models.Model):
 	card = models.ForeignKey(Card)
