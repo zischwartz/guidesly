@@ -80,7 +80,18 @@ class RegistrationManager(models.Manager):
 			registration_profile.send_activation_email(site)
 
 		return new_user
-	create_inactive_user = transaction.commit_on_success(create_inactive_user)
+	create_inactive_user = transaction.commit_on_success(create_inactive_user)    
+	
+	def create_active_user(self,username,email,password,site):
+		
+		new_user = User.objects.create_user(username,email,password)
+		new_user.is_active = True
+		new_user.save()
+		
+		registration_profile = self.create_profile(new_user)    
+		
+		return new_user 
+	create_active_user = transaction.commit_on_success(create_active_user)
 
 	def create_profile(self, user):
 		"""

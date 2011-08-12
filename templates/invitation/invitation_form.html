@@ -3,13 +3,14 @@
 
 {% block invitation_content %}
 
-<h2>{% trans "Invite a friend" %}</h2>
 
 {% ifequal remaining_invitations 0 %}
 <p>{% trans "You currently have no invitations to send." %}</p>
 {% else %}
 
-<form action="{% url invitation_invite %}" method="POST"> {% csrf_token %}
+<form action="{% url invitation_invite %}" method="POST"> {% csrf_token %}    
+<h2> Guidesly</h2>
+<h1> Invite a friend </h1> 
 <table>
 {{form.as_table}}
 </table>

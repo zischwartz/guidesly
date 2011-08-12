@@ -105,8 +105,8 @@ form p:hover label:after{
 input[type=text],
 input[type=password]{
 	background: rgba(255, 255, 255, 0.9);
-	background:-moz-linear-gradient(90deg, #fff, #eee); /* Firefox */
-	background:-webkit-gradient(linear, left top, left bottom, from(#eee), to(#fff), color-stop(0.2, #fff)); /* Webkit */
+	background:-moz-linear-gradient(90deg, #fff, #eee);
+	background:-webkit-gradient(linear, left top, left bottom, from(#eee), to(#fff), color-stop(0.2, #fff));
 	border:1px solid #aaa;
 	-moz-border-radius:3px;
 	-webkit-border-radius:3px;
@@ -137,8 +137,8 @@ select:focus{
 input[type=submit],
 a.submit{
 	background:#ddd;
-	background:-moz-linear-gradient(90deg, #0459b7,#0459b7 /*#08adff*/); /* Firefox */
-	background:-webkit-gradient(linear, left top, left bottom, from(#0459b7), to(#0459b7)); /* Webkit */
+	background:-moz-linear-gradient(90deg, #0459b7,#0459b7 /*#08adff*/); 
+	background:-webkit-gradient(linear, left top, left bottom, from(#0459b7), to(#0459b7));
 	border:1px solid #093c75;
 	-moz-border-radius:3px;
 	-webkit-border-radius:3px;
