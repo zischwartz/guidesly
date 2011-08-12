@@ -5,14 +5,20 @@
 	
 	{% block content %}
 	
-	<h1>Profile List</h1>
+	<h1>Profile List</h1>  
 	
-	<div id="profile_list">
+	<table border = "5" width ="50%" cellpadding = 4 cellspaceing=3>   
+	
+	<div id="profile_list">     
+		
 	   <ul>
 	   {% for object in object_list|dictsort:"user.username" %}
 	      <li><a href="{% url profiles_profile_detail object.user.username %}">{{ object.user.username }}</a></li>
 	   {% endfor %}
-	   </ul>
+	   </ul>    
+	 </table>
 	</div>
 	
-	{% endblock %}
+	{% endblock %}          
+	
+	

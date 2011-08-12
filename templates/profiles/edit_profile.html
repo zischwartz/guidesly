@@ -6,9 +6,14 @@
  
 <form method="POST" action="">     
 	{% csrf_token %} 
-    {{ form }}
+	<table>
+		<p>
+    {{ form }}      
+    </p>
+	</table>
     <input type="submit" name="submit" value="Update" id="submit">  
     
 </form>
  
-{% endblock content %}
+{% endblock content %}    
+

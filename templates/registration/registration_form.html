@@ -1,6 +1,8 @@
 {% load i18n %}
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html xmlns="http://www.w3.org/1999/xhtml">   
+
+<link rel="stylesheet" media="all" href="{{STATIC_URL}}accounts/test.css"/>       
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 </head>
@@ -8,7 +10,8 @@
 <body>
   	{% block title %}Register for an account{% endblock %}
 	{% block content %}
-	<table>
+	<table> 
+		<h2>Guidesly</h2>
 	    <form method='post' action=''>{% csrf_token %}
 	        {{ form }}
 	        <tr><td></td><td><input type="submit" value="REGISTER" /></td>
