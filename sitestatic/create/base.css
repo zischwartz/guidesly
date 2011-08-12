@@ -619,11 +619,17 @@ label.fileinput-button
 	display: inline;
 }
 
-a.big .ui-button-text 
+a .ui-button-text
 {
 	font-size: 1em !important;
+
 }
 
+input.ui-button
+{
+	font-size: 1.2em !important;
+	height:45px !important;
+}
 /*
 .ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default 
 {
