@@ -23,13 +23,15 @@ from django.contrib.auth.decorators import login_required
 # -------------------------
 
 def Landing (request):
-	return render_to_response("enjoy/landing.html", locals(), context_instance=RequestContext(request))
+	return render_to_response("site/landing.html", locals(), context_instance=RequestContext(request))
 	
 
 @login_required
 def GuideListView (request):
+	if request.user:
+		your_guides= request.user.guide_set.all()
 	guide_list = Guide.objects.all()
-	return render_to_response("enjoy/home.html", locals(), context_instance=RequestContext(request))
+	return render_to_response("site/home.html", locals(), context_instance=RequestContext(request))
 
 @login_required
 def GuideDetailView (request, slug):

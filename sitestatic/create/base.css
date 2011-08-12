@@ -600,7 +600,29 @@ label.fileinput-button
 }
 
 
+/*HOME SCREEEEEEN*/
+/*move elsewhere*/
+.listedGuides
+{
+	width: 100%;
+	float: left;
+}
 
+.listedGuides .smallcard
+{
+	height: 10em;
+	cursor: default;;
+}
+
+.listedGuides .smallcardWrapper .controls a
+{
+	display: inline;
+}
+
+a.big .ui-button-text 
+{
+	font-size: 1em !important;
+}
 
 /*
 .ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default 

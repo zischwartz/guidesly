@@ -95,6 +95,17 @@ class Guide (models.Model):
 			return Card.objects.get(pk=(self.card_order[next_card_number]))
 		else: 
 			return None
+			
+	def get_guide_thumb(self):
+		if self.card_order:
+			card = Card.objects.get(id=self.card_order[0])
+		else:
+			card = Card.objects.all()[0]
+			
+		if card.primary_media:
+			return card.primary_media.file.thumb_url
+		else:
+			return None
 
 class Card (models.Model):
 	title = models.CharField(max_length=500, blank=True, null=True, default="")
