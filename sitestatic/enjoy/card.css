@@ -81,38 +81,97 @@ background-image: -moz-linear-gradient(
 {
 position:fixed;
 bottom:0px;
-width:800px;
+
+
 
 }
 #bottom_nav
 {
-text-align:center;
-
-}
-
-#tag
-{
-	-moz-border-radius: 90px 90px 0px 0px;
-	border-radius: 90px 90px 0px 0px;
-	font-size:.8em;
-	width:200px;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-o-user-select: none;
+	user-select: none;
+	float:left;
+	display:block;
+	width:700px;
 	font-weight:bold;
 	color:#FFFFFF;
+	background-color:#736F6E;
+	text-align:center;
+	z-index: 1;
+	overflow: hidden;
+	position: relative;
+	-moz-border-radius: 0px 90px 90px 0px;
+	border-radius: 0px 90px 90px 0px;
+}
+
+.tag_expand
+{
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-o-user-select: none;
+	user-select: none;
+	font-size:.8em;
+	width:150px;
+	height: 20px;
+	font-weight:bold;
+	float:left;
+	color:#FFFFFF;
+	position: relative;
 	background-color:#AEAEAE;
 	text-align:center;
 	padding:4px;
 	text-decoration:none;
 	text-transform:uppercase;
+	overflow: hidden;
+	z-index: 2;
+	-moz-border-radius: 90px 0px 0px 90px;
+	border-radius: 90px 0px 0px 90px;
+	
+
+}
+.tag
+{
+	
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-o-user-select: none;
+	user-select: none;
+	font-size:.8em;
+	width:150px;
+	height: 20px;
+	font-weight:bold;
+	float:left;
+	color:#FFFFFF;
+	position: relative;
+	background-color:#AEAEAE;
+	text-align:center;
+	padding:4px;
+	text-decoration:none;
+	text-transform:uppercase;
+	overflow: hidden;
+	z-index: 2;
+	-moz-border-radius: 90px 0px 0px 90px;
+	border-radius: 90px 0px 0px 90px;
 }
 
-#tag:hover
+.tag:hover, .tag_expand:hover
 {
 background-color:#6D7B8D;
 }
 
 
+
 .button
 {
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-o-user-select: none;
+	user-select: none;
 	float:left;
 	display:block;
 	width:120px;
@@ -124,27 +183,11 @@ background-color:#6D7B8D;
 	padding:4px;
 	text-decoration:none;
 	text-transform:uppercase;
+	overflow: hidden;
 }
 
-#mute
-{
-	-moz-border-radius: 0px 90px 0px 0px;
-	border-radius: 0px 90px 0px 0px;
-}
 
-.button_muted
-{
-	display:block;
-	width:120px;
 
-	font-weight:bold;
-	color:#6D7B8D;
-	background-color:#736F6E;
-	text-align:center;
-	padding:4px;
-	text-decoration:none;
-	text-transform:uppercase;
-}
 
 .button:link,.button:visited
 {
