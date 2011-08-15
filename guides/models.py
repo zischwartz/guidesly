@@ -56,6 +56,7 @@ class Guide (models.Model):
 	theme = models.ForeignKey(Theme, blank=True, null=True)
 	owner = models.ForeignKey(User, blank=True, null=True)
 	
+	# show_toc = models.BooleanField(default=False)
 	first_card = models.ForeignKey('Card', blank=True, null=True, related_name="+")
 	published = models.BooleanField(default=True)
 	private = models.BooleanField(default=False)
@@ -68,7 +69,7 @@ class Guide (models.Model):
 			for c in self.card_order: #ugly
 				i+=1
 				card=Card.objects.get(pk=c)
-				if i==1:
+				if i==1: #and self.show_toc:
 					self.first_card = card #set first card to (you guessed it)			
 				card.card_number = i
 				card.is_floating_card= False

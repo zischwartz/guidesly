@@ -10,12 +10,20 @@
 		<script type="text/javascript" src="{{STATIC_URL}}upload-plugin/jquery.tmpl.min.js"></script>
 		<script type="text/javascript" src="{{STATIC_URL}}upload-plugin/application-original.js"></script>
 		<link rel="stylesheet" href="{{STATIC_URL}}upload-plugin/thumbnail-scaling.css">
+	
 		<script>
 		
 		$(document).ready(function(){	
 
 			$(".uibutton").button();
 			$(".radioset").buttonset();
+			
+			$(".advanced").hide();
+			
+			
+			$("#show_advanced").click(function () {
+		      $(".advanced").slideToggle("fast");
+		    });
 			
 		});
 		</script>
@@ -42,14 +50,52 @@
 		<tr>
 			<td class="labels"><label for="id_is_linear">Ordering</label></td>
 			<td class="radioset">
-				<input type="radio" id="radio1" name="is_linear" value="true" checked="checked" /><label for="radio1">Mostly Ordered</label> 
-				<input type="radio" id="radio2" name="is_linear" value=""  /><label for="radio2">Totally Freeform</label>
+				<input type="radio" id="in_lin" name="is_linear" value="true" checked="checked" /><label for="in_lin">Mostly Ordered</label> 
+				<input type="radio" id="in_lin2" name="is_linear" value=""  /><label for="in_lin2">Totally Freeform</label>
 			</td>
-			{# <td>{{form.is_linear}}</td> #}
+		<tr>
+			<td></td><td class="explain">Ordered: Cards have an order, prev and next buttons, &amp; you can reorder cards.</td>
 		</tr>
-		<tr><td></td><td><a class="uibutton">Show Advanced Options ▼</a><td></tr>
 		
-		
+		<tr><td></td><td><a id="show_advanced" class="uibutton">Show Advanced Options ▼</a><td></tr>
+		<tr>
+			<td></td><td class="explain">You probably don't need to worry about these yet.</td>
+		</tr>
+			
+			<tr class="advanced">
+				<td class="labels"><label for="">Card Slugs</label></td>
+				<td class="radioset">
+					<input type="radio" id="in_slug" name="text_slugs_for_cards" value="true" checked="checked" /><label for="in_slug">By Title</label> 
+					<input type="radio" id="in_slug2" name="text_slugs_for_cards" value=""  /><label for="in_slug2">Numbers</label>
+				</td>
+			</tr>
+			
+			<tr class="advanced">
+				<td></td><td class="explain">Longer, more expressive URLs, or shorter ones</td>
+			</tr>
+			
+			<tr class="advanced">
+				<td class="labels"><label for="">Comment Cards</label></td>
+				<td class="radioset">
+					<input type="radio" id="in_comment" name="enable_comments" value="true" checked="checked" /><label for="in_comment">Sure</label> 
+					<input type="radio" id="in_comment2" name="enable_comments" value=""  /><label for="in_comment2">No way</label>
+				</td>
+			</tr>
+			
+			<tr class="advanced">
+				<td></td><td class="explain">Can people attach comment cards to your cards?</td>
+			</tr>
+			
+			<tr class="advanced">
+				<td class="labels"><label for="">Privacy</label></td>
+				<td class="radioset">
+					<input type="radio" id="in_private2" name="private" value="" checked="checked"  /><label for="in_private2">Public</label>
+					<input type="radio" id="in_private" name="private" value="true"  /><label for="in_private">Private</label> 
+				</td>
+			</tr>
+			<tr class="advanced">
+				<td></td><td class="explain">Is this guide for everyone or a select few? <br>Don't worry, nobody will see anything till you click publish, later. </td>
+			</tr>
 		
 		<tr><td></td><td><br><input type="submit" class="uibutton" value="Create guide" /></td>
 		</table>

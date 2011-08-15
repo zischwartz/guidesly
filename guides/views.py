@@ -35,6 +35,9 @@ def GuideListView (request):
 
 def GuideDetailView (request, slug):
 	guide = get_object_or_404(Guide, slug=slug)
+	if guide.first_card:
+		return HttpResponseRedirect(reverse('CardDetailViewByIdRedirect', kwargs={'id': guide.first_card.id}))
+		
 	card_list= guide.card_set.all()
 	return render_to_response("enjoy/guide_detail.html", locals(), context_instance=RequestContext(request))
 
