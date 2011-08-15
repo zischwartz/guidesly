@@ -4,6 +4,7 @@
 	<script src="{{STATIC_URL}}js-libs/video.js" type="text/javascript" charset="utf-8"></script>
 	<script src="{{STATIC_URL}}enjoy/nav.js" type="text/javascript" charset="utf-8"></script>
 	<script src="{{STATIC_URL}}enjoy/card.js"></script>
+	
 	<link rel="stylesheet" href="{{STATIC_URL}}js-libs/video-js.css" type="text/css" media="screen" title="Video JS" charset="utf-8">
 	<link rel="stylesheet" href="{{STATIC_URL}}enjoy/card.css" type="text/css" media="screen"  charset="utf-8">
 	<script type="text/javascript" charset="utf-8">
@@ -136,13 +137,16 @@
 {%if primary_media.type == "video" or primary_media.type == "audio" %}
 <br>
 <div id="footer">
-  <div id="tag">Media Controls</div>
+  <div id="tag_bg">
+  <div id="tag" class="tag">Media Controls</div>
+  
   <div id="bottom_nav">
     <div class="button" id="play">Play</div>
     <div class="button" id="pause">Pause</div>
     <div class="button" id="vUp">Vol Up</div>
     <div class="button" id="vDown">Vol Down</div>
     <div class="button" id="mute"><input type="checkbox" id="mute_check"/>  Mute</div> 
+  </div>
   </div>
 </div>
 {%endif%}
