@@ -15,6 +15,8 @@
 		$(document).ready(function(){	
 
 			$(".uibutton").button();
+			$(".radioset").buttonset();
+			
 		});
 		</script>
 {%endblock%}
@@ -38,14 +40,23 @@
 		</tr>
 		
 		<tr>
-			<td class="labels"><label for="id_is_linear">Ordered</label></td><td>{{form.is_linear}}</td>
+			<td class="labels"><label for="id_is_linear">Ordering</label></td>
+			<td class="radioset">
+				<input type="radio" id="radio1" name="is_linear" value="true" checked="checked" /><label for="radio1">Mostly Ordered</label> 
+				<input type="radio" id="radio2" name="is_linear" value=""  /><label for="radio2">Totally Freeform</label>
+			</td>
+			{# <td>{{form.is_linear}}</td> #}
 		</tr>
+		<tr><td></td><td><a class="uibutton">Show Advanced Options ▼</a><td></tr>
+		
+		
+		
+		<tr><td></td><td><br><input type="submit" class="uibutton" value="Create guide" /></td>
 		</table>
 				
 			<input type="hidden" name="owner" id="id_owner" value="{{user.id}}">
 			<div class="hidden">{{form.card_order}}{{form.floating_list}}</div>
 
-		<input type="submit" class="uibutton" value="Create guide" />
 	</form>
 
 	<br><br><br>

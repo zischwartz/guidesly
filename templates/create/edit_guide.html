@@ -41,7 +41,11 @@
 			<span data-bind="text: title() ? title: 'Untitled Card '"></span>
 			{{if primary_media }}<br><img src="${primary_media.file.thumb_url}">{{/if}} 
 		</div>
-		<div class="controls"><a href="${edit_url}">Edit</a>  <a href="${absolute_url}">Preview</a>  <a href="#" data-bind="click: deleteCard">Delete</a></div>
+		<div class="controls">
+			<a href="${edit_url}">Edit</a>
+			<a href="${absolute_url}">Preview</a>
+			<a href="#" data-bind="text: 'Delete', click: deleteCard">Delete</a>
+		</div>
 	</div>
 	</script>
 {%endverbatim%}

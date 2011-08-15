@@ -59,7 +59,7 @@ class Guide (models.Model):
 	first_card = models.ForeignKey('Card', blank=True, null=True, related_name="+")
 	published = models.BooleanField(default=True)
 	private = models.BooleanField(default=False)
-	private_url = models.CharField(max_length=500)
+	private_url = models.CharField(max_length=500, blank=True)
 	
 	def save(self, *args, **kwargs):
 		self.slug= slugify(self.title)
