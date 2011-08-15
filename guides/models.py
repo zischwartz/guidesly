@@ -64,14 +64,15 @@ class Guide (models.Model):
 	def save(self, *args, **kwargs):
 		self.slug= slugify(self.title)
 		i=0
-		for c in self.card_order: #this is inefficient but works
-			i+=1
-			card=Card.objects.get(pk=c)
-			if i==1:
-				self.first_card = card #set first card to (you guessed it)			
-			card.card_number = i
-			card.is_floating_card= False
-			card.saved_by_guide()
+		if self.is_linear:
+			for c in self.card_order: #ugly
+				i+=1
+				card=Card.objects.get(pk=c)
+				if i==1:
+					self.first_card = card #set first card to (you guessed it)			
+				card.card_number = i
+				card.is_floating_card= False
+				card.saved_by_guide()
 		for c in self.floating_list:
 			card=Card.objects.get(pk=c)
 			card.is_floating_card= True
@@ -141,17 +142,23 @@ class Card (models.Model):
 				return "Untitled Floating Card"
 				
 	def firstsave(self, *args, **kwargs):
-		number_of_cards = len(self.guide.card_order)
 		self.owner= self.guide.owner
-		if not self.is_floating_card:
-			self.card_number = number_of_cards
-		super(Card, self).save(*args, **kwargs)
-		if not self.is_floating_card:
-			self.guide.card_order.append(self.id)
+		if self.guide.is_linear:
+			number_of_cards = len(self.guide.card_order)
+			if not self.is_floating_card:
+				self.card_number = number_of_cards
+			super(Card, self).save(*args, **kwargs)
+			if not self.is_floating_card:
+				self.guide.card_order.append(self.id)
+			else:
+				self.guide.floating_list.append(self.id)
+			self.guide.cards.add(self)
+			self.guide.save()
 		else:
+			super(Card, self).save(*args, **kwargs)
 			self.guide.floating_list.append(self.id)
-		self.guide.cards.add(self)
-		self.guide.save()
+			self.guide.cards.add(self)
+			self.guide.save()
 
 
 
@@ -172,17 +179,20 @@ class Card (models.Model):
 			self.firstsave(*args, **kwargs)
 
 		if self.is_floating_card:
-			if self.id in self.guide.card_order:
+			if self.id in self.guide.card_order: 
 				# logger.info("switched from ordered to floating- saved")
 				self.guide.card_order.remove(self.id)
 				self.guide.floating_list.append(self.id)
 				self.card_number = None
 				self.guide.save()
+			else:
+				pass #it is floating, it was floating, it remains floating
 		else: 
 			if self.id in self.guide.card_order:
-				logger.info("saved an ordered card, it was already ordered")
+				pass
+				# logger.info("saved an ordered card, it was already ordered")
 			else:
-				logger.info("was unordered, now it is, adding it to order as last card")
+				# logger.info("was unordered, now it is, adding it to order as last card")
 				number_of_cards = len(self.guide.card_order)
 				self.card_number = number_of_cards +1
 				self.guide.card_order.append(self.id)
