@@ -3,7 +3,7 @@ import datetime
 import tagging
 from tagging.fields import TagField
 from django.contrib.auth.models import User
-from model_utils.managers import InheritanceManager
+# from model_utils.managers import InheritanceManager
 from django.template.defaultfilters import slugify
 import jsonfield 
 
@@ -49,12 +49,17 @@ class Guide (models.Model):
 	enable_comments = models.BooleanField(default=True)
 	text_slugs_for_cards = models.BooleanField(default=True)
 	tags = TagField()
-	has_title_card = models.BooleanField(default=False)
+
 	cards = models.ManyToManyField('Card', blank=True, null=True, related_name="cards_in_guide")
 	card_order =jsonfield.JSONField(default="[]", blank=True) 
 	floating_list =jsonfield.JSONField(default="[]", blank=True) 
 	theme = models.ForeignKey(Theme, blank=True, null=True)
 	owner = models.ForeignKey(User, blank=True, null=True)
+	
+	first_card = models.ForeignKey('Card', blank=True, null=True, related_name="+")
+	published = models.BooleanField(default=True)
+	private = models.BooleanField(default=False)
+	private_url = models.CharField(max_length=500)
 	
 	def save(self, *args, **kwargs):
 		self.slug= slugify(self.title)
@@ -62,6 +67,8 @@ class Guide (models.Model):
 		for c in self.card_order: #this is inefficient but works
 			i+=1
 			card=Card.objects.get(pk=c)
+			if i==1:
+				self.first_card = card #set first card to (you guessed it)			
 			card.card_number = i
 			card.is_floating_card= False
 			card.saved_by_guide()
@@ -95,6 +102,16 @@ class Guide (models.Model):
 			return Card.objects.get(pk=(self.card_order[next_card_number]))
 		else: 
 			return None
+			
+	def get_guide_thumb(self):
+		if self.card_order:
+			card = Card.objects.get(id=self.card_order[0])
+		else:
+			card = Card.objects.all()[0]
+		if card.primary_media:
+			return card.primary_media.file.thumb_url
+		else:
+			return None
 
 class Card (models.Model):
 	title = models.CharField(max_length=500, blank=True, null=True, default="")
@@ -111,8 +128,8 @@ class Card (models.Model):
 	is_floating_card = models.BooleanField(default=False)
 	theme = models.ForeignKey(Theme, blank=True, null=True)
 	owner = models.ForeignKey(User, blank=True, null=True)
-	custom_prev_text = models.CharField(max_length=500, blank=True, null=True)
-	custom_next_text = models.CharField(max_length=500, blank=True, null=True)
+	custom_prev_text = models.CharField(max_length=100, blank=True, null=True)
+	custom_next_text = models.CharField(max_length=100, blank=True, null=True)
 	
 	def __unicode__(self):
 		if self.title !="":
@@ -279,9 +296,10 @@ class InputElement (models.Model):
 	def el_template(self):
 		if self.type=="timer":
 			return 'els/timer.html'
-		
+		if self.type == "button":
+			return 'els/button.html'
+			
 		return 'els/button.html'
-		
 	def __unicode__(self):
 		return self.button_text
 

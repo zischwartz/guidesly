@@ -1,0 +1,58 @@
+{%extends "create/base.html"%} 
+{%block extrahead%}
+<link rel="stylesheet" media="all" href="{{STATIC_URL}}create/guide.css"/>
+<script>
+$(document).ready(function(){	
+
+	$(".uibutton").button();
+});
+</script>
+{%endblock%}
+{% block content %} 
+	<div id="home_wrap">
+		<h2>Your Guides</h2>
+		<div class="listedGuides">
+			{%for guide in your_guides%}
+			<div class="smallcardWrapper"> 
+				{# <div class="cardNumber"><span></span> </div> #}
+				<div class="smallcard">
+					<span>{{guide}}</span>
+					{%if guide.get_guide_thumb %}<img src="{{guide.get_guide_thumb}}">{%endif%}
+				</div>
+				<div class="controls"><a href="{% url EditGuide gslug=guide.slug %}">Edit</a>  <a href="{{guide.get_absolute_url}}">View</a>  <a href="#" data-bind="click: deleteCard">Delete</a></div>
+			</div>
+			
+			
+
+		
+			{%endfor%}
+		</div>
+		
+		<br>
+		<h2> Other People's Guides</h2>
+		<div class="listedGuides">
+			{%for guide in guide_list%}
+				<div class="smallcardWrapper"> 
+					{# <div class="cardNumber"><span></span> </div> #}
+					<a class="smallcard" href="{{guide.get_absolute_url}}">
+						<span>{{guide}}</span>
+						{%if guide.get_guide_thumb %}<img src="{{guide.get_guide_thumb}}">{%endif%}
+					</a>
+				</div>
+
+			{%endfor%}
+		</div>
+		
+		<br>
+		<br>
+		<br>
+	</div>
+{% endblock %}
+
+{%block sidebar%}
+<br>
+<br>
+<a href="/create" class="uibutton big">Create a new guide</a>
+<br><br><br><br><br><br>
+<a href="/" class="uibutton">Get the iPhone Authoring App</a>
+{%endblock%}

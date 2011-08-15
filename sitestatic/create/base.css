@@ -600,8 +600,36 @@ label.fileinput-button
 }
 
 
+/*HOME SCREEEEEEN*/
+/*move elsewhere*/
+.listedGuides
+{
+	width: 100%;
+	float: left;
+}
 
+.listedGuides .smallcard
+{
+	height: 10em;
+	cursor: default;;
+}
 
+.listedGuides .smallcardWrapper .controls a
+{
+	display: inline;
+}
+
+a .ui-button-text
+{
+	font-size: 1em !important;
+
+}
+
+input.ui-button
+{
+	font-size: 1.2em !important;
+	height:45px !important;
+}
 /*
 .ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default 
 {

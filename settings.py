@@ -1,8 +1,9 @@
 
 import os
 
-DEBUG = True
+DEBUG = False
 TEMPLATE_DEBUG = DEBUG
+TASTYPIE_FULL_DEBUG = DEBUG
 
 ADMINS = (
     # ('Your Name', 'your_email@example.com'),
@@ -14,10 +15,10 @@ SITE_ROOT = os.path.dirname(os.path.realpath(__file__))
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': os.path.join(SITE_ROOT, 'db'),                      # Or path to database file if using sqlite3.
-        'USER': '',                      # Not used with sqlite3.
-        'PASSWORD': '',                  # Not used with sqlite3.
+        'ENGINE': 'django.db.backends.mysql', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
+        'NAME': 'zazerr_guidesly1',                      # Or path to database file if using sqlite3.
+        'USER': 'zazerr_guidesly1',                      # Not used with sqlite3.
+        'PASSWORD': '2af3bfc2',                  # Not used with sqlite3.
         'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
         'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
     }
@@ -50,25 +51,27 @@ USE_L10N = True
 # Example: "/home/media/media.lawrence.com/media/"
 MEDIA_ROOT = os.path.join(SITE_ROOT, 'userstatic')
 
+
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash.
 # Examples: "http://media.lawrence.com/media/", "http://example.com/media/"
-MEDIA_URL = '/media/'
+MEDIA_URL = '/usermedia/'
 
 # Absolute path to the directory static files should be collected to.
 # Don't put anything in this directory yourself; store your static files
 # in apps' "static/" subdirectories and in STATICFILES_DIRS.
 # Example: "/home/media/media.lawrence.com/static/"
-STATIC_ROOT = os.path.join(SITE_ROOT, 'static')
+# STATIC_ROOT = os.path.join(SITE_ROOT, 'static')
+STATIC_ROOT = '/home/zazerr/webapps/static_g/'
 
 # URL prefix for static files.
 # Example: "http://media.lawrence.com/static/"
-STATIC_URL = '/static/'
+STATIC_URL = '/media/'
 
 # URL prefix for admin static files -- CSS, JavaScript and images.
 # Make sure to use a trailing slash.
 # Examples: "http://foo.com/static/admin/", "/static/admin/".
-ADMIN_MEDIA_PREFIX = '/static/admin/'
+ADMIN_MEDIA_PREFIX = '/media/admin/'
 
 # Additional locations of static files
 STATICFILES_DIRS = (
@@ -110,7 +113,7 @@ MIDDLEWARE_CLASSES = (
 
 INTERNAL_IPS = ('127.0.0.1',)
 
-ROOT_URLCONF = 'guidesly.urls'
+ROOT_URLCONF = 'myproject.urls'
 
 TEMPLATE_DIRS = (
     os.path.join(SITE_ROOT, 'templates')
@@ -148,14 +151,13 @@ INSTALLED_APPS = (
     # 'south',
     # 'debug_toolbar',
 
-    #'south',
+    'south',
     # 'debug_toolbar',
 	'invitation',
 	'registration',
 	'thef',
 )                  
             
-TASTYPIE_FULL_DEBUG = True
 
 INVITE_MODE = True 
 
@@ -167,7 +169,7 @@ INVITATIONS_PER_USER = 0
 
 LOGIN_REDIRECT_URL = '/home/'
 
-LOG_FILE = "log.log"
+LOG_FILE = "/home/zazerr/webapps/guidesly_beta/myproject/log.log"
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to
@@ -212,13 +214,18 @@ LOG_FILE = "log.log"
 
 EMAIL_HOST = 'smtp.gmail.com'     
 
-EMAIL_HOST_USER = 'diana.huang@gmail.com'
+EMAIL_HOST_USER = 'invite@guidesly.com'
 
-EMAIL_HOST_PASSWORD = 'lee11huang'
-
+# EMAIL_HOST_PASSWORD = 'LqB4=mJh'
+EMAIL_HOST_PASSWORD = 'dogsarecoolyo'
 
 EMAIL_PORT = 587
 
-EMAIL_SUBJECT_PREFIX = '[Django] '
+# EMAIL_SUBJECT_PREFIX = '[Guidesly] '
 
 EMAIL_USE_TLS = True
+
+try:
+   from local_settings import *
+except ImportError, e:
+   pass
