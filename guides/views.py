@@ -22,7 +22,10 @@ from django.contrib.auth.decorators import login_required
 # Viewing Guides
 # -------------------------
 
-def Landing (request):
+def Landing (request): 
+	if request.user.is_authenticated():		  
+		guide_list = Guide.objects.all()
+		return render_to_response("enjoy/home.html", locals(), context_instance=RequestContext(request))   	
 	return render_to_response("enjoy/landing.html", locals(), context_instance=RequestContext(request))
 	
 

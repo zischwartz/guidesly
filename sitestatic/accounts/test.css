@@ -116,7 +116,7 @@ input[type=password]{
 }
 input[type=text]:focus,
 input[type=password]:focus{
-	border-color:#093c75;
+	border-color:#e27e16;
 	-moz-box-shadow:0 0 3px #0459b7;
 	-webkit-box-shadow:0 0 3px #0459b7;
 	outline:none; 
@@ -137,17 +137,17 @@ select:focus{
 input[type=submit],
 a.submit{
 	background:#ddd;
-	background:-moz-linear-gradient(90deg, #0459b7,#0459b7 /*#08adff*/); 
-	background:-webkit-gradient(linear, left top, left bottom, from(#0459b7), to(#0459b7));
-	border:1px solid #093c75;
+	background:-moz-linear-gradient(90deg, #FF6600, #FF6600/*#0459b7,#0459b7 /*#08adff*/); 
+	background:-webkit-gradient(linear, left top, left bottom, from(#FF6600), to(#FF6600));
+	border:1px solid #FF6600;
 	-moz-border-radius:3px;
 	-webkit-border-radius:3px;
-	-moz-box-shadow:0 1px 0 #fff;
-	-webkit-box-shadow:0 1px 0 #fff;
+	-moz-box-shadow:0 1px 0 #ff6600;
+	-webkit-box-shadow:0 1px 0 #ff6600;
 	color:#fff;
 	cursor:pointer;
 	font-family:Arial,sans-serif;
-	font-size:12px;
+	font-size:11px;
 	font-weight:bold;
 	margin-top: 30px;
 	margin-left:0px;
@@ -156,12 +156,13 @@ a.submit{
 	text-shadow:0 1px 1px #333;
 	text-transform:uppercase;
 }
+
 input[type=submit]:hover,
 a.submit:hover{
 	background:#eee;
-	background:-moz-linear-gradient(90deg, #067cd3, #067cd3 /*#0bcdff*/);
-	background:-webkit-gradient(linear, left top, left bottom, from(#067cd3), to(#067cd3));
-	border-color:#093c75;
+	background:-moz-linear-gradient(90deg, /*#067cd3,*/#FF6600, #FF6600, /*#067cd3*/ /*#0bcdff*/);
+	background:-webkit-gradient(linear, left top, left bottom, from(#FF6600), to(#FF6600));
+	border-color:#FF6600;
 	text-decoration:none;
 }
 input[type=submit]:active,
@@ -171,7 +172,7 @@ a.submit:focus{
 	background:#ccc;
 	background:-moz-linear-gradient(90deg, #0bcdff, #067cd3);
 	background:-webkit-gradient(linear, left top, left bottom, from(#067cd3), to(#0bcdff));
-	border-color:#093c75;
+	border-color:#FF6600;
 	outline:none;
 }
 #options{

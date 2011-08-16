@@ -124,7 +124,8 @@ TEMPLATE_DIRS = (
 )
 
 AUTH_PROFILE_MODULE = 'accounts.userprofile'
-
+                                                 
+#AUTHENTICATION_BACKENDS='django.contrib.auth.backends.ModelBackend'
 # AUTHENTICATION_BACKENDS= 'object_permissions.backend.ObjectPermBackend',
 
 # got Error importing authentication backends. Is AUTHENTICATION_BACKENDS a correctly defined list or tuple?

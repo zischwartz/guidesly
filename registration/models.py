@@ -92,7 +92,8 @@ class RegistrationManager(models.Manager):
 		
 		return new_user 
 	create_active_user = transaction.commit_on_success(create_active_user)
-
+                                                                                 
+	
 	def create_profile(self, user):
 		"""
 		Create a ``RegistrationProfile`` for a given
