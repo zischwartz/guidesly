@@ -1,4 +1,4 @@
-{%extends "create/base.html"%} 
+{%extends "site.html"%} 
 {%block extrahead%}
 <link rel="stylesheet" media="all" href="{{STATIC_URL}}create/guide.css"/>
 <script>
@@ -10,13 +10,21 @@ $(document).ready(function(){
 {%endblock%}
 {% block content %} 
 	<div id="home_wrap">
+		
+		{%if user.get_profile.is_new_here %}
+			<h2> Welcome to Guidesly</h2>
+			<p> New here? Checkout this 30 second guide on how to create guides.</p>
+			<br>
+			<br>
+		{%endif%}
+		
 		<h2>Your Guides</h2>
 		<div class="listedGuides">
 			{%for guide in your_guides%}
 			<div class="smallcardWrapper"> 
 				{# <div class="cardNumber"><span></span> </div> #}
 				<div class="smallcard">
-					<span>{{guide}}</span>
+					<div>{{guide}}</div>
 					{%if guide.get_guide_thumb %}<img src="{{guide.get_guide_thumb}}">{%endif%}
 				</div>
 				<div class="controls"><a href="{% url EditGuide gslug=guide.slug %}">Edit</a>  <a href="{{guide.get_absolute_url}}">View</a>  <a href="#" data-bind="click: deleteCard">Delete</a></div>
@@ -35,7 +43,7 @@ $(document).ready(function(){
 				<div class="smallcardWrapper"> 
 					{# <div class="cardNumber"><span></span> </div> #}
 					<a class="smallcard" href="{{guide.get_absolute_url}}">
-						<span>{{guide}}</span>
+						<div>{{guide}}</div>
 						{%if guide.get_guide_thumb %}<img src="{{guide.get_guide_thumb}}">{%endif%}
 					</a>
 				</div>

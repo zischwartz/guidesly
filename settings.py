@@ -143,19 +143,18 @@ INSTALLED_APPS = (
     'django.contrib.markup',
     'photologue',
     'object_permissions',
-    'accounts',
     'tagging',
-    'fileupload',
-    'guides',
-    'tastypie',
-    # 'south',
-    # 'debug_toolbar',
-
-    'south',
-    # 'debug_toolbar',
 	'invitation',
 	'registration',
 	'thef',
+    'south',
+
+    'tastypie',
+    # 'debug_toolbar',
+	'fileupload',
+    'guides',
+    'accounts',
+
 )                  
             
 

@@ -56,7 +56,7 @@ class Guide (models.Model):
 	theme = models.ForeignKey(Theme, blank=True, null=True)
 	owner = models.ForeignKey(User, blank=True, null=True)
 	
-	# show_toc = models.BooleanField(default=False)
+	show_toc = models.BooleanField(default=False)
 	first_card = models.ForeignKey('Card', blank=True, null=True, related_name="+")
 	published = models.BooleanField(default=True)
 	private = models.BooleanField(default=False)
@@ -69,7 +69,7 @@ class Guide (models.Model):
 			for c in self.card_order: #ugly
 				i+=1
 				card=Card.objects.get(pk=c)
-				if i==1: #and self.show_toc:
+				if i==1 and not self.show_toc:
 					self.first_card = card #set first card to (you guessed it)			
 				card.card_number = i
 				card.is_floating_card= False
@@ -316,70 +316,3 @@ class InputElement (models.Model):
 
 
 from api import CardResource
-
-	
-# USER PERMISSION PER OBJECT INSTANCE
-
-# from object_permissions import register
-
-# register(['permission'], Guide)
-
-
-
-# ********************************************************
-# ***************         SIGH                ************
-# ********************************************************
-# 
-# SVALUEINQUIRY_TYPE = (
-# 	('L', 'Location'),
-# 	('A', 'Accelerometer'),
-# 	('T', 'Time'),
-# 	('D', 'Date'),
-# )
-
-
-# class MultipleChoiceInquiry (InputElement):
-# 	# choices = models.ForeignKey(MultipleChoices, blank=True, null=True) #deleted because we want multiple..duh
-# 	show_choices = models.BooleanField(default=False)
-# 	allow_multiple_selections = models.BooleanField(default=False)
-# 	
-# 	def el_template(self):
-# 		return 'els/mc.html'
-# 
-# class MultipleChoice (models.Model):
-# 	choice = models.CharField(max_length=250)
-# 	action = models.ForeignKey(Action, blank=True, null=True)
-# 	inquiry = models.ForeignKey(MultipleChoiceInquiry)
-# 	def __unicode__(self):
-# 		return self.choice
-# 
-# 
-# #numerical
-# class NValueInquiry (InputElement):
-# 	min_value = models.FloatField(blank=True, null=True)
-# 	max_value = models.FloatField(blank=True, null=True)
-# 	increment_by = models.FloatField(blank=True, null=True)
-# 	default_value = models.FloatField(blank=True, null=True)
-# 	def el_template(self):
-# 		return 'els/nvalue.html'
-# 
-# #text 
-# class TValueInquiry (InputElement):
-# 	default_value = models.CharField(max_length=500, blank=True, null=True,)
-# 
-# 	def el_template(self):
-# 		return 'els/tvalue.html'
-# 
-# #sensor
-# class SValueInquiry (InputElement):
-# 	sensor_type = models.CharField(blank=True,  max_length=1, choices = SVALUEINQUIRY_TYPE)
-# 	def el_template(self):
-# 		return 'els/svalue.html'
-# 	
-# class Timer (InputElement):
-# 	seconds = models.IntegerField(blank=True, null=True)
-# 	minutes = models.IntegerField(blank=True, null=True)
-# 	execute_action_when_done = models.BooleanField(default=True)
-
-
-

@@ -188,3 +188,38 @@ table#createGuide td.labels
 	display: none;
 }
 
+
+
+
+
+
+/*HOME SCREEEEEEN*/
+/*move elsewhere*/
+.listedGuides
+{
+	width: 100%;
+	float: left;
+}
+
+.listedGuides .smallcard
+{
+	height: 10em;
+	cursor: default;;
+}
+
+.listedGuides .smallcardWrapper .controls a
+{
+	display: inline;
+}
+
+big.a .ui-button-text
+{
+	font-size: 1em !important;
+}
+
+input.ui-button
+{
+	font-size: 1.2em !important;
+	height:45px !important;
+}
+

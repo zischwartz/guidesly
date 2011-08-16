@@ -127,32 +127,32 @@ AUTH_PROFILE_MODULE = 'accounts.userprofile'
 # commented this out, loaded page, commented back in, everything is fine?
 
 
-INSTALLED_APPS = (
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.sites',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-    'django.contrib.admin',
-    'django.contrib.admindocs',
-    'django.contrib.markup',
-    'photologue',
-    'object_permissions',
-    'accounts',
-    'tagging',
-    'fileupload',
-    'guides',
-    'tastypie',
-    # 'south',
-    # 'debug_toolbar',
-
-    #'south',
-    # 'debug_toolbar',
-	'invitation',
-	'registration',
-	'thef',
-)                  
+# INSTALLED_APPS = (
+#     'django.contrib.auth',
+#     'django.contrib.contenttypes',
+#     'django.contrib.sessions',
+#     'django.contrib.sites',
+#     'django.contrib.messages',
+#     'django.contrib.staticfiles',
+#     'django.contrib.admin',
+#     'django.contrib.admindocs',
+#     'django.contrib.markup',
+#     'photologue',
+#     'object_permissions',
+#     'accounts',
+#     'tagging',
+#     'fileupload',
+#     'guides',
+#     'tastypie',
+#     # 'south',
+#     # 'debug_toolbar',
+# 
+#     #'south',
+#     # 'debug_toolbar',
+# 	'invitation',
+# 	'registration',
+# 	'thef',
+# )                  
             
 TASTYPIE_FULL_DEBUG = True
 

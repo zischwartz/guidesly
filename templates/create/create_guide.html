@@ -1,8 +1,9 @@
-{%extends "create/base.html" %}
+{%extends "site.html" %}
 
 {%block extrahead%}
 		
-	<link rel="stylesheet" media="all" href="{{STATIC_URL}}create/guide.css"/>
+		<link rel="stylesheet" media="all" href="{{STATIC_URL}}create/guide.css"/>
+		
 		<link rel="stylesheet" media="all" href="{{STATIC_URL}}upload-plugin/jquery.fileupload-ui.css"/>
 		<script type="text/javascript" src="{{STATIC_URL}}upload-plugin/jquery.iframe-transport.js"></script>
 		<script type="text/javascript" src="{{STATIC_URL}}upload-plugin/jquery.fileupload.js"></script>
