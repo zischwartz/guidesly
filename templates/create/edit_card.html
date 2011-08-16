@@ -1,4 +1,4 @@
-{%extends "create/base.html" %}
+{%extends "site.html" %}
 
 {%block extrahead%}
 
@@ -6,12 +6,12 @@
 		<script type="text/javascript" src="{{STATIC_URL}}upload-plugin/jquery.iframe-transport.js"></script>
 		<script type="text/javascript" src="{{STATIC_URL}}upload-plugin/jquery.fileupload.js"></script>
 		<script type="text/javascript" src="{{STATIC_URL}}upload-plugin/jquery.fileupload-ui.js"></script>
-		{# // <script type="text/javascript" src="{{STATIC_URL}}upload-plugin/jquery.tmpl.min.js"></script> #}
-		{# // <script type="text/javascript" src="{{STATIC_URL}}upload-plugin/application.js"></script> #}
 		<link rel="stylesheet" href="{{STATIC_URL}}upload-plugin/thumbnail-scaling.css">
 		
-
+		<link rel="stylesheet" href="{{STATIC_URL}}create/card.css">
 		<script src="{{STATIC_URL}}create/card.js"></script>
+		
+		
 		<script type="text/javascript">
 			var current_card_id ="{{s.id}}";
 			var guide_id = {{s.guide.id}};

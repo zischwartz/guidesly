@@ -49,22 +49,31 @@ class Guide (models.Model):
 	enable_comments = models.BooleanField(default=True)
 	text_slugs_for_cards = models.BooleanField(default=True)
 	tags = TagField()
-	has_title_card = models.BooleanField(default=False)
+
 	cards = models.ManyToManyField('Card', blank=True, null=True, related_name="cards_in_guide")
 	card_order =jsonfield.JSONField(default="[]", blank=True) 
 	floating_list =jsonfield.JSONField(default="[]", blank=True) 
 	theme = models.ForeignKey(Theme, blank=True, null=True)
 	owner = models.ForeignKey(User, blank=True, null=True)
 	
+	show_toc = models.BooleanField(default=False)
+	first_card = models.ForeignKey('Card', blank=True, null=True, related_name="+")
+	published = models.BooleanField(default=True)
+	private = models.BooleanField(default=False)
+	private_url = models.CharField(max_length=500, blank=True)
+	
 	def save(self, *args, **kwargs):
 		self.slug= slugify(self.title)
 		i=0
-		for c in self.card_order: #this is inefficient but works
-			i+=1
-			card=Card.objects.get(pk=c)
-			card.card_number = i
-			card.is_floating_card= False
-			card.saved_by_guide()
+		if self.is_linear:
+			for c in self.card_order: #ugly
+				i+=1
+				card=Card.objects.get(pk=c)
+				if i==1 and not self.show_toc:
+					self.first_card = card #set first card to (you guessed it)			
+				card.card_number = i
+				card.is_floating_card= False
+				card.saved_by_guide()
 		for c in self.floating_list:
 			card=Card.objects.get(pk=c)
 			card.is_floating_card= True
@@ -95,6 +104,16 @@ class Guide (models.Model):
 			return Card.objects.get(pk=(self.card_order[next_card_number]))
 		else: 
 			return None
+			
+	def get_guide_thumb(self):
+		if self.card_order:
+			card = Card.objects.get(id=self.card_order[0])
+		else:
+			card = Card.objects.all()[0]
+		if card.primary_media:
+			return card.primary_media.file.thumb_url
+		else:
+			return None
 
 class Card (models.Model):
 	title = models.CharField(max_length=500, blank=True, null=True, default="")
@@ -111,8 +130,8 @@ class Card (models.Model):
 	is_floating_card = models.BooleanField(default=False)
 	theme = models.ForeignKey(Theme, blank=True, null=True)
 	owner = models.ForeignKey(User, blank=True, null=True)
-	custom_prev_text = models.CharField(max_length=500, blank=True, null=True)
-	custom_next_text = models.CharField(max_length=500, blank=True, null=True)
+	custom_prev_text = models.CharField(max_length=100, blank=True, null=True)
+	custom_next_text = models.CharField(max_length=100, blank=True, null=True)
 	
 	def __unicode__(self):
 		if self.title !="":
@@ -124,17 +143,23 @@ class Card (models.Model):
 				return "Untitled Floating Card"
 				
 	def firstsave(self, *args, **kwargs):
-		number_of_cards = len(self.guide.card_order)
 		self.owner= self.guide.owner
-		if not self.is_floating_card:
-			self.card_number = number_of_cards
-		super(Card, self).save(*args, **kwargs)
-		if not self.is_floating_card:
-			self.guide.card_order.append(self.id)
+		if self.guide.is_linear:
+			number_of_cards = len(self.guide.card_order)
+			if not self.is_floating_card:
+				self.card_number = number_of_cards
+			super(Card, self).save(*args, **kwargs)
+			if not self.is_floating_card:
+				self.guide.card_order.append(self.id)
+			else:
+				self.guide.floating_list.append(self.id)
+			self.guide.cards.add(self)
+			self.guide.save()
 		else:
+			super(Card, self).save(*args, **kwargs)
 			self.guide.floating_list.append(self.id)
-		self.guide.cards.add(self)
-		self.guide.save()
+			self.guide.cards.add(self)
+			self.guide.save()
 
 
 
@@ -155,17 +180,20 @@ class Card (models.Model):
 			self.firstsave(*args, **kwargs)
 
 		if self.is_floating_card:
-			if self.id in self.guide.card_order:
+			if self.id in self.guide.card_order: 
 				# logger.info("switched from ordered to floating- saved")
 				self.guide.card_order.remove(self.id)
 				self.guide.floating_list.append(self.id)
 				self.card_number = None
 				self.guide.save()
+			else:
+				pass #it is floating, it was floating, it remains floating
 		else: 
 			if self.id in self.guide.card_order:
-				logger.info("saved an ordered card, it was already ordered")
+				pass
+				# logger.info("saved an ordered card, it was already ordered")
 			else:
-				logger.info("was unordered, now it is, adding it to order as last card")
+				# logger.info("was unordered, now it is, adding it to order as last card")
 				number_of_cards = len(self.guide.card_order)
 				self.card_number = number_of_cards +1
 				self.guide.card_order.append(self.id)
@@ -279,76 +307,12 @@ class InputElement (models.Model):
 	def el_template(self):
 		if self.type=="timer":
 			return 'els/timer.html'
-		
+		if self.type == "button":
+			return 'els/button.html'
+			
 		return 'els/button.html'
-		
 	def __unicode__(self):
 		return self.button_text
 
 
 from api import CardResource
-
-	
-# USER PERMISSION PER OBJECT INSTANCE
-
-# from object_permissions import register
-
-# register(['permission'], Guide)
-
-
-
-# ********************************************************
-# ***************         SIGH                ************
-# ********************************************************
-# 
-# SVALUEINQUIRY_TYPE = (
-# 	('L', 'Location'),
-# 	('A', 'Accelerometer'),
-# 	('T', 'Time'),
-# 	('D', 'Date'),
-# )
-
-
-# class MultipleChoiceInquiry (InputElement):
-# 	# choices = models.ForeignKey(MultipleChoices, blank=True, null=True) #deleted because we want multiple..duh
-# 	show_choices = models.BooleanField(default=False)
-# 	allow_multiple_selections = models.BooleanField(default=False)
-# 	
-# 	def el_template(self):
-# 		return 'els/mc.html'
-# 
-# class MultipleChoice (models.Model):
-# 	choice = models.CharField(max_length=250)
-# 	action = models.ForeignKey(Action, blank=True, null=True)
-# 	inquiry = models.ForeignKey(MultipleChoiceInquiry)
-# 	def __unicode__(self):
-# 		return self.choice
-# 
-# 
-# #numerical
-# class NValueInquiry (InputElement):
-# 	min_value = models.FloatField(blank=True, null=True)
-# 	max_value = models.FloatField(blank=True, null=True)
-# 	increment_by = models.FloatField(blank=True, null=True)
-# 	default_value = models.FloatField(blank=True, null=True)
-# 	def el_template(self):
-# 		return 'els/nvalue.html'
-# 
-# #text 
-# class TValueInquiry (InputElement):
-# 	default_value = models.CharField(max_length=500, blank=True, null=True,)
-# 
-# 	def el_template(self):
-# 		return 'els/tvalue.html'
-# 
-# #sensor
-# class SValueInquiry (InputElement):
-# 	sensor_type = models.CharField(blank=True,  max_length=1, choices = SVALUEINQUIRY_TYPE)
-# 	def el_template(self):
-# 		return 'els/svalue.html'
-# 	
-# class Timer (InputElement):
-# 	seconds = models.IntegerField(blank=True, null=True)
-# 	minutes = models.IntegerField(blank=True, null=True)
-# 	execute_action_when_done = models.BooleanField(default=True)
-

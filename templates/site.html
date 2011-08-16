@@ -4,9 +4,9 @@
 
 
 	<head>
-		<title>Guides.ly</title>
+		<title>Guides.ly {% block title %}{%endblock%}</title>
 	
-		{# <link type="text/css" href="{{STATIC_URL}}jui-css/smoothness/jquery-ui-1.8.13.custom.css" rel="stylesheet" />	 #}
+
 		<link type="text/css" href="{{STATIC_URL}}jui-css/aristo/jquery-ui-1.8.7.custom.css" rel="stylesheet" />	
  		<script type="text/javascript" src="{{STATIC_URL}}js-libs/jquery-1.6.1.min.js"></script>
 		<script type="text/javascript" src="{{STATIC_URL}}js-libs/jquery-ui-1.8.13.custom.min.js"></script>
@@ -19,17 +19,14 @@
 		<script type="text/javascript" src="{{STATIC_URL}}js-libs/jquery-css-transform.js"></script>
 		<script type="text/javascript" src="{{STATIC_URL}}js-libs/rotate3Di.js"></script>
 		<script type="text/javascript" src="{{STATIC_URL}}js-libs/showdown.js"></script>	
-		<link rel="stylesheet" media="all" href="{{STATIC_URL}}create/base.css"/>
+
+		<link rel="stylesheet" media="all" href="{{STATIC_URL}}base.css"/>
 
 		<script type="text/javascript">
 			var current_url ="{{request.path}}";
 		</script>
 		
-		
-
 		<link rel="shortcut icon" href="{{STATIC_URL}}img/favicon.ico">
-		{# // <script src="{{MEDIA_URL}}js/base.js"></script> #}
-
 
 		{%block extrahead%}{%endblock%}
 	</head>
@@ -48,10 +45,7 @@
 
 	<div id="content" class="bigger">
 		{% if messages %}<div id="messages">{%for message in messages%}<p{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>{% endfor %}</div>{%endif%}
-
-
-
-
+		{% block head %} {% endblock %}
 		{% block content %}Hi. If you're seeing this, something messed up. This is the base template dude...{% endblock %}
 	</div>
 	

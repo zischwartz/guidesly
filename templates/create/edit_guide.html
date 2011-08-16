@@ -1,4 +1,4 @@
-{%extends "create/base.html" %}
+{%extends "site.html" %}
 
 {%block extrahead%}
 		<link rel="stylesheet" media="all" href="{{STATIC_URL}}create/guide.css"/>
@@ -41,7 +41,12 @@
 			<span data-bind="text: title() ? title: 'Untitled Card '"></span>
 			{{if primary_media }}<br><img src="${primary_media.file.thumb_url}">{{/if}} 
 		</div>
-		<div class="controls"><a href="${edit_url}">Edit</a>  <a href="${absolute_url}">Preview</a>  <a href="#" data-bind="click: deleteCard">Delete</a></div>
+		<div class="controls">
+			<a href="${edit_url}">Edit</a>
+			<a href="${absolute_url}">Preview</a>
+			<a href="#" class="delete_link">Delete</a>
+			<a href="#" class="delete_link_real" data-bind="click: deleteCard">Sure?</a>
+		</div>
 	</div>
 	</script>
 {%endverbatim%}

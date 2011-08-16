@@ -1,9 +1,7 @@
-
 import os
 
-DEBUG = False
+DEBUG = True
 TEMPLATE_DEBUG = DEBUG
-TASTYPIE_FULL_DEBUG = DEBUG
 
 ADMINS = (
     # ('Your Name', 'your_email@example.com'),
@@ -15,10 +13,10 @@ SITE_ROOT = os.path.dirname(os.path.realpath(__file__))
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': 'zazerr_guidesly1',                      # Or path to database file if using sqlite3.
-        'USER': 'zazerr_guidesly1',                      # Not used with sqlite3.
-        'PASSWORD': '2af3bfc2',                  # Not used with sqlite3.
+        'ENGINE': 'django.db.backends.sqlite3', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
+        'NAME': os.path.join(SITE_ROOT, 'db'),                      # Or path to database file if using sqlite3.
+        'USER': '',                      # Not used with sqlite3.
+        'PASSWORD': '',                  # Not used with sqlite3.
         'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
         'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
     }
@@ -51,27 +49,25 @@ USE_L10N = True
 # Example: "/home/media/media.lawrence.com/media/"
 MEDIA_ROOT = os.path.join(SITE_ROOT, 'userstatic')
 
-
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash.
 # Examples: "http://media.lawrence.com/media/", "http://example.com/media/"
-MEDIA_URL = '/usermedia/'
+MEDIA_URL = '/media/'
 
 # Absolute path to the directory static files should be collected to.
 # Don't put anything in this directory yourself; store your static files
 # in apps' "static/" subdirectories and in STATICFILES_DIRS.
 # Example: "/home/media/media.lawrence.com/static/"
-# STATIC_ROOT = os.path.join(SITE_ROOT, 'static')
-STATIC_ROOT = '/home/zazerr/webapps/static_g/'
+STATIC_ROOT = os.path.join(SITE_ROOT, 'static')
 
 # URL prefix for static files.
 # Example: "http://media.lawrence.com/static/"
-STATIC_URL = '/media/'
+STATIC_URL = '/static/'
 
 # URL prefix for admin static files -- CSS, JavaScript and images.
 # Make sure to use a trailing slash.
 # Examples: "http://foo.com/static/admin/", "/static/admin/".
-ADMIN_MEDIA_PREFIX = '/media/admin/'
+ADMIN_MEDIA_PREFIX = '/static/admin/'
 
 # Additional locations of static files
 STATICFILES_DIRS = (
@@ -113,7 +109,7 @@ MIDDLEWARE_CLASSES = (
 
 INTERNAL_IPS = ('127.0.0.1',)
 
-ROOT_URLCONF = 'myproject.urls'
+ROOT_URLCONF = 'guidesly.urls'
 
 TEMPLATE_DIRS = (
     os.path.join(SITE_ROOT, 'templates')
@@ -124,41 +120,41 @@ TEMPLATE_DIRS = (
 )
 
 AUTH_PROFILE_MODULE = 'accounts.userprofile'
-                                                 
-#AUTHENTICATION_BACKENDS='django.contrib.auth.backends.ModelBackend'
+
 # AUTHENTICATION_BACKENDS= 'object_permissions.backend.ObjectPermBackend',
 
 # got Error importing authentication backends. Is AUTHENTICATION_BACKENDS a correctly defined list or tuple?
 # commented this out, loaded page, commented back in, everything is fine?
 
 
-INSTALLED_APPS = (
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.sites',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-    'django.contrib.admin',
-    'django.contrib.admindocs',
-    'django.contrib.markup',
-    'photologue',
-    'object_permissions',
-    'tagging',
-	'invitation',
-	'registration',
-	'thef',
-    'south',
-
-    # 'debug_toolbar',
-
-    'tastypie',
-	'fileupload',
-    'guides',
-    'accounts',
-
-)                  
+# INSTALLED_APPS = (
+#     'django.contrib.auth',
+#     'django.contrib.contenttypes',
+#     'django.contrib.sessions',
+#     'django.contrib.sites',
+#     'django.contrib.messages',
+#     'django.contrib.staticfiles',
+#     'django.contrib.admin',
+#     'django.contrib.admindocs',
+#     'django.contrib.markup',
+#     'photologue',
+#     'object_permissions',
+#     'accounts',
+#     'tagging',
+#     'fileupload',
+#     'guides',
+#     'tastypie',
+#     # 'south',
+#     # 'debug_toolbar',
+# 
+#     #'south',
+#     # 'debug_toolbar',
+# 	'invitation',
+# 	'registration',
+# 	'thef',
+# )                  
             
+TASTYPIE_FULL_DEBUG = True
 
 INVITE_MODE = True 
 
@@ -170,7 +166,7 @@ INVITATIONS_PER_USER = 0
 
 LOGIN_REDIRECT_URL = '/home/'
 
-LOG_FILE = "/home/zazerr/webapps/guidesly_beta/myproject/log.log"
+LOG_FILE = "log.log"
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to
@@ -225,8 +221,3 @@ EMAIL_PORT = 587
 # EMAIL_SUBJECT_PREFIX = '[Guidesly] '
 
 EMAIL_USE_TLS = True
-
-try:
-   from local_settings import *
-except ImportError, e:
-   pass

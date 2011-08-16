@@ -3,24 +3,41 @@ table#createGuide
 {
 	font-size: 1.5em;
 	letter-spacing: 1px;
+/*	color: red;*/
+/*	background-color: white;*/
 
 }
-table#createGuide textarea {height: 3em;}
+table#createGuide textarea {
+	height: 3em; 
+	width: 20em;
+	}
 table#createGuide, table#createGuide textarea, table#createGuide input
 {
 	font-size: 1.1em;
 }
 
+
 table#createGuide td 
 {
 	vertical-align: top;
-	padding-bottom: 1em;	
+	padding-top: 1em;
+}
+
+table#createGuide td.explain
+{
+	font-size: .8em;
+	line-height: 1.2em;
+	padding-top: .5em;
+	color: #777777;
 }
 
 table#createGuide td.labels
 {
-	width:30%;
+	width:25% !important;
+	text-align: right;
+	padding-right: 1em;
 }
+
 
 
 /*EDITINGcentric*/
@@ -152,8 +169,57 @@ table#createGuide td.labels
 }
 
 
-
 .floating_card_container h2, .floating_card_container h3
 {
 	clear: both;
 }
+
+.smallcardWrapper:hover .controls a.delete_link_real
+{
+	display: none;
+}
+
+.smallcardWrapper:hover .controls.making_sure_delete  a.delete_link_real
+{
+	display: inline;
+}
+.smallcardWrapper:hover .controls.making_sure_delete  .delete_link
+{
+	display: none;
+}
+
+
+
+
+
+
+/*HOME SCREEEEEEN*/
+/*move elsewhere*/
+.listedGuides
+{
+	width: 100%;
+	float: left;
+}
+
+.listedGuides .smallcard
+{
+	height: 10em;
+	cursor: default;;
+}
+
+.listedGuides .smallcardWrapper .controls a
+{
+	display: inline;
+}
+
+big.a .ui-button-text
+{
+	font-size: 1em !important;
+}
+
+input.ui-button
+{
+	font-size: 1.2em !important;
+	height:45px !important;
+}
+
