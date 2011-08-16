@@ -149,8 +149,9 @@ INSTALLED_APPS = (
 	'thef',
     'south',
 
-    'tastypie',
     # 'debug_toolbar',
+
+    'tastypie',
 	'fileupload',
     'guides',
     'accounts',
