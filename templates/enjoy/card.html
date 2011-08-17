@@ -57,7 +57,18 @@
 {%load markup%}
 
 <div id="card_wrap" class="box">
-	<div class="card" data-id="{{card.slug}}">
+	
+
+	<div class="card
+		{%if not card.title%} notitle {%endif%}
+		{%if card.primary_media%} hasprimarymedia{%endif%}
+		{%if not card.primary_media%} noprimarymedia{%endif%}
+		{%if images|length > 1 %} hasthumbs {%endif%}
+		{%if not card.text%} notext {%endif%}
+		{%if card.input_elements%} hasinputs{%endif%}
+		{%if not card.is_floating_card%} hasprevandnext {%endif%}
+	" data-id="{{card.slug}}">
+		
 		{%if card.title%}
 			<h1>{{card.title}} </h1>
 		{%endif%}
@@ -65,7 +76,10 @@
 		{# ********************************** #}	
 		{# ***       PRIMARY MEDIA        ****#}
 		{# ********************************** #}
+		
+		
 		{%if primary_media.type == "image"%}
+			{# {{primary_media.file.photo.image.width}}x{{primary_media.file.photo.image.height}} #}
 			<img src="{{primary_media.file.photo.get_large_url}}" class="primary_media">
 		{%endif%}
 		

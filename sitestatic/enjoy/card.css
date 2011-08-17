@@ -246,10 +246,6 @@ h1 {font-size:2em; font-weight: bold; padding: 4px 0 6px 0;}
 h2 {font-size:1.5em; font-weight: bold; padding: 3px 0 5px 0;}
 
 
-
-
-
-
 .hidden {display:none;}
 .clearfix:after { content: "."; display: block; height: 0; clear: both; visibility: hidden;  font-size: 0;}
 .clearfix { display: inline-block; }
@@ -276,7 +272,7 @@ h1
 {
 	font-size:2em;
 	font-weight: bold;
-	padding: 2px 0 10px 0;
+	padding: 5px 0 10px 0;
 }
 
 .card
@@ -284,16 +280,63 @@ h1
 	display: inline-block;
 	color: black;
 	text-align: center;
-
+	height: 100%;
+	max-width: 60%;
+	overflow: hidden;
 }
+	/*just text and title*/
+	.card.noprimarymedia
+	{
+		margin-top: 15%;
+		width: 50%;
+	}
+	
+	.card.noprimarymedia h1
+	{
+		font-size: 3em;
+		margin-bottom: .5em;
+	}
+	
+	/*no text */
+	.card.notext
+	{
+		max-width: 100%;
+	}
+	.card.notext h1
+	{
+		font-size: 3em;
+		margin-bottom: .25em;
+		margin-top: .2em;
+	}
+	
+	.card.notext .primary_media
+	{
+		max-height: 100%;
+	}
+	.card.notext.notitle
+	{
+		margin-top: 2em;
+	}
+	
+	.card.hasthumbs h1
+	{
+		font-size: 2em;
+	}
+	.card.hasthumbs .primary_media
+	{
+		max-height: 60%;
+	}
+	.card.hasthumbs.notext .primary_media
+	{
+		max-height: 70%;
+	}
 
 .primary_media
 {
 	max-width: 100%;
-	max-height: 80%;
+	max-height: 70%; 
 	margin-left: auto;
 	margin-right: auto;
-	width: auto;
 	display: block;
 }
 
@@ -304,31 +347,43 @@ h1
 	margin-left: auto;
 	margin-right: auto;
 }
+.other_card_media a.thumb img
+{
+	float: left;
+}
+.other_card_media a.thumb
+{
+	margin-top: .5em;
+	margin-right: .5em;
+	display: inline-block;
+	box-shadow: 1px 1px 3px gray;
+}
+
+.other_card_media a.thumb:hover
+{
+	box-shadow: 0px 0px 5px black;
+}
+
 
 .card .card_text
 {
 	text-align: left;
 	margin-left: auto;
 	margin-right: auto;
-
+	/*width here should be dependent on the image's width. then all would work fine. TODO */
 }
 .card .card_text p
 {
 	margin-bottom: 1em;
+
 }
 
 .card .input_wrapper
 {
-/*	position: relative;*/
 	margin-left: auto;
 	margin-right: auto;
 	overflow: auto;
 	text-align: center;
-	
-/*	background-color: yellow;*/
-/*	width: 30em;*/
-
-		
 }
 
 .input_element
@@ -356,6 +411,7 @@ h1
 {
 	background-color: black;
 	cursor: pointer;
+	text-decoration: none;
 }
 
 .prev_and_next .input_element
@@ -382,7 +438,6 @@ h1
 .pressed
 {
 	border: 2px solid black !important;
-
 }
 
 .prev_and_next 

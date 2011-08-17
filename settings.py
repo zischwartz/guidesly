@@ -123,7 +123,6 @@ TEMPLATE_DIRS = (
     # Don't forget to use absolute paths, not relative paths.
 )
 
-AUTH_PROFILE_MODULE = 'accounts.userprofile'
                                                  
 #AUTHENTICATION_BACKENDS='django.contrib.auth.backends.ModelBackend'
 # AUTHENTICATION_BACKENDS= 'object_permissions.backend.ObjectPermBackend',
@@ -159,6 +158,7 @@ INSTALLED_APPS = (
 
 )                  
             
+AUTH_PROFILE_MODULE = 'accounts.userprofile'
 
 INVITE_MODE = True 
 
