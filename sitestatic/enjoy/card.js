@@ -5,6 +5,7 @@ var _jqCardFrameId = "DIV.card";
 $(document).ready(function(){	
 
 
+
 ///  THUMBS /////////////////////////////////////////////////
     $("a.thumb").live('click', function(event) {
 		$(".active_thumb").removeClass("active_thumb");
@@ -34,6 +35,7 @@ $(document).ready(function(){
 		}
 	});//end keydown
 
+	
 	activateTimers();
 
 
