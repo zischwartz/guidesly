@@ -25,6 +25,7 @@ from django.contrib.auth.decorators import login_required
 def Landing (request): 
 	if request.user.is_authenticated():		  
 		guide_list = Guide.objects.all()
+		your_guides= request.user.guide_set.all()
 		return render_to_response("site/home.html", locals(), context_instance=RequestContext(request))   	
 	return render_to_response("site/landing.html", locals(), context_instance=RequestContext(request))
 	
