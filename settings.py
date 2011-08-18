@@ -1,7 +1,7 @@
 
 import os
 
-DEBUG = False
+DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 TASTYPIE_FULL_DEBUG = DEBUG
 
@@ -15,14 +15,15 @@ SITE_ROOT = os.path.dirname(os.path.realpath(__file__))
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': 'zazerr_guidesly1',                      # Or path to database file if using sqlite3.
-        'USER': 'zazerr_guidesly1',                      # Not used with sqlite3.
-        'PASSWORD': '2af3bfc2',                  # Not used with sqlite3.
-        'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
-        'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
+        'ENGINE': 'postgresql_psycopg2',
+        'NAME': 'djangostack',
+        'HOST': '/opt/bitnami/postgresql',
+        'PORT': '5432',
+        'USER': 'bitnami',
+        'PASSWORD': '1d62ddfc22'
     }
 }
+
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
@@ -61,8 +62,8 @@ MEDIA_URL = '/usermedia/'
 # Don't put anything in this directory yourself; store your static files
 # in apps' "static/" subdirectories and in STATICFILES_DIRS.
 # Example: "/home/media/media.lawrence.com/static/"
-# STATIC_ROOT = os.path.join(SITE_ROOT, 'static')
-STATIC_ROOT = '/home/zazerr/webapps/static_g/'
+STATIC_ROOT = os.path.join(SITE_ROOT, 'sitestatic')
+#STATIC_ROOT = '/home/zazerr/webapps/static_g/'
 
 # URL prefix for static files.
 # Example: "http://media.lawrence.com/static/"
@@ -71,11 +72,11 @@ STATIC_URL = '/media/'
 # URL prefix for admin static files -- CSS, JavaScript and images.
 # Make sure to use a trailing slash.
 # Examples: "http://foo.com/static/admin/", "/static/admin/".
-ADMIN_MEDIA_PREFIX = '/media/admin/'
+ADMIN_MEDIA_PREFIX = '/admin_media/'
 
 # Additional locations of static files
 STATICFILES_DIRS = (
-    os.path.join(SITE_ROOT, 'sitestatic'),
+    os.path.join(SITE_ROOT, 'sitestatic22'),
     
     # Put strings here, like "/home/html/static" or "C:/www/django/static".
     # Always use forward slashes, even on Windows.
@@ -113,7 +114,7 @@ MIDDLEWARE_CLASSES = (
 
 INTERNAL_IPS = ('127.0.0.1',)
 
-ROOT_URLCONF = 'myproject.urls'
+ROOT_URLCONF = 'Project.urls'
 
 TEMPLATE_DIRS = (
     os.path.join(SITE_ROOT, 'templates')
@@ -170,7 +171,7 @@ INVITATIONS_PER_USER = 0
 
 LOGIN_REDIRECT_URL = '/home/'
 
-LOG_FILE = "/home/zazerr/webapps/guidesly_beta/myproject/log.log"
+LOG_FILE = os.path.join(SITE_ROOT, 'log.log')
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to
