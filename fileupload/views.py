@@ -1,4 +1,4 @@
-from fileupload.models import UserFile
+from fileupload.models import *
 from django.views.generic import CreateView, DeleteView, ListView
 
 from django.http import HttpResponse
@@ -22,9 +22,9 @@ class UserFileCreateView(CreateView):
 
 		if file_type == 'image':
 			self.object.type='image'
-			p=Photo(image=f, title=f.name)
+			p=Image(original_image=f)#, title=f.name)
 			p.save()
-			self.object.photo=p
+			self.object.image=p
 		elif file_type == 'audio':
 			self.object.type='audio'
 		elif file_type == 'video':

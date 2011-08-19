@@ -8,6 +8,8 @@ from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
 from photologue.models import Photo
+from imagekit.models import ImageModel
+
 
 SELEMENT_TYPE = (
 	('image', 'Image'),
@@ -16,14 +18,21 @@ SELEMENT_TYPE = (
 	('other', 'Other'),
 )
 
+class Image(ImageModel):
+	original_image = models.ImageField(upload_to='uimages')
+	class IKOptions:
+		spec_module = 'fileupload.specs'
+		cache_dir = 'uimages'
+		image_field = 'original_image'
+		
 class UserFile(models.Model):
-
 	file = models.FileField(upload_to='userfiles', blank=True, null=True)
 	slug = models.SlugField(max_length=150, blank=True)
 	created = models.DateTimeField(auto_now_add=True, blank=True, null=True)
 	owner = models.ForeignKey(User, blank=True, null=True)
 	type = models.CharField(blank=True, max_length=5, choices = SELEMENT_TYPE)
 	photo = models.ForeignKey(Photo, blank=True, null=True)
+	images = models.ForeignKey(Image, blank=True, null=True)
 	thumb_url = models.URLField(blank=True)
 	medium_url = models.URLField(blank=True)
 	class Meta:
@@ -43,8 +52,8 @@ class UserFile(models.Model):
 
 	def realsave(self, *args, **kwargs):		
 		if self.type == 'image':
-			self.thumb_url = self.photo.get_thumb_url()
-			self.medium_url = self.photo.get_medium_url()
+			self.thumb_url = self.image.thumbnail_image.url
+			self.medium_url = self.image.medium_image.url
 		if self.type == 'video':
 			self.thumb_url = "/static/img/video-icon.png"
 			self.medium_url = "/static/img/video-icon.png"
