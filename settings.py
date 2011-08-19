@@ -50,13 +50,14 @@ USE_L10N = True
 
 # Absolute filesystem path to the directory that will hold user-uploaded files.
 # Example: "/home/media/media.lawrence.com/media/"
-MEDIA_ROOT = os.path.join(SITE_ROOT, 'userstatic')
+# MEDIA_ROOT = os.path.join(SITE_ROOT, 'userstatic')
 
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash.
 # Examples: "http://media.lawrence.com/media/", "http://example.com/media/"
-MEDIA_URL = '/usermedia/'
+# MEDIA_URL = '/usermedia/'
+MEDIA_URL = 'http://guideslybetauserfiles.s3.amazonaws.com/'
 
 # Absolute path to the directory static files should be collected to.
 # Don't put anything in this directory yourself; store your static files
@@ -124,6 +125,15 @@ TEMPLATE_DIRS = (
     # Don't forget to use absolute paths, not relative paths.
 )
 
+# DEFAULT_FILE_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
+# AWS_ACCESS_KEY_ID = 'AKIAJRCNWZLCRGKOA7FA'
+# AWS_SECRET_ACCESS_KEY = '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'
+# AWS_STORAGE_BUCKET_NAME= 'guideslybetauserfiles'
+
+DEFAULT_FILE_STORAGE = 'cuddlybuddly.storage.s3.S3Storage'
+AWS_ACCESS_KEY_ID = 'AKIAJRCNWZLCRGKOA7FA'
+AWS_SECRET_ACCESS_KEY = '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'
+AWS_STORAGE_BUCKET_NAME= 'guideslybetauserfiles'
                                                  
 #AUTHENTICATION_BACKENDS='django.contrib.auth.backends.ModelBackend'
 # AUTHENTICATION_BACKENDS= 'object_permissions.backend.ObjectPermBackend',
@@ -131,6 +141,18 @@ TEMPLATE_DIRS = (
 # got Error importing authentication backends. Is AUTHENTICATION_BACKENDS a correctly defined list or tuple?
 # commented this out, loaded page, commented back in, everything is fine?
 
+AWS_HEADERS = [
+    ('^private/', {
+        'x-amz-acl': 'private',
+        'Expires': 'Thu, 15 Apr 2000 20:00:00 GMT',
+        'Cache-Control': 'private, max-age=0'
+    }),
+    ('.*', {
+        'x-amz-acl': 'public-read',
+        'Expires': 'Sat, 30 Oct 2010 20:00:00 GMT',
+        'Cache-Control': 'public, max-age=31556926'
+    })
+]
 
 INSTALLED_APPS = (
     'django.contrib.auth',
@@ -156,6 +178,7 @@ INSTALLED_APPS = (
 	'fileupload',
     'guides',
     'accounts',
+    'cuddlybuddly.storage.s3',
 
 )                  
             

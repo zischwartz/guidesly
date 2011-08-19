@@ -18,7 +18,7 @@ SELEMENT_TYPE = (
 
 class UserFile(models.Model):
 
-	file = models.FileField(upload_to='uf/', blank=True, null=True)
+	file = models.FileField(upload_to='userfiles', blank=True, null=True)
 	slug = models.SlugField(max_length=150, blank=True)
 	created = models.DateTimeField(auto_now_add=True, blank=True, null=True)
 	owner = models.ForeignKey(User, blank=True, null=True)
@@ -32,7 +32,8 @@ class UserFile(models.Model):
 
 
 	def __unicode__(self):
-		return self.file.name
+		# return self.file #messing with boto
+		return self.file.name 
 
 
 	@property
