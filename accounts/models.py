@@ -31,7 +31,7 @@ class UserProfile(models.Model):
 		verbose_name_plural = _('profiles')	  
                                                   
 
-	
+
 
 class Viewing(models.Model):
 	userprofile = models.ForeignKey(UserProfile, related_name="userWhoViewed")

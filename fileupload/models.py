@@ -9,6 +9,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
 from photologue.models import Photo
 from imagekit.models import ImageModel
+from django.db.models.signals import post_save, pre_save
 
 
 SELEMENT_TYPE = (
@@ -22,8 +23,10 @@ class Image(ImageModel):
 	original_image = models.ImageField(upload_to='uimages')
 	class IKOptions:
 		spec_module = 'fileupload.specs'
-		cache_dir = 'uimages'
+		cache_dir = 'userimagecache'
 		image_field = 'original_image'
+	def __unicode__(self):
+		return self.original_image.name
 		
 class UserFile(models.Model):
 	file = models.FileField(upload_to='userfiles', blank=True, null=True)
@@ -32,7 +35,7 @@ class UserFile(models.Model):
 	owner = models.ForeignKey(User, blank=True, null=True)
 	type = models.CharField(blank=True, max_length=5, choices = SELEMENT_TYPE)
 	photo = models.ForeignKey(Photo, blank=True, null=True)
-	images = models.ForeignKey(Image, blank=True, null=True)
+	image = models.ForeignKey(Image, blank=True, null=True)
 	thumb_url = models.URLField(blank=True)
 	medium_url = models.URLField(blank=True)
 	class Meta:
@@ -41,7 +44,6 @@ class UserFile(models.Model):
 
 
 	def __unicode__(self):
-		# return self.file #messing with boto
 		return self.file.name 
 
 
@@ -50,18 +52,31 @@ class UserFile(models.Model):
 		return (self.file.name) #removed string /media/ and changed slug to file
 		# return (settings.MEDIA_URL + self.file.name) #removed string /media/ and changed slug to file
 
-	def realsave(self, *args, **kwargs):		
-		if self.type == 'image':
-			self.thumb_url = self.image.thumbnail_image.url
-			self.medium_url = self.image.medium_image.url
-		if self.type == 'video':
-			self.thumb_url = "/static/img/video-icon.png"
-			self.medium_url = "/static/img/video-icon.png"
-		if self.type== 'audio':
-			self.thumb_url = "/static/img/audio-icon.png"
-			self.medium_url = "/static/img/audio-icon.png"
-		if self.type== 'other':
-			self.thumb_url = "/static/img/document-icon.png"
-			self.medium_url = "/static/img/document-icon.png"		
-		super(UserFile, self).save(*args, **kwargs)
+	# def realsave(self, *args, **kwargs):		
+	# 	if self.type == 'image':
+	# 		self.thumb_url = self.image.thumbnail_image.url
+	# 		self.medium_url = self.image.medium_image.url
+	# 	if self.type == 'video':
+	# 		self.thumb_url = "/static/img/video-icon.png"
+	# 		self.medium_url = "/static/img/video-icon.png"
+	# 	if self.type== 'audio':
+	# 		self.thumb_url = "/static/img/audio-icon.png"
+	# 		self.medium_url = "/static/img/audio-icon.png"
+	# 	if self.type== 'other':
+	# 		self.thumb_url = "/static/img/document-icon.png"
+	# 		self.medium_url = "/static/img/document-icon.png"		
+	# 	super(UserFile, self).save(*args, **kwargs)
 
+
+
+def resize_images(sender, instance=None, **kwargs):
+	if instance.type=='image':	
+		instance.thumb_url = instance.image.thumbnail_image.url
+		instance.medium_url = instance.image.medium_image.url
+	if instance.type == 'video':
+		instance.thumb_url = "/static/img/video-icon.png"
+		instance.medium_url = "/static/img/video-icon.png"
+
+
+
+post_save.connect(resize_images, sender=UserFile)

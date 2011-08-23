@@ -18,13 +18,15 @@ class UserFileCreateView(CreateView):
 
 		f = self.request.FILES.get('file')
 		file_type =  f.content_type.split('/')[0]
+
 		self.object = form.save(commit=False)
 
 		if file_type == 'image':
 			self.object.type='image'
-			p=Image(original_image=f)#, title=f.name)
-			p.save()
-			self.object.image=p
+			# new_image=Image(original_image=f) #works but is copying methinks
+			new_image=Image(original_image=self.object.file)
+			new_image.save()
+			self.object.image=new_image
 		elif file_type == 'audio':
 			self.object.type='audio'
 		elif file_type == 'video':
@@ -33,17 +35,12 @@ class UserFileCreateView(CreateView):
 			self.object.type='other'
 		
 		self.object.slug=f.name
-		# logger=getlogger()
-		# logger.debug(file_type)	
-		# logger.debug('-----------------------------------------------------------------------------------------------------------------')
-		# logger.debug("type:" + form.fields['type'])	
-		# logger.debug('-----------------------------------------------------------------------------------------------------------------')
-		# logger.debug(file_type)
-		
-		self.object.realsave()
-		# logger.debug()	
 
-		data = [{'name': f.name, 'url': self.object.url, 'thumbnail_url': self.object.thumb_url, 'delete_url': reverse('upload-delete', args=[f.name]), 'delete_type': "DELETE"}]
+		self.object.save()
+
+
+		data = [{'name': f.name, 'url': self.object.url}]
+		# data = [{'name': f.name, 'url': self.object.url, 'thumbnail_url': self.object.thumb_url, 'delete_url': reverse('upload-delete', args=[f.name]), 'delete_type': "DELETE"}]
 		return JSONResponse(data)
 
 	def form_invalid (self, form):

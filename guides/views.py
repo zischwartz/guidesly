@@ -150,12 +150,13 @@ def EditCard (request, gslug, id):
 	all_cards = get_list_or_404(Card, guide__slug=gslug)
 	c=CardResource()
 	card_list = []
+	# TODO REPLACE WITH GUIDE... as that works much better, and makes more sense.
 	for card in all_cards:
 		# card_list.append({'title':card.title,'resource_uri': c.get_resource_uri(card), 'id':card.id})
-		if card.primary_media:
-			card_list.append({'title':card.title, 'primary_media': card.primary_media.file.thumb_url,'resource_uri': c.get_resource_uri(card), 'id':card.id})
-		else:
-			card_list.append({'title':card.title,'resource_uri': c.get_resource_uri(card), 'id':card.id})
+		# if card.primary_media:
+			# card_list.append({'title':card.title, 'primary_media': card.primary_media.file.thumb_url,'resource_uri': c.get_resource_uri(card), 'id':card.id})
+		# else:
+		card_list.append({'title':card.title,'resource_uri': c.get_resource_uri(card), 'id':card.id})
 
 	all_cards_json = simplejson.dumps(card_list)
 

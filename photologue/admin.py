@@ -55,10 +55,10 @@ class PhotoSizeAdmin(admin.ModelAdmin):
 class WatermarkAdmin(admin.ModelAdmin):
     list_display = ('name', 'opacity', 'style')
 
-
-admin.site.register(Gallery, GalleryAdmin)
-admin.site.register(GalleryUpload)
-admin.site.register(Photo, PhotoAdmin)
-admin.site.register(PhotoEffect, PhotoEffectAdmin)
-admin.site.register(PhotoSize, PhotoSizeAdmin)
-admin.site.register(Watermark, WatermarkAdmin)
+# 
+# admin.site.register(Gallery, GalleryAdmin)
+# admin.site.register(GalleryUpload)
+# admin.site.register(Photo, PhotoAdmin)
+# admin.site.register(PhotoEffect, PhotoEffectAdmin)
+# admin.site.register(PhotoSize, PhotoSizeAdmin)
+# admin.site.register(Watermark, WatermarkAdmin)

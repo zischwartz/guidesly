@@ -26,7 +26,7 @@ v1_api.register(UserResource())
 v1_api.register(SmallCardResource())
 v1_api.register(GuideResource())
 v1_api.register(TheFResource())
-v1_api.register(PhotoResource())
+v1_api.register(ImageResource())
 
 
 

@@ -242,7 +242,7 @@ class MediaElement (models.Model):
 	autoplay = models.BooleanField(default=False)
 	length_seconds = models.IntegerField(blank=True, null=True)
 	length_minutes = models.IntegerField(blank=True, null=True)
-	file = models.ForeignKey(UserFile)
+	file = models.ForeignKey(UserFile, null=True)
 	external_file = models.URLField(blank=True) #,verify_exists=True)
 	action_when_complete= models.OneToOneField('Action', blank=True, null=True)
 
