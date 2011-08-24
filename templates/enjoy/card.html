@@ -79,8 +79,9 @@
 		
 		
 		{%if primary_media.type == "image"%}
+		{# {{primary_media.file}} #}
 			{# {{primary_media.file.photo.image.width}}x{{primary_media.file.photo.image.height}} #}
-			<img src="{{primary_media.file.photo.get_large_url}}" class="primary_media">
+			<img src="{{primary_media.file}}" class="primary_media">
 		{%endif%}
 		
 	    {%if primary_media.type == "video"%}

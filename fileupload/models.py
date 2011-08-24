@@ -79,4 +79,4 @@ def resize_images(sender, instance=None, **kwargs):
 
 
 
-post_save.connect(resize_images, sender=UserFile)
+pre_save.connect(resize_images, sender=UserFile)
