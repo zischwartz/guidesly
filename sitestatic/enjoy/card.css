@@ -243,7 +243,10 @@ a:hover
 
 
 h1 {font-size:2em; font-weight: bold; padding: 4px 0 6px 0;}
-h2 {font-size:1.5em; font-weight: bold; padding: 3px 0 5px 0;}
+h2 {
+	font-size:1.5em; font-weight: bold; padding: 3px 0 5px 0;
+	border: none !important;
+	}
 
 
 .hidden {display:none;}
@@ -281,8 +284,9 @@ h1
 	color: black;
 	text-align: center;
 	height: 100%;
-	max-width: 60%;
+/*	max-width: 60%;*/
 	overflow: hidden;
+/*	background-color: gray;*/
 }
 	/*just text and title*/
 	.card.noprimarymedia
@@ -302,10 +306,10 @@ h1
 	{
 		max-width: 100%;
 	}
-	.card.notext h1
+	.card.notext h2
 	{
 		font-size: 3em;
-		margin-bottom: .25em;
+/*		margin-bottom: .25em;*/
 		margin-top: .2em;
 	}
 	
@@ -318,7 +322,7 @@ h1
 		margin-top: 2em;
 	}
 	
-	.card.hasthumbs h1
+	.card.hasthumbs h2
 	{
 		font-size: 2em;
 	}
