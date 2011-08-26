@@ -4,7 +4,7 @@
   color: #aaa;
   background: #000;
 }
-.deck-container .slide {
+.deck-container .card {
   background: #000;
 }
 .deck-container h1 {
@@ -91,7 +91,7 @@
 .deck-container .goto-form label {
   color: #fff;
 }
-.deck-container.deck-menu .slide {
+.deck-container.deck-menu .card {
   background: #333;
 }
 .deck-container.deck-menu .deck-current {

@@ -17,7 +17,7 @@
   /* W3C */
   background-attachment: fixed;
 }
-.deck-container > .slide {
+.deck-container > .card {
   text-shadow: 1px 1px 1px rgba(255, 255, 255, 0.5);
 }
 .deck-container h1, .deck-container h2, .deck-container h3, .deck-container h4, .deck-container h5, .deck-container h6 {
@@ -161,16 +161,16 @@
 .deck-container .deck-status {
   font-size: 0.6666em;
 }
-.deck-container.deck-menu .slide {
+.deck-container.deck-menu .card {
   background: transparent;
   -webkit-border-radius: 5px;
   -moz-border-radius: 5px;
   border-radius: 5px;
 }
-.rgba .deck-container.deck-menu .slide {
+.rgba .deck-container.deck-menu .card {
   background: rgba(0, 0, 0, 0.1);
 }
-.deck-container.deck-menu .slide.deck-current, .rgba .deck-container.deck-menu .slide.deck-current {
+.deck-container.deck-menu .card.deck-current, .rgba .deck-container.deck-menu .card.deck-current {
   background: #fff;
 }
 .deck-container .goto-form {

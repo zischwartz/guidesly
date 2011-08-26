@@ -127,11 +127,12 @@ class Card (models.Model):
 	tags = TagField()
 	card_number = models.IntegerField(blank=True, null=True) #for default guide.  1 based (not 0)
 	primary_media = models.ForeignKey('MediaElement', blank=True, null=True, related_name='primary_media', default=None,  on_delete=models.SET_DEFAULT)
+	big_media  = models.BooleanField(default=False)
 	is_floating_card = models.BooleanField(default=False)
 	theme = models.ForeignKey(Theme, blank=True, null=True)
 	owner = models.ForeignKey(User, blank=True, null=True)
-	custom_prev_text = models.CharField(max_length=100, blank=True, null=True)
-	custom_next_text = models.CharField(max_length=100, blank=True, null=True)
+	# custom_prev_text = models.CharField(max_length=100, blank=True, null=True)
+	# custom_next_text = models.CharField(max_length=100, blank=True, null=True)
 	
 	def __unicode__(self):
 		if self.title !="":
@@ -245,6 +246,7 @@ class MediaElement (models.Model):
 	file = models.ForeignKey(UserFile, null=True)
 	external_file = models.URLField(blank=True) #,verify_exists=True)
 	action_when_complete= models.OneToOneField('Action', blank=True, null=True)
+	# big = models.BooleanField(default=True)
 
 
 class Action (models.Model):

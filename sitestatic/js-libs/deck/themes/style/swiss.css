@@ -3,7 +3,7 @@
   font-size: 1.25em;
   background: #fff;
 }
-.deck-container .slide {
+.deck-container .card {
   background: #fff;
 }
 .deck-container h1 {
@@ -67,7 +67,7 @@
 .deck-container .deck-status {
   font-size: 0.6666em;
 }
-.deck-container.deck-menu .slide {
+.deck-container.deck-menu .card {
   background: #eee;
 }
 .deck-container.deck-menu .deck-current {

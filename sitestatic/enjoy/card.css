@@ -291,8 +291,8 @@ h1
 	/*just text and title*/
 	.card.noprimarymedia
 	{
-		margin-top: 15%;
-		width: 50%;
+/*		margin-top: 15%;*/
+/*		width: 50%;*/
 	}
 	
 	.card.noprimarymedia h1
@@ -319,7 +319,7 @@ h1
 	}
 	.card.notext.notitle
 	{
-		margin-top: 2em;
+/*		margin-top: 2em;*/
 	}
 	
 	.card.hasthumbs h2
@@ -363,6 +363,11 @@ h1
 	box-shadow: 1px 1px 3px gray;
 }
 
+.other_card_media a.thumb img
+{
+	margin: 0px !important;
+}
+
 .other_card_media a.thumb:hover
 {
 	box-shadow: 0px 0px 5px black;
@@ -375,6 +380,7 @@ h1
 	margin-left: auto;
 	margin-right: auto;
 	/*width here should be dependent on the image's width. then all would work fine. TODO */
+	width: 500px;
 }
 .card .card_text p
 {

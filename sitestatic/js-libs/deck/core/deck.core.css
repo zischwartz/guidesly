@@ -5,9 +5,10 @@ html {
 .deck-container {
   position: relative;
   height: 100%;
-  width: 70%;
+/*  width: 70%;*/
+  width: 100%;
   margin: 0 auto;
-  padding: 0 48px;
+/*  padding: 0 48px;*/
   font-size: 16px;
   line-height: 1.25;
   overflow: hidden;
@@ -186,7 +187,7 @@ html {
   padding-top: 1em;
 }
 .csstransforms .deck-container h1 {
-  padding: 0 48px;
+/*  padding: 0 48px;*/
   position: absolute;
   left: 0;
   right: 0;
@@ -249,7 +250,7 @@ html {
   vertical-align: middle;
 }
 
-.slide {
+.card {
   width: auto;
   min-height: 100%;
   position: relative;
@@ -265,7 +266,7 @@ html {
   z-index: 2;
 }
 
-.slide .slide {
+.card .card {
   visibility: hidden;
   position: static;
   min-height: 0;
@@ -275,7 +276,7 @@ html {
   position: static;
   z-index: 2;
 }
-.deck-child-current .slide {
+.deck-child-current .card {
   visibility: hidden;
 }
 .deck-child-current .deck-previous, .deck-child-current .deck-before, .deck-child-current .deck-current {
@@ -352,7 +353,7 @@ body.deck-container {
     page-break-after: avoid;
   }
 
-  .slide {
+  .card {
     position: static !important;
     visibility: visible !important;
     display: block !important;
@@ -373,7 +374,7 @@ body.deck-container {
     position: static !important;
   }
 
-  .deck-container > .slide {
+  .deck-container > .card {
     page-break-after: always;
   }
 
