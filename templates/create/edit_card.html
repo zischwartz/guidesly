@@ -79,6 +79,12 @@
 		 				beforeRemove: function(elem) {$(elem).slideUp() },
 						afterAdd: function(elem) {$(elem).hide().slideDown() }}"> </div>
 
+
+		<div data-bind="template:{name: VM.inputTypeTemplate,  foreach: VM.mapelements,
+		  				afterRender: uePostProcessing,
+		 				beforeRemove: function(elem) {$(elem).slideUp() },
+						afterAdd: function(elem) {$(elem).hide().slideDown() }}"> </div>
+	
 	
 		{# Prev and Next Buttons for linear guides #}
 		<div id="prev_and_nexts" data-bind="visible: !(is_floating_card())">
@@ -275,6 +281,27 @@
 		</div> 
 	</script>
 	
+	
+	<script id='mapTemplate' type='text/html'>
+		<div class="ue" data-bind="event: { focusin: VM.flipEl, focusout: VM.unflipEl }, attr: { tabindex: typeof(id)!='undefined' ? id: -1 }">
+			<figure class="front">
+				<div class="media_holder" style="background-image: url('/static/img/map-icon.png')"></div>
+				<div class="front input-button" data-bind="text: title"></div>
+			</figure>
+			
+			
+			
+			<div class="back">
+			
+			
+			
+			<div class="clearfix"></div>
+			<a class="uibutton delete" data-bind="click: VM.deleteFromCard">Remove</a>
+			
+			</div>
+		</div> 
+	</script>
+	
 	<script id='audioTemplate' type='text/html'>
 		<div class="ue" data-bind="event: { focusin: VM.flipEl, focusout: VM.unflipEl }, attr: { tabindex: typeof(id)!='undefined' ? id: -1 }">
 			<figure class="front">
@@ -411,6 +438,10 @@
 	<script id='errorNoTemplate' type='text/html'>
 		<div class="smallcard"> 
 		ERROR NO TEMPLATE. You gota have one....
+		
+		<div class="clearfix"></div>
+		<a class="uibutton delete" data-bind="click: VM.deleteFromCard">Remove</a>
+			
 		</div>
 	</script>
 	

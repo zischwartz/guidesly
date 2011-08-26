@@ -38,6 +38,7 @@ class UserResource(ModelResource):
 class CardResource(ModelResource):
 	mediaelements = fields.ToManyField('api.MediaElementResource', 'mediaelement_set', full=True, readonly=True, null=True )#, readonly=True))
 	inputelements = fields.ToManyField('api.InputElementResource', 'inputelement_set', full=True, readonly=True, null=True)
+	mapelements = fields.ToManyField('api.MapElementResource', 'mapelement_set', full=True, readonly=True, null=True)
 	guide = fields.ForeignKey('api.GuideResource', 'guide', null=True)
 	primary_media = fields.ForeignKey('api.MediaElementResource', 'primary_media', null=True, blank=True)
 	class Meta:
@@ -113,7 +114,7 @@ class MediaElementResource(ModelResource):
 		excludes = ['created']
 		
 class ActionResource(ModelResource):
-	goto= fields.ForeignKey(CardResource, 'goto')
+	goto= fields.ForeignKey(CardResource, 'goto', null=True)
 	class Meta:
 		queryset= Action.objects.all()
 		authorization = Authorization()
@@ -128,16 +129,15 @@ class InputElementResource(ModelResource):
 		authorization = Authorization()
 		
 class MapPointElementResource(ModelResource):
-	default_action= fields.ToOneField(ActionResource, 'default_action', null=True, full=True) #, full=True) #full being true made a mess on PUT 
+	default_action= fields.ToOneField(ActionResource, 'default_action', null=True, full=True)  
 	class Meta:
-		queryset= InputElement.objects.all()
+		queryset= MapPointElement.objects.all()
 		authorization = Authorization()
 		
 class MapElementResource(ModelResource):
 	card= fields.ForeignKey(CardResource, 'card')
-	default_action= fields.ToOneField(ActionResource, 'default_action', null=True, full=True) #, full=True) #full being true made a mess on PUT 
 	class Meta:
-		queryset= InputElement.objects.all()
+		queryset= MapElement.objects.all()
 		authorization = Authorization()
 
 

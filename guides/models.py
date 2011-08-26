@@ -29,6 +29,7 @@ IELEMENT_TYPE = (
 	('N', 'Enter Numerical Value'),
 	('S', 'Sensor'),
 	('timer', 'Timer'),
+	('map', 'Map'),
 )
 
 class Theme (models.Model):
@@ -279,16 +280,16 @@ class ConditionalAction (models.Model):
 
 
 class MapPointElement (models.Model):
-	point = models.CharField(max_length=500)
+	point = models.IntegerField(max_length=500)
 	point_title = models.CharField(max_length=100)
-	manual_addy = models.CharField(max_length=100)
+	manual_addy = models.CharField(max_length=100, blank=True, null=True)
 	default_action = models.OneToOneField(Action, blank=True, null=True)
 
 class MapElement (models.Model):
 	card = models.ForeignKey(Card)
 	map_title = models.CharField(max_length=100)
 	points = models.ManyToManyField(MapPointElement)
-
+	type = models.CharField(max_length=100, default = 'map')
 
 class InputElement (models.Model):
 	card = models.ForeignKey(Card)

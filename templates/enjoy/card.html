@@ -194,6 +194,14 @@
 			{%endfor%}		
 		</div>
 		
+		<div class="map_wrapper">	
+			{%for el in map_elements%}
+				<div class="map_element nonlinear">
+					{%include 'create/map.html'%}
+				</div>
+			{%endfor%}		
+		</div>
+		
 		{%if not card.is_floating_card%}
 		<div class="prev_and_next">
 			{%if prev_card%}<div class="input_element prev"><a href="{{prev_card.get_absolute_url}}" class="goto"> ⬅ Previous</a></div>{%endif%}
