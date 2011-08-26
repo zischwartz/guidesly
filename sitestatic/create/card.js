@@ -141,6 +141,9 @@ VM.deleteFromCard= function()
 	
 	if (VM.inputelements.indexOf(this)!=-1)
 		VM.inputelements.remove(this);
+		
+	if (VM.mapelements.indexOf(this)!=-1)
+		VM.mapelements.remove(this);
 };
 
 
@@ -263,8 +266,8 @@ VM.inputTypeTemplate= function(element){
 			return 'timerTemplate';
 		if (element.type() == 'map')
 			return 'mapTemplate';
-			
-		return 'errorNoTemplate';
+		else			
+			return 'errorNoTemplate';
 }
 
 
@@ -450,20 +453,22 @@ VM.addInput2card= function(){
 
 
 VM.addMap2Card= function(){
-	alert('addMap2Card');
 	inputToAdd= new Object();
 	var postURL_input;
 	inputToAdd.type= ko.observable('map');
 	inputToAdd.card= VM.resource_uri();
-	inputToAdd.map_title="Map";
+	inputToAdd.title=ko.observable("Map");
 	jsonData = ko.toJSON(inputToAdd);
-	alert(jsonData);
 	postURL_input=$.ajax({
 		url: map_api_url,
 		type: "POST",
 		data: jsonData,
 		success:function(data) {
-			
+				console.log('map added!');	
+				console.log(data); 
+				inputToAdd.resource_uri=ko.observable(postURL_input.getResponseHeader('location'));
+				inputToAdd.id = inputToAdd.resource_uri().match(/\/mapelement\/(.*)\//)[1];
+				VM.mapelements.push(inputToAdd); 
 			},
 		contentType: "application/json",
 		});

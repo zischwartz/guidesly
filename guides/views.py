@@ -64,6 +64,7 @@ def CardDetailView (request, gslug, id=None, slug=None, cnumber=None):
 			audio=element
 	# media_elements = card.mediaelement_set.all()
 	input_elements=card.inputelement_set.all()
+	map_elements=card.mapelement_set.all()
 	primary_media=card.primary_media
 	if not card.is_floating_card:
 		prev_card = card.guide.get_prev_card(card)
