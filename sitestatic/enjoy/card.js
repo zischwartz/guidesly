@@ -80,7 +80,18 @@ function cardTo(jqNewDiv, goForward) {
         newNode.hide();
         newNode.fadeIn(300);
         newNode.show();
-       	$( '.video-js' ).VideoJS();
+   	$( '.video-js' ).VideoJS();              
+   
+//	      $("#jquery_jplayer_1").jPlayer({
+//	        ready: function () {
+//	          $(this).jPlayer("setMedia", {
+//	            m4v: "{{primary_media.file}}"
+//	          });
+//	        },  
+//	        swfPath: "{{STATIC_URL}}js-libs/",
+//	        supplied: "M4V"
+//	      });
+
 		activateTimers();
     };
 

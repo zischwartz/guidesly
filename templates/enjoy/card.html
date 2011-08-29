@@ -3,41 +3,14 @@
 
 {%block extrahead%}
 
-	<script src="{{STATIC_URL}}js-libs/jquery.jplayer.min.js" type="text/javascript"></script>
+ 	<script src="{{STATIC_URL}}js-libs/video.js" type="text/javascript" charset="utf-8"></script>
 	<script src="{{STATIC_URL}}enjoy/nav.js" type="text/javascript" charset="utf-8"></script>
 	<script src="{{STATIC_URL}}enjoy/card.js"></script>
-	<link type="text/css" href="{{STATIC_URL}}enjoy/jplayer/jplayer.blue.monday.css" rel="stylesheet" />
+	<link rel="stylesheet" href="{{STATIC_URL}}js-libs/video-js.css" type="text/css" media="screen" title="Video JS" charset="utf-8">
 	<link rel="stylesheet" href="{{STATIC_URL}}enjoy/card.css" type="text/css" media="screen"  charset="utf-8">
-	
 	<script type="text/javascript" charset="utf-8">
-    $(document).ready(function(){
-      $("#jquery_jplayer_1").jPlayer({
-        ready: function () {
-          $(this).jPlayer("setMedia", {
-            m4v: "{{primary_media.file}}"
-          });
-        },
-        cssSelectorAncestor: '#jp_interface_1',
-		cssSelector: {
-	  videoPlay: '.jp-video-play',
-  play: '.jp-play',
-  pause: '.jp-pause',
-  stop: '.jp-stop',
-  seekBar: '.jp-seek-bar',
-  playBar: '.jp-play-bar',
-  mute: '.jp-mute',
-  unmute: '.jp-unmute',
-  volumeBar: '.jp-volume-bar',
-  volumeBarValue: '.jp-volume-bar-value',
-  currentTime: '.jp-current-time',
-  duration: '.jp-duration'
- },
-        swfPath: "{{STATIC_URL}}js-libs/",
-        supplied: "M4V"
-      });
-     
-    });
-  	</script>
+		VideoJS.setupAllWhenReady();
+	</script>	
 
 	<style>
 	{{card.guide.theme.text}}
@@ -57,13 +30,14 @@
 {%load markup%}
 
 <div id="card_wrap" class="box">
-	
+	                
 
 	<div class="card
 		{%if not card.title%} notitle {%endif%}
 		{%if card.primary_media%} hasprimarymedia{%endif%}
-		{%if not card.primary_media%} noprimarymedia{%endif%}
-		{%if images|length > 1 %} hasthumbs {%endif%}
+		{%if not card.primary_media%} noprimarymedia{%endif%} 
+		{%if media_elements|length > 1 %} hasthumbs {%endif%}      
+		{%if images|length > 1 %} hasthumbs {%endif%}  
 		{%if not card.text%} notext {%endif%}
 		{%if card.input_elements%} hasinputs{%endif%}
 		{%if not card.is_floating_card%} hasprevandnext {%endif%}
@@ -78,149 +52,115 @@
 		{# ********************************** #}
 		
 		
-		{%if primary_media.type == "image"%}
-			{# {{primary_media.file.photo.image.width}}x{{primary_media.file.photo.image.height}} #}
-			<img src="{{primary_media.file.photo.get_large_url}}" class="primary_media">
-		{%endif%}
-		
-	    {%if primary_media.type == "video"%}
-	    <div id="content">
-	    
-	<div class="jp-video jp-video-270p">
-    <div class="jp-type-single">
-      <div id="jquery_jplayer_1" class="jp-jplayer"></div>
-      <div id="jp_interface_1" class="jp-interface">
-        <div class="jp-video-play"></div>
-        <ul class="jp-controls">
-          <li><a href="#" class="jp-play" tabindex="1">play</a></li>
-          <li><a href="#" class="jp-pause" tabindex="1">pause</a></li>
-          <li><a href="#" class="jp-stop" tabindex="1">stop</a></li>
-          <li><a href="#" class="jp-mute" tabindex="1">mute</a></li>
-          <li><a href="#" class="jp-unmute" tabindex="1">unmute</a></li>
-        </ul>
-        <div class="jp-progress">
-          <div class="jp-seek-bar">
-            <div class="jp-play-bar">
-            </div>
-          </div>
-        </div>
-        <div class="jp-volume-bar">
-          <div class="jp-volume-bar-value"></div>
-        </div>
-        <div class="jp-current-time"></div>
-        <div class="jp-duration"></div>
-      </div>
-      <div id="jp_playlist_1" class="jp-playlist">
-        <ul>
-          <li>{{primary_media.file}}</li>
-        </ul>
-      </div>
-    </div>
-  </div>
-  </div>
+				{%if primary_media.type == "image"%}
+					<img src="{{primary_media.file.photo.get_large_url}}" class="primary_media">
+				{%endif%}
 
-	    {%endif%}		
-	
-	    {%if primary_media.type == "audio"%}
-	    {%endif%}
-	
-	
-	{# ********************************** #}	
-	{# ***           THUMBS           ****#}
-	{# ********************************** #}
-	<div class="other_card_media">
-		{%if audio%}
-	    	{# <a class="thumb audio" href="{{el.file}}" data-media_type="audio"> #}
-		    	{# <img src="{{audio.file.thumb_url}}" > #}
-<div class="jp-video jp-video-270p">
-    <div class="jp-type-single">
-      <div id="jquery_jplayer_1" class="jp-jplayer"></div>
-      <div id="jp_interface_1" class="jp-interface">
-        <div class="jp-video-play"></div>
-        <ul class="jp-controls">
-          <li><a href="#" class="jp-play" tabindex="1">play</a></li>
-          <li><a href="#" class="jp-pause" tabindex="1">pause</a></li>
-          <li><a href="#" class="jp-stop" tabindex="1">stop</a></li>
-          <li><a href="#" class="jp-mute" tabindex="1">mute</a></li>
-          <li><a href="#" class="jp-unmute" tabindex="1">unmute</a></li>
-        </ul>
-        <div class="jp-progress">
-          <div class="jp-seek-bar">
-            <div class="jp-play-bar">
-            </div>
-          </div>
-        </div>
-        <div class="jp-volume-bar">
-          <div class="jp-volume-bar-value"></div>
-        </div>
-        <div class="jp-current-time"></div>
-        <div class="jp-duration"></div>
-      </div>
-      <div id="jp_playlist_1" class="jp-playlist">
-        <ul>
-          <li>{{primary_media.file}}</li>
-        </ul>
-      </div>
-    </div>
-  </div>
-  </div>
-	    	{# </a> #}
-	    {%endif%}
-		
-		{%if images|length > 1 %}	
-		{%for el in images%}		
-			<a href="{{el.file}}" class="thumb image" data-media_type="image">
-				<img src="{{el.file.thumb_url}}">
-			</a>    
-		{%endfor%}
-		{%endif%} {# if greater than 1 #}
-
-		</div> {# end  .other_card_media#}
-					
-			
-		{%if card.text%}
-		<div class="card_text">
-			{{card.text|markdown}}
-		</div>
-		{%endif%}
-			
-		<div class="input_wrapper">	
-			{%for el in input_elements%}
-				<div class="input_element nonlinear">
-					{%include el.el_template%}
+			    {%if primary_media.type == "video"%}
+			    <div id="content">
+		        <div class="video-js-box primary_media">
+						<video id="video" 
+						class="video-js"
+						width="800" 
+						height="600" 
+						{# poster=""#}
+						{%if primary_media.autoplay%}autoplay{%endif%}
+						preload = "auto">
+						<source src="{{primary_media.file}}" type="video/mp4; codecs='avc1.42E01E, mp4a.40.2'" />
+						Browser doesn't support HTML5 video.
+						<object class="vjs-flash-fallback" width="640" height="264" type="application/x-shockwave-flash"
+		      			  data="http://releases.flowplayer.org/swf/flowplayer-3.2.1.swf">
+		     			  <param name="movie" value="http://releases.flowplayer.org/swf/flowplayer-3.2.1.swf" />
+		        		  <param name="allowfullscreen" value="true" />
+		        		  <param name="flashvars" value='config={"playlist":[{"url": "{{primary_media.file}}","autoPlay":false,"autoBuffering":true}]}' />
+		      			</object>
+						</video>				
 				</div>
-			{%endfor%}		
-		</div>
-		
-		{%if not card.is_floating_card%}
-		<div class="prev_and_next">
-			{%if prev_card%}<div class="input_element prev"><a href="{{prev_card.get_absolute_url}}" class="goto"> ⬅ Previous</a></div>{%endif%}
+				</div>
 
-			{%if next_card%}<div class="input_element next"><a href="{{next_card.get_absolute_url}}" class="goto">Next ➡</a></div>{%endif%}
+			    {%endif%}		
+
+			    {%if primary_media.type == "audio"%}
+			    	<div class="audio primary_media">
+			    		<audio src="{{primary_media.file}}" 
+			    		controls 
+			    		preload="auto" 
+			    		autobuffer>
+			    		</audio>		  
+					</div>
+
+			    {%endif%}
+
+
+			{# ********************************** #}	
+			{# ***           THUMBS           ****#}
+			{# ********************************** #}
+			<div class="other_card_media">
+				{%if audio%}
+			    	{# <a class="thumb audio" href="{{el.file}}" data-media_type="audio"> #}
+				    	{# <img src="{{audio.file.thumb_url}}" > #}
+				    	<div class="audio">
+					    	<audio 
+					    	src="{{audio.file}}"  
+							{%if audio.autoplay %}autoplay{%endif%}
+					    	controls="controls" >
+							</audio>
+							<br>{{audio.title}}
+					</div>
+			    	{# </a> #}
+			    {%endif%}
+
+				{%if images|length > 1 %}	
+				{%for el in images%}		
+					<a href="{{el.file}}" class="thumb image" data-media_type="image">
+						<img src="{{el.file.thumb_url}}">
+					</a>    
+				{%endfor%}
+				{%endif%} {# if greater than 1 #}
+
+				</div> {# end  .other_card_media#}
+
+
+				{%if card.text%}
+				<div class="card_text">
+					{{card.text|markdown}}
+				</div>
+				{%endif%}
+
+				<div class="input_wrapper">	
+					{%for el in input_elements%}
+						<div class="input_element nonlinear">
+							{%include el.el_template%}
+						</div>
+					{%endfor%}		
+				</div>
+
+				{%if not card.is_floating_card%}
+				<div class="prev_and_next">
+					{%if prev_card%}<div class="input_element prev"><a href="{{prev_card.get_absolute_url}}" class="goto"> ⬅ Previous</a></div>{%endif%}
+
+					{%if next_card%}<div class="input_element next"><a href="{{next_card.get_absolute_url}}" class="goto">Next ➡</a></div>{%endif%}
+				</div>
+				{%endif%}
+
+
+
+					</div> {# end .card #}
+
+		</div> {# end #card_wrap #}
+
+		{%if primary_media.type == "video" or primary_media.type == "audio" %}
+		<br>
+		<div id="footer">
+		  <div id="tag">Media Controls</div>
+		  <div id="bottom_nav">
+		    <div class="button" id="play">Play</div>
+		    <div class="button" id="pause">Pause</div>
+		    <div class="button" id="vUp">Vol Up</div>
+		    <div class="button" id="vDown">Vol Down</div>
+		    <div class="button" id="mute"><input type="checkbox" id="mute_check"/>  Mute</div> 
+		  </div>
 		</div>
 		{%endif%}
 
-
-			
-			</div> {# end .card #}
-			
-</div> {# end #card_wrap #}
-
-{%if primary_media.type == "video" or primary_media.type == "audio" %}
-<br>
-<div id="footer">
-  <div id="tag_bg">
-  <div id="tag" class="tag">Media Controls</div>
-  <div id="bottom_nav">
-    <div class="button" id="play">Play</div>
-    <div class="button" id="pause">Pause</div>
-    <div class="button" id="vUp">Vol Up</div>
-    <div class="button" id="vDown">Vol Down</div>
-    <div class="button" id="mute"><input type="checkbox" id="mute_check"/>  Mute</div> 
-  </div>
-  </div>
-</div>
-{%endif%}
-
-
-{% endblock %}
+{%endblock%}

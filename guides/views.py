@@ -55,13 +55,17 @@ def CardDetailView (request, gslug, id=None, slug=None, cnumber=None):
 		card = get_object_or_404(Card, id=id)
 	
 	images = []
-	audio= None
+	audio= None    
+	video= []
 	for element in card.mediaelement_set.all():
 		if element.type=='image':
 			images.append(element)
 		if element.type == 'audio':
-			audio=element
-	# media_elements = card.mediaelement_set.all()
+			audio=element     
+		if element.type == 'video':
+			video.append(element)                     
+	#uncommented
+	media_elements = card.mediaelement_set.all()
 	input_elements=card.inputelement_set.all()
 	primary_media=card.primary_media
 	if not card.is_floating_card:
