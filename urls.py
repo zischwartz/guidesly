@@ -56,8 +56,6 @@ urlpatterns = patterns('',
 	url(r'^upload/', include('fileupload.urls')),
 	(r'^api/', include(v1_api.urls)),
 
-	# (r'^guide/(?P<slug>[^/]+)/?$', GuideDetailView),
-	# url(r'^learny/', include('learny.foo.urls')),
 	url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
 	url(r'^admin/', include(admin.site.urls)),		  
 	url(r'^accounts/', include('invitation.urls')),
@@ -67,7 +65,7 @@ urlpatterns = patterns('',
 	url(r'^accounts/', include('accounts.urls')),	    
 	url(r'^user/', include('accounts.urls')),  
   
-	url(r'^photologue/', include('photologue.urls')),
+	# url(r'^photologue/', include('photologue.urls')),
 
 )
 

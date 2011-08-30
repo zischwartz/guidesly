@@ -381,6 +381,8 @@ h1
 	margin-right: auto;
 	/*width here should be dependent on the image's width. then all would work fine. TODO */
 	width: 500px;
+	line-height: 1.5em !important;
+	
 }
 .card .card_text p
 {

@@ -1,5 +1,6 @@
 
 import os
+import sys
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
@@ -10,8 +11,12 @@ ADMINS = (
 )
 
 MANAGERS = ADMINS
+from os.path import abspath, dirname, join
 
 SITE_ROOT = os.path.dirname(os.path.realpath(__file__))
+# sys.path.append(os.path.join(os.path.dirname(__file__), 'apps')) 
+sys.path.insert(0, join(SITE_ROOT, "apps"))
+
 
 DATABASES = {
     'default': {
@@ -76,6 +81,7 @@ STATIC_URL = '/media/'
 ADMIN_MEDIA_PREFIX = '/admin_media/'
 
 # Additional locations of static files
+# We're not really using this....
 STATICFILES_DIRS = (
     os.path.join(SITE_ROOT, 'sitestatic22'),
     
@@ -89,7 +95,7 @@ STATICFILES_DIRS = (
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-#    'django.contrib.staticfiles.finders.DefaultStorageFinder',
+   'django.contrib.staticfiles.finders.DefaultStorageFinder',
 )
 
 # Make this unique, and don't share it with anybody.
@@ -130,7 +136,8 @@ TEMPLATE_DIRS = (
 # AWS_SECRET_ACCESS_KEY = 'hOBw0sNx4iRurKDvXnSI+GokaeeffL1DYFJ6g95x'
 # AWS_STORAGE_BUCKET_NAME= 'guideslybetauserfiles'
 
-DEFAULT_FILE_STORAGE = 'cuddlybuddly.storage.s3.S3Storage'
+DEFAULT_FILE_STORAGE = 'apps.cuddlybuddly.storage.s3.S3Storage'
+
 AWS_ACCESS_KEY_ID = 'AKIAJRCNWZLCRGKOA7FA'
 AWS_SECRET_ACCESS_KEY = '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'
 AWS_STORAGE_BUCKET_NAME= 'guideslybetauserfiles'
@@ -164,21 +171,21 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     'django.contrib.admindocs',
     'django.contrib.markup',
-    'photologue',
+
     'object_permissions',
     'tagging',
 	'invitation',
 	'registration',
 	'thef',
+    'accounts',
+    'tastypie',
+    # 'apps.cuddlybuddly.storage.s3',
+    # 'debug_toolbar',
     'south',
 
-    # 'debug_toolbar',
 
-    'tastypie',
 	'fileupload',
     'guides',
-    'accounts',
-    'cuddlybuddly.storage.s3',
 
 )                  
             
@@ -241,16 +248,13 @@ EMAIL_HOST = 'smtp.gmail.com'
 
 EMAIL_HOST_USER = 'invite@guidesly.com'
 
-# EMAIL_HOST_PASSWORD = 'LqB4=mJh'
 EMAIL_HOST_PASSWORD = 'dogsarecoolyo'
 
 EMAIL_PORT = 587
 
-# EMAIL_SUBJECT_PREFIX = '[Guidesly] '
-
 EMAIL_USE_TLS = True
 
 try:
-   from local_settings import *
+   from settings_local import *
 except ImportError, e:
    pass
