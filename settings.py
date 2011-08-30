@@ -124,7 +124,8 @@ INTERNAL_IPS = ('127.0.0.1',)
 ROOT_URLCONF = 'Project.urls'
 
 TEMPLATE_DIRS = (
-    os.path.join(SITE_ROOT, 'templates')
+    os.path.join(SITE_ROOT, 'templates'),
+    os.path.join(SITE_ROOT, 'templates/site/'),
 
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
