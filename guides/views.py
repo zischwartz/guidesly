@@ -136,6 +136,7 @@ def BuildFloatingCard (request, gslug):
 
 @login_required
 def EditCard (request, gslug, id):
+	is_fluid =1
 	# logger.info("---------------")
 	# send the card's data as json
 	s = get_object_or_404(Card, guide__slug=gslug, id=id)

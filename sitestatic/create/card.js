@@ -20,16 +20,6 @@ $(".uibutton").button();
 
 jQuery.easing.def = "easeOutQuart";
 
-//initial mapping
-// mapping = {
-//     'mediaelements': {
-//         key: function(data) {
-// 			// console.log(data.resource_uri);
-//             return ko.utils.unwrapObservable(data.resource_uri);
-//         					}
-// 						}
-// 			}
-
 initial_card_object= jQuery.parseJSON(initial_card_json);
 VM = ko.mapping.fromJS(initial_card_object, mapping);
 
@@ -481,14 +471,23 @@ VM.addMap2Card= function(){
 $('#fileupload').fileupload({
 // options
 	autoUpload: true,
+	previewMaxWidth: 400,
+	previewMaxHeight: 400
+    
 }).bind('fileuploaddragover', 
 	function (e){ 
 			console.log('drop it!');
 			$("#add_media_group").css({backgroundColor: "#feb912"});
 
-		}).bind('fileuploaddrop', 
+		}).bind('fileuploadadd', 
 	function(e, data){
-			console.log('dropped it!');				
+			console.log('dropped it (Added it, really)!');	
+			// $.each(data.files, function (index, file) {
+			// 		        console.log('Added file: ' + file.name);
+			// 		    });			
+
+			// console.log(data);
+
 			$("#add_media_group").css({backgroundColor: "#ffffff"});
 
 	}).bind('fileuploaddone',

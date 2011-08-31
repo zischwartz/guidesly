@@ -1,0 +1,341 @@
+
+/*VARS*/
+@adderWidth: 500px;
+@cardWidth: 600px;
+@adderMinimizedWidth: 200px;
+/*@adderMinimizedWidth: 15%;*/
+@editorSpacing: 1em;
+
+@graySuperLight: #f3f3f3;
+
+@titleSize: 3.5em;
+
+.left
+{text-align: left;}
+
+.center
+{text-align:center;}
+
+/*LESSCSS*/
+.sidebar, .content
+{
+	margin-top: 5em;
+}
+
+.notBlank
+{
+	color: @grayDark !important;
+}
+
+.card
+{
+	width: @cardWidth;
+	border: 1px solid @gray;
+	.border-radius(4px);
+	min-height: 600px;
+	margin: 0 auto;
+	.box-shadow(0 0px 8px rgba(0,0,0,.45));
+	padding-bottom: .3em;
+	
+}
+
+.cardwrap
+{
+
+	margin-left: -100px;
+}
+
+h1 
+{
+	margin-top: .2em;
+	text-align: center;
+	font-size: @titleSize;
+	outline: none;
+	z-index: 2;
+}
+
+input#title
+{
+	font-size: @titleSize !important; 
+	color: @black;
+	display: none;
+	outline: none;
+	text-align: center;
+/*	width: 100%;*/
+	float: left;
+}
+
+#card_text
+{
+	float: left;
+}
+
+.smallOK
+{
+	margin-top: -20px;
+	margin-right: 0em;
+	display:none;
+	float: right;
+}
+
+.adder *
+{
+	color: @gray;
+}
+
+.adder
+{
+	.center-block;
+	width: @adderWidth;
+	overflow: hidden;
+	text-align: center;	
+	margin: @editorSpacing auto;
+	.transition(all ease-in-out .3s);
+	background-color: white;
+	
+}
+
+.adder.media
+{
+	background: url( '/static/img/placeholder.png' ) center center no-repeat; background-size: cover;
+}
+
+.adder.input
+{
+
+	background: url( '/static/img/interaction_placeholder.png' ) top center no-repeat; background-size: auto;
+}
+
+.adder .adder_inner
+{
+	.opacity(0);
+	.transition(opacity .4s);
+	background-color: white;
+	overflow: hidden;
+	width: 100%;
+	
+	//this is hacky, to get it to work with the closex
+	margin-top: -1px;
+}
+
+.adder.title .adder_inner, .adder.text .adder_inner
+{
+	.opacity(100);
+	
+	input, textarea
+	{
+		width: @adderWidth - 16;
+		//wtf? I'm not sure why this is neccesary. from static html mockup to django, something screwed with the forms happened
+		
+		//this is hacky, but ok to get inputs to work with the closex
+		margin-top: 1px;
+	}
+	
+	input
+	{
+		width: @adderWidth - 8;
+		//see above wtf	
+	}
+}
+
+
+.adder:hover
+{
+/*	.box-shadow(0 0px 8px rgba(0,0,0,.45));*/
+	.box-shadow(1px 0px 8px rgba(0, 200, 150,.95));
+}
+	
+.adder:hover .adder_inner
+{
+	.opacity(100);
+}
+
+.adder .adder_inner.hovered
+{
+	.opacity(100);
+}
+
+.adder.media .sub_add
+{
+	float: left;
+	width: 50%;
+	min-height: 11em;
+}
+
+.adder .sub_bottom
+{
+	float: left;
+	width: 100%;
+	border-top: 1px solid @grayLight;
+}
+
+.adder strong
+{
+	text-decoration: underline;
+	font-weight: bold;
+
+}
+
+.green_plus
+{
+	font-weight: bold; color: green; color: #00ff00; font-size: 1.5em;
+	line-height: .1em;
+	text-shadow: 0px 0px 2px green;
+}
+
+.green {color:@green;}
+
+.adder h2
+{
+	background-color: @grayLighter;
+	border-bottom: 1px solid @grayLight;
+	font-size: 2.5em;
+	padding: .8em .1em;
+}
+
+.adder.input h2
+{
+	padding: .4em .1em;
+}
+
+.adder p
+{
+	line-height: 1.5em;
+	padding: 1em .2em;
+}
+
+.adder.media .sub_add .left_wrap
+{border-right:  1px solid #cacaca;}
+
+
+.adder.text textarea
+{
+	overflow: auto;
+	height: 5em;
+	font-size: 1.2em;
+	padding: .5em;
+/*	width: @adderWidth;*/
+}
+
+.btn
+{
+	letter-spacing: 1px;
+/*	#gradient > .vertical(@linkColor, @linkColorHover);*/
+}
+
+
+.closex {
+	
+	float: right;
+	margin-top: -2px;
+	margin-right: 5px;
+	margin-bottom: 5px;
+	color: #000;
+	font-size: 20px;
+	text-shadow: 0 1px 0 #ffffff;
+	.opacity(30);
+	
+	/*	font-weight: bold;*/
+/*	border: 1px solid gray;
+	.border-radius(10px);
+	background-color: gray;
+	padding: 0px 4px 2px 4px;
+	#translucent > .background(@blue, 0.5);*/
+}
+.media .closex {.opacity(80);}
+.closex:hover {
+	text-decoration: none;
+	.opacity(80);
+	color: red;
+}
+
+.adder.minimized
+{
+	width: @adderMinimizedWidth;
+	float: right;
+	clear: right;
+	margin: .5em .1em;
+	position: absolute;
+	right: 0px;
+
+	
+	.box-shadow(0 0px 3px rgba(0,0,0,.85));
+	
+	.adder_inner
+	{
+		.opacity(100);
+		margin-top: 0em;
+	}
+	.sub_add
+	{
+		width: 100%;
+		min-height: 0;
+	}
+	
+	h1, h2, h3, h4, button, p
+	{
+		line-height: 1.1em;
+		margin: 0px;
+		padding: 3px;
+	}
+	
+	h1 {font-size: 2em;}
+	
+	h2
+	{
+		font-size: 1.5em;
+		background-color: @graySuperLight;
+	}
+	
+	h4
+	{
+		font-weight: normal;
+	}
+	
+	.closex
+	{display: none;}
+	
+	.HoM
+	{
+		display:none;
+	}
+	
+	.sub_add .left_wrap
+	{
+		border-right: none;
+		border-bottom: 1px solid @grayLight;
+	}
+	
+	.btn
+	{
+		width: 80%;
+		margin: .3em auto;
+	}
+	
+	textarea
+	{width: 100%;}
+	
+} /*end .adder.minimized*/
+
+.adder.title {top: 5em;}
+.adder.media {top: 11em;}
+.adder.text {top: 33em;}
+.adder.input {top: 43em;}
+
+.prev_and_next
+{
+
+	text-align: center;
+}
+
+.sidebar
+{
+	form.form-stacked
+	{
+		padding:0px;
+	}
+/*	input[type=text]
+	{
+		height: @baseline*1.5 !important;
+	}*/
+}

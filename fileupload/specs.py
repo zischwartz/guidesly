@@ -32,6 +32,7 @@ class Thumbnail(ImageSpec):
 class Display(ImageSpec):
     access_as = 'display_image'
     quality = 90  # defaults to 70
+    pre_cache = True
     # increment_count = True
     processors = [ResizeDisplay]
 
