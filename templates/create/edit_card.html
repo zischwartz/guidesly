@@ -7,9 +7,11 @@
 		<script type="text/javascript" src="{{STATIC_URL}}upload-plugin/jquery.fileupload.js"></script>
 		<script type="text/javascript" src="{{STATIC_URL}}upload-plugin/jquery.fileupload-ui.js"></script>
 		<link rel="stylesheet" href="{{STATIC_URL}}upload-plugin/thumbnail-scaling.css">
-		
+		<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
 		<link rel="stylesheet" href="{{STATIC_URL}}create/card.css">
+		<link rel="stylesheet" href="{{STATIC_URL}}create/map.css">
 		<script src="{{STATIC_URL}}create/card.js"></script>
+		<script src="{{STATIC_URL}}create/map.js"></script>
 		
 		
 		<script type="text/javascript">
@@ -19,7 +21,7 @@
 			var all_cards = '{{all_cards_json|safe|escapejs}}'; 
 			var primary_media_json = '{{primary_media_json|safe|escapejs}}'; 
 			// TODO replace with all_cards with guide
-</script>
+		</script>
 {%endblock%}
 
 {%block header%}
@@ -216,7 +218,7 @@
 				<div class="media_holder"  style="background: url( '${file.medium_url}' ) center center no-repeat; background-size: contain;"></div>
 				<div class="media_title" data-bind="text: title"></div>
 			</figure>
-			
+			<div id="map_canvas"></div> 
 			<div class="back">
 				<input type="text" data-bind="value:title, valueUpdate: 'change'" placeholder="Image title"> <br>
 				<img src="${file.thumb_url}" width="50px"> 
@@ -283,19 +285,21 @@
 	
 	
 	<script id='mapTemplate' type='text/html'>
+
+
 		<div class="ue" data-bind="event: { focusin: VM.flipEl, focusout: VM.unflipEl }, attr: { tabindex: typeof(id)!='undefined' ? id: -1 }">
 			<figure class="front">
-				<div class="media_holder" style="background-image: url('/static/img/map-icon.png')"></div>
-				<div class="front input-button" data-bind="text: title"></div>
+  <div id="map_canvas"></div>
+  	
+
+				<div class="media_holder" style="background-image: url('')"></div>
+				<div class="front input-button" data-bind="text: map_title"></div>
 			</figure>
-			
-			
-			
+				
 			<div class="back">
 			
+			Title:<input type="text" data-bind="value: map_title">
 			
-			
-			<div class="clearfix"></div>
 			<a class="uibutton delete" data-bind="click: VM.deleteFromCard">Remove</a>
 			
 			</div>

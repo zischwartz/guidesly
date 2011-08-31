@@ -278,7 +278,7 @@ class ConditionalAction (models.Model):
 
 
 class MapPointElement (models.Model):
-	point = models.IntegerField(max_length=500)
+	point = models.CharField(max_length=500)
 	point_title = models.CharField(max_length=100)
 	manual_addy = models.CharField(max_length=100, blank=True, null=True)
 	default_action = models.OneToOneField(Action, blank=True, null=True)

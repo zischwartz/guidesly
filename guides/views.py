@@ -55,6 +55,8 @@ def CardDetailView (request, gslug, id=None, slug=None, cnumber=None):
 	elif id:
 		card = get_object_or_404(Card, id=id)
 	
+	mappointelements = get_list_or_404(MapPointElement)
+	
 	images = []
 	audio= None
 	for element in card.mediaelement_set.all():
