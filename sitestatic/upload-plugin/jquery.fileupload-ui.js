@@ -106,25 +106,27 @@
                         if (file.error) {
                             that._adjustMaxNumberOfFiles(1);
                         }
-                        $(this).fadeOut(function () {
-                            that._renderDownload([file])
-                                .css('display', 'none')
-                                .replaceAll(this)
-                                .fadeIn(function () {
-                                    // Fix for IE7 and lower:
-                                    $(this).show();
-                                });
-                        });
+
+						// zach removed
+                        // $(this).fadeOut(function () {
+                        //     that._renderDownload([file])
+                        //         .css('display', 'none')
+                        //         .replaceAll(this)
+                        //         .fadeIn(function () {
+                        //             // Fix for IE7 and lower:
+                        //             $(this).show();
+                        //         });
+                        // });
                     });
-                } else {
-                    that._renderDownload(data.result)
-                        .css('display', 'none')
-                        .appendTo($(this).find('.files'))
-                        .fadeIn(function () {
-                            // Fix for IE7 and lower:
-                            $(this).show();
-                        });
-                }
+                } // else {
+                //                     that._renderDownload(data.result)
+                //                         .css('display', 'none')
+                //                         .appendTo($(this).find('.files'))
+                //                         .fadeIn(function () {
+                //                             // Fix for IE7 and lower:
+                //                             $(this).show();
+                //                         });
+                //                 }
             },
             // Callback for failed (abort or error) uploads:
             fail: function (e, data) {
@@ -210,6 +212,9 @@
         // and the browser supports canvas, else the scaled image:
         _scaleImage: function (img, options) {
             options = options || {};
+			// zzz
+			options.maxWidth =500;
+			options.maxHeight =500;
             var canvas = document.createElement('canvas'),
                 scale = Math.min(
                     (options.maxWidth || img.width) / img.width,
@@ -411,6 +416,12 @@
                     files[index],
                     function (img) {
                         $(img).hide().appendTo(node).fadeIn();
+						// addPreviewImageToCard(img);
+						// console.log('img')
+						// console.log(img)
+						// console.log('node')
+						// console.log(node)
+						// add a call here zzz
                     },
                     {
                         maxWidth: options.previewMaxWidth,
@@ -524,13 +535,13 @@
             var fileUploadButtonBar = this.element.find('.fileupload-buttonbar'),
                 filesList = this.element.find('.files'),
                 ns = this.options.namespace;
-            fileUploadButtonBar
-                .addClass('ui-widget-header ui-corner-top');
-            this.element.find('.fileinput-button').each(function () {
-                var fileInput = $(this).find('input:file').detach();
+            // fileUploadButtonBar
+                // .addClass('ui-widget-header');
+            // this.element.find('.fileinput-button').each(function () {
+                // var fileInput = $(this).find('input:file').detach();
                 // $(this).button({icons: {secondary: 'ui-icon-plusthick'}}).append(fileInput);
-                $(this).button().append(fileInput);
-            });
+                // $(this).button().append(fileInput);
+            // });
             fileUploadButtonBar.find('.start')
                 .button({icons: {primary: 'ui-icon-circle-arrow-e'}})
                 .bind('click.' + ns, function (e) {
@@ -607,8 +618,8 @@
             this.element
                 .addClass('ui-widget');
             this._initFileUploadButtonBar();
-            this.element.find('.fileupload-content')
-                .addClass('ui-widget-content ui-corner-bottom');
+            this.element.find('.fileupload-content');
+                // .addClass('ui-widget-content ui-corner-bottom');
             this.element.find('.fileupload-progressbar')
                 .hide().progressbar();
         },

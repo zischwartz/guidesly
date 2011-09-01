@@ -6,26 +6,27 @@ register = template.Library()
 def upload_js():
     return """
     <script id="template-upload" type="text/x-jquery-tmpl">
-        <tr class="template-upload{{if error}} ui-state-error{{/if}}">
-            <td class="preview"></td>
-            <td class="name">${name}</td>
-            <td class="size">${sizef}</td>
+        <div class="template-upload{{if error}} ui-state-error{{/if}}">
+            <div class="preview"></div>
+            <div class="name">${name}</div>
+            <div class="size">${sizef}</div>
             {{if error}}
-                <td class="error" colspan="2">Error:
+                <div class="error" colspan="2">Error:
                     {{if error === 'maxFileSize'}}File is too big
                     {{else error === 'minFileSize'}}File is too small
                     {{else error === 'acceptFileTypes'}}Filetype not allowed
                     {{else error === 'maxNumberOfFiles'}}Max number of files exceeded
                     {{else}}${error}
                     {{/if}}
-                </td>
+                </div>
             {{else}}
                 <td class="progress"><div></div></td>
-                <td class="start"><button>Start</button></td>
+
             {{/if}}
             <td class="cancel"><button>Cancel</button></td>
-        </tr>
+        </div>
     </script>
+
     <script id="template-download" type="text/x-jquery-tmpl">
         <tr class="template-download{{if error}} ui-state-error{{/if}}">
             {{if error}}

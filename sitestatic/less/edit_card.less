@@ -5,6 +5,9 @@
 @adderMinimizedWidth: 200px;
 /*@adderMinimizedWidth: 15%;*/
 @editorSpacing: 1em;
+@editorSpacingSmall: .5em;
+
+@editingColor: #bfffde;
 
 @graySuperLight: #f3f3f3;
 
@@ -54,16 +57,16 @@ h1
 	z-index: 2;
 }
 
+
 input#title
 {
 	font-size: @titleSize !important; 
 	color: @black;
-	display: none;
 	outline: none;
 	text-align: center;
-/*	width: 100%;*/
 	float: left;
 }
+
 
 #card_text
 {
@@ -74,14 +77,10 @@ input#title
 {
 	margin-top: -20px;
 	margin-right: 0em;
-	display:none;
+/*	display:none;*/
 	float: right;
 }
 
-.adder *
-{
-	color: @gray;
-}
 
 .adder
 {
@@ -92,6 +91,8 @@ input#title
 	margin: @editorSpacing auto;
 	.transition(all ease-in-out .3s);
 	background-color: white;
+	color: @gray;
+	
 	
 }
 
@@ -108,7 +109,7 @@ input#title
 
 .adder .adder_inner
 {
-	.opacity(0);
+/*	.opacity(0);*/
 	.transition(opacity .4s);
 	background-color: white;
 	overflow: hidden;
@@ -118,10 +119,10 @@ input#title
 	margin-top: -1px;
 }
 
-.adder.title .adder_inner, .adder.text .adder_inner
+.adder.title .adder_inner,
+.adder.text .adder_inner
 {
-	.opacity(100);
-	
+	.opacity(100);	
 	input, textarea
 	{
 		width: @adderWidth - 16;
@@ -171,9 +172,8 @@ input#title
 
 .adder strong
 {
-	text-decoration: underline;
+/*	text-decoration: underline;*/
 	font-weight: bold;
-
 }
 
 .green_plus
@@ -183,24 +183,48 @@ input#title
 	text-shadow: 0px 0px 2px green;
 }
 
-.green {color:@green;}
+strong.green {
+	color:@green;
+	border: 1px dashed;
+	padding: 3px;
 
-.adder h2
+	}
+
+.adder .icon 
+{
+	.square(35px);
+	.opacity(70);
+	&:hover
+	{
+		.opacity(100)
+	}
+}
+
+
+.adder .addertop
 {
 	background-color: @grayLighter;
+/*	background-color: @editingColor;*/
 	border-bottom: 1px solid @grayLight;
 	font-size: 2.5em;
-	padding: .8em .1em;
+	padding: 0.1em .1em;	
 }
 
-.adder.input h2
+.adder.media .addertop h2, .adder.media .addertop h2 span
 {
-	padding: .4em .1em;
+/*	clear: both;*/
+	font-size: 1em;
+/*	color: @gray !important;*/
+	
+	color: @grayDark;
+/*	text-shadow: 0px 0px 10px #C5F2DA;*/
+	padding: 4px;
 }
+
 
 .adder p
 {
-	line-height: 1.5em;
+/*	line-height: 1.5em;*/
 	padding: 1em .2em;
 }
 
@@ -281,10 +305,19 @@ input#title
 	
 	h1 {font-size: 2em;}
 	
-	h2
+/*	.addertop*/
+
+	h2, h2 span
 	{
-		font-size: 1.5em;
-		background-color: @graySuperLight;
+		font-size: 1em !important;
+/*		background-color: @graySuperLight;*/
+	}
+	
+	.icon
+	{
+		width:40px;
+		height:40px;
+		
 	}
 	
 	h4
@@ -306,10 +339,10 @@ input#title
 		border-bottom: 1px solid @grayLight;
 	}
 	
-	.btn
+	.btn, label.btn
 	{
-		width: 80%;
 		margin: .3em auto;
+		text-align: center;
 	}
 	
 	textarea
@@ -339,3 +372,47 @@ input#title
 		height: @baseline*1.5 !important;
 	}*/
 }
+
+/**********************************/
+/***** IN PLACE UPLOADS ***********/
+/**********************************/
+
+.adder #fileupload
+{
+	text-align: center;
+	input
+	{
+		height: 1px;
+		.opacity(0);
+	}
+	
+	.fileupload-buttonbar
+	{
+		height: 2em;
+/*		border: none;*/
+		}
+	
+	form
+	{
+/*		margin: 0px;*/
+		
+		label.btn
+		{
+
+			margin: 0 auto !important;
+			text-align: center;
+
+		}
+	}
+	
+	.fileupload-content
+	{
+		padding: 0;
+	}
+	
+	table
+	{
+
+	}
+}
+

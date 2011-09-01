@@ -21,10 +21,13 @@
 			// TODO replace with all_cards with guide
 		$(document).ready(function(){	
 			
-			$(".adder .closex").click(function(){
+			$(".adder .closex").click(function(event){
 				adder= $(this).parent();
 				adder.addClass("minimized");
-				return false;
+				event.stopPropagation();
+				if (adder.hasClass('title'))
+					VM.title('');
+				return (false);
 			});
 
 			$(".adder.minimized").live('click', function(){
@@ -37,18 +40,12 @@
 			});
 			
 		}); //end docready
-		
-		function editingTitle()
-		{
-			$("h1").fadeOut(100, function(){ $("input#title").fadeIn(100).focus();	$("#titleOK").fadeIn(100);	});
-		}
-	
-		
-		function doneEditingTitle()
-		{
-			$("input#title, #titleOK").fadeOut(100);
-			setTimeout('$("h1").fadeIn(300);', 100);
-		}
+
+	function didPressEnter(event){
+		if ( event.which == 13 )
+			{VM.unflipEl(event);}
+		return (true);
+	}
 			
 </script>
 {%endblock%}
@@ -76,34 +73,44 @@
 <div class="cardwrap">
 	<div class="card">
 
-		<div class="adder title">
+		<div class="adder title" tabindex="3" data-bind="event: { click: VM.flipEl, focusout: VM.unflipEl, keypress: didPressEnter}">
 			<a class="closex" href="#">x</a>				
 			<div class="adder_inner">
-				
-				<h1 data-bind="click: editingTitle, text: !title()  ? 'Clever Title Here': title, css: { notBlank: title() }"></h1>					
-				<input id="title" name="card_title" type="text" class="tinput"  data-bind="value:title, valueUpdate: 'afterkeydown'">
-				<button class="btn tiny smallOK" id="titleOK" data-bind="click: doneEditingTitle">OK</button>
-				
+				<h1 class="front" data-bind="text: !title()  ? 'Clever Title Here': title, css: { notBlank: title() }"></h1>
+				<div class="back">			
+					<input id="title" name="card_title" type="text" class="tinput"  data-bind="value:title, valueUpdate: 'afterkeydown'">
+					<button class="btn tiny smallOK" id="titleOK" data-bind="click: VM.unflipEl">OK</button>
+				</div> {# /back #}
 			</div>
 		</div>
-
+		
+		<div id="media">
+			Media Goes here
+		</div> {# /#media #}
+		
 		<div class="adder media">
 			<a class="closex" href="#">x</a>
 			<div class="adder_inner">
-				<h2>Add Images, Audio, <span class="HoM">&amp;</span> Video</h2>
+				<div class="addertop">
+					<h2>Add <span data-bind="text:media_type" style="text-transform: capitalize;">{# Media #}</span> </h2>
+					<img src="{{STATIC_URL}}img/image-icon.png" data-media_type="image" class=" icon" data-bind="event: {mouseover: changeMediaType, mouseout: changeMediaTypeBack}"><img src="{{STATIC_URL}}img/video-icon.png" data-media_type="video" class=" icon" data-bind="event: {mouseover: changeMediaType, mouseout: changeMediaTypeBack}"><img src="{{STATIC_URL}}img/audio-icon.png" data-media_type="audio" class=" icon" data-bind="event: {mouseover: changeMediaType, mouseout: changeMediaTypeBack}"><img src="{{STATIC_URL}}img/upload-icon.png" data-media_type="whatever" class=" icon" data-bind="event: {mouseover: changeMediaType, mouseout: changeMediaTypeBack}">
+				</div>
+				
 				<div class="sub_add">
 					<div class="left_wrap">
-					<h4>From your computer</h4><button class="btn large" ><span class="green_plus">+</span> Upload</button>
-					<p><strong class="green">Drag files</strong> <span class="HoM">from your</span> computer here. <span class="HoM"><br>In a modern browser, it's that easy.</p></span>
+					 <h4>From your computer</h4>
+					{# <button class="btn large" ><span class="green_plus">+</span> Upload</button> #} 
+					{%include 'create/fileupload.html'%}
+					<p><strong class="green">Drag files here</strong> <span class="HoM">from your computer </span> . <span class="HoM"><br>In a modern browser, it's that easy.</p></span>
 					</div>
 				</div>
 				<div class="sub_add">
 					<h4>From the web</h4>
 					<button class="btn large">Youtube, Flickr, Etc.</button><p><strong>Coming soon</strong><br></p>
 				</div>
-				<div class="sub_bottom">
-					<h4>From Your Files</h4><br>
-				</div>
+				{# <div class="sub_bottom"> #}
+				{# 	<h4>From Your Files</h4><br> #}
+				{# </div> #}
 			</div> <!-- /adder_inner -->
 		</div><!-- end adder media -->
 
@@ -133,7 +140,13 @@
 </div> <!-- /cardwrap -->
 
 {# end new #}
-	
+{# 	********************************************************************************************************************************************************************************** #}
+{# 	********************************************************************************************************************************************************************************** #}
+{# 	********************************************************************************************************************************************************************************** #}
+{# 	********************************************************************************************************************************************************************************** #}
+{# 	********************************************************************************************************************************************************************************** #}
+{# 	********************************************************************************************************************************************************************************** #}
+
 
 		<div id="card_being_edited" class="{%if s.brand_new%}brand_new{%endif%}">
 			
@@ -213,7 +226,7 @@
 
 
 <div id="card_element_toolbar">
-
+<br><br>
 	<h3 id="add_media"> 
 		<a href="#">Add  <span data-bind="text:media_type">Media</span> 
 			<div class="iconbuttons">
@@ -239,7 +252,7 @@
 		{# *************************** #}
 		<br>
 		{# <button class="uibutton" data-bind="click: showFileUploadForm, visible: !(currently_adding_media_type()=='upload') "> Upload New Media Now</button> #}
-		{%include 'create/fileupload.html'%}
+		{# {%include 'create/fileupload.html'%} #}
 		
 		<br><div class="F">F</div>
 
@@ -311,7 +324,7 @@
 		<div class="clearfix">
 		            <label for="xlInput">Card Slug</label><div class="input"><input class="large"  name="slug" size="30" type="text"><span class="help-block">A slug? Ew!</span></div></div>
 					<div class="clearfix">
-					            <label id="optionsCheckboxes">Card Option</label>
+					            <label id="optionsCheckboxes">Card Options</label>
 					            <div class="input">
 					              <ul class="inputs-list">
 					                <li>
