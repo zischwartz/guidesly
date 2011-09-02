@@ -1,5 +1,7 @@
 {%extends "base.html" %}
 
+{%block title%}Edit Card{%endblock%}
+
 {%block extrahead%}
 
 		<link rel="stylesheet" media="all" href="{{STATIC_URL}}upload-plugin/jquery.fileupload-ui.css"/>
@@ -7,6 +9,9 @@
 		<script type="text/javascript" src="{{STATIC_URL}}upload-plugin/jquery.fileupload.js"></script>
 		<script type="text/javascript" src="{{STATIC_URL}}upload-plugin/jquery.fileupload-ui.js"></script>
 		<link rel="stylesheet" href="{{STATIC_URL}}upload-plugin/thumbnail-scaling.css">
+		
+		<script type="text/javascript" src="http://feather.aviary.com/js/feather.js"></script>
+		
 		
 		{# <link rel="stylesheet" href="{{STATIC_URL}}create/card.css"> #}
 		// <script src="{{STATIC_URL}}create/card.js"></script>
@@ -19,11 +24,36 @@
 			var all_cards = '{{all_cards_json|safe|escapejs}}'; 
 			var primary_media_json = '{{primary_media_json|safe|escapejs}}'; 
 			// TODO replace with all_cards with guide
+			
+			//     Aviary
+			// AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA 
+			// AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA 
+			
+			var featherEditor = new Aviary.Feather({
+				openType: 'lightbox',
+				apiKey: 'f64d09c9c2b5ea52e4c167b4264e4344',
+				// tools: ['rotate', 'flip', 'resize'],
+				onSave: function(imageID, newURL) {
+					var img = document.getElementById(imageID);
+					img.src = newURL;
+					featherEditor.close();
+				},
+
+			});
+
+			function launchEditor(id, src) {
+				featherEditor.launch({
+					image: id,
+					url: src
+				});
+				return false;
+			}
+						
 		$(document).ready(function(){	
 			
 			$(".adder .closex").click(function(event){
 				adder= $(this).parent();
-				adder.addClass("minimized");
+				adder.addClass("minimized").removeClass('editing');
 				event.stopPropagation();
 				if (adder.hasClass('title'))
 					VM.title('');
@@ -41,10 +71,27 @@
 			
 		}); //end docready
 
-	function didPressEnter(event){
+	function didPressEnter(event)
+	{
 		if ( event.which == 13 )
-			{VM.unflipEl(event);}
+			{
+				turnOffEditing(event);
+			}
 		return (true);
+	}
+
+	function turnOnEditing(event)
+	{
+		el=event.currentTarget;
+		$(el).addClass('editing');
+		$(el).find("textarea:first").focus(); $(el).find("input:first").focus();
+	}
+	
+	function turnOffEditing(event)
+	{
+		el=event.currentTarget;
+		$(el).removeClass('editing');
+		$(el).parents('.editing').removeClass('editing');
 	}
 			
 </script>
@@ -70,36 +117,35 @@
 {%load verbatim_templatetag%} 
 
 {%block content%}
-<div class="cardwrap">
+<div class="cardwrap"> 
 	<div class="card">
 
-		<div class="adder title" tabindex="3" data-bind="event: { click: VM.flipEl, focusout: VM.unflipEl, keypress: didPressEnter}">
+		<div class="adder title" tabindex="3" data-bind="event: { focusin: turnOnEditing, focusout: turnOffEditing, keypress: didPressEnter}">
 			<a class="closex" href="#">x</a>				
 			<div class="adder_inner">
-				<h1 class="front" data-bind="text: !title()  ? 'Clever Title Here': title, css: { notBlank: title() }"></h1>
-				<div class="back">			
-					<input id="title" name="card_title" type="text" class="tinput"  data-bind="value:title, valueUpdate: 'afterkeydown'">
-					<button class="btn tiny smallOK" id="titleOK" data-bind="click: VM.unflipEl">OK</button>
-				</div> {# /back #}
+				<h1 data-bind="text: !title()  ? 'Clever Title Here': title, css: { notBlank: title() }"></h1>
+				<input id="title" name="card_title" type="text" class="tinput"  data-bind="value:title, valueUpdate: 'afterkeydown'">
+				<button class="btn tiny smallOK" id="titleOK" data-bind="click: turnOffEditing">OK</button>
+
 			</div>
 		</div>
 		
 		<div id="media">
-			Media Goes here
+			<div data-bind="template:{name: 'mediaTemplate',  foreach: VM.mediaelements}"></div>
 		</div> {# /#media #}
 		
 		<div class="adder media">
 			<a class="closex" href="#">x</a>
 			<div class="adder_inner">
 				<div class="addertop">
-					<h2>Add <span data-bind="text:media_type" style="text-transform: capitalize;">{# Media #}</span> </h2>
-					<img src="{{STATIC_URL}}img/image-icon.png" data-media_type="image" class=" icon" data-bind="event: {mouseover: changeMediaType, mouseout: changeMediaTypeBack}"><img src="{{STATIC_URL}}img/video-icon.png" data-media_type="video" class=" icon" data-bind="event: {mouseover: changeMediaType, mouseout: changeMediaTypeBack}"><img src="{{STATIC_URL}}img/audio-icon.png" data-media_type="audio" class=" icon" data-bind="event: {mouseover: changeMediaType, mouseout: changeMediaTypeBack}"><img src="{{STATIC_URL}}img/upload-icon.png" data-media_type="whatever" class=" icon" data-bind="event: {mouseover: changeMediaType, mouseout: changeMediaTypeBack}">
+					<h2>Add Media</h2>
+					{# <h2>Add <span data-bind="text:media_type" style="text-transform: capitalize;"></span> </h2> #}
+					{# <img src="{{STATIC_URL}}img/image-icon.png" data-media_type="image" class=" icon" data-bind="event: {mouseover: changeMediaType, mouseout: changeMediaTypeBack}"><img src="{{STATIC_URL}}img/video-icon.png" data-media_type="video" class=" icon" data-bind="event: {mouseover: changeMediaType, mouseout: changeMediaTypeBack}"><img src="{{STATIC_URL}}img/audio-icon.png" data-media_type="audio" class=" icon" data-bind="event: {mouseover: changeMediaType, mouseout: changeMediaTypeBack}"><img src="{{STATIC_URL}}img/upload-icon.png" data-media_type="whatever" class=" icon" data-bind="event: {mouseover: changeMediaType, mouseout: changeMediaTypeBack}"> #}
 				</div>
 				
 				<div class="sub_add">
 					<div class="left_wrap">
 					 <h4>From your computer</h4>
-					{# <button class="btn large" ><span class="green_plus">+</span> Upload</button> #} 
 					{%include 'create/fileupload.html'%}
 					<p><strong class="green">Drag files here</strong> <span class="HoM">from your computer </span> . <span class="HoM"><br>In a modern browser, it's that easy.</p></span>
 					</div>
@@ -161,17 +207,17 @@
 			{# </div>	 {# end .ue #}
 			
 		{# Primary Media #}
-			<div data-bind="template:{name: 'primaryTemplate',  foreach: VM.the_primary_media_object,
-			  				afterRender: uePostProcessing,
-			 				beforeRemove: function(elem) {$(elem).slideUp(function(){ $(this).remove()}); },
-							afterAdd: function(elem) {$(elem).hide().slideDown() }}"> </div>
+			{# <div data-bind="template:{name: 'primaryTemplate',  foreach: VM.the_primary_media_object, #}
+			{#   				afterRender: uePostProcessing, #}
+			{#  				beforeRemove: function(elem) {$(elem).slideUp(function(){ $(this).remove()}); }, #}
+			{# 				afterAdd: function(elem) {$(elem).hide().slideDown() }}"> </div> #}
 					
 	{#   MEDIA CLIENTSIDE TEMPLATE CALL  which is actually way down below, and perhaps should be a separate template file on the server#}
-			<div data-bind="template:{name: VM.mediaTypeTemplate,  foreach: VM.mediaelements,
-			  				afterRender: uePostProcessing,
-			 				beforeRemove: function(elem) {$(elem).slideUp(function(){ $(this).remove()}); },
-							afterAdd: function(elem) {$(elem).hide().slideDown() }},  
-							visible: ((VM.mediaelements().length >1) || (!VM.the_primary_media_object().length))"> </div>
+			{# <div data-bind="template:{name: VM.mediaTypeTemplate,  foreach: VM.mediaelements, #}
+			{#   				afterRender: uePostProcessing, #}
+			{#  				beforeRemove: function(elem) {$(elem).slideUp(function(){ $(this).remove()}); }, #}
+			{# 				afterAdd: function(elem) {$(elem).hide().slideDown() }},   #}
+			{# 				visible: ((VM.mediaelements().length >1) || (!VM.the_primary_media_object().length))"> </div> #}
 
 
 	{# CARD TEXT #}
@@ -350,7 +396,28 @@
 	<button class="btn danger">Delete Card</button>	
 </div> {# /sidebar #}
 
-{% verbatim %} 		 
+{% verbatim %}
+
+
+
+	<script id='mediaTemplate' type='text/html'>
+		<div class="mediaTemplate" data-bind="attr: { id: client_id }">
+			<div class="preview_wrapper"></div>
+			<div class="mediaOptions">
+				<div class="uploading_indicator"> Uploading <br><img src="/static/img/ajax-loader.gif"></div>
+				<h3 data-bind="text: name"></h3>
+				<button class="btn" data-bind="click: VM.editImage">Edit Image</button>
+			 	<button class="btn danger"> Delete </button>
+			</div>
+		</div>
+	</script>
+	
+
+	
+	
+	
+	
+
 	<script id='primaryTemplate' type='text/html'>
 		<div class="ue is_primary" data-bind="event: { focusin: VM.flipEl, focusout: VM.unflipEl }, attr: { tabindex: typeof(id)!='undefined' ? id: -1 }">
 			<figure class="front">

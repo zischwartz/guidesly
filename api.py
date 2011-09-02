@@ -95,7 +95,7 @@ class ImageResource(ModelResource):
 
 class UserFileResource(ModelResource):
 	owner = fields.ForeignKey(UserResource, 'owner' )#, full=True)
-	image = fields.ForeignKey(ImageResource, 'image', null=True)#, readonly=True )#, full=True) GET RID OF READONLY~!
+	image = fields.ForeignKey(ImageResource, 'image', null=True)#, full=True)
 
 	class Meta:
 		queryset= UserFile.objects.all()

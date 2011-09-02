@@ -29,60 +29,105 @@ $(document).ready(function(){
 	if (primary_media_json)
 		VM.the_primary_media_object.push(ko.mapping.fromJS(jQuery.parseJSON(primary_media_json)));
 
-// ***************************
-// *******  FLIPPING    ******
-// ***************************
-$(".back").hide();
-var flip_focal=0;
+		// **************************************
+		// ******      File Upload Plugin    ****
+		// **************************************
 
-function mySideChange(front) {
-    if (front) {
-        $(this).find('.front').show();
-        $(this).find('.back').hide();
-		$(this).removeClass("editing");
-	}
- 	else {
-        $(this).find('.front').hide();
-        $(this).find('.back').show();
-		flip_focal=0;
-		$(this).addClass("editing");
-    }
-}
+	$('#fileupload').fileupload({
+	// options
+		autoUpload: true,
+		previewMaxWidth: 500,
+		previewMaxHeight: 500
+	}).bind('fileuploaddragover', 
+		function (e){ 
+				console.log('drop it!');
+				$(this).css({backgroundColor: "#feb912"});
 
-VM.flipEl=function(event){
-		el=event.currentTarget;
-		$(el).stop().rotate3Di('flip', 100, {
-			direction: 'clockwise',
-			sideChange: mySideChange,
-			complete: function() {if (flip_focal==0) {$(el).find("textarea:first").focus(); $(el).find("input:first").focus(); flip_focal=1;}},
-			easing: 'easeOutBack' //easeInQuint also good
-			}); //end of rotate()
-		} 
+	}).bind('fileuploadadd', 
+		function(e, data){
+				$(".adder.media").addClass('minimized');
+				console.log('dropped it (Added it, really)!');
+				media_holder=$("#media");
+				
+				
+				// Yay,this  works
+				$.each(data.files, function (index, file) {
+						        console.log('Added file: ' + file.name);
+								console.log(file)
+								new_media_element = new Object();
+								new_media_element.name = ko.observable(file.name)
+								new_media_element.img_url = ko.observable()
+								new_media_element.type = ko.observable(file.type.split('/')[0])
+								new_media_element.client_id = ko.observable('img' + file.name.split('.')[0] + file.size)
+								
+								VM.mediaelements.push(new_media_element)
 
-VM.unflipEl=function(event){
-	el=event.currentTarget;
-	// console.log(el);
-	event.stopPropagation();
-	$(el).stop().rotate3Di('unflip', 100, {
-		sideChange: mySideChange,
-		complete: function() 
-			{ 	
-				var jsonData = ko.mapping.toJSON(this);
-				//save the changes on the elemnt to the server // TODO check if the data changed, duh! TODO also maybe keep it from sending the elements, that's wasteful 
-				// console.log(jsonData);
-				$.ajax({
-					url: this.resource_uri(),
-					type: "PUT",
-					data:jsonData,
-					success:function(data) { console.log(data); },
-					contentType: "application/json",
-					});				
-			}.bind(this)//end complete (of spin) function
-	});//end 3d spin
-	// console.log('saved' + el);
-}
+								$('#fileupload').data('fileupload')._loadImage(file, function (img) {
+									the_element= $("#" + new_media_element.client_id()).addClass("uploading");
+				                        $(img).hide().prependTo(the_element.find('.preview_wrapper')).fadeIn().attr("class", "preview_image");
+									}, //end callback
+									$('#fileupload').fileupload('option') ); //end _loadimage
+								});			
+
+				console.log(data);
+
+				$("#add_media_group").css({backgroundColor: "#ffffff"});
+
+	}).bind('fileuploaddone',
+		function (e, data) {
+
+			$(this).css({backgroundColor: "#ffffff"});
+			
+			console.log('done uploading!');
+			
+			//sorta silly, as it's always going to be an array of one
+			$.each(data.files, function (index, file) {
+				client_id = 'img' + file.name.split('.')[0] + file.size;
+				the_element_jq= $("#" + client_id);
+				the_element_jq.find('.preview_image').attr('src', data.result[0].medium_image_url).attr('id', client_id + 'img');
+				$(the_element_jq).removeClass('uploading');
+				
+				console.log('data.result[url]'); 
+				console.log(data.result);
+				
+				the_element_ko = ko.utils.arrayFirst(VM.mediaelements(), function(item) { return item.client_id() === client_id;})
+
+				the_element_ko.img_url(data.result[0].url);
+				
+			});
+			
+			
+			// $("table.files").hide();
+			// $("#fileupload, .fileupload-content").slideUp();
+
+			// VM.currently_adding_media_type('media');
+			// VM.media_type('media');
+			// $.getJSON(file_api_url, function(data) {
+			// 	VM.media_files.removeAll();
+			// 	for (x in data.objects)
+			// 		{VM.media_files.push(data.objects[x]);}
+			// });	 ///end json
+			return
+	}); //end blind
+
+	$('#fileupload .files a:not([target^=_blank])').live('click', function (e) {
+	    e.preventDefault();
+	    $('<iframe style="display:none;"></iframe>')
+	        .prop('src', this.href)
+	        .appendTo('body');
+	});
+	
+	// END UPLOAD PLUGIN
 
 
+	// Aviary Launcher!  
+	VM.editImage = function()
+	{
+		featherEditor.launch({ 
+					image: this.client_id() + 'img', //the id of the actual image ends in img
+					url: this.img_url()
+				});
+	}//
 
 
 	// ****************************************************
@@ -90,6 +135,7 @@ VM.unflipEl=function(event){
 	// ****************************************************
 
 	VM.media_files = ko.observableArray(); //this needs to be here as we're referencing it in addMedia2card
+	
 	VM.addMedia2card = function() {
 		itemToAdd= new Object();
 		// console.log(this);
@@ -317,7 +363,6 @@ VM.unflipEl=function(event){
 		if (VM.media_type()=='upload')
 			{
 				VM.media_files.removeAll();
-
 			}
 	
 		if (VM.media_type()=='media')
@@ -441,74 +486,7 @@ VM.unflipEl=function(event){
 			});
 	} 
 
-	// **************************************
-	// ******      File Upload Plugin    ****
-	// **************************************
 
-	
-	$('#fileupload').fileupload({
-	// options
-		autoUpload: true,
-		previewMaxWidth: 500,
-		previewMaxHeight: 500
-	}).bind('fileuploaddragover', 
-		function (e){ 
-				console.log('drop it!');
-				$(this).css({backgroundColor: "#feb912"});
-
-			}).bind('fileuploadadd', 
-		function(e, data){
-			
-				$(".adder.media").addClass('minimized');
-				console.log('dropped it (Added it, really)!');
-				media_holder=$("#media");
-				
-				
-				// Yay that works
-				$.each(data.files, function (index, file) {
-						        console.log('Added file: ' + file.name);
-								console.log('e');
-								console.log($('#fileupload'));
-								$('#fileupload').data('fileupload')._loadImage(file, function (img) {
-				                        $(img).hide().appendTo(media_holder).fadeIn();
-									}, //end callback
-									$('#fileupload').fileupload('option')
-									);
-								});			
-
-				console.log(data);
-
-				$("#add_media_group").css({backgroundColor: "#ffffff"});
-
-		}).bind('fileuploaddone',
-		function (e, data) {
-		
-			$(this).css({backgroundColor: "#ffffff"});
-			
-			// $("table.files").hide();
-			// $("#fileupload, .fileupload-content").slideUp();
-		
-			//this shouldn't be hardcoded, it should be all, and the templates should be per userfile, not by the VM.media_Type
-			VM.currently_adding_media_type('media');
-			VM.media_type('media');
-
-			console.log('done uploading!');				
-			$.getJSON(file_api_url, function(data) {
-				VM.media_files.removeAll();
-				for (x in data.objects)
-					{VM.media_files.push(data.objects[x]);}
-			});	 ///end json
-			return
-	}); //end blind
-
-
-
-	$('#fileupload .files a:not([target^=_blank])').live('click', function (e) {
-	    e.preventDefault();
-	    $('<iframe style="display:none;"></iframe>')
-	        .prop('src', this.href)
-	        .appendTo('body');
-	});
 
 
 	ko.applyBindings(VM);

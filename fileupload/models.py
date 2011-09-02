@@ -7,7 +7,6 @@ from django.conf import settings
 
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
-from photologue.models import Photo
 from imagekit.models import ImageModel
 from django.db.models.signals import post_save, pre_save
 
@@ -34,23 +33,22 @@ class UserFile(models.Model):
 	created = models.DateTimeField(auto_now_add=True, blank=True, null=True)
 	owner = models.ForeignKey(User, blank=True, null=True)
 	type = models.CharField(blank=True, max_length=5, choices = SELEMENT_TYPE)
-	photo = models.ForeignKey(Photo, blank=True, null=True)
 	image = models.ForeignKey(Image, blank=True, null=True)
 	thumb_url = models.URLField(blank=True)
 	medium_url = models.URLField(blank=True)
+	display_url = models.URLField(blank=True)
 	class Meta:
 		ordering = ['-created']
 	# content_type = models.ForeignKey(ContentType)
 
 
 	def __unicode__(self):
-		return self.file.name 
-
+		return self.file.name
 
 	@property
 	def url(self):
-		return (self.file.name) #removed string /media/ and changed slug to file
-		# return (settings.MEDIA_URL + self.file.name) #removed string /media/ and changed slug to file
+		# return (self.file.name) #removed string /media/ and changed slug to file
+		return (settings.MEDIA_URL + self.file.name) #removed string /media/ and changed slug to file
 
 	# def realsave(self, *args, **kwargs):		
 	# 	if self.type == 'image':
@@ -73,6 +71,7 @@ def resize_images(sender, instance=None, **kwargs):
 	if instance.type=='image':	
 		instance.thumb_url = instance.image.thumbnail_image.url
 		instance.medium_url = instance.image.medium_image.url
+		instance.display_url = instance.image.display_image.url
 	if instance.type == 'video':
 		instance.thumb_url = "/static/img/video-icon.png"
 		instance.medium_url = "/static/img/video-icon.png"
@@ -80,3 +79,4 @@ def resize_images(sender, instance=None, **kwargs):
 
 
 pre_save.connect(resize_images, sender=UserFile)
+

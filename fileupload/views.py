@@ -6,9 +6,10 @@ from django.utils import simplejson
 from django.core.urlresolvers import reverse
 
 from django.conf import settings
-from photologue.models import Photo
+from api import UserFileResource, ImageResource
 
-# from guides.log import *
+from guides.log import *
+logger=getlogger()
 
 
 class UserFileCreateView(CreateView):
@@ -23,7 +24,6 @@ class UserFileCreateView(CreateView):
 
 		if file_type == 'image':
 			self.object.type='image'
-			# new_image=Image(original_image=f) #works but is copying methinks
 			new_image=Image(original_image=self.object.file)
 			new_image.save()
 			self.object.image=new_image
@@ -38,8 +38,23 @@ class UserFileCreateView(CreateView):
 
 		self.object.save()
 
+		#this is giving no reverse match errors. spent too much time filddling with it, stupid tastypie
+		# uf = UserFileResource()
+		# logger.info(self.object.pk)
+		# # uri = uf.get_resource_uri(self.object)
+		# # logger.info(uri)
+		# uf_bundle= uf.build_bundle(obj=self.object, request=self.request)
+		# logger.info(uf_bundle)
+		# uf_json = uf.serialize(self.request, uf.full_dehydrate(uf_bundle), 'application/json')
+		# logger.info(uf_json)
+		# return(uf_json)
 
-		data = [{'name': f.name, 'url': self.object.url}]
+
+		if self.object.type=='image':
+			data = [{'name': f.name, 'url': self.object.url, 'id': self.object.id, 'medium_image_url': self.object.image.medium_image.url, 'display_image_url': self.object.image.display_image.url}]
+		else:
+			data = [{'name': f.name, 'url': self.object.url}]
+			
 		# data = [{'name': f.name, 'url': self.object.url, 'thumbnail_url': self.object.thumb_url, 'delete_url': reverse('upload-delete', args=[f.name]), 'delete_type': "DELETE"}]
 		return JSONResponse(data)
 

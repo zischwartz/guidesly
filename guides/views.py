@@ -10,9 +10,11 @@ from forms import *
 from django.core.urlresolvers import reverse
 
 from django.contrib import messages
+
 from log import getlogger
 logger=getlogger()
 # logger.debug("---------------")
+
 from django.utils import simplejson
 from fileupload.models import UserFile
 from api import CardResource, SmallCardResource, GuideResource, MediaElementResource
@@ -137,8 +139,6 @@ def BuildFloatingCard (request, gslug):
 @login_required
 def EditCard (request, gslug, id):
 	is_fluid =1
-	# logger.info("---------------")
-	# send the card's data as json
 	s = get_object_or_404(Card, guide__slug=gslug, id=id)
 	cr = CardResource()
 	if not s.is_floating_card:

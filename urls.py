@@ -14,6 +14,7 @@ from guides.views import *
 
 
 v1_api = Api(api_name='v1')
+v1_api.register(UserResource())
 
 v1_api.register(MediaElementResource())
 v1_api.register(ActionResource())
@@ -21,12 +22,11 @@ v1_api.register(InputElementResource())
 v1_api.register(MapPointElementResource())
 v1_api.register(MapElementResource())
 v1_api.register(CardResource())
+v1_api.register(ImageResource())
 v1_api.register(UserFileResource())
-v1_api.register(UserResource())
 v1_api.register(SmallCardResource())
 v1_api.register(GuideResource())
 v1_api.register(TheFResource())
-v1_api.register(ImageResource())
 
 
 
