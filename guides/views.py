@@ -55,7 +55,12 @@ def CardDetailView (request, gslug, id=None, slug=None, cnumber=None):
 	elif id:
 		card = get_object_or_404(Card, id=id)
 	
-	mappointelements = get_list_or_404(MapPointElement)
+	
+	points = []
+	elements = get_list_or_404(MapPointElement)
+	for object in elements:
+	    points.append(object.point)
+	mappointelements = simplejson.dumps(points)
 	
 	images = []
 	audio= None

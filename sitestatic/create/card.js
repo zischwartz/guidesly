@@ -459,6 +459,7 @@ VM.addMap2Card= function(){
 	mapToAdd.card= VM.resource_uri();
 	mapToAdd.map_title= ko.observable( VM.newMapText());
 	jsonData = ko.toJSON(mapToAdd);
+	console.log(jsonData);
 	postURL_input=$.ajax({
 		url: map_api_url,
 		type: "POST",
@@ -476,9 +477,11 @@ VM.addMap2Card= function(){
 	
 	
 VM.addPoint2Map= function(point){
+	console.log(point);
 	pointToAdd= new Object();
 	var postURL_input;
-	pointToAdd.point= point;
+	join_cords = String(point.Qa) + ', ' + String(point.Pa);
+	pointToAdd.point= join_cords;
 	//pointToAdd.point_title = VM.resource_uri();
 	//pointToAdd.manual_addy = ko.observable( VM.newMapText());
 	jsonData = ko.toJSON(pointToAdd);
