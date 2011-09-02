@@ -8,9 +8,13 @@ from django.core.urlresolvers import reverse
 from django.conf import settings
 from api import UserFileResource, ImageResource
 
+from guides.models import MediaElement, Card
+
 from guides.log import *
 logger=getlogger()
 
+from django.core.files.storage import default_storage
+from django.core.files.base import ContentFile
 
 class UserFileCreateView(CreateView):
 	model = UserFile
@@ -19,7 +23,9 @@ class UserFileCreateView(CreateView):
 
 		f = self.request.FILES.get('file')
 		file_type =  f.content_type.split('/')[0]
-
+		
+		card = Card.objects.get(id=self.request.POST.get('card'))
+		
 		self.object = form.save(commit=False)
 
 		if file_type == 'image':
@@ -35,9 +41,17 @@ class UserFileCreateView(CreateView):
 			self.object.type='other'
 		
 		self.object.slug=f.name
-
 		self.object.save()
-
+		
+		path = default_storage.save('/mypath', ContentFile('new content'))
+		
+		if file_type == 'video':
+			video_sample= GetVideoSample(self.object)
+			
+		
+		new_media_element= MediaElement(file=self.object, card=card, type=file_type) #card, owner etc needs to be passed
+		
+		new_media_element.save()
 		#this is giving no reverse match errors. spent too much time filddling with it, stupid tastypie
 		# uf = UserFileResource()
 		# logger.info(self.object.pk)
@@ -49,12 +63,13 @@ class UserFileCreateView(CreateView):
 		# logger.info(uf_json)
 		# return(uf_json)
 
-
+	
 		if self.object.type=='image':
-			data = [{'name': f.name, 'url': self.object.url, 'id': self.object.id, 'medium_image_url': self.object.image.medium_image.url, 'display_image_url': self.object.image.display_image.url}]
+			data = [{'name': f.name, 'url': self.object.image.display_image.url, 'id': new_media_element.id, 'medium_image_url': self.object.image.medium_image.url, 'display_image_url': self.object.image.display_image.url}]
+			# data = [{'name': f.name, 'url': self.object.url, 'id': self.object.id, 'medium_image_url': self.object.image.medium_image.url, 'display_image_url': self.object.image.display_image.url}]
 		else:
-			data = [{'name': f.name, 'url': self.object.url}]
-			
+			data = [{'name': f.name,'id': new_media_element.id, 'url': self.object.url}]
+	# 		notes: using display_image.url for the url for the image. no reason to use anything bigger than the 950px one + aviary won't do well with it.
 		# data = [{'name': f.name, 'url': self.object.url, 'thumbnail_url': self.object.thumb_url, 'delete_url': reverse('upload-delete', args=[f.name]), 'delete_type': "DELETE"}]
 		return JSONResponse(data)
 
@@ -81,3 +96,16 @@ class UserFileListView(ListView):
 	template_name = "file_list.html"
 	def get_queryset(self):
 		return UserFile.objects.filter(owner=self.request.user, type=self.kwargs['file_type'])
+		
+def GetVideoSample(object):
+	source_url= object.url
+	import subprocess
+	logger.info('videosampling');
+	test_url = 'http://guideslybetauserfiles.s3.amazonaws.com/userfiles/hand_1.mov'
+	# ffmpeg  -itsoffset -1  -i hand.mov -vcodec mjpeg -vframes 1 -an -f rawvideo tes
+	
+	# subprocess.call(['ffmpeg', '-itsoffset', '-1', '-i', 'hand.mov', '-vcodec', 'mjpeg', '-vframes', '1', '-an', '-f', 'rawvideo', 'test.jpg'])
+	output = subprocess.check_output(['ffmpeg', '-itsoffset', '-1', '-i', source_url, '-vcodec', 'mjpeg', '-vframes', '1', '-an', '-f', 'rawvideo', '/thumb.jpg'])
+	logger.info(output)
+	
+	return file

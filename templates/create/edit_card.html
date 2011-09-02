@@ -30,7 +30,8 @@
 			// AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA 
 			
 			var featherEditor = new Aviary.Feather({
-				openType: 'lightbox',
+				openType: 'lightbox', // or 'float' and add something to set off the image being edited
+				theme: 'black',
 				apiKey: 'f64d09c9c2b5ea52e4c167b4264e4344',
 				// tools: ['rotate', 'flip', 'resize'],
 				onSave: function(imageID, newURL) {
@@ -396,19 +397,24 @@
 	<button class="btn danger">Delete Card</button>	
 </div> {# /sidebar #}
 
+
+{# TODO  #}
+{# -handle initial data (hence the undefined errors) #}
+	
+	
+
 {% verbatim %}
-
-
 
 	<script id='mediaTemplate' type='text/html'>
 		<div class="mediaTemplate" data-bind="attr: { id: client_id }">
 			<div class="preview_wrapper"></div>
 			<div class="mediaOptions">
-				<div class="uploading_indicator"> Uploading <br><img src="/static/img/ajax-loader.gif"></div>
-				<h3 data-bind="text: name"></h3>
+				<div class="uploading_indicator"> Uploading <br><img src="/static/img/ajax-loader.gif"></div> <br>
+				<input type="text" data-bind="value: title, valueUpdate: 'afterkeydown'" placeholder="Title (optional)"> <br>
 				<button class="btn" data-bind="click: VM.editImage">Edit Image</button>
 			 	<button class="btn danger"> Delete </button>
 			</div>
+			<div class="mediaTitle" data-bind="text: title, visible: title"></div>
 		</div>
 	</script>
 	

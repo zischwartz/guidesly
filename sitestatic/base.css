@@ -2277,7 +2277,9 @@ strong.green {
 .adder #fileupload .fileupload-content {
   padding: 0;
 }
-/*TEMPLATES*/
+/****************************/
+/*******    TEMPLATES    ****/
+/****************************/
 .mediaTemplate {
   width: 500px;
   margin: 1em auto;
@@ -2309,4 +2311,5 @@ strong.green {
 }
 .mediaTemplate .preview_wrapper {
   margin-bottom: -60px;
+  text-align: center;
 }

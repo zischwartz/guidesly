@@ -1,5 +1,5 @@
 var card_api_url='/api/v1/card/';
-var staticel_api_url='/api/v1/mediaelement/';
+var media_api_url='/api/v1/mediaelement/';
 var input_api_url='/api/v1/inputelement/';
 var map_api_url='/api/v1/mapelement/';
 var action_api_url='/api/v1/action/';
@@ -20,18 +20,17 @@ var mapping;
 $(document).ready(function(){	
 
 	jQuery.easing.def = "easeOutQuart";
-
-	initial_card_object= jQuery.parseJSON(initial_card_json);
 	
+	initial_card_object= jQuery.parseJSON(initial_card_json);
 	VM = ko.mapping.fromJS(initial_card_object);
 
 	VM.the_primary_media_object = ko.observableArray();
 	if (primary_media_json)
 		VM.the_primary_media_object.push(ko.mapping.fromJS(jQuery.parseJSON(primary_media_json)));
 
-		// **************************************
-		// ******      File Upload Plugin    ****
-		// **************************************
+	// **************************************
+	// ******      File Upload Plugin    ****
+	// **************************************
 
 	$('#fileupload').fileupload({
 	// options
@@ -49,66 +48,65 @@ $(document).ready(function(){
 				console.log('dropped it (Added it, really)!');
 				media_holder=$("#media");
 				
-				
-				// Yay,this  works
+				//Pre Upload, File is added, preview is created if it's an image
 				$.each(data.files, function (index, file) {
 						        console.log('Added file: ' + file.name);
 								console.log(file)
 								new_media_element = new Object();
-								new_media_element.name = ko.observable(file.name)
-								new_media_element.img_url = ko.observable()
-								new_media_element.type = ko.observable(file.type.split('/')[0])
-								new_media_element.client_id = ko.observable('img' + file.name.split('.')[0] + file.size)
+								new_media_element.title = ko.observable(file.name.split('.')[0]);
+								new_media_element.file_url = ko.observable();
+								new_media_element.type = ko.observable(file.type.split('/')[0]);
+								new_media_element.client_id = ko.observable('media' + file.name.split('.')[0] + file.size);
+								new_media_element.card= VM.resource_uri();
+								VM.mediaelements.push(new_media_element);
 								
-								VM.mediaelements.push(new_media_element)
+								the_element_jq= $("#" + new_media_element.client_id()).addClass("uploading");
 
-								$('#fileupload').data('fileupload')._loadImage(file, function (img) {
-									the_element= $("#" + new_media_element.client_id()).addClass("uploading");
-				                        $(img).hide().prependTo(the_element.find('.preview_wrapper')).fadeIn().attr("class", "preview_image");
-									}, //end callback
-									$('#fileupload').fileupload('option') ); //end _loadimage
-								});			
+								if (new_media_element.type() =='image')
+								{
+									$('#fileupload').data('fileupload')._loadImage(file, function (img) {
+					                        $(img).hide().prependTo(the_element_jq.find('.preview_wrapper')).fadeIn().attr("class", "preview_image");
+										}, //end callback
+										$('#fileupload').fileupload('option') ); //end _loadimage
+								}
+								else
+								{
+									img = $("<img src='/static/img/upload-icon.png'/>")
+								    $(img).hide().prependTo(the_element_jq.find('.preview_wrapper')).fadeIn().attr("class", "preview_image");	
+								}
+								
+						}); //end each	
 
 				console.log(data);
 
 				$("#add_media_group").css({backgroundColor: "#ffffff"});
 
+
 	}).bind('fileuploaddone',
 		function (e, data) {
 
 			$(this).css({backgroundColor: "#ffffff"});
-			
 			console.log('done uploading!');
 			
-			//sorta silly, as it's always going to be an array of one
+			//File has been uploaded, now lets associated it with what's actually on the server.
 			$.each(data.files, function (index, file) {
-				client_id = 'img' + file.name.split('.')[0] + file.size;
+				client_id = 'media' + file.name.split('.')[0] + file.size;
 				the_element_jq= $("#" + client_id);
-				the_element_jq.find('.preview_image').attr('src', data.result[0].medium_image_url).attr('id', client_id + 'img');
+				the_element_ko = ko.utils.arrayFirst(VM.mediaelements(), function(item) { return item.client_id() === client_id;})
+				the_element_ko.file_url(data.result[0].url);
+				
+				the_element_jq.find('.preview_image').attr('src', data.result[0].medium_image_url).attr('id', client_id + 'img'); // messing up because if data.result.mediumimageurl is empty, acts as a getter
 				$(the_element_jq).removeClass('uploading');
 				
 				console.log('data.result[url]'); 
 				console.log(data.result);
 				
-				the_element_ko = ko.utils.arrayFirst(VM.mediaelements(), function(item) { return item.client_id() === client_id;})
 
-				the_element_ko.img_url(data.result[0].url);
 				
-			});
+			}); //end each data.files
 			
-			
-			// $("table.files").hide();
-			// $("#fileupload, .fileupload-content").slideUp();
-
-			// VM.currently_adding_media_type('media');
-			// VM.media_type('media');
-			// $.getJSON(file_api_url, function(data) {
-			// 	VM.media_files.removeAll();
-			// 	for (x in data.objects)
-			// 		{VM.media_files.push(data.objects[x]);}
-			// });	 ///end json
 			return
-	}); //end blind
+	}); //end binds
 
 	$('#fileupload .files a:not([target^=_blank])').live('click', function (e) {
 	    e.preventDefault();
@@ -125,7 +123,7 @@ $(document).ready(function(){
 	{
 		featherEditor.launch({ 
 					image: this.client_id() + 'img', //the id of the actual image ends in img
-					url: this.img_url()
+					url: this.file_url()
 				});
 	}//
 
@@ -149,21 +147,21 @@ $(document).ready(function(){
 		var postURL;
 	
 		postURL=$.ajax({
-			url: staticel_api_url,
+			url: media_api_url,
 			type: "POST",
 			data: jsonData,
 			success:function(data) {
 
 				itemToAdd.title=ko.observable();
-				itemToAdd.autoplay=ko.observable();
+				// itemToAdd.autoplay=ko.observable();
 				itemToAdd.id = postURL.getResponseHeader('location').match(/\/mediaelement\/(.*)\//)[1];
-				itemToAdd.resource_uri=ko.observable(staticel_api_url + itemToAdd.id +'/');
+				itemToAdd.resource_uri=ko.observable(media_api_url + itemToAdd.id +'/');
 				console.log('itemToAdd:');
 				console.log(itemToAdd);
 				//make primary if there is no other media
 				if (VM.mediaelements().length < 1)
 					{	VM.the_primary_media_object.push(itemToAdd);
-						VM.primary_media(staticel_api_url + itemToAdd.id + '/' );
+						VM.primary_media(media_api_url + itemToAdd.id + '/' );
 						console.log('made primary');
 						console.log(VM.primary_media());
 						VM.save();
