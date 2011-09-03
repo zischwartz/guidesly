@@ -43,30 +43,22 @@ class UserFileCreateView(CreateView):
 		self.object.slug=f.name
 		self.object.save()
 		
-		path = default_storage.save('/mypath', ContentFile('new content'))
-		
-		if file_type == 'video':
-			video_sample= GetVideoSample(self.object)
-			
 		
 		new_media_element= MediaElement(file=self.object, card=card, type=file_type) #card, owner etc needs to be passed
 		
 		new_media_element.save()
-		#this is giving no reverse match errors. spent too much time filddling with it, stupid tastypie
-		# uf = UserFileResource()
-		# logger.info(self.object.pk)
-		# # uri = uf.get_resource_uri(self.object)
-		# # logger.info(uri)
-		# uf_bundle= uf.build_bundle(obj=self.object, request=self.request)
-		# logger.info(uf_bundle)
-		# uf_json = uf.serialize(self.request, uf.full_dehydrate(uf_bundle), 'application/json')
-		# logger.info(uf_json)
-		# return(uf_json)
-
-	
-		if self.object.type=='image':
+		
+		if self.object.type=='image' :
 			data = [{'name': f.name, 'url': self.object.image.display_image.url, 'id': new_media_element.id, 'medium_image_url': self.object.image.medium_image.url, 'display_image_url': self.object.image.display_image.url}]
 			# data = [{'name': f.name, 'url': self.object.url, 'id': self.object.id, 'medium_image_url': self.object.image.medium_image.url, 'display_image_url': self.object.image.display_image.url}]
+		
+		elif self.object.type=='video':
+			video_sample_url= GetVideoSample(self.object, self.request.user.username, f.name.split('.')[0])
+			self.object.medium_url = video_sample_url
+			self.object.display_url = video_sample_url
+			data = [{'name': f.name, 'url': self.object.url, 'id': new_media_element.id, 'medium_image_url': self.object.medium_url, 'display_image_url': self.object.display_url}]
+			self.object.save()
+
 		else:
 			data = [{'name': f.name,'id': new_media_element.id, 'url': self.object.url}]
 	# 		notes: using display_image.url for the url for the image. no reason to use anything bigger than the 950px one + aviary won't do well with it.
@@ -96,16 +88,26 @@ class UserFileListView(ListView):
 	template_name = "file_list.html"
 	def get_queryset(self):
 		return UserFile.objects.filter(owner=self.request.user, type=self.kwargs['file_type'])
-		
-def GetVideoSample(object):
+
+
+import subprocess
+from django.conf import settings
+
+def GetVideoSample(object, user_name, file_name):
 	source_url= object.url
-	import subprocess
-	logger.info('videosampling');
-	test_url = 'http://guideslybetauserfiles.s3.amazonaws.com/userfiles/hand_1.mov'
+	logger.info('videosampling:%s' % source_url);
+	# test_url = 'http://guideslybetauserfiles.s3.amazonaws.com/userfiles/hand_1.mov'
+	# output = subprocess.check_output(['ffmpeg', '-itsoffset', '-1', '-i', source_url, '-vcodec', 'mjpeg', '-vframes', '1', '-an', '-f', 'rawvideo', '-'])
+
+	pre_path = 'vidthumbs/' + user_name +  '/' + file_name + '.jpg'
+	logger.info(pre_path)
+
 	# ffmpeg  -itsoffset -1  -i hand.mov -vcodec mjpeg -vframes 1 -an -f rawvideo tes
-	
 	# subprocess.call(['ffmpeg', '-itsoffset', '-1', '-i', 'hand.mov', '-vcodec', 'mjpeg', '-vframes', '1', '-an', '-f', 'rawvideo', 'test.jpg'])
-	output = subprocess.check_output(['ffmpeg', '-itsoffset', '-1', '-i', source_url, '-vcodec', 'mjpeg', '-vframes', '1', '-an', '-f', 'rawvideo', '/thumb.jpg'])
-	logger.info(output)
+	output = subprocess.check_output(['ffmpeg', '-itsoffset', '-1', '-i', source_url, '-vcodec', 'mjpeg', '-vframes', '1', '-an', '-f', 'rawvideo', '-'])
 	
-	return file
+	post_path = default_storage.save(pre_path, ContentFile(output))
+	# logger.info(post_path)
+	# logger.info('done uploading and getting thumbnail of a video')
+	
+	return (settings.MEDIA_URL + post_path)
