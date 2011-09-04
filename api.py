@@ -107,7 +107,7 @@ class UserFileResource(ModelResource):
 		
 class MediaElementResource(ModelResource):
 	card = fields.ForeignKey(CardResource, 'card')
-	file = fields.ForeignKey(UserFileResource, 'file', full=True, null=True)# , readonly=True)
+	file = fields.ForeignKey(UserFileResource, 'file', full=True, null=True, readonly=True)#  #added readonly this, it won't change, and was slowing down PUT massively
 	class Meta:
 		authorization = Authorization()
 		queryset= MediaElement.objects.all()

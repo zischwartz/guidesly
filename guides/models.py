@@ -132,8 +132,8 @@ class Card (models.Model):
 	is_floating_card = models.BooleanField(default=False)
 	theme = models.ForeignKey(Theme, blank=True, null=True)
 	owner = models.ForeignKey(User, blank=True, null=True)
-	# custom_prev_text = models.CharField(max_length=100, blank=True, null=True)
-	# custom_next_text = models.CharField(max_length=100, blank=True, null=True)
+
+
 	
 	def __unicode__(self):
 		if self.title !="":

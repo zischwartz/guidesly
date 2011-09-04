@@ -24,7 +24,9 @@ class UserFileCreateView(CreateView):
 		f = self.request.FILES.get('file')
 		file_type =  f.content_type.split('/')[0]
 		
-		card = Card.objects.get(id=self.request.POST.get('card'))
+		if self.request.POST.get('card'):
+			card = Card.objects.get(id=self.request.POST.get('card'))
+		# otherwise it's coming from the general upload form
 		
 		self.object = form.save(commit=False)
 
@@ -43,26 +45,30 @@ class UserFileCreateView(CreateView):
 		self.object.slug=f.name
 		self.object.save()
 		
-		
-		new_media_element= MediaElement(file=self.object, card=card, type=file_type) #card, owner etc needs to be passed
-		
-		new_media_element.save()
+		if card:
+			new_media_element= MediaElement(file=self.object, card=card, type=file_type) #card, owner etc needs to be passed
+			new_media_element.save()
+			relevant_id = new_media_element.id
+		else:
+			relevant_id= self.object.id
+			
 		
 		if self.object.type=='image' :
-			data = [{'name': f.name, 'url': self.object.image.display_image.url, 'id': new_media_element.id, 'medium_image_url': self.object.image.medium_image.url, 'display_image_url': self.object.image.display_image.url}]
-			# data = [{'name': f.name, 'url': self.object.url, 'id': self.object.id, 'medium_image_url': self.object.image.medium_image.url, 'display_image_url': self.object.image.display_image.url}]
-		
+			data = [{'name': f.name, 'url': self.object.image.display_image.url, 'id': relevant_id, 'medium_image_url': self.object.image.medium_image.url, 'display_image_url': self.object.image.display_image.url}]
+			# notes: using display_image.url for the url for the image. no reason to use anything bigger than the 950px one + aviary won't do well with it.
+
+
 		elif self.object.type=='video':
 			video_sample_url= GetVideoSample(self.object, self.request.user.username, f.name.split('.')[0])
 			self.object.medium_url = video_sample_url
 			self.object.display_url = video_sample_url
-			data = [{'name': f.name, 'url': self.object.url, 'id': new_media_element.id, 'medium_image_url': self.object.medium_url, 'display_image_url': self.object.display_url}]
+			data = [{'name': f.name, 'url': self.object.url, 'id': relevant_id, 'medium_image_url': self.object.medium_url, 'display_image_url': self.object.display_url}]
 			self.object.save()
 
 		else:
-			data = [{'name': f.name,'id': new_media_element.id, 'url': self.object.url}]
-	# 		notes: using display_image.url for the url for the image. no reason to use anything bigger than the 950px one + aviary won't do well with it.
-		# data = [{'name': f.name, 'url': self.object.url, 'thumbnail_url': self.object.thumb_url, 'delete_url': reverse('upload-delete', args=[f.name]), 'delete_type': "DELETE"}]
+			data = [{'name': f.name,'id': relevant_id, 'url': self.object.url}]
+
+
 		return JSONResponse(data)
 
 	def form_invalid (self, form):

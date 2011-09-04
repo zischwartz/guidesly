@@ -19,18 +19,41 @@ var mapping;
 // ***********************************************
 $(document).ready(function(){	
 
+// Make stuff pretty
 	jQuery.easing.def = "easeOutQuart";
-	
+
+
+//Deal with inital data from a card that's been saved previously
+
 	initial_card_object= jQuery.parseJSON(initial_card_json);
 	VM = ko.mapping.fromJS(initial_card_object);
+	
+	$.each(VM.mediaelements(), function (index, element) {
+		element.client_id = ko.observable('media'+ element.id());
+		element.existing = ko.observable(true);
+
+		if (element.external_file())
+		{
+			element.file_url = ko.observable(element.external_file());
+			element.medium_url = ko.observable(element.external_file());
+		}
+		else
+		{
+			element.file_url = ko.observable(element.file.display_url());
+			element.medium_url = ko.observable(element.file.medium_url());
+		}
+
+	});
+	
 
 	VM.the_primary_media_object = ko.observableArray();
 	if (primary_media_json)
 		VM.the_primary_media_object.push(ko.mapping.fromJS(jQuery.parseJSON(primary_media_json)));
+		
 
-	// **************************************
-	// ******      File Upload Plugin    ****
-	// **************************************
+// **************************************
+// ******      File Upload Plugin    ****
+// **************************************
 
 	$('#fileupload').fileupload({
 	// options
@@ -44,20 +67,23 @@ $(document).ready(function(){
 
 	}).bind('fileuploadadd', 
 		function(e, data){
-				$(".adder.media").addClass('minimized');
+				$(".adder.media").fadeOut('fast', function(){$(this).addClass('minimized').delay(100).fadeIn();});
 				console.log('dropped it (Added it, really)!');
 				media_holder=$("#media");
 				
 				//Pre Upload, File is added, preview is created if it's an image
 				$.each(data.files, function (index, file) {
-						        console.log('Added file: ' + file.name);
-								console.log(file)
+						        // console.log('Added file: ' + file.name);
+								// console.log(file)
 								new_media_element = new Object();
-								new_media_element.title = ko.observable(file.name.split('.')[0]);
+								new_media_element.title = ko.observable(); //ko.observable(file.name.split('.')[0]);
 								new_media_element.file_url = ko.observable();
 								new_media_element.type = ko.observable(file.type.split('/')[0]);
 								new_media_element.client_id = ko.observable('media' + file.name.split('.')[0] + file.size);
 								new_media_element.card= VM.resource_uri();
+								new_media_element.resource_uri= ko.observable();
+								new_media_element.external_file= ko.observable();
+								
 								VM.mediaelements.push(new_media_element);
 								
 								the_element_jq= $("#" + new_media_element.client_id()).addClass("uploading");
@@ -94,14 +120,12 @@ $(document).ready(function(){
 				the_element_jq= $("#" + client_id);
 				the_element_ko = ko.utils.arrayFirst(VM.mediaelements(), function(item) { return item.client_id() === client_id;})
 				the_element_ko.file_url(data.result[0].url);
+				the_element_ko.resource_uri(media_api_url + data.result[0].id + '/');
 				
 				the_element_jq.find('.preview_image').attr('src', data.result[0].medium_image_url).attr('id', client_id + 'img'); // messing up because if data.result.mediumimageurl is empty, acts as a getter
 				$(the_element_jq).removeClass('uploading');
-				
-				console.log('data.result[url]'); 
-				console.log(data.result);
-				
-
+				// console.log('data.result[url]'); 
+				// console.log(data.result);
 				
 			}); //end each data.files
 			
@@ -118,14 +142,65 @@ $(document).ready(function(){
 	// END UPLOAD PLUGIN
 
 
+	// Save Element
+	VM.save_element = function()
+	{
+		delete this.file_url;
+		delete this.client_id;
+		delete this.existing;
+		delete this.medium_url;
+		delete this.file;
+		delete this.doesnotexistthing;
+		
+		var jsonData = ko.mapping.toJSON(this);
+		$.ajax({
+			url: this.resource_uri(),
+			type: "PUT",
+			data:jsonData,
+			success:function(data) { 
+				console.log(data); 
+				},
+			contentType: "application/json",
+			});
+	}
+
+	//Save Card
+	
+	VM.save_card = function()
+	{
+		//this was for use with the api if readonly=false
+		// var mappedItems = ko.utils.arrayMap(VM.mediaelements(), function(item) {
+		//     delete item.file_url;
+		//     delete item.client_id;
+		//     delete item.existing;
+		//     delete item.medium_url;
+		//     item.file = item.file.resource_uri();
+		//     return item;
+		// })
+		// VM.mediaelements(mappedItems);
+		
+		var jsonData = ko.mapping.toJSON(VM);
+		$.ajax({
+			url: VM.resource_uri(),
+			type: "PUT",
+			data:jsonData,
+			//success:function(data) { console.log(data); },
+			contentType: "application/json",
+			})
+	};
+
 	// Aviary Launcher!  
 	VM.editImage = function()
 	{
+		
+		
 		featherEditor.launch({ 
-					image: this.client_id() + 'img', //the id of the actual image ends in img
-					url: this.file_url()
+			image: this.client_id() + 'img', //the id of the actual image ends in img
+			url: this.file_url()
 				});
 	}//
+
+	
 
 
 	// ****************************************************

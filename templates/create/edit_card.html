@@ -10,7 +10,7 @@
 		<script type="text/javascript" src="{{STATIC_URL}}upload-plugin/jquery.fileupload-ui.js"></script>
 		<link rel="stylesheet" href="{{STATIC_URL}}upload-plugin/thumbnail-scaling.css">
 		
-		<script type="text/javascript" src="http://feather.aviary.com/js/feather.js"></script>
+	 	 {# // <script type="text/javascript" src="http://feather.aviary.com/js/feather.js"></script> #}
 		
 		
 		{# <link rel="stylesheet" href="{{STATIC_URL}}create/card.css"> #}
@@ -25,30 +25,28 @@
 			var primary_media_json = '{{primary_media_json|safe|escapejs}}'; 
 			// TODO replace with all_cards with guide
 			
-			//     Aviary
-			// AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA 
-			// AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA 
+			//     Aviary 
+			// requires: http://feather.aviary.com/js/feather.js
 			
-			var featherEditor = new Aviary.Feather({
-				openType: 'lightbox', // or 'float' and add something to set off the image being edited
-				theme: 'black',
-				apiKey: 'f64d09c9c2b5ea52e4c167b4264e4344',
-				// tools: ['rotate', 'flip', 'resize'],
-				onSave: function(imageID, newURL) {
-					var img = document.getElementById(imageID);
-					img.src = newURL;
-					featherEditor.close();
-				},
+			// var featherEditor = new Aviary.Feather({
+			// 	openType: 'lightbox', // or 'float' and add something to set off the image being edited
+			// 	theme: 'black',
+			// 	apiKey: 'f64d09c9c2b5ea52e4c167b4264e4344',
+			// 	// tools: ['rotate', 'flip', 'resize'],
+			// 	onSave: function(imageID, newURL) {
+			// 		var img = document.getElementById(imageID);
+			// 		img.src = newURL;
+			// 		featherEditor.close();
+			// 		the_element_ko = ko.utils.arrayFirst(VM.mediaelements(), function(item) { return (item.client_id()+ 'img') === imageID;})
+			// 		the_element_ko.external_file(newURL)
+			// 	},
+			// 
+			// }); //end aviary inialization
+			
+			
+			
 
-			});
 
-			function launchEditor(id, src) {
-				featherEditor.launch({
-					image: id,
-					url: src
-				});
-				return false;
-			}
 						
 		$(document).ready(function(){	
 			
@@ -366,7 +364,8 @@
 				{# for input template debugging       <input data-bind="value: default_action.goto">    #}
 <div class="sidebar">
 	<h3>Card Options</h3>
-	<button class="btn primary">Preview Card</button>
+	<a href="{% url CardDetailViewByIdRedirect id=s.id %}" class="btn primary">Preview Card</a>
+	<button class="btn primary" data-bind="click: VM.save_card">Save Card</button>
 	<form class="form-stacked">
 		<div class="clearfix">
 		            <label for="xlInput">Card Slug</label><div class="input"><input class="large"  name="slug" size="30" type="text"><span class="help-block">A slug? Ew!</span></div></div>
@@ -388,6 +387,12 @@
 					                    <span>Autoplay Video and Audio </span>
 					                  </label>
 					                </li>
+									<li>
+					                  <label>
+					                    <input type="checkbox" name="optionsCheckboxes" value="option2" >
+					                    <span>Give Images Shadows</span>
+					                  </label>
+					                </li>
 					              </ul>
 					            </div>
 					          </div>			
@@ -398,30 +403,38 @@
 </div> {# /sidebar #}
 
 
-{# TODO  #}
-{# -handle initial data (hence the undefined errors) #}
-	
+
 	
 
 {% verbatim %}
 
 	<script id='mediaTemplate' type='text/html'>
-		<div class="mediaTemplate" data-bind="attr: { id: client_id }">
-			<div class="preview_wrapper"></div>
+		<div class="mediaTemplate" data-bind="attr: { id:  client_id}">
+			<div class="preview_wrapper">
+				{{if existing}}
+					<img class="preview_image" data-bind="attr: { id: (client_id() + 'img'), src: medium_url }"/>
+				{{/if}}
+			</div>
 			<div class="mediaOptions">
 				<div class="uploading_indicator"> Uploading <br><img src="/static/img/ajax-loader.gif"></div> <br>
-				<input type="text" data-bind="value: title, valueUpdate: 'afterkeydown'" placeholder="Title (optional)"> <br>
+				
+				<label class="capitalized"><span data-bind="text: type"></span> title (optional) <input type="text" data-bind="value: title, valueUpdate: 'afterkeydown'">
+				<br>
 				<button class="btn" data-bind="click: VM.editImage">Edit Image</button>
-			 	<button class="btn danger"> Delete </button>
+			 	<button class="btn danger"> Remove </button>
+				<button class="btn tiny smallOK" style="display: block;" data-bind="click: VM.save_element">OK</button>
+			
 			</div>
 			<div class="mediaTitle" data-bind="text: title, visible: title"></div>
 		</div>
 	</script>
 	
+	{% endverbatim %}
 
 	
-	
-	
+	{# OLD #}
+
+	{% verbatim %}
 	
 
 	<script id='primaryTemplate' type='text/html'>

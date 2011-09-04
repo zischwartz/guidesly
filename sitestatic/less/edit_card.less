@@ -13,6 +13,10 @@
 
 @titleSize: 3.5em;
 
+
+.capitalized
+{text-transform: capitalize;}
+
 .left
 {text-align: left;}
 
@@ -424,19 +428,24 @@ strong.green {
 }
 
 
-/****************************/
-/*******    TEMPLATES    ****/
-/****************************/
+/****************************************/
+/*******   (CLIENTSIDE) TEMPLATES    ****/
+/****************************************/
+
+@mediaOptionsHeight: 100px;
 
 .mediaTemplate
 {
 	width: @adderWidth;
 	margin: @editorSpacing auto;
 	overflow: hidden;
+	text-align: center;
 	
 	.uploading_indicator
 	{
 		display: none;
+		font-size: 1.5em;
+		padding: @editorSpacingSmall auto;
 	}
 	
 	&.uploading .uploading_indicator
@@ -453,17 +462,35 @@ strong.green {
 		text-align: center;
 		#translucent > .background(@grayDark, 0.5);
 		#translucent > .border(@grayLighter, 0.5);
-		height: 100px;
+		height: @mediaOptionsHeight;
 		width: 100%;
-		margin-top: -150px;
+
 		display: inline-block;
 		overflow: hidden;
 
-/*		display: block;*/
 	}
 	.preview_wrapper
 	{
-		margin-bottom: -60px;
-		text-align: center;
+		margin-bottom: 0 - (@mediaOptionsHeight + 2); //+2 for the border
+		
+		.preview_image
+		{
+			width: 500px;
+		}
 	}
+	
+	.mediaTitle
+	{
+		width: 100%;
+		display: block;
+
+		margin-top: @editorSpacingSmall;
+	}
+
+} //end .mediaTemplate
+
+//debug
+#card_element_toolbar
+{
+	display: none;
 }
