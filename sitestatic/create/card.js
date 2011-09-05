@@ -23,7 +23,7 @@ $(document).ready(function(){
 	jQuery.easing.def = "easeOutQuart";
 
 
-//Deal with inital data from a card that's been saved previously
+//Prep inital data for card that's been saved previously and has existing
 
 	initial_card_object= jQuery.parseJSON(initial_card_json);
 	VM = ko.mapping.fromJS(initial_card_object);
@@ -45,10 +45,37 @@ $(document).ready(function(){
 
 	});
 	
+	VM.primary_media =ko.dependentObservable(function() {
+	    return VM.mediaelements()[0]
+	}, VM);
 
-	VM.the_primary_media_object = ko.observableArray();
-	if (primary_media_json)
-		VM.the_primary_media_object.push(ko.mapping.fromJS(jQuery.parseJSON(primary_media_json)));
+	VM.check_if_primary = function(element)
+	{
+		console.log("element");
+		console.log(element);
+		if (element == VM.primary_media())
+			return true;
+		else
+			return false;
+	}
+
+	VM.makePrimary = function()
+	{
+		console.log("lets make this primary");
+		console.log(this);
+		VM.mediaelements.remove(this);
+		VM.mediaelements.unshift(this);
+		// d=VM.the_primary_media_object.pop();
+		// console.log(d);
+		// VM.the_primary_media_object.push(this);
+		// VM.primary_media(this.resource_uri());
+		// VM.save_element();
+	}
+	
+	// 
+	// VM.the_primary_media_object = ko.observableArray();
+	// if (primary_media_json)
+	// 	VM.the_primary_media_object.push(ko.mapping.fromJS(jQuery.parseJSON(primary_media_json)));
 		
 
 // **************************************
@@ -75,35 +102,42 @@ $(document).ready(function(){
 				$.each(data.files, function (index, file) {
 						        // console.log('Added file: ' + file.name);
 								// console.log(file)
-								new_media_element = new Object();
+								var new_media_element = new Object();
 								new_media_element.title = ko.observable(); //ko.observable(file.name.split('.')[0]);
 								new_media_element.file_url = ko.observable();
 								new_media_element.type = ko.observable(file.type.split('/')[0]);
-								new_media_element.client_id = ko.observable('media' + file.name.split('.')[0] + file.size);
+								new_media_element.client_id = ko.observable('media' + file.name.split('.')[0].split(' ')[0] + file.size);
 								new_media_element.card= VM.resource_uri();
 								new_media_element.resource_uri= ko.observable();
 								new_media_element.external_file= ko.observable();
-								
-								VM.mediaelements.push(new_media_element);
-								
-								the_element_jq= $("#" + new_media_element.client_id()).addClass("uploading");
+								new_media_element.medium_url= ko.observable();
+																
+								var id_string = "#" + new_media_element.client_id();
+								$(id_string).addClass("uploading")
+								// the_element_jq= $("#" + new_media_element.client_id()).addClass("uploading");
 
 								if (new_media_element.type() =='image')
 								{
 									$('#fileupload').data('fileupload')._loadImage(file, function (img) {
-					                        $(img).hide().prependTo(the_element_jq.find('.preview_wrapper')).fadeIn().attr("class", "preview_image");
+					                    // console.log(img.src);
+										new_media_element.medium_url(img.src);
+										// $(id_string).find('.preview_image').attr("src", img.src).fadeIn();
+										// $(img).clone().hide().prependTo($(id_string).find('.preview_wrapper')).fadeIn().attr("class", "preview_image");
 										}, //end callback
 										$('#fileupload').fileupload('option') ); //end _loadimage
 								}
 								else
 								{
 									img = $("<img src='/static/img/upload-icon.png'/>")
-								    $(img).hide().prependTo(the_element_jq.find('.preview_wrapper')).fadeIn().attr("class", "preview_image");	
+								    $(img).hide().prependTo($(id_string).find('.preview_wrapper')).fadeIn().attr("class", "preview_image");	
 								}
+								
+								VM.mediaelements.push(new_media_element);
+								
 								
 						}); //end each	
 
-				console.log(data);
+				// console.log(data);
 
 				$("#add_media_group").css({backgroundColor: "#ffffff"});
 
@@ -116,14 +150,20 @@ $(document).ready(function(){
 			
 			//File has been uploaded, now lets associated it with what's actually on the server.
 			$.each(data.files, function (index, file) {
-				client_id = 'media' + file.name.split('.')[0] + file.size;
-				the_element_jq= $("#" + client_id);
-				the_element_ko = ko.utils.arrayFirst(VM.mediaelements(), function(item) { return item.client_id() === client_id;})
+				var client_id = 'media' + file.name.split('.')[0].split(' ')[0] + file.size;
+				var id_string = "#" + client_id;
+				// var the_element_jq= $("#" + client_id);
+				
+				var the_element_ko = ko.utils.arrayFirst(VM.mediaelements(), function(item) { return item.client_id() === client_id;})
+
+				// console.log(the_element_jq);
+				// console.log(the_element_ko.client_id());
+
 				the_element_ko.file_url(data.result[0].url);
 				the_element_ko.resource_uri(media_api_url + data.result[0].id + '/');
-				
-				the_element_jq.find('.preview_image').attr('src', data.result[0].medium_image_url).attr('id', client_id + 'img'); // messing up because if data.result.mediumimageurl is empty, acts as a getter
-				$(the_element_jq).removeClass('uploading');
+				the_element_ko.medium_url(data.result[0].medium_image_url);
+				// $(id_string).find('.preview_image').attr('src', data.result[0].medium_image_url).attr('id', client_id + 'img'); // messing up because if data.result.mediumimageurl is empty, acts as a getter
+				$(id_string).removeClass('uploading');
 				// console.log('data.result[url]'); 
 				// console.log(data.result);
 				
@@ -145,16 +185,17 @@ $(document).ready(function(){
 	// Save Element
 	VM.save_element = function()
 	{
-		delete this.file_url;
-		delete this.client_id;
-		delete this.existing;
-		delete this.medium_url;
-		delete this.file;
-		delete this.doesnotexistthing;
+		var that = this;
+		delete that.file_url;
+		delete that.client_id;
+		delete that.existing;
+		delete that.medium_url;
+		delete that.file;
+		delete that.doesnotexistthing;
 		
-		var jsonData = ko.mapping.toJSON(this);
+		var jsonData = ko.mapping.toJSON(that);
 		$.ajax({
-			url: this.resource_uri(),
+			url: that.resource_uri(),
 			type: "PUT",
 			data:jsonData,
 			success:function(data) { 
@@ -168,7 +209,7 @@ $(document).ready(function(){
 	
 	VM.save_card = function()
 	{
-		//this was for use with the api if readonly=false
+		//this was for use with the api if readonly=false, to save the whole dang card at once foreal
 		// var mappedItems = ko.utils.arrayMap(VM.mediaelements(), function(item) {
 		//     delete item.file_url;
 		//     delete item.client_id;
@@ -191,15 +232,48 @@ $(document).ready(function(){
 
 	// Aviary Launcher!  
 	VM.editImage = function()
-	{
-		
-		
-		featherEditor.launch({ 
-			image: this.client_id() + 'img', //the id of the actual image ends in img
-			url: this.file_url()
-				});
+	{	
+	featherEditor.launch({ 
+		image: this.client_id() + 'img', //the id of the actual image ends in img
+		url: this.file_url()
+			});
 	}//
 
+	VM.deleteFromCard= function()
+	{
+		console.log("yess lets delete this:");
+		$.ajax({
+			url: this.resource_uri(),
+			type: "DELETE",
+			success:function(data) { console.log(data); },
+			contentType: "application/json",
+		});
+		// alert(VM.mediaelements.indexOf(this));
+
+		if (VM.mediaelements.indexOf(this)!=-1)
+			VM.mediaelements.remove(this);
+
+
+		if (VM.inputelements.indexOf(this)!=-1)
+			VM.inputelements.remove(this);
+
+		if (VM.mapelements.indexOf(this)!=-1)
+			VM.mapelements.remove(this);
+	};
+	
+	
+	//**********************************************
+	//******      APPLY MARKDOWN  MARKUP    ********
+	//**********************************************
+	VM.marked_text = ko.dependentObservable(function() {
+		if (!this.text())
+			return null;
+		return converter.makeHtml(this.text());
+	},VM);
+	
+	
+	
+	
 	
 
 
@@ -254,61 +328,21 @@ $(document).ready(function(){
 
 	};
 
-	// TODO BUG when loading from an existing card, deleting the primary media doesn't delete the thumb of it.
-	VM.deleteFromCard= function()
-	{
-		console.log("yess lets delete this:");
-		$.ajax({
-			url: this.resource_uri(),
-			type: "DELETE",
-			success:function(data) { console.log(data); },
-			contentType: "application/json",
-		});
-		// alert(VM.mediaelements.indexOf(this));
-	
-		if (VM.mediaelements.indexOf(this)!=-1)
-			VM.mediaelements.remove(this);
-	
-
-		if (VM.the_primary_media_object().length)
-		{
-			if (VM.the_primary_media_object()[0].resource_uri()==this.resource_uri())
-				{
-					VM.the_primary_media_object.pop();
-					VM.primary_media(null);
-					for (el in VM.mediaelements())
-						{
-							console.log(el);
-							if (VM.mediaelements()[el].resource_uri()==this.resource_uri())
-								VM.mediaelements.splice(el, 1);
-						}
-				}
-		}
-	
-		if (VM.inputelements.indexOf(this)!=-1)
-			VM.inputelements.remove(this);
-		
-		if (VM.mapelements.indexOf(this)!=-1)
-			VM.mapelements.remove(this);
-	};
 
 
-	VM.makePrimary = function()
-	{
-		console.log("lets make it primary");
-		d=VM.the_primary_media_object.pop();
-		console.log(d);
-		VM.the_primary_media_object.push(this);
-		VM.primary_media(this.resource_uri());
-		VM.save();
-	}
+	// 
+	// VM.makePrimary = function()
+	// {
+	// 	console.log("lets make it primary");
+	// 	d=VM.the_primary_media_object.pop();
+	// 	console.log(d);
+	// 	VM.the_primary_media_object.push(this);
+	// 	VM.primary_media(this.resource_uri());
+	// 	VM.save();
+	// }
 
 
 
-	//apply button() to media elements after they've been added
-	VM.uePostProcessing= function(element){
-		$(element).find(".uibutton").button();
-	}
 
 	//**********************************************
 	//******      DEFINE DIFFERENT MEDIA TEMPLATES, PRIMARY, BG OR NOT  ********
@@ -362,14 +396,6 @@ $(document).ready(function(){
 	}
 
 
-	//**********************************************
-	//******      APPLY MARKDOWN  MARKUP    ********
-	//**********************************************
-	VM.marked_text = ko.dependentObservable(function() {
-		if (!this.text())
-			return null;
-		return converter.makeHtml(this.text());
-	},VM);
 
 
 	//**********************************************

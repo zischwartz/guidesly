@@ -137,7 +137,13 @@ TEMPLATE_DIRS = (
 # AWS_SECRET_ACCESS_KEY = 'hOBw0sNx4iRurKDvXnSI+GokaeeffL1DYFJ6g95x'
 # AWS_STORAGE_BUCKET_NAME= 'guideslybetauserfiles'
 
+
+#*********************
+# DEBUG TURNED IT OFF
+# *****************
 DEFAULT_FILE_STORAGE = 'apps.cuddlybuddly.storage.s3.S3Storage'
+
+
 
 AWS_ACCESS_KEY_ID = 'AKIAJRCNWZLCRGKOA7FA'
 AWS_SECRET_ACCESS_KEY = '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'

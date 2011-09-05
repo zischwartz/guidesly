@@ -142,7 +142,7 @@
 	{
 		display: none;
 	}
-	input#title, .smallOK
+	input#title, .smallOK, textarea#card_text
 	{
 		display: block;
 	}
@@ -248,14 +248,40 @@ strong.green {
 {border-right:  1px solid #cacaca;}
 
 
-.adder.text textarea
+.adder.text 
 {
-	overflow: auto;
-	height: 5em;
-	font-size: 1.2em;
-	padding: .5em;
-/*	width: @adderWidth;*/
+	font-size: 1.2em !important;
+	
+	textarea
+	{
+		overflow: auto;
+		height: 6em;
+		font-size: 1.2em;
+		padding: .5em;
+		display: none;
+		.transition(all ease-in-out .3s);
+		
+		
+	/*	width: @adderWidth;*/		
+	}
+
+	&.editing .textarea
+	{
+		display: block;
+	}
+	
+	.cardtext
+	{
+		font-size: 1.2em;
+		text-align: left;
+		color: @grayDark;
+		* {font-size: 1em;}
+	}
+	
 }
+
+
+
 
 .btn
 {
@@ -487,7 +513,26 @@ strong.green {
 		margin-top: @editorSpacingSmall;
 	}
 
+
+	&.primary_media
+	{
+		border: 1px solid black;
+	}
+	
+	&.not_primary_media
+	{
+		float: left;
+		margin: 0 1em;
+		.square(150px);
+		
+		.preview_image
+		{
+			.square(150px);
+		}
+	} // end not primary
+
 } //end .mediaTemplate
+
 
 //debug
 #card_element_toolbar

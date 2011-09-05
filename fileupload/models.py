@@ -72,9 +72,9 @@ def resize_images(sender, instance=None, **kwargs):
 		instance.thumb_url = instance.image.thumbnail_image.url
 		instance.medium_url = instance.image.medium_image.url
 		instance.display_url = instance.image.display_image.url
-	if instance.type == 'video':
-		instance.thumb_url = "/static/img/video-icon.png"
-		instance.medium_url = "/static/img/video-icon.png"
+	# if instance.type == 'video':
+	# 	instance.thumb_url = "/static/img/video-icon.png"
+	# 	instance.medium_url = "/static/img/video-icon.png"
 
 
 

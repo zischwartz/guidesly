@@ -40,14 +40,9 @@
 			// 		the_element_ko = ko.utils.arrayFirst(VM.mediaelements(), function(item) { return (item.client_id()+ 'img') === imageID;})
 			// 		the_element_ko.external_file(newURL)
 			// 	},
-			// 
 			// }); //end aviary inialization
 			
-			
-			
-
-
-						
+								
 		$(document).ready(function(){	
 			
 			$(".adder .closex").click(function(event){
@@ -80,7 +75,7 @@
 	}
 
 	function turnOnEditing(event)
-	{
+	{	console.log('turned on editing');
 		el=event.currentTarget;
 		$(el).addClass('editing');
 		$(el).find("textarea:first").focus(); $(el).find("input:first").focus();
@@ -130,18 +125,16 @@
 		</div>
 		
 		<div id="media">
-			<div data-bind="template:{name: 'mediaTemplate',  foreach: VM.mediaelements}"></div>
-		</div> {# /#media #}
+			<div data-bind="template:{name: 'mediaTemplate',  foreach: VM.mediaelements, beforeRemove: function(elem) {$(elem).fadeOut(function(){ $(this).remove()}); }}"></div>
+		</div> {# /#media elements #}
 		
-		<div class="adder media">
+		<div class="adder media" data-bind="css:{minimized: VM.mediaelements().length}" >
 			<a class="closex" href="#">x</a>
 			<div class="adder_inner">
 				<div class="addertop">
 					<h2>Add Media</h2>
-					{# <h2>Add <span data-bind="text:media_type" style="text-transform: capitalize;"></span> </h2> #}
-					{# <img src="{{STATIC_URL}}img/image-icon.png" data-media_type="image" class=" icon" data-bind="event: {mouseover: changeMediaType, mouseout: changeMediaTypeBack}"><img src="{{STATIC_URL}}img/video-icon.png" data-media_type="video" class=" icon" data-bind="event: {mouseover: changeMediaType, mouseout: changeMediaTypeBack}"><img src="{{STATIC_URL}}img/audio-icon.png" data-media_type="audio" class=" icon" data-bind="event: {mouseover: changeMediaType, mouseout: changeMediaTypeBack}"><img src="{{STATIC_URL}}img/upload-icon.png" data-media_type="whatever" class=" icon" data-bind="event: {mouseover: changeMediaType, mouseout: changeMediaTypeBack}"> #}
+					{# <h2>Add <span data-bind="text:media_type" style="text-transform: capitalize;"></span> </h2> #}{# <img src="{{STATIC_URL}}img/image-icon.png" data-media_type="image" class=" icon" data-bind="event: {mouseover: changeMediaType, mouseout: changeMediaTypeBack}"><img src="{{STATIC_URL}}img/video-icon.png" data-media_type="video" class=" icon" data-bind="event: {mouseover: changeMediaType, mouseout: changeMediaTypeBack}"><img src="{{STATIC_URL}}img/audio-icon.png" data-media_type="audio" class=" icon" data-bind="event: {mouseover: changeMediaType, mouseout: changeMediaTypeBack}"><img src="{{STATIC_URL}}img/upload-icon.png" data-media_type="whatever" class=" icon" data-bind="event: {mouseover: changeMediaType, mouseout: changeMediaTypeBack}"> #}
 				</div>
-				
 				<div class="sub_add">
 					<div class="left_wrap">
 					 <h4>From your computer</h4>
@@ -160,11 +153,12 @@
 		</div><!-- end adder media -->
 
 
-		<div class="adder text">
+		<div class="adder text" tabindex="5" data-bind="event: { focusin: turnOnEditing, focusout: turnOffEditing}">
 			<a class="closex" href="#">x</a>
 			<div class="adder_inner">
-	              <form><textarea class="xxlarge tinput" id="card_text" name="textarea" placeholder="Add some text here. You know, if you want to..."></textarea> </form>
-					<button class="btn tiny smallOK" id="card_textOK">OK</button>
+				<div class="cardtext" data-bind="html: !text() ? '<p>Text for your card. Easy formatting. Totally optional.</p>': marked_text, css: { notBlank: text()}"></div>
+	              <form><textarea data-bind="value:text, valueUpdate: 'afterkeydown'" class="xxlarge tinput" id="card_text" name="textarea" placeholder="Add some text here. You know, if you want to..."></textarea> </form>
+					<button class="btn tiny smallOK" id="card_textOK" data-bind="click: function(event){turnOffEditing(event), VM.save_card()}">OK</button>
 			</div>
 		</div>
 		
@@ -220,23 +214,23 @@
 
 
 	{# CARD TEXT #}
-		<div class="ue" tabindex="10" data-bind="event: { focusin: VM.flipEl, focusout: VM.unflipEl }">
-			<div class="front cardtext" data-bind="html: !text() ? 'Card text (optional)': marked_text, css: { optional: !text()}">{{s.text}}</div>
-			<div class="back">
-				<textarea class="cardtext" class="card_text" name="text" data-bind="value:text">{{s.text}}</textarea>
-			</div>
-			</div>
-		<br>
+		{# <div class="ue" tabindex="10" data-bind="event: { focusin: VM.flipEl, focusout: VM.unflipEl }"> #}
+		{# 	<div class="front cardtext" data-bind="html: !text() ? 'Card text (optional)': marked_text, css: { optional: !text()}">{{s.text}}</div> #}
+		{# 	<div class="back"> #}
+		{# 		<textarea class="cardtext" class="card_text" name="text" data-bind="value:text">{{s.text}}</textarea> #}
+		{# 	</div> #}
+		{# 	</div> #}
+		{# <br> #}
 	
 	{# INPUT ELEMENTS #}
 		<div data-bind="template:{name: VM.inputTypeTemplate,  foreach: VM.inputelements,
-		  				afterRender: uePostProcessing,
+
 		 				beforeRemove: function(elem) {$(elem).slideUp() },
 						afterAdd: function(elem) {$(elem).hide().slideDown() }}"> </div>
 
 
 		<div data-bind="template:{name: VM.inputTypeTemplate,  foreach: VM.mapelements,
-		  				afterRender: uePostProcessing,
+
 		 				beforeRemove: function(elem) {$(elem).slideUp() },
 						afterAdd: function(elem) {$(elem).hide().slideDown() }}"> </div>
 	
@@ -337,7 +331,7 @@
 			{# CARDS_IN_GUIDE JS TEMPLATE  #}
 				<div class="all_card_holder" data-bind="template: {name: 'smallCardTemplate',
 				  						foreach: VM.all_cards,
-				 						afterRender: uePostProcessing,
+
 						 				beforeRemove: function(elem) {$(elem).slideUp() },
 										afterAdd: function(elem) {$(elem).hide().slideDown() } }"></div>
 			{# *************************** #}
@@ -409,21 +403,25 @@
 {% verbatim %}
 
 	<script id='mediaTemplate' type='text/html'>
-		<div class="mediaTemplate" data-bind="attr: { id:  client_id}">
+		<div class="mediaTemplate" data-bind="attr: { id:  client_id}, css: {primary_media: VM.check_if_primary($item.data), not_primary_media: !(VM.check_if_primary($item.data))}">
 			<div class="preview_wrapper">
-				{{if existing}}
-					<img class="preview_image" data-bind="attr: { id: (client_id() + 'img'), src: medium_url }"/>
-				{{/if}}
+				<img class="preview_image" data-bind="attr: { id: (client_id() + 'img'), src: medium_url }"/>
 			</div>
 			<div class="mediaOptions">
 				<div class="uploading_indicator"> Uploading <br><img src="/static/img/ajax-loader.gif"></div> <br>
 				
-				<label class="capitalized"><span data-bind="text: type"></span> title (optional) <input type="text" data-bind="value: title, valueUpdate: 'afterkeydown'">
-				<br>
-				<button class="btn" data-bind="click: VM.editImage">Edit Image</button>
-			 	<button class="btn danger"> Remove </button>
-				<button class="btn tiny smallOK" style="display: block;" data-bind="click: VM.save_element">OK</button>
-			
+				{{ if VM.check_if_primary($item.data) }}
+					<label class="capitalized"><span data-bind="text: type"></span> title (optional) <input type="text" data-bind="value: title, valueUpdate: 'afterkeydown'"><br>
+					<button class="btn" data-bind="click: VM.editImage">Edit Image</button>
+				 	<button class="btn danger" data-bind="click: VM.deleteFromCard"> Remove </button><br><br>
+					<button class="btn tiny" data-bind="click: VM.save_element">OK</button>
+					<button class="btn tiny">Cancel</button>
+				{{else}}
+					<button class="btn primary" data-bind="click: VM.makePrimary">Edit/Make Main</button>
+					<button class="btn danger small" data-bind="click: VM.deleteFromCard"> Remove </button><br><br>
+				 	
+				{{/if}}
+				
 			</div>
 			<div class="mediaTitle" data-bind="text: title, visible: title"></div>
 		</div>
@@ -563,7 +561,6 @@
 
 			<div data-bind="template: {name: 'evenSmallerCardTemplate',
 			  						foreach: VM.all_cards,
-			 						afterRender: VM.uePostProcessing,
 					 				beforeRemove: function(elem) {$(elem).slideUp() },
 									afterAdd: function(elem) {$(elem).hide().slideDown() },
 									templateOptions: { selected : default_action.goto, input_num: id }
@@ -590,7 +587,7 @@
 
 			<div data-bind="template: {name: 'evenSmallerCardTemplate',
 			  						foreach: VM.all_cards,
-			 						afterRender: VM.uePostProcessing,
+
 					 				beforeRemove: function(elem) {$(elem).slideUp() },
 									afterAdd: function(elem) {$(elem).hide().slideDown() },
 									templateOptions: { selected : default_action.goto, input_num: id }
@@ -673,5 +670,23 @@
 	</script>
 	
 {%endverbatim%}
-	
+<div class="modal-backdrop" style= "display:none">
+	<div class="modal">
+		<div class="modal-header">
+			<h3>Add Media From The Web</h3>
+			<a href="#" class="close">×</a>
+		</div>
+		<div class="modal-body">
+			<p>Copy and paste the web address of your image, or video below. </p>
+			<p>For images, you want thing that ends in .jpg, .png or something similar.</p>
+			<p>For video, we currently only support youtube. Just give us the url of the video page</p>
+			<input id="external_file_url" name="external_file_url" type="text" class="tinput" size="30" placeholder="http://">
+			
+		</div>
+		<div class="modal-footer">
+			<a href="#" class="btn primary">Add!</a>
+			<a href="#" class="btn secondary">Cancel</a>
+		</div>
+	</div> {# /modal #}
+</div> 
 {%endblock%}

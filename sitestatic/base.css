@@ -2039,7 +2039,7 @@ footer {
 .adder.editing h1 {
   display: none;
 }
-.adder.editing input#title, .adder.editing .smallOK {
+.adder.editing input#title, .adder.editing .smallOK, .adder.editing textarea#card_text {
   display: block;
 }
 h1 {
@@ -2118,13 +2118,30 @@ strong.green {
 .adder.media .sub_add .left_wrap {
   border-right: 1px solid #cacaca;
 }
+.adder.text {
+  font-size: 1.2em !important;
+}
 .adder.text textarea {
   overflow: auto;
-  height: 5em;
+  height: 6em;
   font-size: 1.2em;
   padding: .5em;
+  display: none;
+  -webkit-transition: all ease-in-out 0.3s;
+  -moz-transition: all ease-in-out 0.3s;
+  transition: all ease-in-out 0.3s;
   /*	width: @adderWidth;*/
-
+}
+.adder.text.editing .textarea {
+  display: block;
+}
+.adder.text .cardtext {
+  font-size: 1.2em;
+  text-align: left;
+  color: #404040;
+}
+.adder.text .cardtext * {
+  font-size: 1em;
 }
 .btn {
   letter-spacing: 1px;
@@ -2322,6 +2339,19 @@ strong.green {
   width: 100%;
   display: block;
   margin-top: 0.5em;
+}
+.mediaTemplate.primary_media {
+  border: 1px solid black;
+}
+.mediaTemplate.not_primary_media {
+  float: left;
+  margin: 0 1em;
+  height: 150px;
+  width: 150px;
+}
+.mediaTemplate.not_primary_media .preview_image {
+  height: 150px;
+  width: 150px;
 }
 #card_element_toolbar {
   display: none;
