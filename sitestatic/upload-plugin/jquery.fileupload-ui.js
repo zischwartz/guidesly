@@ -39,9 +39,9 @@
             // image is shown, matched against the file type:
             previewFileTypes: /^image\/(gif|jpeg|png)$/,
             // The maximum width of the preview images:
-            previewMaxWidth: 80,
+            previewMaxWidth: 500,
             // The maximum height of the preview images:
-            previewMaxHeight: 80,
+            previewMaxHeight: 500,
             // By default, preview images are displayed as canvas elements
             // if supported by the browser. Set the following option to false
             // to always display preview images as img elements:
@@ -65,8 +65,8 @@
                 data.isAdjusted = true;
                 data.isValidated = that._validate(data.files);
                 data.context = that._renderUpload(data.files)
-                    // .appendTo($(this).find('.files')).fadeIn(function () {
-                    .appendTo($('body').find('.files')).fadeIn(function () {
+                    .appendTo($(this).find('.files')).fadeIn(function () {
+                    // .appendTo($('body').find('.files')).fadeIn(function () {
                         // Fix for IE7 and lower:
                         $(this).show();
                     }).data('data', data);

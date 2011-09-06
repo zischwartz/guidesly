@@ -139,19 +139,19 @@ def BuildFloatingCard (request, gslug):
 @login_required
 def EditCard (request, gslug, id):
 	is_fluid =1
-	s = get_object_or_404(Card, guide__slug=gslug, id=id)
+	card = get_object_or_404(Card, guide__slug=gslug, id=id)
 	cr = CardResource()
-	if not s.is_floating_card:
-		prev_card = s.guide.get_prev_card(s)
-		next_card = s.guide.get_next_card(s)	
+	if not card.is_floating_card:
+		prev_card = card.guide.get_prev_card(card)
+		next_card = card.guide.get_next_card(card)	
 
-	card_bundle= cr.build_bundle(obj=s, request=request)
+	card_bundle= cr.build_bundle(obj=card, request=request)
 	card_json= cr.serialize(request, cr.full_dehydrate(card_bundle), 'application/json') #with newer version, full dehyrate ur_bundle
 	# logger.info(card_json)
 	
 	mr = MediaElementResource()
-	if s.primary_media is not None:
-		primary_media_bundle= mr.build_bundle(obj=s.primary_media, request=request)
+	if card.primary_media is not None:
+		primary_media_bundle= mr.build_bundle(obj=card.primary_media, request=request)
 		primary_media_json = mr.serialize(request, mr.full_dehydrate(primary_media_bundle),'application/json' )
 
 	#and all the cards in the guide
@@ -159,12 +159,12 @@ def EditCard (request, gslug, id):
 	c=CardResource()
 	card_list = []
 	# TODO REPLACE WITH GUIDE... as that works much better, and makes more sense.
-	for card in all_cards:
+	for a_card in all_cards:
 		# card_list.append({'title':card.title,'resource_uri': c.get_resource_uri(card), 'id':card.id})
 		# if card.primary_media:
 			# card_list.append({'title':card.title, 'primary_media': card.primary_media.file.thumb_url,'resource_uri': c.get_resource_uri(card), 'id':card.id})
 		# else:
-		card_list.append({'title':card.title,'resource_uri': c.get_resource_uri(card), 'id':card.id})
+		card_list.append({'title':a_card.title,'resource_uri': c.get_resource_uri(a_card), 'id':a_card.id})
 
 	all_cards_json = simplejson.dumps(card_list)
 

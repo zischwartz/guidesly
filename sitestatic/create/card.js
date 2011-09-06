@@ -27,30 +27,10 @@ $(document).ready(function(){
 
 	initial_card_object= jQuery.parseJSON(initial_card_json);
 	VM = ko.mapping.fromJS(initial_card_object);
-	
-	if (VM.primary_media) //if it exists, wrap it in an observable. even though it may be null.
-	{
-		the_primary_media = VM.primary_media;
-		VM.primary_media =ko.observable(the_primary_media);
-	}
-	
 
-	console.log('VM.primary_media()')
-	// console.log(VM.primary_media)
-	
-	//set first element to the primary media if we already have one
-	if (VM.mediaelements().length>1)
-	{
-		console.log('mixing it up to put the main media up top');
-		// primary_media_id = VM.primary_media().id()
-		// console.log(primary_media_id);
-		// var the_element_ko = ko.utils.arrayFirst(VM.mediaelements(), function(item) { return item.id === primary_media_id;})
-		
-		VM.mediaelements.remove(VM.primary_media());
-		VM.mediaelements.unshift(VM.primary_media());
-	}
+	VM.pmcid = ko.observable(); //primary_media_client_id
 
-	
+	//give all the existing elements a client_id, existing tag, and set their display stuff to external if it is
 	$.each(VM.mediaelements(), function (index, element) {
 
 			element.client_id = ko.observable('media'+ element.id());
@@ -66,19 +46,19 @@ $(document).ready(function(){
 				element.file_url = ko.observable(element.file.display_url());
 				element.medium_url = ko.observable(element.file.medium_url());
 			}
-	});
+			
+			//if this element has the same r-uri as the primary media, assign pmcid
+			if (element.resource_uri() == VM.primary_media())
+			{
+				VM.pmcid(element.client_id());
+			}
+			
+	}); //end each
 	
-	
-	//need a setter here? the ordering isn't really an ideal way..
-	VM.primary_media =ko.dependentObservable(function() {
-	    return VM.mediaelements()[0]
-	}, VM);
 
 	VM.check_if_primary = function(element)
 	{
-		// console.log("element");
-		// console.log(element);
-		if (element == VM.primary_media())
+		if (element.client_id() == VM.pmcid())
 			return true;
 		else
 			return false;
@@ -86,29 +66,12 @@ $(document).ready(function(){
 
 	VM.makePrimary = function(element)
 	{
-		console.log(element);
-		console.log("lets make this primary");
-		// console.log(this);
-		// client_id = this.client_id();
-		// index= VM.mediaelements.indexOf(this);
-		// console.log(index);
-		// VM.mediaelements.splice(index, 1);
-
-		VM.mediaelements.remove(this);
-		VM.mediaelements.unshift(this);
-		
-		// me = VM.mediaelements.remove(function(item){ return item.client_id === client_id});
-		// console.log(me);
-		// VM.mediaelements.unshift(me);
-		
-		// d=VM.the_primary_media_object.pop();
-		// console.log(d);
-		// VM.the_primary_media_object.push(this);
-		// VM.primary_media(this.resource_uri());
-		VM.save_card();
+		VM.pmcid(this.client_id());
+		if (this.resource_uri())
+			VM.primary_media(this.resource_uri());
 	}
 	
-
+	
 		
 
 // **************************************
@@ -134,8 +97,9 @@ $(document).ready(function(){
 				
 				//Pre Upload, File is added, preview is created if it's an image
 				$.each(data.files, function (index, file) {
-						        // console.log('Added file: ' + file.name);
-								// console.log(file)
+						        console.log('Added file: ' + file.name);
+								console.log(file)
+								
 								var el = new Object();
 								el.title = ko.observable(); //ko.observable(file.name.split('.')[0]);
 								el.file_url = ko.observable();
@@ -145,11 +109,17 @@ $(document).ready(function(){
 								el.resource_uri= ko.observable();
 								el.external_file= ko.observable();
 								el.medium_url= ko.observable();
-																
-								var id_string = "#" + el.client_id();
-								$(id_string).addClass("uploading")
-								// the_element_jq= $("#" + el.client_id()).addClass("uploading");
-
+								
+								//add it to the array
+								VM.mediaelements.push(el);
+								
+								//if it's the first item, make it primary
+								if 	(VM.mediaelements().length ==1)
+									VM.pmcid(el.client_id());
+									
+								var the_element_jq= $("#"+ el.client_id());				
+								the_element_jq.addClass("uploading");
+								
 								if (el.type() =='image')
 								{
 									$('#fileupload').data('fileupload')._loadImage(file, function (img) {
@@ -162,20 +132,12 @@ $(document).ready(function(){
 								}
 								else
 								{
-									img = $("<img src='/static/img/upload-icon.png'/>")
-								    $(img).hide().prependTo($(id_string).find('.preview')).fadeIn().attr("class", "preview_image");	
+									img = $("<img src='/static/img/upload-icon.png'/>");
+								    $(img).hide().prependTo(the_element_jq.find('.preview')).fadeIn().attr("class", "preview_image");	
 								}
 								
-								VM.mediaelements.push(el);
-								
-								
 						}); //end each	
-
 				// console.log(data);
-
-				$("#add_media_group").css({backgroundColor: "#ffffff"});
-
-
 	}).bind('fileuploaddone',
 		function (e, data) {
 
@@ -184,23 +146,25 @@ $(document).ready(function(){
 			
 			//File has been uploaded, now lets associated it with what's actually on the server.
 			$.each(data.files, function (index, file) {
+				
 				var client_id = 'media' + file.name.split('.')[0].split(' ')[0] + file.size;
-				var id_string = "#" + client_id;
-				// var the_element_jq= $("#" + client_id);
+
+					
+				var the_element_jq= $("#" + client_id);
 				
 				var the_element_ko = ko.utils.arrayFirst(VM.mediaelements(), function(item) { return item.client_id() === client_id;})
-
-				// console.log(the_element_jq);
-				// console.log(the_element_ko.client_id());
-
 				the_element_ko.file_url(data.result[0].url);
 				the_element_ko.resource_uri(media_api_url + data.result[0].id + '/');
 				the_element_ko.medium_url(data.result[0].medium_image_url);
-				// $(id_string).find('.preview_image').attr('src', data.result[0].medium_image_url).attr('id', client_id + 'img'); // messing up because if data.result.mediumimageurl is empty, acts as a getter
-				$(id_string).removeClass('uploading');
-				// console.log('data.result[url]'); 
-				// console.log(data.result);
 				
+				the_element_jq.removeClass('uploading');
+				
+				//set the primary media here 
+				if 	(VM.mediaelements().length ==1)
+				{
+					VM.primary_media(the_element_ko.resource_uri());
+					VM.save_card();
+				}
 			}); //end each data.files
 			
 			return
@@ -253,8 +217,8 @@ $(document).ready(function(){
 		// VM.mediaelements(mappedItems);
 
 		var jsData = ko.mapping.toJS(VM);
-		if (VM.primary_media())
-			jsData.primary_media= VM.primary_media().resource_uri();
+		// if (VM.primary_media())
+		// 	jsData.primary_media= VM.primary_media();
 		delete jsData.mediaelements;
 		jsonData = ko.toJSON(jsData);
 
@@ -276,9 +240,10 @@ $(document).ready(function(){
 		url: this.file_url()
 			});
 	} // end aviary
-
-
-
+	
+//**********************************************
+//******  INPUT AND INTERACTION ADDING     *****
+// *********************************************
 	VM.current_input_type= ko.observable();
 	VM.current_input_verb= ko.observable();
 	VM.newCardTitle= ko.observable();

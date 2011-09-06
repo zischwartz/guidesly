@@ -40,7 +40,7 @@ class CardResource(ModelResource):
 	inputelements = fields.ToManyField('api.InputElementResource', 'inputelement_set', full=True, readonly=True, null=True)
 	mapelements = fields.ToManyField('api.MapElementResource', 'mapelement_set', full=True, readonly=True, null=True)
 	guide = fields.ForeignKey('api.GuideResource', 'guide', null=True)
-	primary_media = fields.ForeignKey('api.MediaElementResource', 'primary_media', null=True, blank=True, full= True)
+	primary_media = fields.ForeignKey('api.MediaElementResource', 'primary_media', null=True, blank=True) #, full= True)
 	class Meta:
 		authorization = Authorization()
 		queryset= Card.objects.all()

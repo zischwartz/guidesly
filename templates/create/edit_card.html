@@ -25,8 +25,8 @@
 		
 		
 		<script type="text/javascript">
-			var current_card_id ="{{s.id}}";
-			var guide_id = {{s.guide.id}};
+			var current_card_id ="{{card.id}}";
+			var guide_id = {{card.guide.id}};
 			var initial_card_json= '{{card_json|safe|escapejs}}';
 			var all_cards = '{{all_cards_json|safe|escapejs}}'; 
 			var primary_media_json = '{{primary_media_json|safe|escapejs}}'; 
@@ -133,16 +133,16 @@
 {%block header%}
 
 <li class="menu"> 
-  <a href="#" class="menu active">{{s.guide.title}}</a> 
+  <a href="#" class="menu active">{{card.guide.title}}</a> 
   <ul class="menu-dropdown"> 
-    <li><a href="{% url EditGuide gslug=s.guide.slug %}">Overview of {{s.guide.title}}</a></li> 
-    <li><a href="{% url EditGuide gslug=s.guide.slug %}">Guide Options</a></li> 
-    <li><a href="{% url BuildCard gslug=s.guide.slug %}">Add a New Card</a></li> 
+    <li><a href="{% url EditGuide gslug=card.guide.slug %}">Overview of {{card.guide.title}}</a></li> 
+    <li><a href="{% url EditGuide gslug=card.guide.slug %}">Guide Options</a></li> 
+    <li><a href="{% url BuildCard gslug=card.guide.slug %}">Add a New Card</a></li> 
     <li class="divider"></li> 
     <li><a href="#">Publish</a></li> 
   </ul> 
 </li> 
-<li><a href="{% url CardDetailViewByIdRedirect id=s.id %}">Preview <span data-bind="text: !title()  ? 'This Card': title"></span></a></li> 
+<li><a href="{% url CardDetailViewByIdRedirect id=card.id %}">Preview <span data-bind="text: !title()  ? 'This Card': title"></span></a></li> 
 
 
 {%endblock%}
@@ -164,8 +164,8 @@
 			</div>
 		</div>
 		
-		<div id="media" {# class="files" #} >
-			<div data-bind="template:{name: 'template-upload',  foreach: VM.mediaelements, beforeRemove: function(elem) {$(elem).fadeOut(function(){ $(this).remove()}); }}"></div>
+		<div id="media"  > {# class="files" #} {# upload-template #}
+			<div data-bind="template:{name: 'mediaTemplate',  foreach: VM.mediaelements, beforeRemove: function(elem) {$(elem).fadeOut(function(){ $(this).remove()}); }}"></div>
 		</div> {# /#media elements #}
 		
 		<div class="adder media" data-bind="css:{minimized: VM.mediaelements().length}" >
@@ -285,7 +285,7 @@
 				{# for input template debugging       <input data-bind="value: default_action.goto">    #}
 <div class="sidebar">
 	<h3>Card Options</h3>
-	<a href="{% url CardDetailViewByIdRedirect id=s.id %}" class="btn primary">Preview Card</a>
+	<a href="{% url CardDetailViewByIdRedirect id=card.id %}" class="btn primary">Preview Card</a>
 	<button class="btn primary" data-bind="click: VM.save_card">Save Card</button>
 	<form class="form-stacked">
 		<div class="clearfix">
@@ -327,12 +327,12 @@
 
 	{# NEW #}
 	{# <img class="preview_image" data-bind="attr: { id: (client_id() + 'img'), src: medium_url }"/> #}
-
+{# template-upload #} {# /x-jquery-tmpl #}
 {% verbatim %}
 
- 	<script id="template-upload" type="text/x-jquery-tmpl">	
+ 	<script id="mediaTemplate" type="text/html">	
 	
-		<div class="mediaTemplate" data-bind="attr: { id:  client_id}, css: {primary_media: VM.check_if_primary($item.data), not_primary_media: !(VM.check_if_primary($item.data))}">
+		<div class="mediaTemplate" id="${client_id}" data-bind="attr: { id:  client_id}, css: {primary_media: VM.check_if_primary($item.data), not_primary_media: !(VM.check_if_primary($item.data))}">
 			<div class="preview">
 				<img class="preview_image" data-bind="attr: { id: (client_id() + 'img'), src: medium_url }"/>
 			</div>
