@@ -2039,7 +2039,7 @@ footer {
 .adder.editing h1 {
   display: none;
 }
-.adder.editing input#title, .adder.editing .smallOK, .adder.editing textarea#card_text {
+.adder.editing input#title, .adder.editing .smallOK, .adder.editing textarea#wmd-input {
   display: block;
 }
 h1 {
@@ -2066,11 +2066,6 @@ input#title {
   float: left;
   width: 100%;
   border-top: 1px solid #bfbfbf;
-}
-.adder strong {
-  /*	text-decoration: underline;*/
-
-  font-weight: bold;
 }
 .green_plus {
   font-weight: bold;
@@ -2121,6 +2116,12 @@ strong.green {
 .adder.text {
   font-size: 1.2em !important;
 }
+.adder.text #wmd-button-bar {
+  display: none;
+  -webkit-transition: all ease-in-out 0.3s;
+  -moz-transition: all ease-in-out 0.3s;
+  transition: all ease-in-out 0.3s;
+}
 .adder.text textarea {
   overflow: auto;
   height: 6em;
@@ -2132,16 +2133,32 @@ strong.green {
   transition: all ease-in-out 0.3s;
   /*	width: @adderWidth;*/
 }
-.adder.text.editing .textarea {
+.adder.text.editing .textarea, .adder.text.editing #wmd-button-bar {
   display: block;
 }
 .adder.text .cardtext {
   font-size: 1.2em;
   text-align: left;
-  color: #404040;
+  /*		overflow: visible;*/
+
 }
 .adder.text .cardtext * {
   font-size: 1em;
+}
+.adder.text .cardtext h1 {
+  font-size: 1.8em;
+  text-align: center;
+  display: block;
+}
+.adder.text .cardtext h2 {
+  font-size: 1.6em;
+  display: block;
+}
+.adder.text .cardtext h3 {
+  font-size: 1.4em;
+}
+.adder.text .cardtext h3 {
+  font-size: 1.3em;
 }
 .btn {
   letter-spacing: 1px;
@@ -2329,10 +2346,10 @@ strong.green {
   display: inline-block;
   overflow: hidden;
 }
-.mediaTemplate .preview_wrapper {
+.mediaTemplate .preview {
   margin-bottom: -102px;
 }
-.mediaTemplate .preview_wrapper .preview_image {
+.mediaTemplate .preview .preview_image {
   width: 500px;
 }
 .mediaTemplate .mediaTitle {
@@ -2353,6 +2370,104 @@ strong.green {
   height: 150px;
   width: 150px;
 }
+.modal-backdrop {
+  display: none;
+}
 #card_element_toolbar {
   display: none;
+}
+.wmd-panel {
+  /*	margin-left: 25%;*/
+
+  /*	margin-right: 25%;*/
+
+  /*	width: 50%;*/
+
+  /*	min-width: 500px;*/
+
+}
+.wmd-button-bar {
+  width: 100%;
+  background-color: Silver;
+}
+.wmd-input {
+  /*	height: 300px;*/
+
+  width: 100%;
+  /*	background-color: Gainsboro;*/
+
+  border: 1px solid DarkGray;
+}
+.wmd-preview {
+  /*	background-color: #c0e0ff; */
+
+}
+.wmd-button-row {
+  position: relative;
+  margin-left: 5px;
+  margin-right: 5px;
+  margin-bottom: 5px;
+  margin-top: 10px;
+  padding: 0px;
+  height: 20px;
+}
+.wmd-spacer {
+  width: 1px;
+  height: 20px;
+  margin-left: 14px;
+  position: absolute;
+  background-color: Silver;
+  display: inline-block;
+  list-style: none;
+}
+.wmd-button {
+  width: 20px;
+  height: 20px;
+  padding-left: 2px;
+  padding-right: 3px;
+  position: absolute;
+  display: inline-block;
+  list-style: none;
+  cursor: pointer;
+}
+.wmd-button > span {
+  background-image: url("/static/js-libs/wmd-buttons.png");
+  background-repeat: no-repeat;
+  background-position: 0px 0px;
+  width: 20px;
+  height: 20px;
+  display: inline-block;
+}
+.wmd-spacer1 {
+  left: 50px;
+}
+.wmd-spacer2 {
+  left: 175px;
+}
+.wmd-spacer3 {
+  left: 300px;
+}
+.wmd-prompt-background {
+  background-color: Black;
+}
+.wmd-prompt-dialog {
+  border: 1px solid #999999;
+  background-color: #F5F5F5;
+}
+.wmd-prompt-dialog > div {
+  font-size: 0.8em;
+  font-family: arial, helvetica, sans-serif;
+}
+.wmd-prompt-dialog > form > input[type="text"] {
+  border: 1px solid #999999;
+  color: black;
+}
+.wmd-prompt-dialog > form > input[type="button"] {
+  border: 1px solid #888888;
+  font-family: trebuchet MS, helvetica, sans-serif;
+  font-size: 0.8em;
+  font-weight: bold;
+}
+strong, .strong {
+  font-weight: bold;
 }

@@ -248,7 +248,8 @@ class MediaElement (models.Model):
 	external_file = models.URLField(blank=True) #,verify_exists=True)
 	action_when_complete= models.OneToOneField('Action', blank=True, null=True)
 	# big = models.BooleanField(default=True)
-
+	def __unicode__(self):
+		return "media-el: %s  (%s)" % (self.title, self.file)
 
 class Action (models.Model):
 	goto = models.ForeignKey(Card, blank=True, null=True)

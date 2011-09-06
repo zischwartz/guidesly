@@ -10,6 +10,13 @@
 		<script type="text/javascript" src="{{STATIC_URL}}upload-plugin/jquery.fileupload-ui.js"></script>
 		<link rel="stylesheet" href="{{STATIC_URL}}upload-plugin/thumbnail-scaling.css">
 		
+
+		
+		<script type="text/javascript" src="{{STATIC_URL}}js-libs/Markdown.Converter.js"></script> 
+	    <script type="text/javascript" src="{{STATIC_URL}}js-libs/Markdown.Sanitizer.js"></script> 
+	    <script type="text/javascript" src="{{STATIC_URL}}js-libs/Markdown.Editor.js"></script>
+	
+	
 	 	 {# // <script type="text/javascript" src="http://feather.aviary.com/js/feather.js"></script> #}
 		
 		
@@ -45,7 +52,12 @@
 								
 		$(document).ready(function(){	
 			
-			$(".adder .closex").click(function(event){
+			
+			var converter = Markdown.getSanitizingConverter();
+			var editor = new Markdown.Editor(converter);
+			editor.run();
+			
+			$(".adder .closer").click(function(event){
 				adder= $(this).parent();
 				adder.addClass("minimized").removeClass('editing');
 				event.stopPropagation();
@@ -53,40 +65,67 @@
 					VM.title('');
 				return (false);
 			});
+			
+			$(".modal a.closer").click(function(event){
+				$(this).parents('.modal-backdrop').fadeOut('fast');
+				// adder.addClass("minimized").removeClass('editing');
+				// event.stopPropagation();
+
+				return (false);
+			});
 
 			$(".adder.minimized").live('click', function(){
 				$(this).removeClass('minimized');
 			});
-		
-			$("#card_text").click(function()
-			{
-				$("#card_textOK").fadeIn(100);
-			});
+				
 			
 		}); //end docready
 
 	function didPressEnter(event)
-	{
-		if ( event.which == 13 )
+	{if ( event.which == 13 )
 			{
 				turnOffEditing(event);
 			}
-		return (true);
-	}
+		return (true);}
 
 	function turnOnEditing(event)
-	{	console.log('turned on editing');
-		el=event.currentTarget;
-		$(el).addClass('editing');
-		$(el).find("textarea:first").focus(); $(el).find("input:first").focus();
+	{	
+		console.log('turnOnEditing');
+		el=$(event.currentTarget);
+		el.addClass('editing');
+		el.find("textarea:first").focus();
+		el.find("input:first").focus();
+		event.stopPropagation();
+		return false;
 	}
 	
 	function turnOffEditing(event)
 	{
-		el=event.currentTarget;
+		el=$(event.target);
+		// console.log(el.hasClass('editing'));
+		if (el.hasClass('editing'))
+		{
+			event.stopPropagation();
+			return false;
+		}
 		$(el).removeClass('editing');
 		$(el).parents('.editing').removeClass('editing');
+		event.stopPropagation();
+		
+		VM.save_card();
 	}
+	
+	function showInputModal(event)
+	{	console.log('showInputModal');
+		el=$(event.currentTarget);
+		console.log(el);
+		input_type = el.data("input_type");
+		input_verb = el.data("input_verb");
+		VM.current_input_type(input_type)
+		VM.current_input_verb(input_verb)
+		$("#inputModal").fadeIn('fast');
+	}
+	
 			
 </script>
 {%endblock%}
@@ -98,7 +137,7 @@
   <ul class="menu-dropdown"> 
     <li><a href="{% url EditGuide gslug=s.guide.slug %}">Overview of {{s.guide.title}}</a></li> 
     <li><a href="{% url EditGuide gslug=s.guide.slug %}">Guide Options</a></li> 
-    <li><a href="#">Add a New Card</a></li> 
+    <li><a href="{% url BuildCard gslug=s.guide.slug %}">Add a New Card</a></li> 
     <li class="divider"></li> 
     <li><a href="#">Publish</a></li> 
   </ul> 
@@ -114,22 +153,23 @@
 <div class="cardwrap"> 
 	<div class="card">
 
-		<div class="adder title" tabindex="3" data-bind="event: { focusin: turnOnEditing, focusout: turnOffEditing, keypress: didPressEnter}">
-			<a class="closex" href="#">x</a>				
+		<div class="title adder " tabindex="3" data-bind="event:{ focusin: turnOnEditing, focusout: turnOffEditing, keypress: didPressEnter}">
+
+			<a class="closex closer" href="#">x</a>				
 			<div class="adder_inner">
 				<h1 data-bind="text: !title()  ? 'Clever Title Here': title, css: { notBlank: title() }"></h1>
 				<input id="title" name="card_title" type="text" class="tinput"  data-bind="value:title, valueUpdate: 'afterkeydown'">
-				<button class="btn tiny smallOK" id="titleOK" data-bind="click: turnOffEditing">OK</button>
+				<button class="btn tiny smallOK" id="titleOK" data-bind="click: turnOffEditing, clickBubble: false">OK</button>
 
 			</div>
 		</div>
 		
-		<div id="media">
-			<div data-bind="template:{name: 'mediaTemplate',  foreach: VM.mediaelements, beforeRemove: function(elem) {$(elem).fadeOut(function(){ $(this).remove()}); }}"></div>
+		<div id="media" {# class="files" #} >
+			<div data-bind="template:{name: 'template-upload',  foreach: VM.mediaelements, beforeRemove: function(elem) {$(elem).fadeOut(function(){ $(this).remove()}); }}"></div>
 		</div> {# /#media elements #}
 		
 		<div class="adder media" data-bind="css:{minimized: VM.mediaelements().length}" >
-			<a class="closex" href="#">x</a>
+			<a class="closex closer" href="#">x</a>
 			<div class="adder_inner">
 				<div class="addertop">
 					<h2>Add Media</h2>
@@ -144,30 +184,34 @@
 				</div>
 				<div class="sub_add">
 					<h4>From the web</h4>
-					<button class="btn large">Youtube, Flickr, Etc.</button><p><strong>Coming soon</strong><br></p>
+					<button class="btn large" data-bind="click: function(){$('#addExternalMediaModal').fadeIn()}">Youtube, Flickr, Etc.</button><p><strong>Coming soon</strong><br></p>
 				</div>
-				{# <div class="sub_bottom"> #}
-				{# 	<h4>From Your Files</h4><br> #}
-				{# </div> #}
+				{# <div class="sub_bottom"> #}{# 	<h4>From Your Files</h4> <p clas="HoM">Well, you don't have any yet. But we wanted to let you know that they're reusable.<br> #}{# </div> #}
 			</div> <!-- /adder_inner -->
 		</div><!-- end adder media -->
 
 
+
 		<div class="adder text" tabindex="5" data-bind="event: { focusin: turnOnEditing, focusout: turnOffEditing}">
-			<a class="closex" href="#">x</a>
+			<a class="closex closer" href="#">x</a>
 			<div class="adder_inner">
-				<div class="cardtext" data-bind="html: !text() ? '<p>Text for your card. Easy formatting. Totally optional.</p>': marked_text, css: { notBlank: text()}"></div>
-	              <form><textarea data-bind="value:text, valueUpdate: 'afterkeydown'" class="xxlarge tinput" id="card_text" name="textarea" placeholder="Add some text here. You know, if you want to..."></textarea> </form>
+				 <div class="cardtext" data-bind="visible: !text()"><p>Text for your card. Easy formatting. Totally optional.</p></div>
+				 <div id="wmd-preview" class="wmd-panel wmd-preview cardtext" data-bind="visible: text()">Placeholder</div>
+
+	              <form class="wmd-panel"><div id="wmd-button-bar"></div> 
+					<textarea data-bind="value:text, valueUpdate: 'afterkeydown'" class="xxlarge tinput wmd-input" id="wmd-input" name="textarea" placeholder="Add some text here. You know, if you want to..."></textarea> </form>
 					<button class="btn tiny smallOK" id="card_textOK" data-bind="click: function(event){turnOffEditing(event), VM.save_card()}">OK</button>
 			</div>
 		</div>
 		
 		<div class="adder input">
-			<a class="closex" href="#">x</a>
+			<a class="closex closer" href="#">x</a>
 			<div class="adder_inner">
 				<h2>Add an Interaction</h2>
-				<span class="HoM">Guide your users to different cards using these interactions<br></span>
-				<button class="btn large ">Add Button</button> <button class="btn large ">Add Map</button> <button class="btn large ">Add Timer</button>
+				<span class="HoM">Move your users to different cards using these interactions<br></span>
+				<button class="btn large " data-input_type="button" data-input_verb="add" data-bind="click: showInputModal">Add Button</button>
+				<button class="btn large" data-input_type="map" data-input_verb="add" data-bind="click: showInputModal">Add Map</button>
+				<button class="btn large" data-input_type="timer" data-input_verb="add" data-bind="click: showInputModal">Add Timer</button>
 			</div>
 		</div> <!-- /adder input -->
 		
@@ -189,38 +233,7 @@
 
 		<div id="card_being_edited" class="{%if s.brand_new%}brand_new{%endif%}">
 			
-			
-	{# CARD TITLE #}
-			{# <div class="ue" tabindex="3" data-bind="event: { focusin: VM.flipEl, focusout: VM.unflipEl}"> #}
-			{# 	<h1 class="front" data-bind="text: !title()  ? 'Card Title': title, css: { optional: !title() }"></h1> #}
-			{# 	<div class="back"> #}
-			{# 		 #}
-			{# 		<label for="title">Card's title: </label><input data-bind="value:title, valueUpdate: 'afterkeydown'" type="text" name="title" id="title" /> #}
-			{# 	</div> #}
-			{# </div>	 {# end .ue #}
-			
-		{# Primary Media #}
-			{# <div data-bind="template:{name: 'primaryTemplate',  foreach: VM.the_primary_media_object, #}
-			{#   				afterRender: uePostProcessing, #}
-			{#  				beforeRemove: function(elem) {$(elem).slideUp(function(){ $(this).remove()}); }, #}
-			{# 				afterAdd: function(elem) {$(elem).hide().slideDown() }}"> </div> #}
-					
-	{#   MEDIA CLIENTSIDE TEMPLATE CALL  which is actually way down below, and perhaps should be a separate template file on the server#}
-			{# <div data-bind="template:{name: VM.mediaTypeTemplate,  foreach: VM.mediaelements, #}
-			{#   				afterRender: uePostProcessing, #}
-			{#  				beforeRemove: function(elem) {$(elem).slideUp(function(){ $(this).remove()}); }, #}
-			{# 				afterAdd: function(elem) {$(elem).hide().slideDown() }},   #}
-			{# 				visible: ((VM.mediaelements().length >1) || (!VM.the_primary_media_object().length))"> </div> #}
 
-
-	{# CARD TEXT #}
-		{# <div class="ue" tabindex="10" data-bind="event: { focusin: VM.flipEl, focusout: VM.unflipEl }"> #}
-		{# 	<div class="front cardtext" data-bind="html: !text() ? 'Card text (optional)': marked_text, css: { optional: !text()}">{{s.text}}</div> #}
-		{# 	<div class="back"> #}
-		{# 		<textarea class="cardtext" class="card_text" name="text" data-bind="value:text">{{s.text}}</textarea> #}
-		{# 	</div> #}
-		{# 	</div> #}
-		{# <br> #}
 	
 	{# INPUT ELEMENTS #}
 		<div data-bind="template:{name: VM.inputTypeTemplate,  foreach: VM.inputelements,
@@ -245,14 +258,13 @@
 
 	</div> {# end #card_being_edited  ------------------------ #}
 
-	{# <input class="uibutton" type="submit" value="Save Card" name ="card_sub_save"/> #}
-	<a  href="{% url BuildCard gslug=s.guide.slug %}"class="uibutton"/>Save &amp; Add New Card</a>
+
 	
-	<a href="{% url CardDetailViewByIdRedirect id=s.id %}" class="uibutton"> Preview <i data-bind="text: !title() ? '{{s}}': title"></i></a>
+
 	
 	<div id="edit_card_options_group"> 
 		<input type="checkbox" data-bind="checked: is_floating_card" id="is_floating_card"> <label for="is_floating_card"> Side Card</label>
-		<br>A "side card" is outside the normal flow of a guide.
+		<br>A "side card" is outside the normal flow of a guide. Mostly, this means there won't be 'previous' and 'next' buttons automatically added to it.
 		</div>
 </form> {# end card form #}
 
@@ -264,92 +276,7 @@
 {%block sidebar%}
 
 
-<div id="card_element_toolbar">
-<br><br>
-	<h3 id="add_media"> 
-		<a href="#">Add  <span data-bind="text:media_type">Media</span> 
-			<div class="iconbuttons">
-				<img src="{{STATIC_URL}}img/image-icon.png" data-media_type="image" class="uibutton" data-bind="event: {mouseover: changeMediaType, mouseout: changeMediaTypeBack}">
-				<img src="{{STATIC_URL}}img/video-icon.png" data-media_type="video" class="uibutton" data-bind="event: {mouseover: changeMediaType, mouseout: changeMediaTypeBack}">
-				<img src="{{STATIC_URL}}img/audio-icon.png" data-media_type="audio" class="uibutton" data-bind="event: {mouseover: changeMediaType, mouseout: changeMediaTypeBack}">
-				<img src="{{STATIC_URL}}img/upload-icon.png" data-media_type="upload" class="uibutton" data-bind="event: {mouseover: changeMediaType, mouseout: changeMediaTypeBack}">
-			</div>
-		</a>
-	</h3>
-	<div id="add_media_group">
-		<button class="uibutton" data-bind="visible:currently_adding_media_type(), click: function(){VM.media_files.removeAll(); currently_adding_media_type(null); media_type('media');} "> ←</button>
-		<h5 class="upmedmessage" data-bind="visible: (media_files().length||!currently_adding_media_type())">From media you've uploaded:</h5><br>
-		<h4 class="uibutton" data-media_type="image" data-bind="visible: !currently_adding_media_type()"><img src="{{STATIC_URL}}img/image-icon.png"> Add Image</h4>
-		<h4 class="uibutton" data-media_type="video" data-bind="visible: !currently_adding_media_type()"><img src="{{STATIC_URL}}img/video-icon.png"> Add Video</h4>
-		<h4 class="uibutton" data-media_type="audio" data-bind="visible: !currently_adding_media_type()"><img src="{{STATIC_URL}}img/audio-icon.png"> Add Audio</h4>
-		<h4 class="uibutton" data-media_type="other" data-bind="visible: !currently_adding_media_type()"> <img src="{{STATIC_URL}}img/document-icon.png"> Add Other</h4>
 
-		<span class="upmedmessage" data-bind="visible: (media_files().length||!currently_adding_media_type()) ? 0: 1">You haven't uploaded any <span data-bind="text: currently_adding_media_type"></span> files yet.</span>
-
-		{# USERFILE MEDIA JS TEMPLATE  #}
-		<div class="userfiles" data-bind="template:{name: userFileDisplayMode,  foreach: VM.media_files}"></div>
-		{# *************************** #}
-		<br>
-		{# <button class="uibutton" data-bind="click: showFileUploadForm, visible: !(currently_adding_media_type()=='upload') "> Upload New Media Now</button> #}
-		{# {%include 'create/fileupload.html'%} #}
-		
-		<br><div class="F">F</div>
-
-	</div> {# end #add_media_group #}
-	
-	
-	<h3 id="add_input"><a href="#">Add <span data-bind="text:input_type">Input</span>
-			<div class="iconbuttons">
-				<img src="{{STATIC_URL}}img/button-icon.png" data-input_type="button" class="uibutton" data-bind="event: {mouseover: changeInputType, mouseout: changeInputTypeBack}">
-				<img src="{{STATIC_URL}}img/timer-icon.png" data-input_type="timer" class="uibutton" data-bind="event: {mouseover: changeInputType, mouseout: changeInputTypeBack}">
-			</div>
-			</a></h3>
-		<div id="add_input_group">
-			<h4 class="uibutton" data-input_type="button" data-bind="visible: !currently_adding_input_type()"><img src="{{STATIC_URL}}img/button-icon.png"> Add Button</h4>
-			<h4 class="uibutton" data-input_type="timer" data-bind="visible: !currently_adding_input_type()"><img src="{{STATIC_URL}}img/timer-icon.png"> Add Timer</h4>
-			{# <h4 class=" uibutton" data-input_type="text_question"><img src="{{STATIC_URL}}img/button-icon.png"> Add Text Question</h4> #}
-			<div id="add_button_group" data-bind="visible: currently_adding_input_type()=='button' ">
-				<label for="adder_button_text">Button Label:</label>
-				<input type="text" name="adder_button_text" placeholder="Do Something" id="adder_button_text" data-bind="value:newButtonText, valueUpdate: 'afterkeydown'"><br>
-				<br>
-			</div> {# end #add_button_group #}
-
-			<div id="add_timer_group" data-bind="visible: currently_adding_input_type()=='timer' ">	
-				<label for="adder_timer_text">Timer Label:</label>	<input id="adder_timer_text" type="text" data-bind="value:newButtonText, valueUpdate: 'afterkeydown'" placeholder="Do something sometime"><br>
-				<label for="timer_seconds">Seconds : </label><input id="timer_seconds" type="number" step="1" min="0" max="60" value="0" data-bind="value: newTimerSeconds, valueUpdate: 'afterkeydown' ">
-				<label for="timer_minutes">Minutes : </label><input id="timer_minutes" type="number" step="1" min="0" max="60" value="0" data-bind="value: newTimerMinutes, valueUpdate: 'afterkeydown' ">
-			</div> {# end timer group #}
-
-			<div id="add_map_group">
-				<form data-bind="submit:addMap2Card">
-				<input type="submit" value="Add Map">
-				</form>
-			</div>
-
-			<form data-bind="submit:addInput2card, visible: newButtonText">
-			<label>Pick a card for the <span data-bind="text:currently_adding_input_type"></span> to go to:</label>
-			{# CARDS_IN_GUIDE JS TEMPLATE  #}
-				<div class="all_card_holder" data-bind="template: {name: 'smallCardTemplate',
-				  						foreach: VM.all_cards,
-
-						 				beforeRemove: function(elem) {$(elem).slideUp() },
-										afterAdd: function(elem) {$(elem).hide().slideDown() } }"></div>
-			{# *************************** #}
-				<br><br>
-				<div class="smallcard goto_new_card_button">
-				<input type="radio" id="radiob-card-new" class="uibutton" data-bind="checked: newActionGotoCard" value="addcard" name="addbutton-pickcard"/><label for="radiob-card-new">An Entirely New Card</label> 
-				</div> <br>
-				<input type="text" data-bind="value:newCardTitle, visible: newActionGotoCard()=='addcard' " placeholder="New Card Title">
-			<div class="clearfix"></div>
-			<button class="uibutton" type="submit" data-input_type="button" data-bind="enable:  newActionGotoCard()&&newButtonText() , css:{'ui-button-disabled': !(newActionGotoCard()&&newButtonText()), 'ui-state-disabled': !(newActionGotoCard()&&newButtonText())}">Add This Button to Card</button>
-			</form>
-		<br><div class="F">F</div>
-		</div> {# end #add_input_group #}
-
-		{# <h3 id="card_options"><a href="#">Edit Card Options</a></h3> #}
-
-
-	</div> {# end #card_element_toolbar #}
 
 				{#  #}
 				{# <input type="radio" id="checkb-is_primary-${id}" class="uibutton" data-bind="checked: VM.primary_media" value="${resource_uri}" name="primary_media" /> #}
@@ -398,13 +325,15 @@
 
 
 
-	
+	{# NEW #}
+	{# <img class="preview_image" data-bind="attr: { id: (client_id() + 'img'), src: medium_url }"/> #}
 
 {% verbatim %}
 
-	<script id='mediaTemplate' type='text/html'>
+ 	<script id="template-upload" type="text/x-jquery-tmpl">	
+	
 		<div class="mediaTemplate" data-bind="attr: { id:  client_id}, css: {primary_media: VM.check_if_primary($item.data), not_primary_media: !(VM.check_if_primary($item.data))}">
-			<div class="preview_wrapper">
+			<div class="preview">
 				<img class="preview_image" data-bind="attr: { id: (client_id() + 'img'), src: medium_url }"/>
 			</div>
 			<div class="mediaOptions">
@@ -434,79 +363,6 @@
 
 	{% verbatim %}
 	
-
-	<script id='primaryTemplate' type='text/html'>
-		<div class="ue is_primary" data-bind="event: { focusin: VM.flipEl, focusout: VM.unflipEl }, attr: { tabindex: typeof(id)!='undefined' ? id: -1 }">
-			<figure class="front">
-				<div class="media_holder"  style="background: url( '${file.medium_url}' ) center center no-repeat; background-size: contain;"></div>
-				<div class="media_title" data-bind="text: title"></div>
-			</figure>
-			
-			<div class="back">
-				<input type="text" data-bind="value:title, valueUpdate: 'change'" placeholder="Image title"> <br>
-				<img src="${file.thumb_url}" width="50px"> 
-				<br>
-
-					<input type="checkbox" id="checkb-autoplay-${id}" class="uibutton" data-bind="checked: autoplay" />
-
-					<label for="checkb-autoplay-${id}" data-bind="text : autoplay() ? 'Currently Autoplaying ': 'Make Autoplay'"></label>
-					<br>
-
-				
-				<a class="uibutton delete" data-bind="click: VM.deleteFromCard">Remove</a>
-			</div>
-			
-		</div> 
-	</script>	
-
-
-
-
-	<script id='imageTemplate' type='text/html'>
-		<div class="ue" data-bind="event: { focusin: VM.flipEl, focusout: VM.unflipEl }, attr: { tabindex: typeof(id)!='undefined' ? id: -1 }">
-			<figure class="front">
-				<div class="media_holder"  data-bind="style: {background: 'url('+ file.file() +') center center no-repeat', backgroundSize: 'contain'}"></div>
-				<div class="media_title" data-bind="text: title"></div> 
-			</figure>
-			
-			<div class="back">
-				<input type="text" data-bind="value:title, valueUpdate: 'change'" placeholder="Image title"> <br>
-				<img src="${file.file}" width="50px"> 
-				<br>
-				<a class="uibutton" data-bind="click: VM.makePrimary">Make Primary Media</a>
-
-				<br>
-				<a class="uibutton delete" data-bind="click: VM.deleteFromCard">Remove</a>
-
-			</div>
-			
-		</div> 
-	</script>
-	
-
-	<script id='videoTemplate' type='text/html'>
-		<div class="ue" data-bind="event: { focusin: VM.flipEl, focusout: VM.unflipEl }, attr: { tabindex: typeof(id)!='undefined' ? id: -1 }">
-			<figure class="front">
-				<div class="media_holder" style="background-image: url('/static/img/video-icon.png')"></div>
-				<div class="media_title" data-bind="text: title"></div>
-			</figure>
-			
-			<div class="back">
-				
-				<input type="text" data-bind="value:title, valueUpdate: 'change'" placeholder="Image title"> <br>
-				<img src="/static/img/video-icon.png" width="50px"> 
-				<br>
-				<a class="uibutton" data-bind="click: VM.makePrimary">Make Primary Media</a>
-				<br><input type="checkbox" id="checkb-autoplay-${id}" class="uibutton" data-bind="checked: autoplay" />
-				<label for="checkb-autoplay-${id}" data-bind="text : autoplay() ? 'Currently Autoplaying ': 'Make Autoplay'"></label>
-				<br>
-				<a class="uibutton delete" data-bind="click: VM.deleteFromCard">Remove</a>
-
-			</div>
-		</div> 
-	</script>
-	
-	
 	<script id='mapTemplate' type='text/html'>
 		<div class="ue" data-bind="event: { focusin: VM.flipEl, focusout: VM.unflipEl }, attr: { tabindex: typeof(id)!='undefined' ? id: -1 }">
 			<figure class="front">
@@ -514,11 +370,7 @@
 				<div class="front input-button" data-bind="text: title"></div>
 			</figure>
 			
-			
-			
 			<div class="back">
-			
-			
 			
 			<div class="clearfix"></div>
 			<a class="uibutton delete" data-bind="click: VM.deleteFromCard">Remove</a>
@@ -527,28 +379,6 @@
 		</div> 
 	</script>
 	
-	<script id='audioTemplate' type='text/html'>
-		<div class="ue" data-bind="event: { focusin: VM.flipEl, focusout: VM.unflipEl }, attr: { tabindex: typeof(id)!='undefined' ? id: -1 }">
-			<figure class="front">
-				<div class="media_holder" style="background-image: url('/static/img/audio-icon.png')"></div>
-				<div class="media_title" data-bind="text: title"></div>
-			</figure>
-			
-			<div class="back">
-				
-				<input type="text" data-bind="value:title, valueUpdate: 'change'" placeholder="Image title"> <br>
-				<img src="/static/img/audio-icon.png" width="50px"> 
-				<br>
-				<a class="uibutton" data-bind="click: VM.makePrimary">Make Primary Media</a>
-				<br><input type="checkbox" id="checkb-autoplay-${id}" class="uibutton" data-bind="checked: autoplay" />
-				<label for="checkb-autoplay-${id}" data-bind="text : autoplay() ? 'Currently Autoplaying ': 'Make Autoplay'"></label>
-				<br>
-				<a class="uibutton delete" data-bind="click: VM.deleteFromCard">Remove</a>
-
-			</div>
-			
-		</div> 
-	</script>
 	
 	
 		
@@ -559,13 +389,6 @@
 			<div class="back">
 			<input class="button_text" data-bind="value:button_text">
 
-			<div data-bind="template: {name: 'evenSmallerCardTemplate',
-			  						foreach: VM.all_cards,
-					 				beforeRemove: function(elem) {$(elem).slideUp() },
-									afterAdd: function(elem) {$(elem).hide().slideDown() },
-									templateOptions: { selected : default_action.goto, input_num: id }
-									}"></div>
-			<div class="clearfix"></div>
 			<a class="uibutton delete" data-bind="click: VM.deleteFromCard">Remove</a>
 
 			</div>
@@ -585,14 +408,6 @@
 			<input class="button_text" data-bind="value:minutes">
 			<input class="button_text" data-bind="value:seconds">
 
-			<div data-bind="template: {name: 'evenSmallerCardTemplate',
-			  						foreach: VM.all_cards,
-
-					 				beforeRemove: function(elem) {$(elem).slideUp() },
-									afterAdd: function(elem) {$(elem).hide().slideDown() },
-									templateOptions: { selected : default_action.goto, input_num: id }
-									}"></div>
-			<div class="clearfix"></div>
 			<a class="uibutton delete" data-bind="click: VM.deleteFromCard">Remove</a>
 
 			</div>
@@ -649,15 +464,7 @@
 			{{/if}}</label>
 		</div>
 	</script>
-	
-	<script id='evenSmallerCardTemplate' type='text/html'>
-		<div class="smallcard"> 
-			<input type="radio" id="radiob-card-edit-${$item.input_num}-${id}"  class="uibutton" data-bind="checked: $item.selected, value: resource_uri, attr:{ checked: $item.selected() == resource_uri}" name="editbutton-${$item.input_num}-pickcard">
-			<label for="radiob-card-edit-${$item.input_num}-${id}">{{if title}}${title}{{else}}Untitled Card{{/if}}
-			{{if primary_media }}<br><img src="${primary_media}" style="width:40px"> 
-			{{/if}}</label>
-		</div>
-	</script>	
+		
 	
 	<script id='errorNoTemplate' type='text/html'>
 		<div class="smallcard"> 
@@ -670,23 +477,90 @@
 	</script>
 	
 {%endverbatim%}
-<div class="modal-backdrop" style= "display:none">
+
+<div class="modal-backdrop" id="addExternalMediaModal">
 	<div class="modal">
 		<div class="modal-header">
 			<h3>Add Media From The Web</h3>
-			<a href="#" class="close">×</a>
+			<a href="#" class="close closer" >×</a>
 		</div>
 		<div class="modal-body">
 			<p>Copy and paste the web address of your image, or video below. </p>
 			<p>For images, you want thing that ends in .jpg, .png or something similar.</p>
 			<p>For video, we currently only support youtube. Just give us the url of the video page</p>
+			<div class="alert-message error"><p><strong>Not Yet! </strong> Sorry, we haven't implemented this feature yet.</p></div>
 			<input id="external_file_url" name="external_file_url" type="text" class="tinput" size="30" placeholder="http://">
 			
 		</div>
 		<div class="modal-footer">
-			<a href="#" class="btn primary">Add!</a>
-			<a href="#" class="btn secondary">Cancel</a>
+			<a href="#" class="btn primary" >Add!</a>
+			<a href="#" class="btn secondary closer">Cancel</a>
 		</div>
-	</div> {# /modal #}
-</div> 
+	</div> 
+</div> {# /#addExternalMediaModal #}
+
+
+{# INTERACTION MODAL #}
+{# INTERACTION MODAL #}
+{# INTERACTION MODAL #}
+<div class="modal-backdrop" id="inputModal">
+	<div class="modal">
+		<div class="modal-header">
+			<h3 class="capitalized"><span data-bind= "text: VM.current_input_verb"></span> <span data-bind= "text: VM.current_input_type"></span></h3>
+			<a href="#" class="close closer">×</a>
+		</div>
+		<div class="modal-body">
+			
+			<div class="button_properties" data-bind="visible: current_input_type()=='button' ">
+				<label for="adder_button_text">Button Label:</label>
+				<input type="text" name="adder_button_text" placeholder="Do Something" id="adder_button_text" data-bind="value:newButtonText, valueUpdate: 'afterkeydown'"><br>
+ 			</div>
+			
+			<div class="timer_properties" data-bind="visible: current_input_type()=='timer' ">	
+				
+				<div class="alert-message error"><p><strong>Not Yet! </strong> Sorry, we haven't implemented this feature yet.</p></div>
+				
+				<label for="adder_timer_text">Timer Label:</label>	<input id="adder_timer_text" type="text" data-bind="value:newButtonText, valueUpdate: 'afterkeydown'" placeholder="Do something sometime"><br>
+				<label for="timer_seconds">Seconds : </label><input id="timer_seconds" type="number" step="1" min="0" max="60" value="0" data-bind="value: newTimerSeconds, valueUpdate: 'afterkeydown' ">
+				<label for="timer_minutes">Minutes : </label><input id="timer_minutes" type="number" step="1" min="0" max="60" value="0" data-bind="value: newTimerMinutes, valueUpdate: 'afterkeydown' ">
+				Go to a card? Or just get attention.
+			</div> {# end timer properties #}
+			
+			
+			<div class="map" data-bind="visible: current_input_type()=='map' ">	
+				<div class="alert-message error"><p><strong>Not Yet! </strong> Sorry, we haven't implemented this feature yet.</p></div>
+				<form data-bind="submit:addMap2Card">
+				<input type="submit" value="Add Map">
+				</form>
+			</div> {# end map properties, this one will be different, user will add map, map will pop up, then points will be edited with this... #}
+			
+			{# Action below #}
+			<form data-bind="submit:addInput2card, visible: newButtonText">
+			<label>Now, pick a card for the <span data-bind="text:current_input_type"></span> to go to:</label>
+			{# CARDS_IN_GUIDE JS TEMPLATE  #}
+				<div class="all_card_holder" data-bind="template: {name: 'smallCardTemplate',
+				  						foreach: VM.all_cards,
+						 				beforeRemove: function(elem) {$(elem).slideUp() },
+										afterAdd: function(elem) {$(elem).hide().slideDown() } }"></div>
+			{# *************************** #}
+				<br><br>
+				<div class="smallcard goto_new_card_button">
+				<input type="radio" id="radiob-card-new" class="uibutton" data-bind="checked: newActionGotoCard" value="addcard" name="addbutton-pickcard"/><label for="radiob-card-new">An Entirely New Card</label> 
+				</div> <br>
+				<input type="text" data-bind="value:newCardTitle, visible: newActionGotoCard()=='addcard' " placeholder="New Card Title">
+			<div class="clearfix"></div>
+			<button class="uibutton" type="submit" data-input_type="button" data-bind="enable:  newActionGotoCard()&&newButtonText() , css:{'ui-button-disabled': !(newActionGotoCard()&&newButtonText()), 'ui-state-disabled': !(newActionGotoCard()&&newButtonText())}">Add This Button to Card</button>
+			</form>
+
+
+
+			
+		</div>
+		<div class="modal-footer">
+			<a href="#" class="btn primary">Add!</a>
+			<a href="" class="btn secondary closer">Cancel</a>
+		</div>
+	</div> 
+</div> {# /#addExternalMediaModal #}
+
 {%endblock%}

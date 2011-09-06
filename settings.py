@@ -139,7 +139,7 @@ TEMPLATE_DIRS = (
 
 
 #*********************
-# DEBUG TURNED IT OFF
+# IMPORTANT
 # *****************
 DEFAULT_FILE_STORAGE = 'apps.cuddlybuddly.storage.s3.S3Storage'
 

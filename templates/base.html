@@ -17,19 +17,18 @@
 		{# // <script type="text/javascript" src="{{STATIC_URL}}create/thef.js"></script> #}
 		
 
-		// <script type="text/javascript" src="{{STATIC_URL}}js-libs/jquery-css-transform.js"></script>
-		// <script type="text/javascript" src="{{STATIC_URL}}js-libs/rotate3Di.js"></script>
-		// <script type="text/javascript" src="{{STATIC_URL}}js-libs/showdown.js"></script>	
+		{# // <script type="text/javascript" src="{{STATIC_URL}}js-libs/jquery-css-transform.js"></script> #}
+		{# // <script type="text/javascript" src="{{STATIC_URL}}js-libs/rotate3Di.js"></script> #}
+
 
 		<link rel="stylesheet" media="all" href="{{STATIC_URL}}base.css"/>
 
 		<script type="text/javascript">
 			var current_url ="{{request.path}}";
-
 			$(document).ready(function(){	
 				$("body").bind("click", function (e) {$('a.menu').parent("li").removeClass("open");});
 				$("a.menu").click(function (e) {var $li = $(this).parent("li").toggleClass('open'); return false; });
-			})
+			});
 		</script>
 		
 		<link rel="shortcut icon" href="{{STATIC_URL}}img/favicon.ico">

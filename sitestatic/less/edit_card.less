@@ -13,6 +13,7 @@
 
 @titleSize: 3.5em;
 
+@static-url: "/static/";
 
 .capitalized
 {text-transform: capitalize;}
@@ -142,7 +143,7 @@
 	{
 		display: none;
 	}
-	input#title, .smallOK, textarea#card_text
+	input#title, .smallOK, textarea#wmd-input
 	{
 		display: block;
 	}
@@ -188,12 +189,6 @@ input#title
 	float: left;
 	width: 100%;
 	border-top: 1px solid @grayLight;
-}
-
-.adder strong
-{
-/*	text-decoration: underline;*/
-	font-weight: bold;
 }
 
 .green_plus
@@ -252,6 +247,12 @@ strong.green {
 {
 	font-size: 1.2em !important;
 	
+	#wmd-button-bar
+	{
+		display: none;
+		.transition(all ease-in-out .3s);	
+	}
+	
 	textarea
 	{
 		overflow: auto;
@@ -261,11 +262,10 @@ strong.green {
 		display: none;
 		.transition(all ease-in-out .3s);
 		
-		
 	/*	width: @adderWidth;*/		
 	}
 
-	&.editing .textarea
+	&.editing .textarea, &.editing #wmd-button-bar
 	{
 		display: block;
 	}
@@ -274,8 +274,13 @@ strong.green {
 	{
 		font-size: 1.2em;
 		text-align: left;
-		color: @grayDark;
+/*		overflow: visible;*/
+
 		* {font-size: 1em;}
+		h1 {font-size: 1.8em; text-align: center; display: block;}
+		h2 {font-size: 1.6em; display: block;}
+		h3 {font-size: 1.4em;}
+		h3 {font-size: 1.3em;}
 	}
 	
 }
@@ -495,7 +500,7 @@ strong.green {
 		overflow: hidden;
 
 	}
-	.preview_wrapper
+	.preview
 	{
 		margin-bottom: 0 - (@mediaOptionsHeight + 2); //+2 for the border
 		
@@ -534,8 +539,17 @@ strong.green {
 } //end .mediaTemplate
 
 
+
+//MODAL
+
+.modal-backdrop
+{
+	display:none;
+}
+
 //debug
 #card_element_toolbar
 {
 	display: none;
 }
+

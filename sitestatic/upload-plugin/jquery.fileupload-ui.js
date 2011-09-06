@@ -65,7 +65,8 @@
                 data.isAdjusted = true;
                 data.isValidated = that._validate(data.files);
                 data.context = that._renderUpload(data.files)
-                    .appendTo($(this).find('.files')).fadeIn(function () {
+                    // .appendTo($(this).find('.files')).fadeIn(function () {
+                    .appendTo($('body').find('.files')).fadeIn(function () {
                         // Fix for IE7 and lower:
                         $(this).show();
                     }).data('data', data);
