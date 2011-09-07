@@ -161,10 +161,10 @@ def EditCard (request, gslug, id):
 	# TODO REPLACE WITH GUIDE... as that works much better, and makes more sense.
 	for a_card in all_cards:
 		# card_list.append({'title':card.title,'resource_uri': c.get_resource_uri(card), 'id':card.id})
-		# if card.primary_media:
-			# card_list.append({'title':card.title, 'primary_media': card.primary_media.file.thumb_url,'resource_uri': c.get_resource_uri(card), 'id':card.id})
-		# else:
-		card_list.append({'title':a_card.title,'resource_uri': c.get_resource_uri(a_card), 'id':a_card.id})
+		if a_card.primary_media:
+			card_list.append({'title':a_card.title,'resource_uri': c.get_resource_uri(a_card), 'id':a_card.id, 'primary_media':a_card.primary_media.file.thumb_url})
+		else:
+			card_list.append({'title':a_card.title,'resource_uri': c.get_resource_uri(a_card), 'id':a_card.id})
 
 	all_cards_json = simplejson.dumps(card_list)
 
