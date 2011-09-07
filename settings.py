@@ -184,13 +184,12 @@ INSTALLED_APPS = (
 	'invitation',
 	'registration',
 	'thef',
-    'accounts',
     'tastypie',
     # 'apps.cuddlybuddly.storage.s3',
     # 'debug_toolbar',
     'south',
 
-
+    'accounts',
 	'fileupload',
     'guides',
 
