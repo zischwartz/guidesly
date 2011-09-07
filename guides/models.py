@@ -123,16 +123,13 @@ class Card (models.Model):
 	slug = models.SlugField(blank=True, null=True)
 	text = models.TextField(blank=True, null=True)
 	guide= models.ForeignKey(Guide, null=True) #we'll use this as the default guide..., otherwise theres no absolute url
-	brand_new = models.BooleanField(default=True)
-	has_lots_of_text = models.BooleanField(default=False)
 	tags = TagField()
 	card_number = models.IntegerField(blank=True, null=True) #for default guide.  1 based (not 0)
 	primary_media = models.ForeignKey('MediaElement', blank=True, null=True, related_name='primary_media', default=None,  on_delete=models.SET_DEFAULT)
-	big_media  = models.BooleanField(default=False)
 	is_floating_card = models.BooleanField(default=False)
 	theme = models.ForeignKey(Theme, blank=True, null=True)
 	owner = models.ForeignKey(User, blank=True, null=True)
-
+	autoplay = models.BooleanField(default=False)
 
 	
 	def __unicode__(self):
@@ -241,9 +238,6 @@ class MediaElement (models.Model):
 	card = models.ForeignKey(Card)
 	created = models.DateTimeField(auto_now_add=True, blank=True, null=True)
 	type = models.CharField(blank=True, max_length=5, choices = SELEMENT_TYPE)
-	autoplay = models.BooleanField(default=False)
-	length_seconds = models.IntegerField(blank=True, null=True)
-	length_minutes = models.IntegerField(blank=True, null=True)
 	file = models.ForeignKey(UserFile, null=True)
 	external_file = models.URLField(blank=True) #,verify_exists=True)
 	action_when_complete= models.OneToOneField('Action', blank=True, null=True)
@@ -295,7 +289,6 @@ class MapElement (models.Model):
 class InputElement (models.Model):
 	card = models.ForeignKey(Card)
 	big = models.BooleanField(default=False)
-	required = models.BooleanField(default=False)
 	button_text = models.CharField(max_length=100)
 	type = models.CharField(blank=True,  max_length=8, choices = IELEMENT_TYPE)
 	default_action = models.OneToOneField(Action, blank=True, null=True)
@@ -307,13 +300,14 @@ class InputElement (models.Model):
 	ding_when_done = models.BooleanField(default=False)
 	auto_start = models.BooleanField(default=True) #or start on click
 	
+	# for text/ number input
+	required = models.BooleanField(default=False)
 	
 	def el_template(self):
 		if self.type=="timer":
 			return 'els/timer.html'
 		if self.type == "button":
 			return 'els/button.html'
-			
 		return 'els/button.html'
 	def __unicode__(self):
 		return self.button_text

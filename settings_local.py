@@ -111,6 +111,8 @@ INTERNAL_IPS = ('127.0.0.1',)
 
 ROOT_URLCONF = 'guidesly.urls'
 
+# EVERYTHING BELOW IS NOT APPLIED
+
 # TEMPLATE_DIRS = (
 #     os.path.join(SITE_ROOT, 'templates')
 # 
