@@ -4,7 +4,8 @@ from django.conf import settings
 from django.contrib.auth.models import User	 
 
 
-from guides.models import Guide 
+from guides.models import Guide, Card
+
 from django.db.models.signals import post_save
 from django.utils.translation import ugettext_lazy as _
 
@@ -43,7 +44,8 @@ class Viewing(models.Model):
 class Upvote(models.Model):
 	userprofile = models.ForeignKey(UserProfile, related_name="userWhoVoted")
 	guide = models.ForeignKey(Guide)
-	card_num = models.IntegerField(blank=True,null=True)
+	card = models.ForeignKey(Card)
+	# card_num = models.IntegerField(blank=True,null=True)
 	date=models.DateTimeField(auto_now=True)	 
 
 	

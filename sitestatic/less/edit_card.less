@@ -1,10 +1,13 @@
 
 /*VARS*/
 @adderWidth: 500px;
+
 @cardWidth: 600px;
-@adderMinimizedWidth: 200px;
-/*@adderMinimizedWidth: 15%;*/
+
+@adderMinimizedWidth: 200px; //adderMinimizedWidth: 15%;
+
 @editorSpacing: 1em;
+
 @editorSpacingSmall: .5em;
 
 @editingColor: #bfffde;
@@ -27,7 +30,7 @@
 /*LESSCSS*/
 .sidebar, .content
 {
-	margin-top: 5em;
+	margin-top: 4em;
 }
 
 .notBlank
@@ -326,6 +329,7 @@ strong.green {
 	position: absolute;
 	right: 0px;
 	.box-shadow(0 0px 3px rgba(0,0,0,.85));
+	border-radius: 5px, 0, 0, 5px;
 	
 	.adder_inner
 	{
@@ -540,12 +544,62 @@ strong.green {
 
 
 
-//MODAL
+/********************************/
+/****  MODALs for editing  ******/
+/*******************************/
 
 .modal-backdrop
 {
 	display:none;
 }
+
+
+
+.modal,
+{
+	font-size: 1.7em;
+	
+	input
+	{
+		font-size: 1em;
+	}
+	
+	h3
+	{
+		font-size: 1.3em;
+	}
+	
+	.action_properties
+	{
+		margin: @editorSpacing auto;
+	}
+	
+	p
+	{
+		margin-bottom: 1em;
+		font-size: .8em;
+	}
+	
+	label input
+	{
+		display: none;
+	}
+	
+	.checked
+	{
+		#gradient > .vertical(#E0F0F9, #BDEEF9);
+		border: 1px solid @grayDark;
+		color: @grayDark;
+	}
+	
+	.cardbtn
+	{
+		min-height: 50px;
+		min-width: 50px;
+	}
+	
+}
+
 
 //debug
 #card_element_toolbar

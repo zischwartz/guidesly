@@ -4,7 +4,8 @@
             {% csrf_token %}
             {# <label > #}
                 {# <span><img src="{{STATIC_URL}}img/upload-icon-green.png">Upload: Drag files here</span> #}
-				<label for="thefileinput" class="btn large" onclick="document.getElementById('thefileinput').click();"><span class="green_plus">+</span> Upload</label>
+				{# the 'not' is terrible, as it makes it impossible to use without js, but neccesary because firefox wasn't making the label work#}
+				<label for="thefileinput-not" class="btn large" onclick="document.getElementById('thefileinput').click();"><span class="green_plus">+</span> Upload</label>
                 	<input id="thefileinput" type="file" name="file" multiple>
             	</label>
              	<input type="hidden" name="owner" value="{{user.id}}">

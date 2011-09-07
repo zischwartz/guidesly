@@ -97,46 +97,46 @@ $(document).ready(function(){
 				
 				//Pre Upload, File is added, preview is created if it's an image
 				$.each(data.files, function (index, file) {
-						        console.log('Added file: ' + file.name);
-								console.log(file)
-								
-								var el = new Object();
-								el.title = ko.observable(); //ko.observable(file.name.split('.')[0]);
-								el.file_url = ko.observable();
-								el.type = ko.observable(file.type.split('/')[0]);
-								el.client_id = ko.observable('media' + file.name.split('.')[0].split(' ')[0] + file.size);
-								el.card= VM.resource_uri();
-								el.resource_uri= ko.observable();
-								el.external_file= ko.observable();
-								el.medium_url= ko.observable();
-								
-								//add it to the array
-								VM.mediaelements.push(el);
-								
-								//if it's the first item, make it primary
-								if 	(VM.mediaelements().length ==1)
-									VM.pmcid(el.client_id());
-									
-								var the_element_jq= $("#"+ el.client_id());				
-								the_element_jq.addClass("uploading");
-								
-								if (el.type() =='image')
-								{
-									$('#fileupload').data('fileupload')._loadImage(file, function (img) {
-					                    // console.log(img.src);
-										el.medium_url(img.src);
-										// $(id_string).find('.preview_image').attr("src", img.src).fadeIn();
-										// $(img).clone().hide().prependTo($(id_string).find('.preview_wrapper')).fadeIn().attr("class", "preview_image");
-										}, //end callback
-										$('#fileupload').fileupload('option') ); //end _loadimage
-								}
-								else
-								{
-									img = $("<img src='/static/img/upload-icon.png'/>");
-								    $(img).hide().prependTo(the_element_jq.find('.preview')).fadeIn().attr("class", "preview_image");	
-								}
-								
-						}); //end each	
+			        console.log('Added file: ' + file.name);
+					console.log(file)
+					
+					var el = new Object();
+					el.title = ko.observable(); //ko.observable(file.name.split('.')[0]);
+					el.file_url = ko.observable();
+					el.type = ko.observable(file.type.split('/')[0]);
+					el.client_id = ko.observable('media' + file.name.split('.')[0].split(' ')[0] + file.size);
+					el.card= VM.resource_uri();
+					el.resource_uri= ko.observable();
+					el.external_file= ko.observable();
+					el.medium_url= ko.observable();
+					
+					//add it to the array
+					VM.mediaelements.push(el);
+					
+					//if it's the first item, make it primary
+					if 	(VM.mediaelements().length ==1)
+						VM.pmcid(el.client_id());
+						
+					var the_element_jq= $("#"+ el.client_id());				
+					the_element_jq.addClass("uploading");
+					
+					if (el.type() =='image')
+					{
+						$('#fileupload').data('fileupload')._loadImage(file, function (img) {
+		                    // console.log(img.src);
+							el.medium_url(img.src);
+							// $(id_string).find('.preview_image').attr("src", img.src).fadeIn();
+							// $(img).clone().hide().prependTo($(id_string).find('.preview_wrapper')).fadeIn().attr("class", "preview_image");
+							}, //end callback
+							$('#fileupload').fileupload('option') ); //end _loadimage
+					}
+					else
+					{
+						img = $("<img src='/static/img/upload-icon.png'/>");
+					    $(img).hide().prependTo(the_element_jq.find('.preview')).fadeIn().attr("class", "preview_image");	
+					}
+					
+				}); //end each	
 				// console.log(data);
 	}).bind('fileuploaddone',
 		function (e, data) {
@@ -149,7 +149,6 @@ $(document).ready(function(){
 				
 				var client_id = 'media' + file.name.split('.')[0].split(' ')[0] + file.size;
 
-					
 				var the_element_jq= $("#" + client_id);
 				
 				var the_element_ko = ko.utils.arrayFirst(VM.mediaelements(), function(item) { return item.client_id() === client_id;})
@@ -425,7 +424,7 @@ addInputHelper =function(){
 		VM.input_type("Input");
 		VM.current_input_type('');
 	
-	} //end input adding function
+	} //end input adding functione
 
 
 
@@ -439,3 +438,6 @@ cleanClientStuff = function(that)
 	delete that.doesnotexistthing;
 	return that;
 }
+
+
+(function(a){a.fn.autoResize=function(j){var b=a.extend({onResize:function(){},animate:true,animateDuration:150,animateCallback:function(){},extraSpace:20,limit:1000},j);this.filter('textarea').each(function(){var c=a(this).css({resize:'none','overflow-y':'hidden'}),k=c.height(),f=(function(){var l=['height','width','lineHeight','textDecoration','letterSpacing'],h={};a.each(l,function(d,e){h[e]=c.css(e)});return c.clone().removeAttr('id').removeAttr('name').css({position:'absolute',top:0,left:-9999}).css(h).attr('tabIndex','-1').insertBefore(c)})(),i=null,g=function(){f.height(0).val(a(this).val()).scrollTop(10000);var d=Math.max(f.scrollTop(),k)+b.extraSpace,e=a(this).add(f);if(i===d){return}i=d;if(d>=b.limit){a(this).css('overflow-y','');return}b.onResize.call(this);b.animate&&c.css('display')==='block'?e.stop().animate({height:d},b.animateDuration,b.animateCallback):e.height(d)};c.unbind('.dynSiz').bind('keyup.dynSiz',g).bind('keydown.dynSiz',g).bind('change.dynSiz',g)});return this}})(jQuery);
