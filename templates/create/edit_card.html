@@ -115,23 +115,6 @@
 		VM.save_card();
 	}
 	
-	function showInputModal(event)
-	{	console.log('showInputModal');
-		el=$(event.currentTarget);
-		console.log(this);
-		input_type = el.data("input_type");
-		input_verb = el.data("input_verb");
-		VM.current_input_type(input_type);
-		VM.current_input_verb(input_verb);
-		
-		if (input_verb == 'edit')
-			{
-				VM.newButtonText(this.button_text());
-				VM.newActionGotoCard(this.default_action.goto());
-			}
-		
-		$("#inputModal").fadeIn('fast');
-	}
 	
 			
 </script>
@@ -363,23 +346,16 @@
 		</div>
 	</script>
 	
-	<!-- In betweeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeennnnnnnnnnnnnnnnnnnnnnnnnnnnn --> 
+
 	
-	<script id='smallCardTemplate' type='text/html'>
-		<label class="btn cardbtn" for="radiob-card-${id}" data-bind="css: {checked: VM.newActionGotoCard()==resource_uri}">
-			<span data-bind="text: title ? title.slice(0,15): 'Untitled'"></span> 
-			<input type="radio" id="radiob-card-${id}" data-bind="checked: VM.newActionGotoCard , value: resource_uri" name="addbutton-pickcard">
-				{{if primary_media }}<br><img src="${primary_media}"> 
-				{{/if}}</label>
-		</div>
-	</script>
+
 	
 	<!-- In betweeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeennnnnnnnnnnnnnnnnnnnnnnnnnnnn --> 
 	
 	
 	<script id='buttonTemplate' type='text/html'>
 		<div class="input_element">
-			<a data-bind="text:button_text, click: showInputModal" data-input_type="button" data-input_verb="edit" ></a>
+			<a data-bind="text:button_text, click: VM.showInputModal" data-input_type="button" data-input_verb="edit" ></a>
 			</div>
 			
 		</div>
@@ -408,13 +384,7 @@
 			</div>
 		</div> 
 	</script>
-	
 
-	
-		
-
-	
-	
 
 
 	<script id='timerTemplate' type='text/html'>
@@ -475,59 +445,74 @@
 <div class="modal-backdrop" id="inputModal">
 	<div class="modal">
 		<div class="modal-header">
-			<h3 class="capitalized"><span data-bind= "text: VM.current_input_verb"></span> <span data-bind= "text: VM.current_input_type"></span></h3>
+			<h3 class="capitalized"><span data-bind= "text: VM.current_input_verb"></span> <span data-bind= "text: VM.InputVM().type"></span></h3>
 			<a href="#" class="close closer">×</a>
 		</div>
 		<div class="modal-body">
 			
 			
 			{# It's a Button!  #}
-			<div class="button_properties" data-bind="visible: current_input_type()=='button' ">
+			<div class="button_properties" data-bind="visible: VM.InputVM().type()=='button' ">
 				<label for="adder_button_text">Button Label:</label>
-				<input class="tinput" type="text" name="" placeholder="Do Something" id="adder_button_text" data-bind="value:newButtonText, valueUpdate: 'afterkeydown'"><br>
+				<input class="tinput" type="text" name="" placeholder="Do Something" id="adder_button_text" data-bind="value:VM.InputVM().button_text,  valueUpdate: 'afterkeydown'"><br>
  			</div>
 			
 			{# It's a Timer!  #}
-			<div class="timer_properties" data-bind="visible: current_input_type()=='timer' ">	
+			<div class="timer_properties" data-bind="visible: VM.InputVM().type()=='timer' ">	
 				<div class="alert-message error"><p><strong>Not Yet! </strong> Sorry, we haven't implemented this feature yet.</p></div>
 				
-				<label for="adder_timer_text">Timer Label:</label>	<input id="adder_timer_text" type="text" data-bind="value:newButtonText, valueUpdate: 'afterkeydown'" placeholder="Do something sometime"><br>
-				<label for="timer_seconds">Seconds : </label><input id="timer_seconds" type="number" step="1" min="0" max="60" value="0" data-bind="value: newTimerSeconds, valueUpdate: 'afterkeydown' ">
-				<label for="timer_minutes">Minutes : </label><input id="timer_minutes" type="number" step="1" min="0" max="60" value="0" data-bind="value: newTimerMinutes, valueUpdate: 'afterkeydown' ">
+				<label for="adder_timer_text">Timer Label:</label>	<input id="adder_timer_text" type="text" data-bind="value:VM.InputVM().button_text, valueUpdate: 'afterkeydown'" placeholder="Do something sometime"><br>
+				<label for="timer_seconds">Seconds : </label><input id="timer_seconds" type="number" step="1" min="0" max="60" value="0" data-bind="value: VM.InputVM().seconds, valueUpdate: 'afterkeydown' ">
+				<label for="timer_minutes">Minutes : </label><input id="timer_minutes" type="number" step="1" min="0" max="60" value="0" data-bind="value: VM.InputVM().minutes, valueUpdate: 'afterkeydown' ">
 				Go to a card? Or just get attention.
 			</div> {# end timer properties #}
 			
 			{# It's a map! #}
-			<div class="map_properties" data-bind="visible: current_input_type()=='map' ">	
+			<div class="map_properties" data-bind="visible: VM.InputVM().type()=='map' ">	
 				<div class="alert-message error"><p><strong>Not Yet! </strong> Sorry, we haven't implemented this feature yet.</p></div>
-				<form data-bind="submit:addMap2Card">
+				{# <form data-bind="submit:addMap2Card"> #}
 				<input type="submit" value="Add Map">
 				</form>
 			</div> {# end map properties, this one will be different, user will add map, map will pop up, then points will be edited with this... #}
 			
+			
 			{# Action below. Pick one for your input to trigger. #}
-			<div class="action_properties">
-				<form data-bind="submit:addInput2card, visible: newButtonText">
-				<p>Now, pick a card for the <span data-bind="text:current_input_type"></span> to go to:</p>
-				{# CARDS_IN_GUIDE JS TEMPLATE  #}
-					<div class="all_card_holder" data-bind="template: {name: 'smallCardTemplate',
-					  						foreach: VM.all_cards,
-							 				beforeRemove: function(elem) {$(elem).slideUp() },
-											afterAdd: function(elem) {$(elem).hide().slideDown() } }"></div>
-				{# *************************** #}
-					<br><br>
+			<div class="action_properties" data-bind="visible: VM.InputVM().button_text">
+				<p>Now, pick a card for the <span data-bind="text:VM.InputVM().type"></span> to go to:</p>
 
-					<label class="btn cardbtn" for="radiob-card-new" data-bind="css: {checked: newActionGotoCard()=='addcard'}"> <span data-bind="text: !newCardTitle() ? 'An Entirely New Card' : newCardTitle "></span><input type="radio" id="radiob-card-new" data-bind="checked: newActionGotoCard" value="addcard" name="addbutton-pickcard"/></label> 
-					<br><input type="text" data-bind="value:newCardTitle, visible: newActionGotoCard()=='addcard', valueUpdate: 'afterkeydown' " placeholder="New Card Title">
+				{# For each card... #}
+				<div class="all_card_holder" data-bind="template: {name: 'smallCardTemplate',
+				  						foreach: VM.all_cards,
+						 				beforeRemove: function(elem) {$(elem).slideUp() },
+										afterAdd: function(elem) {$(elem).hide().slideDown() } }">
+				</div>
+				
+				{# The template #}
+				{%verbatim%}
+				<script id='smallCardTemplate' type='text/html'>
+					<label class="btn cardbtn" for="radiob-card-${id}" data-bind="css: {checked: VM.InputVM().default_action.goto()==resource_uri}, click: function() { VM.InputVM().default_action.goto(resource_uri); return true; } ">
+						<span data-bind="text: title ? title.slice(0,15): 'Untitled'"></span> 
+						<input type="radio" id="radiob-card-${id}" data-bind="value: resource_uri, checked:  VM.InputVM().default_action.goto" name="pickacard">
+							{{if primary_media }}<br><img src="${primary_media}">{{/if}}
+						</label>
+				</script>
+				{%endverbatim%}
+				
+				{# *************************** #}
+				<br><br>
+					<label class="btn cardbtn" for="radiob-card-new" data-bind="css: {checked: VM.InputVM().default_action.goto()=='addcard'}"> <span data-bind="text: !newCardTitle() ? 'An Entirely New Card' : newCardTitle "></span>
+						<input type="radio" id="radiob-card-new" data-bind="checked: VM.InputVM().default_action.goto" value="addcard" name="pickacard"/>
+					</label> 
+					<br><input type="text" data-bind="value: newCardTitle, visible: VM.InputVM().default_action.goto()=='addcard', valueUpdate: 'afterkeydown' " placeholder="New Card Title">
 			</div> {#end action properties#}	
 			<div class="clearfix"></div>
-			<button class="uibutton" type="submit" data-input_type="button" data-bind="enable:  newActionGotoCard()&&newButtonText() , css:{'ui-button-disabled': !(newActionGotoCard()&&newButtonText()), 'ui-state-disabled': !(newActionGotoCard()&&newButtonText())}">Add This Button to Card</button>
-			</form>
-			
+				
 			
 		</div>
 		<div class="modal-footer">
-			<a href="#" class="btn primary">Add!</a>
+			<button class="btn primary" data-bind="click: function(){ VM.InputVM().save_element()}, enable:  VM.InputVM().default_action.goto()&&VM.InputVM().button_text(), css:{'disabled': !(VM.InputVM().default_action.goto()&&VM.InputVM().button_text())}">
+				<span class="capitalized" data-bind= "visible: current_input_verb()=='add'">Add &amp; </span>Save Your <span class="capitalized" data-bind= "text: VM.InputVM().type">
+			</button>
 			<a href="" class="btn secondary closer">Cancel</a>
 		</div>
 	</div> 

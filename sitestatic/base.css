@@ -2393,7 +2393,8 @@ strong.green {
   font-size: .8em;
 }
 .modal label input {
-  display: none;
+  /*		display: none;*/
+
 }
 .modal .checked {
   background-color: #bdeef9;
@@ -2406,10 +2407,12 @@ strong.green {
   background-image: -o-linear-gradient(#e0f0f9, #bdeef9);
   background-image: linear-gradient(#e0f0f9, #bdeef9);
   border: 1px solid #404040;
-  color: #404040;
+  /*		color: @grayDark;*/
+
+  color: #9d261d;
 }
 .modal .cardbtn {
-  min-height: 50px;
+  min-height: 100px;
   min-width: 50px;
 }
 #card_element_toolbar {

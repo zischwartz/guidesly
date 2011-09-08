@@ -8,8 +8,9 @@ var guide_api_url='/api/v1/guide/';
 var timer_api_url='/api/v1/timer/';
 // var smallcard_api_url='/api/v1/smallcard/';
 
-var VM; //our viewmodel
+var VM; //our main viewmodel
 
+var InputVM;
 
 var initial_card_object;
 var mapping;
@@ -185,7 +186,7 @@ $(document).ready(function(){
 		console.log('this');
 		console.log(this);
 		var that = cleanClientStuff(this);
-		console.log(that);
+		console.log();
 		
 		var jsonData = ko.mapping.toJSON(that);
 		$.ajax({
@@ -198,6 +199,7 @@ $(document).ready(function(){
 			contentType: "application/json",
 			});
 	}
+	
 
 	//Save Card
 	
@@ -246,10 +248,50 @@ $(document).ready(function(){
 	VM.current_input_type= ko.observable();
 	VM.current_input_verb= ko.observable();
 	VM.newCardTitle= ko.observable();
-	VM.newButtonText= ko.observable();
-	VM.newActionGotoCard = ko.observable();
-	VM.newTimerSeconds = ko.observable(00)
-	VM.newTimerMinutes = ko.observable(00)
+
+	VM.showInputModal = function()
+	{	
+		// console.log('this:');
+		console.log('showInputModal');
+		console.log(this);
+		
+		el=$('event.currentTarget');
+		el=$(event.currentTarget);
+		input_type = el.data("input_type");
+		input_verb = el.data("input_verb");
+		VM.InputVM().type(input_type);
+		VM.current_input_verb(input_verb);
+		
+		if (input_verb == 'add')
+			{
+				// console.log('input verb was add, adding a new input');
+				VM.InputVM(new anInput(input_type));
+				VM.InputVM().save_element = function(){
+					if (VM.InputVM().default_action.goto()=="addcard")
+						addCardFromInput(this); //this needs to handle the rest
+					else
+						addInputHelper(this);
+					
+					$("#inputModal").fadeOut('fast');
+					
+				}
+			}
+		if (input_verb == 'edit')
+			{
+				// console.log('input verb was edit, editing an old input');
+				VM.InputVM(this); //assign the inputvm to the clicked element
+				VM.InputVM().save_element = function(){
+					if (VM.InputVM().default_action.goto()=="addcard")
+						addCardFromInput(this); //this needs to handle the rest
+					else
+						addInputHelper(this);
+					$("#inputModal").fadeOut('fast');
+					}; //end save element
+
+			}
+
+		$("#inputModal").fadeIn('fast');
+	}
 
 
 	VM.deleteFromCard= function()
@@ -286,14 +328,6 @@ $(document).ready(function(){
 
 
 
-
-
-
-
-
-
-
-
 	//REPLACE CARDS WITH GUIDE TODO because guide has the relevant info about each card anyway
 	VM.all_cards = ko.observableArray();
 	var json_all_cards = jQuery.parseJSON(all_cards);
@@ -302,130 +336,119 @@ $(document).ready(function(){
 			VM.all_cards.push(json_all_cards[x]);
 		}
 
+//**********************************************
 
-
-	VM.addInput2card= function(){
-
-		if (VM.newActionGotoCard()=='addcard')
-			{	
-				console.log('addcarding');
-				cardToAdd= new Object();
-				cardToAdd.title= VM.newCardTitle();			
-				cardToAdd.guide= VM.guide();
-				var postURL_newcard;
-				jsonData = ko.toJSON(cardToAdd);
-				console.log(jsonData);
-				postURL_newcard=$.ajax({
-					url: card_api_url,
-					type: "POST",
-					data: jsonData,
-					success:function(data) {
-						console.log('success creating a new card');
-						// console.log(postURL_newcard.getResponseHeader('content-location'));
-						new_card_uri= postURL_newcard.getResponseHeader('location');
-						uri_string_n=new_card_uri.indexOf('api');
-						new_card_uri= new_card_uri.slice(uri_string_n-1)
-						console.log(new_card_uri);
-						cardToAdd.resource_uri=ko.observable(new_card_uri);
-						cardToAdd.id = cardToAdd.resource_uri().match(/\/card\/(.*)\//)[1];
-						VM.all_cards.push(cardToAdd);
-						VM.newActionGotoCard(cardToAdd.resource_uri());
-						addInputHelper();
-					},
-				contentType: "application/json",	
-			});
-		
-		} //end if
+	VM.InputVM= ko.observable(new anInput());
+	// VM.InputVM().save_element = function(){ console.log('saveeeeeplease at bottom');}; //this may have to exist?
 	
-		else
-		{
-			addInputHelper();
-		}
-	
-	}// end addInput2card function
-
-
-	VM.addMap2Card= function(){
-		inputToAdd= new Object();
-		var postURL_input;
-		inputToAdd.type= ko.observable('map');
-		inputToAdd.card= VM.resource_uri();
-		inputToAdd.title=ko.observable("Map");
-		jsonData = ko.toJSON(inputToAdd);
-		postURL_input=$.ajax({
-			url: map_api_url,
-			type: "POST",
-			data: jsonData,
-			success:function(data) {
-					console.log('map added!');	
-					console.log(data); 
-					inputToAdd.resource_uri=ko.observable(postURL_input.getResponseHeader('location'));
-					inputToAdd.id = inputToAdd.resource_uri().match(/\/mapelement\/(.*)\//)[1];
-					VM.mapelements.push(inputToAdd); 
-				},
-			contentType: "application/json",
-			});
-	} 
-
-
-
-
 	ko.applyBindings(VM);
+	
+
+
 
 	$(".uibutton").button();
 
 
-});// end docready
-
-
+});// end docreadyy ---  end docreadyy ---  end docreadyy ---  end docreadyy ---  end docreadyy 
 
 
 // HEEEEEEEEEEEEEEEEELLLLLLLLLLLLLLLLLLLLLLLLLLPPPPPPPPPPPPPPPPPPPEEEEEERRRRRRRRRRRRRRRRRRRs
 
-addInputHelper =function(){
+
+var anInput = function(type) {
 	
-	inputToAdd= new Object();
-	newAction = new Object();
-	newAction.goto =ko.observable(VM.newActionGotoCard());
-	newAction.id = null;
-	var postURL_input;
-	inputToAdd.card= VM.resource_uri();
-	inputToAdd.type= ko.observable(VM.current_input_type());
-	if (inputToAdd.type() == 'timer')
+	var default_action = new Object();
+	default_action.goto = ko.observable();
+	default_action.id = null;
+	
+    this.type = ko.observable(type);
+    this.card = ko.observable(VM.resource_uri());
+    this.button_text= ko.observable();
+    this.resource_uri=ko.observable();
+
+	this.default_action= default_action;
+    this.newCardTitle=ko.observable();
+
+	if (type == 'timer')
 		{
-			inputToAdd.seconds= VM.newTimerSeconds();
-			inputToAdd.minutes= VM.newTimerMinutes();
+			this.seconds= ko.observable(0);
+			this.minutes= ko.observable(0);
 		}
-	inputToAdd.button_text= ko.observable( VM.newButtonText());
-	inputToAdd.default_action= newAction;  //maybe this should be observable?
-	jsonData = ko.toJSON(inputToAdd);
+
+}
+
+
+addInputHelper =function(that){
+
+
+	var postURL_input;
+	
+	if (that.resource_uri()) //if it has a resource uri, it exists, and should be put
+	{
+		var jsonData = ko.mapping.toJSON(that);
+		$.ajax({
+			url: that.resource_uri(),
+			type: "PUT",
+			data:jsonData,
+			success:function(data) { 
+				console.log(data); 
+				},
+			contentType: "application/json",
+			});
+	}
+	
+	else  //otherwise it's new
+	{
+		jsonData = ko.toJSON(that); 	// console.log(jsonData);
+		postURL_input=$.ajax({
+			url: input_api_url,
+			type: "POST",
+			data: jsonData,
+			success:function(data) {
+				that.resource_uri=ko.observable(postURL_input.getResponseHeader('location'));
+				that.id = that.resource_uri().match(/\/inputelement\/(.*)\//)[1];
+				VM.inputelements.push(that); 
+				},
+			contentType: "application/json",
+			});
+	}
+	
+
+		
+	
+	} //end input adding function
+
+addCardFromInput = function(that)
+{
+	
+	console.log('addcarding');
+	cardToAdd= new Object();
+	cardToAdd.title= VM.newCardTitle();			
+	cardToAdd.guide= VM.guide();
+	var postURL_newcard;
+	jsonData = ko.toJSON(cardToAdd);
 	console.log(jsonData);
-	postURL_input=$.ajax({
-		url: input_api_url,
+	postURL_newcard=$.ajax({
+		url: card_api_url,
 		type: "POST",
 		data: jsonData,
 		success:function(data) {
-			// console.log(data); 
-			inputToAdd.resource_uri=ko.observable(postURL_input.getResponseHeader('location'));
-			// console.log(postURL_input.getResponseHeader('location'));
-			inputToAdd.id = inputToAdd.resource_uri().match(/\/inputelement\/(.*)\//)[1];
-			// match(/\/inputelement\/(.*)\//)[1]
-			VM.inputelements.push(inputToAdd); 
-			},
-		contentType: "application/json",
-		});
-		
-		VM.newCardTitle('');
-		VM.newButtonText('');
-		VM.newActionGotoCard('');
-		VM.newTimerMinutes(0);
-		VM.newTimerSeconds(0);
-		$("#card_element_toolbar").accordion("activate", false);
-		VM.input_type("Input");
-		VM.current_input_type('');
-	
-	} //end input adding functione
+			console.log('success creating a new card');
+			// console.log(postURL_newcard.getResponseHeader('content-location'));
+			new_card_uri= postURL_newcard.getResponseHeader('location');
+			uri_string_n=new_card_uri.indexOf('api');
+			new_card_uri= new_card_uri.slice(uri_string_n-1);
+			console.log(new_card_uri);
+			cardToAdd.resource_uri=ko.observable(new_card_uri);
+			cardToAdd.id = cardToAdd.resource_uri().match(/\/card\/(.*)\//)[1];
+			VM.all_cards.push(cardToAdd);
+			VM.InputVM().default_action.goto(cardToAdd.resource_uri());
+			addInputHelper(VM.InputVM());
+		},
+	contentType: "application/json",	
+	});
 
+}
 
 
 cleanClientStuff = function(that)
