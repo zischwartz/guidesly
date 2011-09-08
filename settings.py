@@ -18,14 +18,25 @@ SITE_ROOT = os.path.dirname(os.path.realpath(__file__))
 sys.path.insert(0, join(SITE_ROOT, "apps"))
 
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'postgresql_psycopg2',
+#         'NAME': 'djangostack',
+#         'HOST': '/opt/bitnami/postgresql',
+#         'PORT': '5432',
+#         'USER': 'bitnami',
+#         'PASSWORD': '1d62ddfc22'
+#     }
+# }
+
 DATABASES = {
     'default': {
-        'ENGINE': 'postgresql_psycopg2',
-        'NAME': 'djangostack',
-        'HOST': '/opt/bitnami/postgresql',
-        'PORT': '5432',
-        'USER': 'bitnami',
-        'PASSWORD': '1d62ddfc22'
+        'ENGINE': 'mysql',
+        'NAME': 'guideslybeta',
+        'HOST': 'guideslybeta.cbwmwyqhy9ab.us-east-1.rds.amazonaws.com',
+        'PORT': '3306',
+        'USER': 'guidesly',
+        'PASSWORD': 'nem0nemo'
     }
 }
 

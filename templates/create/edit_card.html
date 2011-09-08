@@ -359,9 +359,7 @@
 			</div>
 			
 		</div>
-	</script>
-	{# <button class="btn danger small delete" data-bind="click: VM.deleteFromCard">Remove</button> #}
-	
+	</script>	
 	{% endverbatim %}
 
 	
@@ -509,6 +507,8 @@
 				
 			
 		</div>
+
+		
 		<div class="modal-footer">
 			<button class="btn primary" data-bind="click: function(){ VM.InputVM().save_element()}, enable:  VM.InputVM().default_action.goto()&&VM.InputVM().button_text(), css:{'disabled': !(VM.InputVM().default_action.goto()&&VM.InputVM().button_text())}">
 				<span class="capitalized" data-bind= "visible: current_input_verb()=='add'">Add &amp; </span>Save Your <span class="capitalized" data-bind= "text: VM.InputVM().type">
