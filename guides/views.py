@@ -102,6 +102,7 @@ def CreateGuide (request):
 		if form.is_valid():
 			logger.info('is_valid')
 			g =form.save()
+			# g.save()
 			return HttpResponseRedirect(reverse('BuildCard', kwargs={'gslug':g.slug}))
 		else:
 			messages.add_message(request, messages.INFO, form.errors)

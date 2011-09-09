@@ -5,6 +5,8 @@ from tagging.fields import TagField
 from django.contrib.auth.models import User
 # from model_utils.managers import InheritanceManager
 from django.template.defaultfilters import slugify
+from autoslug import AutoSlugField
+
 import jsonfield 
 
 from fileupload.models import UserFile
@@ -42,7 +44,8 @@ class Theme (models.Model):
 
 class Guide (models.Model):
 	title = models.CharField(max_length=500)
-	slug = models.SlugField(unique=True, blank=True, max_length=250) #blank=true is silly but neccesary 
+	slug = AutoSlugField(populate_from='title', unique=True)
+	# slug = models.SlugField(unique=True, blank=True, max_length=250) #blank=true is silly but neccesary 
 	description = models.TextField(blank=True)
 	created = models.DateTimeField(auto_now_add=True)
 	modified = models.DateTimeField(auto_now=True)
@@ -64,7 +67,7 @@ class Guide (models.Model):
 	private_url = models.CharField(max_length=500, blank=True)
 	
 	def save(self, *args, **kwargs):
-		self.slug= slugify(self.title)
+
 		i=0
 		if self.is_linear:
 			for c in self.card_order: #ugly
@@ -130,6 +133,7 @@ class Card (models.Model):
 	theme = models.ForeignKey(Theme, blank=True, null=True)
 	owner = models.ForeignKey(User, blank=True, null=True)
 	autoplay = models.BooleanField(default=False)
+	primary_is_bg = models.BooleanField(default=False)
 
 	
 	def __unicode__(self):
@@ -314,3 +318,5 @@ class InputElement (models.Model):
 
 
 from api import CardResource
+
+

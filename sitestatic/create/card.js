@@ -1,3 +1,5 @@
+var static_url = "/static/"
+
 var card_api_url='/api/v1/card/';
 var media_api_url='/api/v1/mediaelement/';
 var input_api_url='/api/v1/inputelement/';
@@ -15,6 +17,8 @@ var InputVM;
 var initial_card_object;
 var mapping;
 
+
+
 // ***********************************************
 // ***********       DOCREAD         *************
 // ***********************************************
@@ -30,6 +34,7 @@ $(document).ready(function(){
 	VM = ko.mapping.fromJS(initial_card_object);
 
 	VM.pmcid = ko.observable(); //primary_media_client_id
+	VM.has_audio_or_video = ko.observable(); 
 
 	//give all the existing elements a client_id, existing tag, and set their display stuff to external if it is
 	$.each(VM.mediaelements(), function (index, element) {
@@ -51,10 +56,25 @@ $(document).ready(function(){
 			//if this element has the same r-uri as the primary media, assign pmcid
 			if (element.resource_uri() == VM.primary_media())
 			{
+				//set the pmcid 
 				VM.pmcid(element.client_id());
-			}
+				//and sort the array
+				if 	(VM.mediaelements().length > 1)
+				{
+					//sort the array and make the primary first
+					VM.mediaelements.sort(function(left, right) {
+				 		if (left.resource_uri() == VM.primary_media())
+							return -1;
+						else if (right.resource_uri() == VM.primary_media())
+							return 1;
+						else
+							return 0;
+					});
+				}
+			}//end element = primary
 			
 	}); //end each
+	
 	
 
 	VM.check_if_primary = function(element)
@@ -70,7 +90,22 @@ $(document).ready(function(){
 		VM.pmcid(this.client_id());
 		if (this.resource_uri())
 			VM.primary_media(this.resource_uri());
-	}
+		
+		//if there's more than one element
+		if 	(VM.mediaelements().length > 1)
+		{
+			//sort the array and make the primary first
+			VM.mediaelements.sort(function(left, right) {
+		 		if (left.client_id() == VM.pmcid())
+					return -1;
+				else if (right.client_id() == VM.pmcid())
+					return 1;
+				else
+					return 0;
+			});
+		}
+		VM.save_card();
+	} //end makePrimary
 	
 	
 		
@@ -117,6 +152,9 @@ $(document).ready(function(){
 					//if it's the first item, make it primary
 					if 	(VM.mediaelements().length ==1)
 						VM.pmcid(el.client_id());
+					else if (el.type() == 'video')
+						VM.pmcid(el.client_id());
+					
 						
 					var the_element_jq= $("#"+ el.client_id());				
 					the_element_jq.addClass("uploading");
@@ -126,15 +164,14 @@ $(document).ready(function(){
 						$('#fileupload').data('fileupload')._loadImage(file, function (img) {
 		                    // console.log(img.src);
 							el.medium_url(img.src);
-							// $(id_string).find('.preview_image').attr("src", img.src).fadeIn();
-							// $(img).clone().hide().prependTo($(id_string).find('.preview_wrapper')).fadeIn().attr("class", "preview_image");
+							// $(id_string).find('.preview_image').attr("src", img.src).fadeIn();	// $(img).clone().hide().prependTo($(id_string).find('.preview_wrapper')).fadeIn().attr("class", "preview_image");
 							}, //end callback
 							$('#fileupload').fileupload('option') ); //end _loadimage
 					}
 					else
 					{
-						img = $("<img src='/static/img/upload-icon.png'/>");
-					    $(img).hide().prependTo(the_element_jq.find('.preview')).fadeIn().attr("class", "preview_image");	
+						img = $("<img src='"+ static_url +"img/upload-icon.png' />");
+					    $(img).hide().prependTo(the_element_jq.find('.preview')).fadeIn().attr("class", "preview_image").addClass("fake_preview");	
 					}
 					
 				}); //end each	
@@ -157,7 +194,7 @@ $(document).ready(function(){
 				the_element_ko.resource_uri(media_api_url + data.result[0].id + '/');
 				the_element_ko.medium_url(data.result[0].medium_image_url);
 				
-				the_element_jq.removeClass('uploading');
+				the_element_jq.removeClass('uploading').find('.fake_preview').slideUp().remove();
 				
 				//set the primary media here 
 				if 	(VM.mediaelements().length ==1)
@@ -185,7 +222,7 @@ $(document).ready(function(){
 	{
 		console.log('this');
 		console.log(this);
-		var that = cleanClientStuff(this);
+		var that = this; //cleanClientStuff(this);
 		console.log();
 		
 		var jsonData = ko.mapping.toJSON(that);

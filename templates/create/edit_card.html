@@ -132,7 +132,7 @@
     <li><a href="#">Publish</a></li> 
   </ul> 
 </li> 
-<li><a href="{% url CardDetailViewByIdRedirect id=card.id %}">Preview <span data-bind="text: !title()  ? 'This Card': title"></span></a></li> 
+<li><a target="_blank" href="{% url CardDetailViewByIdRedirect id=card.id %}">Preview <span data-bind="text: !title()  ? 'This Card': title"></span></a></li> 
 
 
 {%endblock%}
@@ -155,14 +155,14 @@
 		</div>
 		
 		<div id="media"  > {# class="files" #} {# upload-template #}
-			<div data-bind="template:{name: 'mediaTemplate',  foreach: VM.mediaelements, beforeRemove: function(elem) {$(elem).fadeOut(function(){ $(this).remove()}); }}"></div>
+			<div data-bind="template:{name: 'mediaTemplate',  foreach: VM.mediaelements}"></div>
 		</div> {# /#media elements #}
 		
 		<div class="adder media" data-bind="css:{minimized: VM.mediaelements().length}" >
 			<a class="closex closer" href="#">x</a>
 			<div class="adder_inner">
 				<div class="addertop">
-					<h2>Add Media</h2>
+					<h2>Add <br class="SoM"> Media</h2>
 					{# <h2>Add <span data-bind="text:media_type" style="text-transform: capitalize;"></span> </h2> #}{# <img src="{{STATIC_URL}}img/image-icon.png" data-media_type="image" class=" icon" data-bind="event: {mouseover: changeMediaType, mouseout: changeMediaTypeBack}"><img src="{{STATIC_URL}}img/video-icon.png" data-media_type="video" class=" icon" data-bind="event: {mouseover: changeMediaType, mouseout: changeMediaTypeBack}"><img src="{{STATIC_URL}}img/audio-icon.png" data-media_type="audio" class=" icon" data-bind="event: {mouseover: changeMediaType, mouseout: changeMediaTypeBack}"><img src="{{STATIC_URL}}img/upload-icon.png" data-media_type="whatever" class=" icon" data-bind="event: {mouseover: changeMediaType, mouseout: changeMediaTypeBack}"> #}
 				</div>
 				<div class="sub_add">
@@ -205,9 +205,13 @@
 			</div>
 		</div> <!-- /adder input -->
 		
-		<div class="prev_and_next">
-			<div class="btn">Previous</div> <div class="btn">Next</div>
-		</div>
+
+			<div id="prev_and_next" class="prev_and_next" data-bind="visible: !(is_floating_card())">
+				<br>
+				{%if prev_card%}<div class="input_element prev"> <a class="input-button" href="{%url EditCard gslug=prev_card.guide.slug id=prev_card.id  %}">Previous</a> </div>{%endif%}
+				{%if next_card%}<div class="input_element next"><a class= "input-button" href="{%url EditCard gslug=next_card.guide.slug id=next_card.id  %}">Next</a></div>{%endif%}
+			</div>
+
 		
 	</div> <!-- /card --> 
 </div> <!-- /cardwrap -->
@@ -239,11 +243,7 @@
 	
 	
 		{# Prev and Next Buttons for linear guides #}
-		<div id="prev_and_nexts" data-bind="visible: !(is_floating_card())">
-			<br>
-			{%if prev_card%}<a class="front input-button" href="{{prev_card.get_absolute_url}}">Previous</a> {%endif%}
-			{%if next_card%}<a class= "front input-button" href="{{next_card.get_absolute_url}}">Next</a> {%endif%}
-		</div>
+
 		<div class="F">F</div>
 
 	</div> {# end #card_being_edited  ------------------------ #}
@@ -251,11 +251,7 @@
 
 	
 
-	
-	<div id="edit_card_options_group"> 
-		<input type="checkbox" data-bind="checked: is_floating_card" id="is_floating_card"> <label for="is_floating_card"> Side Card</label>
-		<br>A "side card" is outside the normal flow of a guide. Mostly, this means there won't be 'previous' and 'next' buttons automatically added to it.
-		</div>
+
 </form> {# end card form #}
 
 
@@ -286,10 +282,10 @@
 					              <ul class="inputs-list">
 					                <li>
 					                  <label>
-					                    <input type="checkbox" name="optionsCheckboxes" value="option1">
+										<input type="checkbox" data-bind="checked: is_floating_card" id="is_floating_card">
 					                    <span>This is a sidecard</span>
 					                  </label>
-										<span class="help-block">Side cards are outside the normal flow of the guide. Basically.
+										<span class="help-block">Side cards are outside the normal flow of the guide. Basically, this means they don't have previous and next buttons.
 					                </li>
 					                <br>
 									<li>

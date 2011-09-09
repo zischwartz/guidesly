@@ -1,10 +1,10 @@
 
 /*VARS*/
-@adderWidth: 500px;
+@adderWidth: 550px;
 
 @cardWidth: 600px;
 
-@adderMinimizedWidth: 200px; //adderMinimizedWidth: 15%;
+@adderMinimizedWidth:  14%; // 200px; //adderMinimizedWidth: 15%;
 
 @editorSpacing: 1em;
 
@@ -43,7 +43,7 @@
 	width: @cardWidth;
 	border: 1px solid @gray;
 	.border-radius(4px);
-	min-height: 600px;
+	min-height: 500px;
 	margin: 0 auto;
 	.box-shadow(0 0px 8px rgba(0,0,0,.45));
 	padding-bottom: .3em;
@@ -67,7 +67,8 @@
 	background-color: white;
 	color: @gray;
 
-	
+	.SoM
+	{display:none;}
 }
 
 .adder.media
@@ -374,9 +375,13 @@ strong.green {
 	.closex
 	{display: none;}
 	
-	.HoM
+	.HoM //hide on minimize
 	{
 		display:none;
+	}
+	.SoM //show on minimize
+	{
+		display: inherit;
 	}
 	
 	.sub_add .left_wrap
@@ -469,6 +474,13 @@ strong.green {
 
 @mediaOptionsHeight: 100px;
 
+#media
+{
+	display: block;
+	margin: 0 auto;
+	overflow: hidden;
+	width: @adderWidth;
+}
 .mediaTemplate
 {
 	width: @adderWidth;
@@ -510,7 +522,7 @@ strong.green {
 		
 		.preview_image
 		{
-			width: 500px;
+			width: @adderWidth;
 		}
 	}
 	
@@ -525,13 +537,13 @@ strong.green {
 
 	&.primary_media
 	{
-		border: 1px solid black;
+/*		border: 1px solid black;*/
 	}
 	
 	&.not_primary_media
 	{
 		float: left;
-		margin: 0 1em;
+		margin: 0 .5em .5em .5em;
 		.square(150px);
 		
 		.preview_image
@@ -589,8 +601,8 @@ strong.green {
 	{
 		#gradient > .vertical(#E0F0F9, #BDEEF9);
 		border: 1px solid @grayDark;
-/*		color: @grayDark;*/
-		color: @red;
+		color: @grayDark;
+/*		color: @red;*/
 	}
 	
 	.cardbtn

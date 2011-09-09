@@ -2,8 +2,8 @@ from models import *
 from django.contrib import admin
 
 
-class GuideAdmin(admin.ModelAdmin):
-	prepopulated_fields = {"slug": ("title",)}
+# class GuideAdmin(admin.ModelAdmin):
+	# prepopulated_fields = {"slug": ("title",)}
 
 class MediaElementInline (admin.TabularInline):
 	model=MediaElement
@@ -25,7 +25,7 @@ class CardAdmin(admin.ModelAdmin):
 	inlines = [MediaElementInline, InputElementInline,]# MultipleChoiceInquiryInline]
 
 
-admin.site.register(Guide, GuideAdmin)
+admin.site.register(Guide)#, GuideAdmin)
 admin.site.register(Card, CardAdmin)
 admin.site.register(MediaElement)
 # admin.site.register(ImageElement)
