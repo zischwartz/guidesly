@@ -1,0 +1,31 @@
+{% comment %}
+"Video For Everybody" v0.4.1 by Kroc Camen of Camen Design
+    <camendesign.com/code/video_for_everybody>
+===============================================================================
+First try HTML5 playback: if serving as XML, expand `controls` to
+    `controls="controls"` and autoplay likewise.
+Warning: playback does not work on iPad/iPhone if you include the poster
+    attribute! Fixed in iOS4.
+
+Notes:
+* MP4 must be first for iPad!
+* WebM not supported yet
+* For the flash fallback, Firefox uses the `data` attribute on the <object>,
+    IE/Safari uses the <param name="movie"> param.
+* The fallback image is included as an <img> inside the <object>
+* You *must* offer a download link, as they may be able to play the file locally.
+    Override videologue/ttags/html5_video_download_links.html to customize your
+    download links.
+
+{% endcomment %}
+<video width="{{ width }}" height="{{ height }}" controls{% if autoplay %} autoplay{% endif %}>
+    {% if video.mp4_video %}<source src="{{ video.mp4_video.url }}"  type="video/mp4"  />{# WebKit video #}{% endif %}
+    {# <source src="{{ video.webm_video.url }}" type="video/webm" /><!-- WebM/VP8/Vorbis --> #}
+    {% if video.ogv_video %}<source src="{{ video.ogv_video.url }}"  type="video/ogg"  />{# Firefox / Opera #}{% endif %}
+    <object width="{{ width }}" height="{{ height }}" type="application/x-shockwave-flash" data="{{ FLOWPLAYER }}">
+        <param name="movie" value="{{ FLOWPLAYER }}" />
+        <param name="flashvars" value='config={"playlist": [{"url": "{{ video.image.url }}", "scaling": "orig"}{% if video.mp4_video %},{"url":"{{ video.mp4_video.url }}", "autoPlay": {{ autoplay|yesno:"true,false" }}, "autoBuffering": true}{% endif %}]}' />
+        <img src="{{ video.image.url }}" width="{{ width }}" height="{{ height }}" alt="{{ video.title|escape }}"
+            title="No video playback capabilities." />
+    </object>
+</video>

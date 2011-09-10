@@ -66,7 +66,8 @@ urlpatterns = patterns('',
 	url(r'^accounts/', include('accounts.urls')),	    
 	url(r'^user/', include('accounts.urls')),  
   
-	url(r'^photologue/', include('photologue.urls')),
+	url(r'^photologue/', include('photologue.urls')),  
+	url(r'^videologue/', include('videologue.urls')),   
 
 )
 

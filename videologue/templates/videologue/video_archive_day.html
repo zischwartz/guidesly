@@ -1,0 +1,22 @@
+{% extends "videologue/root.html" %}
+
+{% load i18n %}
+
+{% block title %}{% trans "Videos for" %} {{ day|date }}{% endblock %}
+
+{% block content %}
+
+<h1>{% trans "Videos for" %} {{ day|date }}</h1>
+
+{% if object_list %}
+    {% for video in object_list %}
+    <div class="gallery-video">
+        <a href="{{ video.get_absolute_url }}"><img src="{{ video.get_thumbnail_url }}" alt="{{ video.title }}"/></a>
+    </div>
+    {% endfor %}
+{% else %}
+<p>{% trans "No videos were found." %}</p>
+{% endif %}
+<p><a href="{% url vl-video-list 1 %}">{% trans "View all videos" %}</a></p>
+
+{% endblock %}

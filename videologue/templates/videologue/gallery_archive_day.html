@@ -1,0 +1,30 @@
+{% extends "videologue/root.html" %}
+
+{% load i18n %}
+
+{% block title %}{% trans "Galleries for" %} {{ day|date }}{% endblock %}
+
+{% block content %}
+
+<h1>{% trans "Galleries for" %} {{ day|date }}</h1>
+
+{% if object_list %}
+    {% for gallery in object_list %}
+        {% if gallery.public %}
+        <div class="video-gallery">
+            <h2><a href="{{ gallery.get_absolute_url }}">{{ gallery.title }}</a></h2>
+            {% for video in gallery.sample|slice:sample_size %}
+            <div class="gallery-video">
+                <a href="{{ video.get_absolute_url }}"><img src="{{ video.get_thumbnail_url }}" alt="{{ video.title }}"/></a>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+    {% endfor %}
+{% else %}
+    <p>{% trans "No galleries were found." %}</p>
+{% endif %}
+
+<p><a href="{% url vl-gallery-list 1 %}">{% trans "View all galleries." %}</a></p>
+
+{% endblock %}

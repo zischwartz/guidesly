@@ -1,0 +1,28 @@
+{% extends "videologue/root.html" %}
+
+{% load i18n %}
+
+{% block title %}{% trans "All Videos" %}{% endblock %}
+
+{% block content %}
+
+<h1>{% trans "All Videos" %}</h1>
+
+{% if object_list %}
+    {% for video in object_list %}
+    <div class="gallery-video">
+        <a href="{{ video.get_absolute_url }}"><img src="{{ video.get_thumbnail_url }}" alt="{{ video.title }}"/></a>
+    </div>
+    {% endfor %}
+{% else %}
+<p>{% trans "No videos were found." %}</p>
+{% endif %}
+
+{% if is_paginated %}
+<p>{{ hits }} {% trans "videos total." %}</p>
+<div id="page_controls">
+    <p>{% if has_previous %}<a href="{% url vl-video-list previous %}">{% trans "Previous" %}</a> | {% endif %} {% trans "page" %} {{ page }} {% trans "of" %} {{ pages }} {% if has_next %}| <a href="{% url vl-video-list next %}">{% trans "Next" %}</a>{% endif %}</p>
+</div>
+{% endif %}
+
+{% endblock %}

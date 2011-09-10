@@ -27,7 +27,7 @@ if (container.is( ":visible" )){
 	
 }
 }
-);
+) (jQuery);
 
 
 // Media controls
@@ -51,7 +51,7 @@ $('#mute_check').click(function() {
 		$("#mute").css('color','#000000');
 		}
 
-});
+}) (jQuery);
 
 	
 // Decrease the volume

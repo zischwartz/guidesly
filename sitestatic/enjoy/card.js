@@ -2,22 +2,24 @@
 var _jqCardFrameId = "DIV.card";
 
 
-$(document).ready(function(){	
-
-
+$(document).ready(function(){  
+	
 
 ///  THUMBS /////////////////////////////////////////////////
-    $("a.thumb").live('click', function(event) {
+    $("a.thumb").live('click', function(event) {   
+    
 		$(".active_thumb").removeClass("active_thumb");
 		$(this).addClass("active_thumb");
 		event.preventDefault();
 		var media_type = $(this).data("media_type");
-        var url = this.href;
-		
-		if (media_type == 'image')
-		{
-			$(".primary_media").attr({ src: url});
-		}
+        var url = this.href;     
+	  
+
+	   if (media_type == 'image')
+	    {                                           
+	    	$(".primary_media").attr({ src: url});         
+			  
+	    }          
 	
 	}); //end thumbs
 	
@@ -80,26 +82,12 @@ function cardTo(jqNewDiv, goForward) {
         newNode.hide();
         newNode.fadeIn(300);
         newNode.show();
-   	$( '.video-js' ).VideoJS();              
-   
-//	      $("#jquery_jplayer_1").jPlayer({
-//	        ready: function () {
-//	          $(this).jPlayer("setMedia", {
-//	            m4v: "{{primary_media.file}}"
-//	          });
-//	        },  
-//	        swfPath: "{{STATIC_URL}}js-libs/",
-//	        supplied: "M4V"
-//	      });
+      // $( '.video-js' ).VideoJS();              
+  
 
 		activateTimers();
     };
 
-//    if (goForward) {
-//        $(_jqCardFrame).animate({ left: +1000 }, 1000, 'linear', callback);
-//    } else {
-//        $(_jqCardFrame).animate({ left: -1000 }, 1000, 'linear', callback);
-//    }
     $(_jqCardFrameId).fadeOut(300, callback);
 }
 
@@ -152,5 +140,9 @@ function activateTimers(){
 		  });
 	}); //end timer	
 	
-}
+}   
+
+
+	
+  
 

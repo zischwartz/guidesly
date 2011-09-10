@@ -6,7 +6,8 @@ from django.utils import simplejson
 from django.core.urlresolvers import reverse
 
 from django.conf import settings
-from photologue.models import Photo
+from photologue.models import Photo  
+from videologue.models import Video
 
 # from guides.log import *
 
@@ -28,7 +29,11 @@ class UserFileCreateView(CreateView):
 		elif file_type == 'audio':
 			self.object.type='audio'
 		elif file_type == 'video':
-			self.object.type='video'
+			self.object.type='video' 
+			#added 
+			v=Video(video=f, title=f.name)     
+			v.save()
+			self.object.video=v
 		else:
 			self.object.type='other'
 		

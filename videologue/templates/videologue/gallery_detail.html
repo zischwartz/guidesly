@@ -1,0 +1,21 @@
+{% extends "videologue/root.html" %}
+
+{% load i18n %}
+
+{% block title %}{{ object.title }}{% endblock %}
+
+{% block content %}
+
+<h1>{{ object.title }}</h1>
+<h2>{% trans "Originally published" %} {{ object.date_added|date:"l, F jS, Y" }}</h2>
+{% if object.description %}<p>{{ object.description }}</p>{% endif %}
+<div class="video-gallery">
+    {% for video in object.public %}
+    <div class="gallery-video">
+        <a href="{{ video.get_absolute_url }}"><img src="{{ video.get_thumbnail_url }}" alt="{{ video.title }}"/></a>
+    </div>
+    {% endfor %}
+</div>
+<p><a href="{% url vl-gallery-list 1 %}">{% trans "View all galleries" %}</a></p>
+
+{% endblock %}

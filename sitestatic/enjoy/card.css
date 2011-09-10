@@ -246,7 +246,7 @@ h1 {font-size:2em; font-weight: bold; padding: 4px 0 6px 0;}
 h2 {font-size:1.5em; font-weight: bold; padding: 3px 0 5px 0;}
 
 
-.hidden {display:none;}
+.hidden {display:none;}    
 .clearfix:after { content: "."; display: block; height: 0; clear: both; visibility: hidden;  font-size: 0;}
 .clearfix { display: inline-block; }
 * html .clearfix { height: 1%; } /* Hides from IE-mac \*/
@@ -452,4 +452,4 @@ h1
 	width: 100%;
 	height: 1em;
 	border: 1px solid lightgreen;
-}
+}   

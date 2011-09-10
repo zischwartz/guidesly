@@ -1,0 +1,6 @@
+<p> <strong>Download Video:</strong>
+    {% if video.mp4_video %}Closed Format: <a href="{{ video.mp4_video.url }}">MP4</a>{% endif %}
+
+    {% if video.ogv_video %}Open Format: <a href="{{ video.ogv_video.url }}">OGG</a>{% endif %}
+                {# / <a href="{{ video.webm_video.url }}">WebM</a> #}
+</p>

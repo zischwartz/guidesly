@@ -45,7 +45,8 @@
 		
 	    {%if primary_media.type == "video"%}
 	    <div id="content">
-        <div class="video-js-box primary_media">
+        <div class="video-js-box">                   
+		<dic class="primary_media">
 				<video id="video" 
 				class="video-js "
 				width="800" 
@@ -54,7 +55,13 @@
 				{%if primary_media.autoplay%}autoplay{%endif%}
 				 preload = "auto">
 				<source src="{{primary_media.file}}" type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"' />
-				Browser doesn't support HTML5 video.
+				Browser doesn't support HTML5 video.  
+				<object class="vjs-flash-fallback" width="640" height="264" type="application/x-shockwave-flash"
+				      			  data="http://releases.flowplayer.org/swf/flowplayer-3.2.1.swf">
+				     			  <param name="movie" value="http://releases.flowplayer.org/swf/flowplayer-3.2.1.swf" />
+				        		  <param name="allowfullscreen" value="true" />
+				        		  <param name="flashvars" value='config={"clip":{"url": "{{primary_media.file}}","autoPlay":false,"autoBuffering":true}}' />
+				      			</object>
 				</video>
 				
 		</div>

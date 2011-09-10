@@ -1,0 +1,38 @@
+<html> 
+<head> 
+   
+ 
+
+
+<script src="{{STATIC_URL}}js-libs/video.js" type="text/javascript" charset="utf-8"></script> 
+<script src="{{STATIC_URL}}enjoy/card.js"></script>   
+<link rel="stylesheet" href="{{STATIC_URL}}js-libs/video-js.css" type="text/css" media="screen" title="Video JS" charset="utf-8">   
+
+</head> 
+<body>
+
+ <div class="video-js-box primary_media">
+     
+		     <video id="video" 
+			 class="video-js"
+				
+			 class="video-js "
+			 width="800" 
+			 height="600" 
+			 {# poster=""  #}
+			 {%if primary_media.autoplay%}autoplay{%endif%}
+			preload = "auto">
+				<source src="{{primary_media.file}}" type="video/mp4; codecs='avc1.42E01E, mp4a.40.2'" class="primary media" />
+				 Browser doesn't support HTML5 video.     
+				<object class="vjs-flash-fallback" width="640" height="264" type="application/x-shockwave-flash"
+				      			  data="http://releases.flowplayer.org/swf/flowplayer-3.2.1.swf">
+				     			  <param name="movie" value="http://releases.flowplayer.org/swf/flowplayer-3.2.1.swf" />
+				        		  <param name="allowfullscreen" value="true" />
+				        		  <param name="flashvars" value='config={"playlist":[{"url": "{{primary_media.file}}","autoPlay":false,"autoBuffering":true}]}' />
+				      			</object>
+			  
+					</video>        
+					
+</body> 
+
+</html>

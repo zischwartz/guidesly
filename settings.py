@@ -141,7 +141,8 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     'django.contrib.admindocs',
     'django.contrib.markup',
-    'photologue',
+    'photologue', 
+	'videologue',
     'object_permissions',
     'tagging',
 	'invitation',
@@ -170,7 +171,26 @@ INVITATIONS_PER_USER = 0
 
 LOGIN_REDIRECT_URL = '/home/'
 
-LOG_FILE = "/home/zazerr/webapps/guidesly_beta/myproject/log.log"
+LOG_FILE = "/home/zazerr/webapps/guidesly_beta/myproject/log.log"  
+                          
+#Video 
+FLOWPLAYER = "http://releases.flowplayer.org/swf/flowplayer-3.2.1.swf"
+                                                                              
+VIDEOLOGUE_ENCODE_FLV = False
+         
+VIDEOLOGUE_ENCODE_OGV = True
+
+VIDEOLOGUE_ENCODE_MP4 = False
+
+VIDEOLOGUE_FFMPEG = 'ffmpeg'
+
+VIDEOLOGUE_FLVTOOL = 'flvtools2'
+
+VIDEOLOGUE_VIDEO_SIZE = '720x480'
+
+VIDEOLOGUE_IMAGE_SIZE = '720x480'
+
+VIDEOLOGUE_MP4_TWOPASS = 'True'
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to

@@ -1,0 +1,18 @@
+{% extends "videologue/root.html" %}
+
+{% load i18n %}
+
+{% block title %}{% trans "Galleries for" %} {{ year }}{% endblock %}
+
+{% block content %}
+
+<h1>{% trans "Galleries for" %} {{ year }}</h1>
+<ul>
+{% for date in date_list %}
+<li><a href="{{ date|date:"M"|lower }}/">{{ date|date:"F" }}</a></li>
+{% endfor %}
+</ul>
+
+<p><a href="{% url vl-gallery-list 1 %}">{% trans "View all galleries." %}</a></p>
+
+{% endblock %}

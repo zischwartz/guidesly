@@ -7,7 +7,8 @@ from django.conf import settings
 
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
-from photologue.models import Photo
+from photologue.models import Photo		  
+from videologue.models import Video 
 
 SELEMENT_TYPE = (
 	('image', 'Image'),
@@ -23,7 +24,7 @@ class UserFile(models.Model):
 	created = models.DateTimeField(auto_now_add=True, blank=True, null=True)
 	owner = models.ForeignKey(User, blank=True, null=True)
 	type = models.CharField(blank=True, max_length=5, choices = SELEMENT_TYPE)
-	photo = models.ForeignKey(Photo, blank=True, null=True)
+	photo = models.ForeignKey(Photo, blank=True, null=True)            
 	thumb_url = models.URLField(blank=True)
 	medium_url = models.URLField(blank=True)
 	class Meta:
@@ -44,9 +45,11 @@ class UserFile(models.Model):
 		if self.type == 'image':
 			self.thumb_url = self.photo.get_thumb_url()
 			self.medium_url = self.photo.get_medium_url()
-		if self.type == 'video':
-			self.thumb_url = "/static/img/video-icon.png"
-			self.medium_url = "/static/img/video-icon.png"
+		if self.type == 'video':	
+		   
+		   self.medium_url = self.video.get_medium_url()
+		   self.thumb_url = "/static/img/video-icon.png"
+		 #	 self.medium_url = "/static/img/video-icon.png"
 		if self.type== 'audio':
 			self.thumb_url = "/static/img/audio-icon.png"
 			self.medium_url = "/static/img/audio-icon.png"
