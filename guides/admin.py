@@ -21,7 +21,7 @@ class InputElementInline (admin.TabularInline):
 
 
 class CardAdmin(admin.ModelAdmin):
-	prepopulated_fields = {"slug": ("title",)}
+	# prepopulated_fields = {"slug": ("title",)}
 	inlines = [MediaElementInline, InputElementInline,]# MultipleChoiceInquiryInline]
 
 

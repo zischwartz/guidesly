@@ -29,6 +29,26 @@
   -o-transition: -o-transform 500ms ease-in-out, opacity 500ms ease-in-out;
   transition: -webkit-transform 500ms ease-in-out, opacity 500ms ease-in-out;
 }
+
+/* Floating Cards!!1 */
+.csstransitions.csstransforms .deck-container:not(.deck-menu) > .is_floating_card {
+  -webkit-transform: translate(0, -200%) !important;
+  -moz-transform: translate(0, -200%) !important;
+  -ms-transform: translate(0, -200%) !important;
+  -o-transform: translate(0, -200%) !important;
+  transform: translate(0, -200%) !important;
+}
+
+/*My current*/
+.csstransitions.csstransforms .deck-container:not(.deck-menu) > .deck-current.is_floating_card {
+  -webkit-transform: translate(0, 0) !important;
+  -moz-transform: translate(0, 0) !important;
+  -ms-transform: translate(0, 0) !important;
+  -o-transform: translate(0, 0) !important;
+  transform: translate(0, 0) !important;
+}
+
+/*CURRENT CARD*/
 .csstransitions.csstransforms .deck-container:not(.deck-menu) > .card .deck-before, .csstransitions.csstransforms .deck-container:not(.deck-menu) > .card .deck-previous, .csstransitions.csstransforms .deck-container:not(.deck-menu) > .card .deck-current {
   -webkit-transform: translate(0, 0);
   -moz-transform: translate(0, 0);
@@ -36,6 +56,7 @@
   -o-transform: translate(0, 0);
   transform: translate(0, 0);
 }
+
 .csstransitions.csstransforms .deck-container:not(.deck-menu) > .card .deck-next, .csstransitions.csstransforms .deck-container:not(.deck-menu) > .card .deck-after {
   visibility: visible;
   -webkit-transform: translate(200%, 0);
@@ -75,9 +96,12 @@
   -o-transform: translate(400%, 0);
   transform: translate(400%, 0, 0);
 }
+
+
 .csstransitions.csstransforms .deck-container:not(.deck-menu) > .deck-before .card, .csstransitions.csstransforms .deck-container:not(.deck-menu) > .deck-previous .card {
   visibility: visible;
 }
+
 .csstransitions.csstransforms .deck-container:not(.deck-menu) > .deck-child-current {
   -webkit-transform: translate(0, 0);
   -moz-transform: translate(0, 0);
@@ -85,3 +109,5 @@
   -o-transform: translate(0, 0);
   transform: translate(0, 0);
 }
+
+

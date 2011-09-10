@@ -67,7 +67,6 @@ class Guide (models.Model):
 	private_url = models.CharField(max_length=500, blank=True)
 	
 	def save(self, *args, **kwargs):
-
 		i=0
 		if self.is_linear:
 			for c in self.card_order: #ugly
@@ -123,7 +122,7 @@ class Card (models.Model):
 	title = models.CharField(max_length=500, blank=True, null=True, default="")
 	created = models.DateTimeField(auto_now_add=True, blank=True, null=True)
 	modified = models.DateTimeField(auto_now=True, blank=True, null=True) #TODO ADD BACK IN
-	slug = models.SlugField(blank=True, null=True)
+	slug = AutoSlugField(unique_with='guide__slug', populate_from=lambda instance: instance.title or 'c'+str(instance.card_number) or 'sidecard')
 	text = models.TextField(blank=True, null=True)
 	guide= models.ForeignKey(Guide, null=True) #we'll use this as the default guide..., otherwise theres no absolute url
 	tags = TagField()
@@ -134,7 +133,7 @@ class Card (models.Model):
 	owner = models.ForeignKey(User, blank=True, null=True)
 	autoplay = models.BooleanField(default=False)
 	primary_is_bg = models.BooleanField(default=False)
-
+	# has_lots_of_text = models.BooleanField(default=False)
 	
 	def __unicode__(self):
 		if self.title !="":
@@ -215,10 +214,11 @@ class Card (models.Model):
 
 	
 	class Meta:
-		ordering = ['card_number'] #switch to card_number
+		ordering = ['is_floating_card','card_number'] 
 	
-	@models.permalink
+	@models.permalink # comment this out if using the hash...
 	def get_absolute_url(self):
+		# return '/' + self.guide.slug +"#" + self.slug
 		if not self.guide.text_slugs_for_cards:
 			if self.is_floating_card:
 				return ('CardDetailViewById', (), {'gslug': self.guide.slug, 'id':self.id }) 
@@ -234,8 +234,27 @@ class Card (models.Model):
 	def resource_uri(self):
 		r = CardResource() # cardresource is imported at the end of this file
 		return r.get_resource_uri(self)
+		
+	def the_audio(self):
+		return self.mediaelement_set.filter(type='audio')
 
+	def the_video(self):
+		return self.mediaelement_set.filter(type='video')
+		
+	def cget_prev_card(self):
+		prev_card_number = self.card_number -2 # 2 because the list card_order is zero based
+		if prev_card_number >=0:
+			return Card.objects.get(pk=(self.guide.card_order[prev_card_number]))
+		else: 
+			return None
 
+	def cget_next_card(self):
+		next_card_number = self.card_number  #no +1 because card_order is 0 based
+		if not next_card_number >= len(self.guide.card_order):
+			return Card.objects.get(pk=(self.guide.card_order[next_card_number]))
+		else: 
+			return None
+		
 
 class MediaElement (models.Model):
 	title = models.CharField(max_length=250, blank=True, null=True, default="")
