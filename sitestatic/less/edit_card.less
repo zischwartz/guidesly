@@ -116,19 +116,19 @@
 	}
 }
 
+.adder.media.hovered, .adder.input.hovered
+{
+	.box-shadow(0 0px 8px rgba(0,0,0,.45));
+}
 
 .adder:hover
 {
-/*	.box-shadow(0 0px 8px rgba(0,0,0,.45));*/
 	.box-shadow(1px 0px 8px rgba(0, 200, 150,.95));
 }
-	
-.adder:hover .adder_inner
-{
-	.opacity(100);
-}
 
-.adder .adder_inner.hovered
+
+	
+.adder:hover .adder_inner, .adder.hovered .adder_inner
 {
 	.opacity(100);
 }
@@ -209,16 +209,6 @@ strong.green {
 
 	}
 
-.adder .icon 
-{
-	.square(35px);
-	.opacity(70);
-	&:hover
-	{
-		.opacity(100)
-	}
-}
-
 
 .adder .addertop
 {
@@ -239,7 +229,6 @@ strong.green {
 
 .adder p
 {
-/*	line-height: 1.5em;*/
 	padding: 1em .2em;
 }
 

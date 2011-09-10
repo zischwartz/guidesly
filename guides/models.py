@@ -180,7 +180,10 @@ class Card (models.Model):
 	def save(self, *args, **kwargs):
 		self.brand_new = False
 		if self.title:
-			self.slug=slugify(self.title)
+			if unicode.isalpha(self.title[0]):
+				self.slug=slugify(self.title)
+			else:
+				self.slug = 'c'+ slugify(self.title) #later, we'll use the slug as the DOM id of the card
 		else:
 			self.slug=None
 			
@@ -331,5 +334,3 @@ class InputElement (models.Model):
 
 
 from api import CardResource
-
-

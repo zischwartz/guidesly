@@ -333,7 +333,7 @@
 				
 				{{ if VM.check_if_primary($item.data) }}
 					<label class="capitalized"><span data-bind="text: type"></span> title (optional) <input type="text" data-bind="value: title, valueUpdate: 'afterkeydown'"><br>
-					<button class="btn" data-bind="click: VM.editImage">Edit Image</button>
+					<button class="btn info" data-bind="click: VM.editImage">Edit Image</button>
 				 	<button class="btn danger" data-bind="click: VM.deleteFromCard"> Remove </button><br><br>
 					<button class="btn tiny" data-bind="click: VM.save_element">OK</button>
 					<button class="btn tiny">Cancel</button>

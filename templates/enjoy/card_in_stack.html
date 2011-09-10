@@ -175,20 +175,28 @@ $(document).ready(function(){
 			}
 		});
 	
-	//set the toc up with the active card
-	current_card_slug = $.deck('getSlide').data("slug");
+//set the TOC up with the current card, and the video player
+	inital_card = $.deck('getSlide');
+	current_card_slug = inital_card.data("slug");
+	
 	$("#header").find("a.goto[data-destination="+current_card_slug+"]").addClass("active");
-
+	if (inital_card.data("autoplay"))
+		$.doTimeout(300, function(){inital_card.find(".video-js").player().play();});
+		
+	$("#header").hover(
+		function(){
+			$(this).addClass("hovered");
+			$(this).doTimeout('showtoc'); //cancels the timer
+		},
+		function(){	$(this).doTimeout('showtoc', 1000, function(){this.removeClass("hovered");});	}	);
 
 //Bind the keys for back and forward
 	$(window).keydown(function(event) {
 		if (event.keyCode == '39')
 		{
-			console.log('right arrow pressed');
 			next_button= $.deck('getSlide').find('.prev_and_next .input_element.next');
 			if (next_button.length)
 				$.deck('next');
-
 			event.preventDefault();
 			return false;
 		} //end 39
@@ -198,7 +206,6 @@ $(document).ready(function(){
 			prev_button= $.deck('getSlide').find('.prev_and_next .input_element.prev');
 			if (prev_button.length)
 				$.deck('prev');
-
 			event.preventDefault();
 			return false;
 		} //end 37
@@ -275,28 +282,25 @@ $(document).ready(function(){
 		}//end if thumb_media_type is 'image'
 	}); //end thumbsnail code live
 
-   
 }); //end docreadyyyyyyyyyyyyyyyyyyyyyy
 
-//fix for weird firefox scroll issue
+//Fix for weird firefox horizontal scroll issue
 window.addEventListener('MozMousePixelScroll', function(evt){
     if(evt.axis === evt.HORIZONTAL_AXIS){
         evt.preventDefault();
     }
 }, false);
 
-//Data selector : http://james.padolsey.com/
-(function($){
-    var _dataFn = $.fn.data;
-    $.fn.data = function(key, val){
-        if (typeof val !== 'undefined'){ 
-            $.expr.attrHandle[key] = function(elem){
-                return $(elem).attr(key) || $(elem).data(key);
-            };
-        }
-        return _dataFn.apply(this, arguments);
-    };
-})(jQuery);
+
+/*
+ * jQuery doTimeout: Like setTimeout, but better! - v1.0 - 3/3/2010
+ * http://benalman.com/projects/jquery-dotimeout-plugin/
+ * 
+ * Copyright (c) 2010 "Cowboy" Ben Alman
+ * Dual licensed under the MIT and GPL licenses.
+ * http://benalman.com/about/license/
+ */
+(function($){var a={},c="doTimeout",d=Array.prototype.slice;$[c]=function(){return b.apply(window,[0].concat(d.call(arguments)))};$.fn[c]=function(){var f=d.call(arguments),e=b.apply(this,[c+f[0]].concat(f));return typeof f[0]==="number"||typeof f[1]==="number"?this:e};function b(l){var m=this,h,k={},g=l?$.fn:$,n=arguments,i=4,f=n[1],j=n[2],p=n[3];if(typeof f!=="string"){i--;f=l=0;j=n[1];p=n[2]}if(l){h=m.eq(0);h.data(l,k=h.data(l)||{})}else{if(f){k=a[f]||(a[f]={})}}k.id&&clearTimeout(k.id);delete k.id;function e(){if(l){h.removeData(l)}else{if(f){delete a[f]}}}function o(){k.id=setTimeout(function(){k.fn()},j)}if(p){k.fn=function(q){if(typeof p==="string"){p=g[p]}p.apply(m,d.call(n,i))===true&&!q?o():e()};o()}else{if(k.fn){j===undefined?e():k.fn(j===false);return true}else{e()}}}})(jQuery);
 
 </script>
 

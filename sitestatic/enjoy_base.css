@@ -2003,14 +2003,24 @@ body {
 #header .mute {
   display: none;
 }
-#header.hovered, #header:hover {
+#header.hovered {
   width: 300px;
   padding: 10px;
+  filter: alpha(opacity=60);
+  -khtml-opacity: 0.6;
+  -moz-opacity: 0.6;
+  opacity: 0.6;
 }
-#header.hovered .toc, #header:hover .toc {
+#header.hovered:hover {
+  filter: alpha(opacity=100);
+  -khtml-opacity: 1;
+  -moz-opacity: 1;
+  opacity: 1;
+}
+#header.hovered .toc {
   display: block;
 }
-#header.hovered .mute, #header:hover .mute {
+#header.hovered .mute {
   display: block;
 }
 #header a.active {

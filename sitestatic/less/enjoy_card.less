@@ -37,13 +37,18 @@ body
 	.toc {display: none;}
 	.mute {display: none;}
 	
-	&.hovered, &:hover
+	&.hovered
 	{
+		&:hover
+		{
+			.opacity(100);
+		}
 		width: 300px;
-		padding: 10px;
-		
+		padding: 10px;		
 		.toc {display: block;}
 		.mute {display: block;}
+		.opacity(60);
+		
 	}
 	
 	
