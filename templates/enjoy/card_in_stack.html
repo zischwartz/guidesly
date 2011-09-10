@@ -4,19 +4,28 @@
 {%block extrahead%}
 
 
+	<title>{{guide.title}}</title>
 	<script src="{{STATIC_URL}}js-libs/jquery-1.6.1.min.js"></script> 
-
+	
 	<link rel="stylesheet" href="{{STATIC_URL}}js-libs/deck/themes/transition/horizontal-slide-zach.css">
+
+	{# <link rel="stylesheet" href="{{STATIC_URL}}js-libs/deck/themes/transition/horizontal-slide.css"> #}
+	{# <link rel="stylesheet" href="{{STATIC_URL}}js-libs/deck/themes/transition/fade.css"> #}
 
 	<link rel="stylesheet" href="{{STATIC_URL}}enjoy_base.css" type="text/css" media="screen"  charset="utf-8">
 	
 	<script src="{{STATIC_URL}}/js-libs/deck/modernizr.custom.js"></script>
 	
+	{# Video JS #}
+	<link rel="stylesheet" href="{{STATIC_URL}}js-libs/video-js.css" type="text/css" media="screen" title="Video JS" charset="utf-8">
+   	<script src="{{STATIC_URL}}js-libs/video.js" type="text/javascript" charset="utf-8"></script>
+    
+	
 	<script>
-		$(document).ready(function(){
-
-		});
-	 </script>
+	var current_media_type;
+	var guide_title = "{{guide.title}}";
+	var current_card_slug;
+	</script>
 
 	<style>{{card.guide.theme.text}}</style>
 {%endblock%}
@@ -28,17 +37,32 @@
 <body>
 
 <header id="header">
-G T M
+Guidesly!
+
+	<div class="toc">
+	{%for card in guide.cards.all %}
+	 	<a href="{{card.get_absolute_url}}" data-destination="{{card.slug}}" class="goto" >
+		{{card}}
+		</a><br>
+	{%endfor%}
+	</div>
+	
+	<div class="mute">
+		<label for="mute">Mute Media?</label><input type="checkbox" id="mute">
+	</div>
+	
 </header>
 
 <article class="deck-container">
 
 {%for card in guide.cards.all %}
-
-	<div class="card {%if card.is_floating_card%} is_floating_card {%endif %} {%if not card.title%} notitle {%endif%}  {%if card.primary_media%} hasprimarymedia{%endif%} {%if not card.primary_media%} noprimarymedia{%endif%} {%if not card.text%} notext {%endif%} {%if card.input_elements%} hasinputs{%endif%} {%if not card.is_floating_card%} hasprevandnext {%endif%} {%if card.primary_is_bg %} primary_is_bg {%endif%}"
-			id = "{%firstof card.slug card.card_number card.id %}" {%if card.primary_is_bg%}style="background: url( '{{MEDIA_URL}}{{card.primary_media.file.file}}' ) center center no-repeat; background-size: cover" {%endif%}>
-			{# This uglyness gives cards a class relating to whats inside them #}
-
+			{# This uglyness gives cards classes relating to whats inside them #}
+	<div data-title="{%firstof card.title card.card_number%}" data-slug="{{card.slug}}" class="card {%if card.is_floating_card%} is_floating_card {%endif %} {%if not card.title%} notitle {%endif%}  {%if card.primary_media%} hasprimarymedia{%endif%} {%if not card.primary_media%} noprimarymedia{%endif%} {%if not card.text%} notext {%endif%} {%if card.input_elements%} hasinputs{%endif%} {%if not card.is_floating_card%} hasprevandnext {%endif%} {%if card.primary_is_bg %} primary_is_bg {%endif%}"
+			id = "{%firstof card.slug card.card_number card.id %}" {%if card.primary_is_bg%}style="background: url( '{{card.primary_media.file.url}}' ) center center no-repeat; background-size: cover" {%endif%}
+			{%if card.autoplay%} data-autoplay="1"{%endif%}>
+			
+			<div class="loader">Loading<br><img src="{{STATIC_URL}}/img/ajax-loader.gif"></div>					
+			
 			{# TITLE of CARD  #}
 			{%if card.title%}
 				<h1>{{card.title}} </h1>
@@ -47,10 +71,16 @@ G T M
 			{# PRIMARY MEDIA #}
 			{%if not card.primary_is_bg and card.primary_media.type == 'image' %}
 				<img src="{{card.primary_media.file.image.display_image.url}}" class="primary_media">
+				<script>current_media_type = 'image'</script>
+				<div class="caption">{{card.primary_media.title}}</div>
 			{%endif%}
 		
 		    {%if card.primary_media.type == "video"%}
-				[Video Player: ] {{card.primary_media.file}}
+				{%include "enjoy/videoplayer.html" %} {# there's still a div with class primary_media in there #}
+				{# [Video Player: ] {{card.primary_media.file}} #}
+				<script>current_media_type = 'video'</script>
+				<div class="caption">{{card.primary_media.title}}</div>
+				
 		    {%endif%}
 		
 			{# Audio will never be primary, and there will only be one audio #}
@@ -61,24 +91,26 @@ G T M
 
 	
 			{# THUMBNAILS #}
-			{%if card.mediaelement_set.all|length > 1 %}	
+			{%if card.mediaelement_set.all|length > 1 %}
+			<div class="thumbs">
 			{%for el in card.mediaelement_set.all%}
 				{%if el.type == 'image' %}
-					<a href="{%if card.primary_is_bg %}{{MEDIA_URL}}{{el.file.file}} {%else%}{{card.primary_media.file.image.display_image.url}}{%endif%}" class="thumblink" data-media_type="{{el.type}}">
+					<a href="{%if card.primary_is_bg %}{{el.file.url}} {%else%}{{el.file.image.display_image.url}}{%endif%}" class="thumblink {% if el == card.primary_media %} activeThumbLink{%endif%}" data-media_type="{{el.type}}">
 						<img src="{{el.file.thumb_url}}" title="{{el.title}}">
 					</a>
 				{%endif%}
 				{%if el.type == 'video'%}
-				    <a href="{{MEDIA_URL}}{{el.file.file}}" class="thumblink" data-media_type="{{el.type}}">
+				    <a href="{{el.file.url}}" class="thumblink" data-media_type="{{el.type}}">
 						<img src="{{el.file.thumb_url}}" title="{{el.title}}">
 					</a>
 				{%endif%}
 				{%if el.type == 'other'%}
-				    <a href="{{MEDIA_URL}}{{el.file.file}}" class="thumblink" data-media_type="{{el.type}}">
+				    <a href="{{el.file.url}}" class="thumblink" data-media_type="{{el.type}}">
 						<img src="{{el.file.thumb_url}}" title="{{el.title}}">
 					</a>
 				{%endif%}
 			{%endfor%}
+			</div>
 			{%endif%} {#  end if greater than 1 #}
 
 					
@@ -99,8 +131,8 @@ G T M
 		
 			{%if not card.is_floating_card%}
 			<div class="prev_and_next">
-				{%if card.cget_prev_card %}<div class="input_element prev"><a href="{{card.cget_prev_card.get_absolute_url}}" class=""> ⬅ Previous</a></div>{%endif%}
-				{%if card.cget_next_card %}<div class="input_element next"><a href="{{card.cget_next_card.get_absolute_url}}" class="">Next ➡</a></div>{%endif%}
+				{%if card.cget_prev_card %}<div class="input_element prev"><a href="{{card.cget_prev_card.get_absolute_url}}"> ⬅ Previous</a></div>{%endif%}
+				{%if card.cget_next_card %}<div class="input_element next"><a href="{{card.cget_next_card.get_absolute_url}}">Next ➡</a></div>{%endif%}
 			</div>
 			{%endif%}
 
@@ -113,8 +145,7 @@ G T M
 
 
 
-</article> 
-{# end deck-container #}
+</article> {# end deck-container #}
 
 
 
@@ -134,30 +165,68 @@ G T M
 
 <script>
 $(document).ready(function(){
+	console.log('your doc is ready, ser');
+	VideoJS.setupAllWhenReady();  
+	
+	$.deck('.card', {
+			keys: {
+				next: -1, // No key activation
+				previous: -1 // No key activation
+			}
+		});
+	
+	//set the toc up with the active card
+	current_card_slug = $.deck('getSlide').data("slug");
+	$("#header").find("a.goto[data-destination="+current_card_slug+"]").addClass("active");
+
+
+//Bind the keys for back and forward
+	$(window).keydown(function(event) {
+		if (event.keyCode == '39')
+		{
+			console.log('right arrow pressed');
+			next_button= $.deck('getSlide').find('.prev_and_next .input_element.next');
+			if (next_button.length)
+				$.deck('next');
+
+			event.preventDefault();
+			return false;
+		} //end 39
 		
-	// $.extend(true, $.deck.defaults, {
-	//    selectors: {
-	//       hashLink: '.deck-permalink'
-	//    },
-	//    hashPrefix: 'card-'
-	// });
+		if (event.keyCode == '37')
+		{
+			prev_button= $.deck('getSlide').find('.prev_and_next .input_element.prev');
+			if (prev_button.length)
+				$.deck('prev');
+
+			event.preventDefault();
+			return false;
+		} //end 37
+		
+	}); //end keypress binding
 	
-	
-	// disable key bindings, write your own, enable them only when the buttons are present
-	//autoplay audio and video...
-	
-	
-	$.deck('.card');
-	
-	$(document).bind('deck.change', function(event, from, to) {
-		console.log(event);
-		console.log('Moving from slide ' + from + ' to ' + to);
-		return false;
+
+// On Deck Change, ...change the title and update the toc
+	$(document).bind('deck.change', function(event, from, to) {	
+		card = $.deck('getSlide', to);
+		title = $(card).data("title");
+		current_card_slug = $(card).data("slug");
+		
+		document.title = guide_title + ': '+ title;
+		$("#header a.goto").removeClass("active");
+		$("#header").find("a.goto[data-destination="+current_card_slug+"]").addClass("active");
+		
+		if (card.data("autoplay"))
+			card.find(".video-js").player().play();
+
 	});
-	
+
+// Bind prev and next buttons to move the deck	
 	$('.input_element.prev').click(function(event) { $.deck('prev'); return false;});
 	$('.input_element.next').click(function(event) { $.deck('next'); return false;});
-
+	
+	
+// Bind other buttons to move deck	
 	$('a.goto').click(function(event) {
 		// console.log($.deck('getSlides'));
 		destination= $(event.target).data("destination");
@@ -165,14 +234,70 @@ $(document).ready(function(){
 		// console.log(index);
 		$.deck('go', index);
 		return false;
+	}); //end a.goto click
+	
+	
+// Bind media thumbnails to change the video or image in the appropriate card
+    $("a.thumbLink").live('click', function(event) {
+		event.preventDefault();
 		
-		}); //end a.goto click
-	
-	
-	//$.deck('next')
+		if ($(this).hasClass("activeThumbLink"))
+			return false;
+		
+		var card = $.deck('getSlide');	
+		$(card).find(".activeThumbLink").removeClass("activeThumbLink");
+		$(this).addClass("activeThumbLink");
+		var thumb_media_type = $(this).data("media_type");
+        var url = this.href;
+
+		if (thumb_media_type == 'image')
+		{
+			if (current_media_type == 'video')
+			{
+				console.log('do something here to hide the video and replace it with an image');
+			}
+			
+			if (card.hasClass("primary_is_bg"))
+				{
+					$(card).css('background-image', "url("+ url +")" ).addClass("loading");
+					$('<img/>').attr('src', url).load(function(){
+						$(card).removeClass("loading");
+					});
+				}
+			else
+			{
+				$(card).addClass("loading").find(".primary_media").attr({ src: url});
+				// bind to hide the loading indicator .loader
+				$(card).find(".primary_media").load(function(){
+					$(card).removeClass("loading");
+				});
+			}
+		}//end if thumb_media_type is 'image'
+	}); //end thumbsnail code live
 
    
-   }); //end docready
+}); //end docreadyyyyyyyyyyyyyyyyyyyyyy
+
+//fix for weird firefox scroll issue
+window.addEventListener('MozMousePixelScroll', function(evt){
+    if(evt.axis === evt.HORIZONTAL_AXIS){
+        evt.preventDefault();
+    }
+}, false);
+
+//Data selector : http://james.padolsey.com/
+(function($){
+    var _dataFn = $.fn.data;
+    $.fn.data = function(key, val){
+        if (typeof val !== 'undefined'){ 
+            $.expr.attrHandle[key] = function(elem){
+                return $(elem).attr(key) || $(elem).data(key);
+            };
+        }
+        return _dataFn.apply(this, arguments);
+    };
+})(jQuery);
+
 </script>
 
 

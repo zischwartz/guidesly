@@ -1,0 +1,22 @@
+
+
+<div class="video-js-box primary_media">
+     <video id="video" 
+			class="video-js"
+			width="800" 
+			height="600" 
+			preload = "auto">
+			
+			<source src="{{card.primary_media.file.file.url}}" type="video/mp4; codecs='avc1.42E01E, mp4a.40.2'" {# class="primary_media" #} />
+			Browser doesn't support HTML5 video.     
+			 <object class="vjs-flash-fallback" 
+				width="800" 
+				height="600" 
+				type="application/x-shockwave-flash"
+				data="{{STATIC_URL}}enjoy/flash/flowplayer/flowplayer-3.2.7.swf">
+					<param name="movie" value="{{STATIC_URL}}enjoy/flash/flowplayer/flowplayer-3.2.7.swf" />
+				    <param name="allowfullscreen" value="true" />
+				    <param name="flashvars" value='config={"clip":{"url": "{{card.primary_media.file.file.url}}","autoPlay":false,"autoBuffering":true}}' />
+				</object>                     
+		</video>	       
+</div> {# end video-js-box and primary media #}

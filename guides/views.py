@@ -49,7 +49,8 @@ def GuideDetailView (request, slug):
 	return render_to_response("enjoy/guide_detail.html", locals(), context_instance=RequestContext(request))
 
 
-def CardInStack (request, gslug, slug):
+# def CardInStack (request, gslug, slug):
+def CardInStack (request, gslug):
 	# current_card = get_object_or_404(Card, guide__slug=gslug, slug=slug)
 	guide = get_object_or_404(Guide, slug=gslug)
 	return render_to_response("enjoy/card_in_stack.html", locals(), context_instance=RequestContext(request))
@@ -84,13 +85,14 @@ def CardDetailView (request, gslug, id=None, slug=None, cnumber=None):
 
 def CardDetailViewByIdRedirect (request, id):
 	card = get_object_or_404(Card, id=id)
+	return HttpResponseRedirect(card.get_absolute_url())
 
-	if card.slug:
-		return HttpResponseRedirect(reverse('CardDetailView', kwargs={'gslug':card.guide.slug, 'slug': card.slug}))
-	elif card.card_number:
-		return HttpResponseRedirect(reverse('CardDetailViewByNum', kwargs={'gslug':card.guide.slug, 'cnumber': card.card_number}))
-	else:
-		return HttpResponseRedirect(reverse('CardDetailViewById', kwargs={'gslug':card.guide.slug, 'id': card.id}))
+	# if card.slug:
+		# return HttpResponseRedirect(reverse('CardDetailView', kwargs={'gslug':card.guide.slug, 'slug': card.slug}))
+	# elif card.card_number:
+		# return HttpResponseRedirect(reverse('CardDetailViewByNum', kwargs={'gslug':card.guide.slug, 'cnumber': card.card_number}))
+	# else:
+		# return HttpResponseRedirect(reverse('CardDetailViewById', kwargs={'gslug':card.guide.slug, 'id': card.id}))
 
 
 

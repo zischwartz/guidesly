@@ -122,7 +122,7 @@ class Card (models.Model):
 	title = models.CharField(max_length=500, blank=True, null=True, default="")
 	created = models.DateTimeField(auto_now_add=True, blank=True, null=True)
 	modified = models.DateTimeField(auto_now=True, blank=True, null=True) #TODO ADD BACK IN
-	slug = AutoSlugField(unique_with='guide__slug', populate_from=lambda instance: instance.title or 'c'+str(instance.card_number) or 'sidecard')
+	slug = AutoSlugField(unique_with='guide__slug', populate_from=lambda instance: instance.title or 'card-'+str(instance.card_number) or 'sidecard')
 	text = models.TextField(blank=True, null=True)
 	guide= models.ForeignKey(Guide, null=True) #we'll use this as the default guide..., otherwise theres no absolute url
 	tags = TagField()
@@ -134,6 +134,8 @@ class Card (models.Model):
 	autoplay = models.BooleanField(default=False)
 	primary_is_bg = models.BooleanField(default=False)
 	# has_lots_of_text = models.BooleanField(default=False)
+	# show_next = models.BooleanField(default=True)
+	# show_prev = models.BooleanField(default=True)
 	
 	def __unicode__(self):
 		if self.title !="":
@@ -143,6 +145,12 @@ class Card (models.Model):
 				return "Untitled Card #" + str(self.card_number)
 			else: 
 				return "Untitled Floating Card"
+				
+
+	# @models.permalink # comment this out if using the hash...
+	def get_absolute_url(self):
+		return '/s/' + self.guide.slug +"/#" + self.slug
+		# return ('CardDetailView', (), {'gslug': self.guide.slug, 'slug':self.slug })
 				
 	def firstsave(self, *args, **kwargs):
 		self.owner= self.guide.owner
@@ -215,20 +223,6 @@ class Card (models.Model):
 	
 	class Meta:
 		ordering = ['is_floating_card','card_number'] 
-	
-	@models.permalink # comment this out if using the hash...
-	def get_absolute_url(self):
-		# return '/' + self.guide.slug +"#" + self.slug
-		if not self.guide.text_slugs_for_cards:
-			if self.is_floating_card:
-				return ('CardDetailViewById', (), {'gslug': self.guide.slug, 'id':self.id }) 
-			else:
-				return ('CardDetailViewByNum', (), {'gslug': self.guide.slug, 'cnumber':self.card_number}) #small bug here, if card goes from ordered to floating 
-		else:
-			if self.slug:
-				return ('CardDetailView', (), {'gslug': self.guide.slug, 'slug':self.slug })
-			else:
-				return ('CardDetailViewById', (), {'gslug': self.guide.slug, 'id':self.id })
 
 	@property
 	def resource_uri(self):
