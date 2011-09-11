@@ -2008,11 +2008,11 @@ footer {
   display: none;
 }
 .adder.media {
-  background: url('/static/img/placeholder.png') center center no-repeat;
+  background: url('/media/img/placeholder.png') center center no-repeat;
   background-size: cover;
 }
 .adder.input {
-  background: url('/static/img/interaction_placeholder.png') top center no-repeat;
+  background: url('/media/img/interaction_placeholder.png') top center no-repeat;
   background-size: auto;
 }
 .adder .adder_inner {
