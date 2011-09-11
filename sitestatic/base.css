@@ -2523,7 +2523,7 @@ strong.green {
   cursor: pointer;
 }
 .wmd-button > span {
-  background-image: url("/static/js-libs/wmd-buttons.png");
+  background-image: url("/media/js-libs/wmd-buttons.png");
   background-repeat: no-repeat;
   background-position: 0px 0px;
   width: 20px;
