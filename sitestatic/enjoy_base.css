@@ -407,10 +407,16 @@ a:hover {
   color: #333;
   text-decoration: none;
 }
-.btn.primary, .btn.danger {
+.btn.primary,
+.btn.danger,
+.btn.crazy,
+.btn.info {
   color: #fff;
 }
-.btn.primary:hover, .btn.danger:hover {
+.btn.primary:hover,
+.btn.danger:hover,
+.btn.crazy:hover,
+.btn.info:hover {
   color: #fff;
 }
 .btn.primary {
@@ -439,6 +445,34 @@ a:hover {
   background-image: linear-gradient(#d83a2e, #9d261d);
   text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
   border-color: #9d261d #9d261d #5c1611;
+  border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+}
+.btn.info {
+  background-color: #1f85a1;
+  background-repeat: repeat-x;
+  background-image: -khtml-gradient(linear, left top, left bottom, from(#34b5d8), to(#1f85a1));
+  background-image: -moz-linear-gradient(#34b5d8, #1f85a1);
+  background-image: -ms-linear-gradient(#34b5d8, #1f85a1);
+  background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #34b5d8), color-stop(100%, #1f85a1));
+  background-image: -webkit-linear-gradient(#34b5d8, #1f85a1);
+  background-image: -o-linear-gradient(#34b5d8, #1f85a1);
+  background-image: linear-gradient(#34b5d8, #1f85a1);
+  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+  border-color: #1f85a1 #1f85a1 #135060;
+  border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+}
+.btn.crazy {
+  background-color: #df8505;
+  background-repeat: repeat-x;
+  background-image: -khtml-gradient(linear, left top, left bottom, from(#fbbf69), to(#df8505));
+  background-image: -moz-linear-gradient(#fbbf69, #df8505);
+  background-image: -ms-linear-gradient(#fbbf69, #df8505);
+  background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #fbbf69), color-stop(100%, #df8505));
+  background-image: -webkit-linear-gradient(#fbbf69, #df8505);
+  background-image: -o-linear-gradient(#fbbf69, #df8505);
+  background-image: linear-gradient(#fbbf69, #df8505);
+  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+  border-color: #df8505 #df8505 #945904;
   border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
 }
 .btn.large {
@@ -1983,9 +2017,10 @@ body {
   top: 0px;
   left: 0px;
   z-index: 20;
-  background-color: black;
+  background-color: #404040;
   color: white;
   padding: 5px;
+  text-align: center;
   -webkit-border-radius: 0 0 4px 0;
   -moz-border-radius: 0 0 4px 0;
   border-radius: 0 0 4px 0;
@@ -1996,6 +2031,10 @@ body {
   -webkit-transition: all ease-in-out 0.3s;
   -moz-transition: all ease-in-out 0.3s;
   transition: all ease-in-out 0.3s;
+  /*	a*/
+
+  /*	{text-shadow: 1px 1px 1px rgba(100,100,255, .5);}*/
+
 }
 #header .toc {
   display: none;
@@ -2004,12 +2043,14 @@ body {
   display: none;
 }
 #header.hovered {
-  width: 300px;
+  /*		width: 300px;*/
+
   padding: 10px;
-  filter: alpha(opacity=60);
-  -khtml-opacity: 0.6;
-  -moz-opacity: 0.6;
-  opacity: 0.6;
+  filter: alpha(opacity=75);
+  -khtml-opacity: 0.75;
+  -moz-opacity: 0.75;
+  opacity: 0.75;
+  text-align: left;
 }
 #header.hovered:hover {
   filter: alpha(opacity=100);
@@ -2022,6 +2063,12 @@ body {
 }
 #header.hovered .mute {
   display: block;
+}
+#header.hovered .small br {
+  display: none;
+}
+#header .small {
+  font-size: .8em;
 }
 #header a.active {
   color: white !important;
@@ -2113,11 +2160,39 @@ h1 {
   display: block;
   text-align: left;
 }
+.card_text p {
+  font-size: 1.2em;
+  color: #404040;
+}
+.input_element a {
+  border-color: rgba(255, 255, 255, 0.5);
+  background-clip: padding-box;
+}
 .prev_and_next {
-  /*	position: fixed;*/
-
-  /*	top: 85%;*/
-
+  position: fixed;
+  top: 25%;
+}
+.card.primary_is_bg h1, .card.primary_is_bg .card_text {
+  background-color: rgba(64, 64, 64, 0.3);
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+  padding: 10px;
+  color: white;
+}
+.card.primary_is_bg h1 p, .card.primary_is_bg .card_text p {
+  color: white;
+}
+.card.primary_is_bg h1 {
+  width: 70%;
+  margin: .5em auto;
+  text-shadow: 1px 1px 1px #404040;
+}
+.card.primary_is_bg .thumbs {
+  margin-top: 50%;
+}
+.card.primary_is_bg .card_text {
+  text-shadow: 1px 1px 1px #404040;
 }
 /*DECK CSS TAKEN FROM CORE.CSS*/
 .deck-before,

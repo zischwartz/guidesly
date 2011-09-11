@@ -141,6 +141,7 @@
 
 {%block content%}
 <div class="cardwrap"> 
+	{# <div class="card" data-bind="style:{background: primary_is_bg() ? 'url('+ VM.mediaelements()[0].file.file() +' ) center center no-repeat' : 'none'}"> #}
 	<div class="card">
 
 		<div class="title adder " tabindex="3" data-bind="event:{ focusin: turnOnEditing, focusout: turnOffEditing, keypress: didPressEnter}">
@@ -169,7 +170,7 @@
 					<div class="left_wrap">
 					 <h4>From your computer</h4>
 					{%include 'create/fileupload.html'%}
-					<p><strong class="green">Drag files here</strong> <span class="HoM">from your computer </span> . <span class="HoM"><br>In a modern browser, it's that easy.</p></span>
+					<p><br class="SoM"><strong class="green">Drag files here</strong> <span class="HoM">from your computer </span> . <span class="HoM"><br>In a modern browser, it's that easy.</span></p>
 					</div>
 				</div>
 				<div class="sub_add">
@@ -185,7 +186,7 @@
 		<div class="adder text" tabindex="5" data-bind="event: { focusin: turnOnEditing, focusout: turnOffEditing}">
 			<a class="closex closer" href="#">x</a>
 			<div class="adder_inner">
-				 <div class="cardtext" data-bind="visible: !text()"><p>Text for your card. Easy formatting. Totally optional.</p></div>
+				 <div class="cardtext" data-bind="visible: !text()"><p>Text for your card. Easy Markdown formatting. Totally optional.</p></div>
 				 <div id="wmd-preview" class="wmd-panel wmd-preview cardtext" data-bind="visible: text()">Placeholder</div>
 
 	              <form class="wmd-panel"><div id="wmd-button-bar"></div> 
@@ -205,31 +206,7 @@
 			</div>
 		</div> <!-- /adder input -->
 		
-
-			<div id="prev_and_next" class="prev_and_next" data-bind="visible: !(is_floating_card())">
-				<br>
-				{%if prev_card%}<div class="input_element prev"> <a class="input-button" href="{%url EditCard gslug=prev_card.guide.slug id=prev_card.id  %}">Previous</a> </div>{%endif%}
-				{%if next_card%}<div class="input_element next"><a class= "input-button" href="{%url EditCard gslug=next_card.guide.slug id=next_card.id  %}">Next</a></div>{%endif%}
-			</div>
-
-		
-	</div> <!-- /card --> 
-</div> <!-- /cardwrap -->
-
-{# end new #}
-{# 	********************************************************************************************************************************************************************************** #}
-{# 	********************************************************************************************************************************************************************************** #}
-{# 	********************************************************************************************************************************************************************************** #}
-{# 	********************************************************************************************************************************************************************************** #}
-{# 	********************************************************************************************************************************************************************************** #}
-{# 	********************************************************************************************************************************************************************************** #}
-
-
-		<div id="card_being_edited" class="{%if s.brand_new%}brand_new{%endif%}">
-			
-
-	
-	{# INPUT ELEMENTS #}
+		{# INPUT ELEMENTS #}
 		<div data-bind="template:{name: VM.inputTypeTemplate,  foreach: VM.inputelements,
 
 		 				beforeRemove: function(elem) {$(elem).slideUp() },
@@ -240,19 +217,22 @@
 
 		 				beforeRemove: function(elem) {$(elem).slideUp() },
 						afterAdd: function(elem) {$(elem).hide().slideDown() }}"> </div>
-	
-	
-		{# Prev and Next Buttons for linear guides #}
+							
+							
+			<div id="prev_and_next" class="prev_and_next" data-bind="visible: !(is_floating_card())">
+				<br>
+				{%if prev_card%}<div class="input_element prev"> <a class="input-button" href="{%url EditCard gslug=prev_card.guide.slug id=prev_card.id  %}"> ⬅ Previous</a> </div>{%endif%}
+				{%if next_card%}<div class="input_element next"><a class= "input-button" href="{%url EditCard gslug=next_card.guide.slug id=next_card.id  %}">Next ➡ </a></div>{%endif%}
+			</div>
 
-		<div class="F">F</div>
+		
+	</div> <!-- /card --> 
+</div> <!-- /cardwrap -->
 
-	</div> {# end #card_being_edited  ------------------------ #}
+{# end new #}
+{# 	********************************************************************************************************************************************************************************** #}
+{# 	********************************************************************************************************************************************************************************** #}
 
-
-	
-
-
-</form> {# end card form #}
 
 
 
@@ -261,57 +241,46 @@
 
 {%block sidebar%}
 
-
-
-
-				{#  #}
-				{# <input type="radio" id="checkb-is_primary-${id}" class="uibutton" data-bind="checked: VM.primary_media" value="${resource_uri}" name="primary_media" /> #}
-				{# <label for="checkb-is_primary-${id}">Primary Media</label> #}
-				
-				{# for input template debugging       <input data-bind="value: default_action.goto">    #}
 <div class="sidebar">
 	<h3>Card Options</h3>
-	<a href="{% url CardDetailViewByIdRedirect id=card.id %}" class="btn primary">Preview Card</a>
+	<a href="{% url CardDetailViewByIdRedirect id=card.id %}" target="_blank" class="btn info ">Preview Card</a>
 	<button class="btn primary" data-bind="click: VM.save_card">Save Card</button>
 	<form class="form-stacked">
-		<div class="clearfix">
-		            <label for="xlInput">Card Slug</label><div class="input"><input class="large"  name="slug" size="30" type="text"><span class="help-block">A slug? Ew!</span></div></div>
-					<div class="clearfix">
-					            <label id="optionsCheckboxes">Card Options</label>
-					            <div class="input">
-					              <ul class="inputs-list">
-					                <li>
-					                  <label>
-										<input type="checkbox" data-bind="checked: is_floating_card" id="is_floating_card">
-					                    <span>This is a sidecard</span>
-					                  </label>
-										<span class="help-block">Side cards are outside the normal flow of the guide. Basically, this means they don't have previous and next buttons.
-					                </li>
-					                <br>
-									<li>
-					                  <label>
-					                    <input type="checkbox" name="optionsCheckboxes" value="option2">
-					                    <span>Autoplay Video and Audio </span>
-					                  </label>
-					                </li>
-									<li>
-					                  <label>
-					                    <input type="checkbox" name="primary_is_bg" value="primary_is_bg" data-bind="checked: primary_is_bg">
-					                    <span>Make the main image the card background </span>
-					                  </label>
-					                </li>
-									<li>
-					                  <label>
-					                    <input type="checkbox" name="optionsCheckboxes" value="option2" >
-					                    <span>Give Images Shadows</span>
-					                  </label>
-					                </li>
-					              </ul>
-					            </div>
-					          </div>			
-	</form>
+		<div class="input">
+			<ul class="inputs-list">
+				<li>
+					<label>
+						<input type="checkbox" data-bind="checked: is_floating_card" id="is_floating_card">
+						<span>This is a sidecard</span>
+					</label>
+					<span class="help-block">Side cards are outside the normal flow of the guide. Mostly, they don't have previous and next buttons.</span>
+					</li>
+					<br>
+					<li>
+						<label>
+							<input type="checkbox" data-bind="checked: autoplay">
+							<span>Autoplay Video and Audio </span>
+						</label>
+					</li>
+					<li>
+						<label>
+							<input type="checkbox" name="primary_is_bg" value="primary_is_bg" data-bind="checked: primary_is_bg">
+							<span>Make the main image the card background </span>
+						</label>
+						<span class="help-block">Show off your image, full bleed.</span>
+						
+					</li>
+					<li>
+						<label>
+							<input type="checkbox" name="optionsCheckboxes" value="option2" >
+							<span>Give Images Shadows</span>
+						</label>
+					</li>
+				</ul>
+			</div> {# end input div #}
+</form>
+<br><a class="btn primary" href="{% url BuildCard gslug=card.guide.slug %}">Add New Card</a><br><br>
 
-	<p>Lorem ipsum dolor sit amet, <a href="#">consectetur adipisicing</a> elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam.</p>
 	<button class="btn danger">Delete Card</button>	
 </div> {# /sidebar #}
 
@@ -332,13 +301,11 @@
 				<div class="uploading_indicator"> Uploading <br><img src="/static/img/ajax-loader.gif"></div> <br>
 				
 				{{ if VM.check_if_primary($item.data) }}
-					<label class="capitalized"><span data-bind="text: type"></span> title (optional) <input type="text" data-bind="value: title, valueUpdate: 'afterkeydown'"><br>
-					<button class="btn info" data-bind="click: VM.editImage">Edit Image</button>
+					<label class="capitalized"><span data-bind="text: type"></span> Title: <input class="tinput xlarge" type="text" data-bind="value: title, valueUpdate: 'afterkeydown'"><br><br>
+					{{if type() == 'image'}}<button class="btn info" data-bind="click: VM.editImage">Edit Image</button> {{/if}}
 				 	<button class="btn danger" data-bind="click: VM.deleteFromCard"> Remove </button><br><br>
-					<button class="btn tiny" data-bind="click: VM.save_element">OK</button>
-					<button class="btn tiny">Cancel</button>
 				{{else}}
-					<button  class="btn primary" data-bind="click: VM.makePrimary">Edit/Make Main</button>
+					<button  class="btn primary" data-bind="click: VM.makePrimary">Edit / Make Main</button>
 					<button class="btn danger small" data-bind="click: VM.deleteFromCard"> Remove </button><br><br>
 				 	
 				{{/if}}
@@ -348,7 +315,7 @@
 		</div>
 	</script>
 	
-
+{# 	<button class="btn tiny" data-bind="click: VM.save_element">OK</button> #}
 	
 
 	
@@ -472,7 +439,7 @@
 				<div class="alert-message error"><p><strong>Not Yet! </strong> Sorry, we haven't implemented this feature yet.</p></div>
 				{# <form data-bind="submit:addMap2Card"> #}
 				<input type="submit" value="Add Map">
-				</form>
+
 			</div> {# end map properties, this one will be different, user will add map, map will pop up, then points will be edited with this... #}
 			
 			
@@ -513,7 +480,7 @@
 		
 		<div class="modal-footer">
 			<button class="btn primary" data-bind="click: function(){ VM.InputVM().save_element()}, enable:  VM.InputVM().default_action.goto()&&VM.InputVM().button_text(), css:{'disabled': !(VM.InputVM().default_action.goto()&&VM.InputVM().button_text())}">
-				<span class="capitalized" data-bind= "visible: current_input_verb()=='add'">Add &amp; </span>Save Your <span class="capitalized" data-bind= "text: VM.InputVM().type">
+				<span class="capitalized" data-bind= "visible: current_input_verb()=='add'">Add &amp; </span>Save Your <span class="capitalized" data-bind= "text: VM.InputVM().type"></span>
 			</button>
 			<a href="" class="btn secondary closer">Cancel</a>
 		</div>

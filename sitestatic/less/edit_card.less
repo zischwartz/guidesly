@@ -166,6 +166,7 @@ h1
 	font-size: @titleSize;
 	outline: none;
 	z-index: 2;
+	color: @gray;
 
 }
 
@@ -249,18 +250,27 @@ strong.green {
 	textarea
 	{
 		overflow: auto;
-		height: 6em;
+		height: 0px;
 		font-size: 1.2em;
-		padding: .5em;
-		display: none;
+		padding: 0px;
+		border: 1px solid white;
+/*		display: none;*/
 		.transition(all ease-in-out .3s);
 		
 	/*	width: @adderWidth;*/		
 	}
 
-	&.editing .textarea, &.editing #wmd-button-bar
+ 	&.editing #wmd-button-bar
 	{
 		display: block;
+	}
+	
+	&.editing textarea
+	{
+/*		display: block;*/
+		height: 8em;
+		padding: 6px;
+		border: 1px solid @gray;
 	}
 	
 	.cardtext
@@ -274,6 +284,8 @@ strong.green {
 		h2 {font-size: 1.6em; display: block;}
 		h3 {font-size: 1.4em;}
 		h3 {font-size: 1.3em;}
+
+		
 	}
 	
 }
@@ -407,6 +419,11 @@ strong.green {
 	{
 		padding:0px;
 	}
+	
+	.btn
+	{
+		margin: .5em auto;
+	}
 /*	input[type=text]
 	{
 		height: @baseline*1.5 !important;
@@ -500,14 +517,15 @@ strong.green {
 		#translucent > .border(@grayLighter, 0.5);
 		height: @mediaOptionsHeight;
 		width: 100%;
-
-		display: inline-block;
+		display: none;
+/*		display: inline-block;*/
 		overflow: hidden;
+		
 
 	}
 	.preview
 	{
-		margin-bottom: 0 - (@mediaOptionsHeight + 2); //+2 for the border
+/*		margin-bottom: 0 - (@mediaOptionsHeight + 2); //+2 for the border*/
 		
 		.preview_image
 		{
@@ -522,12 +540,6 @@ strong.green {
 
 		margin-top: @editorSpacingSmall;
 	}
-
-
-	&.primary_media
-	{
-/*		border: 1px solid black;*/
-	}
 	
 	&.not_primary_media
 	{
@@ -540,6 +552,17 @@ strong.green {
 			.square(150px);
 		}
 	} // end not primary
+
+
+	&:hover, &.hovered
+	{
+	.mediaOptions {display: inline-block;}
+	.preview
+	{
+		margin-bottom: 0 - (@mediaOptionsHeight + 2); //+2 for the border
+	}
+	
+ 	} //end hovered and :hvoer
 
 } //end .mediaTemplate
 
@@ -559,7 +582,7 @@ strong.green {
 .modal,
 {
 	font-size: 1.7em;
-	
+	width: ;
 	input
 	{
 		font-size: 1em;
@@ -596,8 +619,11 @@ strong.green {
 	
 	.cardbtn
 	{
-		min-height: 100px;
+		height: 100px;
 		min-width: 50px;
+		float: left;
+		margin: .5em;
+		text-align: center;
 	}
 	
 }

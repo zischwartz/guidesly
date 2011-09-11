@@ -62,14 +62,6 @@
 			</tr>
 	
 				<tr class="advanced">
-					<td class="labels"><label >Card Slugs</label></td>
-					<td class="radioset">
-						<input type="radio" id="in_slug" name="text_slugs_for_cards" value="true" checked="checked" /><label for="in_slug">By Title</label> 
-						<input type="radio" id="in_slug22" name="text_slugs_for_cards" value=""  /><label for="in_slug2">Numbers</label>
-					</td>
-				</tr>
-	
-				<tr class="advanced">
 					<td></td><td class="explain">Longer, more expressive URLs, or shorter ones</td>
 				</tr>
 	
@@ -104,7 +96,7 @@
 					<td></td><td class="explain">Is this guide for everyone or a select few? <br>Don't worry, nobody will see anything till you click publish, later. </td>
 				</tr>
 
-			<tr><td></td><td><br><input type="submit" class="uibutton" value="Create guide" /></td>
+			<tr><td></td><td><br><input type="submit" class="btn primary" value="Create guide" /></td>
 			</table>
 		
 				<input type="hidden" name="owner" id="id_owner" value="{{user.id}}">
@@ -115,36 +107,7 @@
 	<div class="span6 columns"></div>
 </div> {# /row #}
 		
-		<br><br><br>
-		<h2>Have lots of media you'll want to use for this guide?</h2>
 
-		{% load upload_tags %}
-		<div id="fileupload">
-		    <form method="post" action="/upload/new/" enctype="multipart/form-data">
-				<div class="dropzone-container">
-			    	<div class="dropzone ui-corner-all">In modern browsers, you can just drag and drop a bunch of files from your desktop, right here.</div>
-				</div>
-		
-		        <div class="fileupload-buttonbar">
-		            {% csrf_token %}
-		            <label class="fileinput-button">
-		                <span>Add files...</span>
-		                <input type="file" name="file" multiple>
-		            </label>
-	                <input type="hidden" name="owner" value="{{user.id}}">
-
-		            {# <button type="submit" class="start">Start upload</button> #}
-		            {# <button type="reset" class="cancel">Cancel upload</button> #}
-		            {# <button type="button" class="delete">Delete files</button> #}
-		        </div>
-		    </form>
-		    <div class="fileupload-content">
-		        <table class="files"></table>
-		        <div class="fileupload-progressbar"></div>
-		    </div>
-		</div>
-
-		{% upload_js %}
 
 
 {%endblock%}

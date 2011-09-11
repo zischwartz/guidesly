@@ -37,9 +37,10 @@
 <body>
 
 <header id="header">
-Guidesly!
-
+<a href="/">Guides.ly</a>
+<div class="small">Controls<br> &amp; Contents</div>
 	<div class="toc">
+	
 	{%for card in guide.cards.all %}
 	 	<a href="{{card.get_absolute_url}}" data-destination="{{card.slug}}" class="goto" >
 		{{card}}

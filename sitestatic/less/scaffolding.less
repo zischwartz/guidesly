@@ -124,7 +124,9 @@ a {
   }
   .transition(.1s linear all);
   &.primary,
-  &.danger {
+  &.danger,
+  &.crazy,
+ 	&.info{
     color: #fff;
     &:hover {
       color: #fff;
@@ -135,6 +137,12 @@ a {
   }
   &.danger {
     .btnColor(lighten(@red, 15%), @red)
+  }
+  &.info {
+    .btnColor(@teal, darken(@teal, 15%));
+  }
+  &.crazy {
+    .btnColor(lighten(@orange, 20%), darken(@orange, 5%));
   }
   &.large {
     font-size: 16px;

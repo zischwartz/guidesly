@@ -417,10 +417,16 @@ a:hover {
   color: #333;
   text-decoration: none;
 }
-.btn.primary, .btn.danger {
+.btn.primary,
+.btn.danger,
+.btn.crazy,
+.btn.info {
   color: #fff;
 }
-.btn.primary:hover, .btn.danger:hover {
+.btn.primary:hover,
+.btn.danger:hover,
+.btn.crazy:hover,
+.btn.info:hover {
   color: #fff;
 }
 .btn.primary {
@@ -449,6 +455,34 @@ a:hover {
   background-image: linear-gradient(#d83a2e, #9d261d);
   text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
   border-color: #9d261d #9d261d #5c1611;
+  border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+}
+.btn.info {
+  background-color: #1f85a1;
+  background-repeat: repeat-x;
+  background-image: -khtml-gradient(linear, left top, left bottom, from(#34b5d8), to(#1f85a1));
+  background-image: -moz-linear-gradient(#34b5d8, #1f85a1);
+  background-image: -ms-linear-gradient(#34b5d8, #1f85a1);
+  background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #34b5d8), color-stop(100%, #1f85a1));
+  background-image: -webkit-linear-gradient(#34b5d8, #1f85a1);
+  background-image: -o-linear-gradient(#34b5d8, #1f85a1);
+  background-image: linear-gradient(#34b5d8, #1f85a1);
+  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+  border-color: #1f85a1 #1f85a1 #135060;
+  border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+}
+.btn.crazy {
+  background-color: #df8505;
+  background-repeat: repeat-x;
+  background-image: -khtml-gradient(linear, left top, left bottom, from(#fbbf69), to(#df8505));
+  background-image: -moz-linear-gradient(#fbbf69, #df8505);
+  background-image: -ms-linear-gradient(#fbbf69, #df8505);
+  background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #fbbf69), color-stop(100%, #df8505));
+  background-image: -webkit-linear-gradient(#fbbf69, #df8505);
+  background-image: -o-linear-gradient(#fbbf69, #df8505);
+  background-image: linear-gradient(#fbbf69, #df8505);
+  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+  border-color: #df8505 #df8505 #945904;
   border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
 }
 .btn.large {
@@ -2047,6 +2081,7 @@ h1 {
   font-size: 3.5em;
   outline: none;
   z-index: 2;
+  color: #808080;
 }
 input#title {
   font-size: 3.5em !important;
@@ -2107,17 +2142,26 @@ strong.green {
 }
 .adder.text textarea {
   overflow: auto;
-  height: 6em;
+  height: 0px;
   font-size: 1.2em;
-  padding: .5em;
-  display: none;
+  padding: 0px;
+  border: 1px solid white;
+  /*		display: none;*/
+
   -webkit-transition: all ease-in-out 0.3s;
   -moz-transition: all ease-in-out 0.3s;
   transition: all ease-in-out 0.3s;
   /*	width: @adderWidth;*/
 }
-.adder.text.editing .textarea, .adder.text.editing #wmd-button-bar {
+.adder.text.editing #wmd-button-bar {
   display: block;
+}
+.adder.text.editing textarea {
+  /*		display: block;*/
+
+  height: 8em;
+  padding: 6px;
+  border: 1px solid #808080;
 }
 .adder.text .cardtext {
   font-size: 1.2em;
@@ -2272,6 +2316,9 @@ strong.green {
 .sidebar form.form-stacked {
   padding: 0px;
 }
+.sidebar .btn {
+  margin: .5em auto;
+}
 /**********************************/
 /***** IN PLACE UPLOADS ***********/
 /**********************************/
@@ -2336,11 +2383,14 @@ strong.green {
   background-clip: padding-box;
   height: 100px;
   width: 100%;
-  display: inline-block;
+  display: none;
+  /*		display: inline-block;*/
+
   overflow: hidden;
 }
 .mediaTemplate .preview {
-  margin-bottom: -102px;
+  /*		margin-bottom: 0 - (@mediaOptionsHeight + 2); //+2 for the border*/
+
 }
 .mediaTemplate .preview .preview_image {
   width: 550px;
@@ -2349,10 +2399,6 @@ strong.green {
   width: 100%;
   display: block;
   margin-top: 0.5em;
-}
-.mediaTemplate.primary_media {
-  /*		border: 1px solid black;*/
-
 }
 .mediaTemplate.not_primary_media {
   float: left;
@@ -2364,6 +2410,12 @@ strong.green {
   height: 150px;
   width: 150px;
 }
+.mediaTemplate:hover .mediaOptions, .mediaTemplate.hovered .mediaOptions {
+  display: inline-block;
+}
+.mediaTemplate:hover .preview, .mediaTemplate.hovered .preview {
+  margin-bottom: -102px;
+}
 /********************************/
 /****  MODALs for editing  ******/
 /*******************************/
@@ -2372,6 +2424,7 @@ strong.green {
 }
 .modal {
   font-size: 1.7em;
+  width: ;
 }
 .modal input {
   font-size: 1em;
@@ -2406,8 +2459,11 @@ strong.green {
 
 }
 .modal .cardbtn {
-  min-height: 100px;
+  height: 100px;
   min-width: 50px;
+  float: left;
+  margin: .5em;
+  text-align: center;
 }
 #card_element_toolbar {
   display: none;

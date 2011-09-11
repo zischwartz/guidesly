@@ -31,12 +31,23 @@ $(".adder").hover(
 	function(){
 		$(this).addClass("hovered");
 		$(this).doTimeout('hov'); //cancels the timer
-		console.log('hovvvver');
 	},
 	function(){	$(this).doTimeout('hov', 4000, function(){this.removeClass("hovered");});	}	);
+	
+$(".mediaTemplate").live("mouseover mouseout", function(event) {
+	  if ( event.type == "mouseover" ) {
+		$(this).addClass("hovered");
+		$(this).doTimeout('hov'); //cancels the timer
+		console.log('hovvvver');
+	  } else {
+		$(this).doTimeout('hov', 2000, function(){this.removeClass("hovered");})
+	  }
+	});
+
+
+
 
 //Prep inital data for card that's been saved previously and has existing
-
 	initial_card_object= jQuery.parseJSON(initial_card_json);
 	VM = ko.mapping.fromJS(initial_card_object);
 
@@ -382,13 +393,13 @@ $(".adder").hover(
 
 //**********************************************
 
+
+
 	VM.InputVM= ko.observable(new anInput());
 	// VM.InputVM().save_element = function(){ console.log('saveeeeeplease at bottom');}; //this may have to exist?
 	
 	ko.applyBindings(VM);
 	
-
-
 
 	$(".uibutton").button();
 

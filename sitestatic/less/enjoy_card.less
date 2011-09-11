@@ -26,9 +26,10 @@ body
 	top: 0px;
 	left: 0px;
 	z-index: 20;
-	background-color: black;
+	background-color: @grayDark;
 	color: white;
 	padding: 5px;
+	text-align:center;
 
 	.border-radius(0 0 4px 0);
 	.opacity(100);
@@ -43,17 +44,25 @@ body
 		{
 			.opacity(100);
 		}
-		width: 300px;
+/*		width: 300px;*/
 		padding: 10px;		
 		.toc {display: block;}
 		.mute {display: block;}
-		.opacity(60);
-		
+		.opacity(75);
+		text-align: left;
+
+		.small br {display:none;}
 	}
 	
-	
+	.small
+	{
+		font-size: .8em;
+	}
 	a.active
 	{color: white !important; background-color: red !important;	}
+	
+/*	a*/
+/*	{text-shadow: 1px 1px 1px rgba(100,100,255, .5);}*/
 }
 
 .deck-container
@@ -155,13 +164,52 @@ h1
 	margin: .5em auto;
 	display: block;
 	text-align: left;
+	p //list all the dang elements.... 
+	{
+		font-size: 1.2em;
+		color: @grayDark;
+	}
 }
 
+.input_element a //this really should go in card_elements, but..
+{
+	#translucent > .border(@white, 0.5);
+}
 
 .prev_and_next
 {
-/*	position: fixed;*/
-/*	top: 85%;*/
+	position: fixed;
+	top: 25%;
+}
+
+
+.card.primary_is_bg
+{
+	h1, .card_text
+	{
+		#translucent > .background(@grayDark, 0.3);
+		.border-radius(5px);
+		padding: 10px;
+		color: white;
+		p {color: white;}
+	}
+	
+	h1
+	{
+		width: 70%;
+		margin: .5em auto;
+		text-shadow: 1px 1px 1px @grayDark;
+	}
+	.thumbs
+	{
+		margin-top:50%;
+	}
+	.card_text, 
+	{
+		text-shadow: 1px 1px 1px @grayDark;
+		
+	}
+	
 }
 
 
