@@ -587,4 +587,24 @@ emphasizeSidebar= function()
 	// $("#content").removeClass("bigger").addClass("smaller");
 	// $("#sidebar").removeClass("smaller").addClass("bigger");
 }
+             $f("audio", "http://releases.flowplayer.org/swf/flowplayer-3.2.7.swf", {
 
+	   
+		plugins: {
+			controls: {
+				fullscreen: false,
+				height: 30,
+				autoHide: false
+			}
+		},
+
+		clip: {
+			autoPlay: false,
+
+			// optional: when playback starts close the first audio playback
+			onBeforeBegin: function() {
+				$f("player").close();
+			}
+		}
+
+	});
