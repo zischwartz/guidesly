@@ -37,19 +37,19 @@
 			//     Aviary 
 			// requires: http://feather.aviary.com/js/feather.js
 			
-			// var featherEditor = new Aviary.Feather({
-			// 	openType: 'lightbox', // or 'float' and add something to set off the image being edited
-			// 	theme: 'black',
-			// 	apiKey: 'f64d09c9c2b5ea52e4c167b4264e4344',
-			// 	// tools: ['rotate', 'flip', 'resize'],
-			// 	onSave: function(imageID, newURL) {
-			// 		var img = document.getElementById(imageID);
-			// 		img.src = newURL;
-			// 		featherEditor.close();
-			// 		the_element_ko = ko.utils.arrayFirst(VM.mediaelements(), function(item) { return (item.client_id()+ 'img') === imageID;})
-			// 		the_element_ko.external_file(newURL)
-			// 	},
-			// }); //end aviary inialization
+			var featherEditor = new Aviary.Feather({
+				openType: 'lightbox', // or 'float' and add something to set off the image being edited
+				theme: 'black',
+				apiKey: 'f64d09c9c2b5ea52e4c167b4264e4344',
+				// tools: ['rotate', 'flip', 'resize'],
+				onSave: function(imageID, newURL) {
+					var img = document.getElementById(imageID);
+					img.src = newURL;
+					featherEditor.close();
+					the_element_ko = ko.utils.arrayFirst(VM.mediaelements(), function(item) { return (item.client_id()+ 'img') === imageID;})
+					the_element_ko.external_file(newURL)
+				},
+			}); //end aviary inialization
 			
 								
 		$(document).ready(function(){	
