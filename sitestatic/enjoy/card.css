@@ -84,7 +84,6 @@ position:fixed;
 bottom:0px;
 
 
-
 }
 #bottom_nav
 {
@@ -185,7 +184,28 @@ background-color:#6D7B8D;
 	text-decoration:none;
 	text-transform:uppercase;
 	overflow: hidden;
+}         
+
+#mute
+{
+	-moz-border-radius: 0px 90px 0px 0px;
+	border-radius: 0px 90px 0px 0px;
 }
+
+.button_muted
+{
+	display:block;
+	width:120px;
+
+	font-weight:bold;
+	color:#6D7B8D;
+	background-color:#736F6E;
+	text-align:center;
+	padding:4px;
+	text-decoration:none;
+	text-transform:uppercase;
+}
+
 
 
 
@@ -248,7 +268,7 @@ h2 {font-size:1.5em; font-weight: bold; padding: 3px 0 5px 0;}
 
 
 .hidden {display:none;}    
-.clearfix:after { content: "."; display: block; height: 0; clear: both; visibility: hidden;  font-size: 0;}
+.clearfix:after { content: "."; display: block; height: 0; clear: both; visibility: hidden;  font-size: 0;} 
 .clearfix { display: inline-block; }
 * html .clearfix { height: 1%; } /* Hides from IE-mac \*/
 .clearfix { display: block; }
@@ -265,7 +285,7 @@ a
 /*	width: 95%;*/
 	margin-left: auto;
 	margin-right: auto;
-	margin-top: 0.3em;
+	margin-top: .3em;
 	text-align: center;
 }
 
@@ -283,19 +303,20 @@ h1
 	text-align: center;
 	height: 100%;
 	max-width: 60%;
-	overflow: hidden;
-}
-    .card.aplayer
-    {
-	margin-top:15%
-	width: 50%;
-}
+   
+}  
 
-.card.aplayer
-    {
-	margin-top:15%
-	width: 50%;
+
+.primary_media
+{
+	max-width: 100%;
+	max-height: 80%;
+	margin-left: auto;
+	margin-right: auto;
+	width: auto;
+	display: block;
 }
+ 
 	/*just text and title*/
 	.card.noprimarymedia
 	{

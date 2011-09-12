@@ -2,8 +2,6 @@
 
 $(function() {
 
-
-
 // Nav animation
 var container = $( "#bottom_nav" );
 var tag = $("#tag");
@@ -33,40 +31,11 @@ if (container.is( ":visible" )){
 // Media controls
 
 $('#play').click(function() {	
-$("#jquery_jplayer_1").jPlayer("play");
+$("player").play();
 });
 
 $('#pause').click(function() {
-$("#jquery_jplayer_1").jPlayer("pause");
-});
-
-$('#mute_check').click(function() {
-
-    	if($("#jquery_jplayer_1").data("jPlayer").status.muted == true){
-			$("#mute").css('color','#FFFFFF');
-			$("#jquery_jplayer_1").jPlayer("unmute");
-			}
-		else{
-		$("#jquery_jplayer_1").jPlayer("mute");
-		$("#mute").css('color','#000000');
-		}
-
-}) (jQuery);
-
-	
-// Decrease the volume
-$('#vDown').click(function() {
-	var volume = $("#jquery_jplayer_1").data("jPlayer").status.volume 
-	volume = volume - .1
-    $("#jquery_jplayer_1").jPlayer("volume", volume); // 0.0 - 1.0
-    $("#volumePercent").html(newValue);
-});
-// Raise the volume
-$('#vUp').click(function() {	
-	var volume = $("#jquery_jplayer_1").data("jPlayer").status.volume 
-	volume = volume + .1
-    $("#jquery_jplayer_1").jPlayer("volume", volume); // 0.0 - 1.0
-    $("#volumePercent").html(newValue);
+$("player").pause();
 });
 
 
