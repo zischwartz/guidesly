@@ -37,7 +37,7 @@ admin.site.register(Action)
 admin.site.register(MapElement)
 admin.site.register(MapPointElement)
 
-admin.site.register(ConditionalAction)
+admin.site.register(Condition)
 # admin.site.register(YNInquiry)
 # admin.site.register(NValueInquiry)
 # admin.site.register(TValueInquiry)

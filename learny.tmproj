@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>currentDocument</key>
-	<string>templates/enjoy/card_in_stack.html</string>
+	<string>stable-req.txt</string>
 	<key>documents</key>
 	<array>
 		<dict>
@@ -21,12 +21,54 @@
 	<integer>260</integer>
 	<key>metaData</key>
 	<dict>
-		<key>sitestatic/less/base.less</key>
+		<key>sitestatic/js-libs/deck/core/deck.core.css</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>17</integer>
+				<key>line</key>
+				<integer>9</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>50</integer>
+		</dict>
+		<key>sitestatic/js-libs/deck/themes/transition/fade.css</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
 				<integer>0</integer>
+				<key>line</key>
+				<integer>0</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>0</integer>
+		</dict>
+		<key>sitestatic/js-libs/deck/themes/transition/horizontal-slide-zach.css</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>0</integer>
+				<key>line</key>
+				<integer>40</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>0</integer>
+		</dict>
+		<key>sitestatic/less/base.less</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>1</integer>
 				<key>line</key>
 				<integer>10</integer>
 			</dict>
@@ -35,116 +77,14 @@
 			<key>firstVisibleLine</key>
 			<integer>0</integer>
 		</dict>
-		<key>sitestatic/less/edit_card.less</key>
+		<key>stable-req.txt</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>25</integer>
+				<integer>14</integer>
 				<key>line</key>
-				<integer>515</integer>
-			</dict>
-			<key>columnSelection</key>
-			<false/>
-			<key>firstVisibleColumn</key>
-			<integer>0</integer>
-			<key>firstVisibleLine</key>
-			<integer>496</integer>
-			<key>selectFrom</key>
-			<dict>
-				<key>column</key>
-				<integer>0</integer>
-				<key>line</key>
-				<integer>515</integer>
-			</dict>
-			<key>selectTo</key>
-			<dict>
-				<key>column</key>
-				<integer>0</integer>
-				<key>line</key>
-				<integer>516</integer>
-			</dict>
-		</dict>
-		<key>sitestatic/less/enjoy_base.less</key>
-		<dict>
-			<key>caret</key>
-			<dict>
-				<key>column</key>
-				<integer>0</integer>
-				<key>line</key>
-				<integer>12</integer>
-			</dict>
-			<key>firstVisibleColumn</key>
-			<integer>0</integer>
-			<key>firstVisibleLine</key>
-			<integer>0</integer>
-		</dict>
-		<key>sitestatic/less/enjoy_card.less</key>
-		<dict>
-			<key>caret</key>
-			<dict>
-				<key>column</key>
-				<integer>7</integer>
-				<key>line</key>
-				<integer>22</integer>
-			</dict>
-			<key>firstVisibleColumn</key>
-			<integer>0</integer>
-			<key>firstVisibleLine</key>
-			<integer>0</integer>
-		</dict>
-		<key>templates/create/create_guide.html</key>
-		<dict>
-			<key>caret</key>
-			<dict>
-				<key>column</key>
-				<integer>31</integer>
-				<key>line</key>
-				<integer>31</integer>
-			</dict>
-			<key>firstVisibleColumn</key>
-			<integer>0</integer>
-			<key>firstVisibleLine</key>
-			<integer>15</integer>
-		</dict>
-		<key>templates/create/edit_card.html</key>
-		<dict>
-			<key>caret</key>
-			<dict>
-				<key>column</key>
-				<integer>16</integer>
-				<key>line</key>
-				<integer>37</integer>
-			</dict>
-			<key>columnSelection</key>
-			<false/>
-			<key>firstVisibleColumn</key>
-			<integer>0</integer>
-			<key>firstVisibleLine</key>
-			<integer>4</integer>
-			<key>selectFrom</key>
-			<dict>
-				<key>column</key>
-				<integer>55</integer>
-				<key>line</key>
-				<integer>37</integer>
-			</dict>
-			<key>selectTo</key>
-			<dict>
-				<key>column</key>
-				<integer>16</integer>
-				<key>line</key>
-				<integer>37</integer>
-			</dict>
-		</dict>
-		<key>templates/enjoy/card_in_stack.html</key>
-		<dict>
-			<key>caret</key>
-			<dict>
-				<key>column</key>
-				<integer>62</integer>
-				<key>line</key>
-				<integer>157</integer>
+				<integer>15</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
@@ -154,13 +94,11 @@
 	</dict>
 	<key>openDocuments</key>
 	<array>
-		<string>templates/create/create_guide.html</string>
-		<string>templates/create/edit_card.html</string>
-		<string>templates/enjoy/card_in_stack.html</string>
-		<string>sitestatic/less/enjoy_card.less</string>
-		<string>sitestatic/less/edit_card.less</string>
 		<string>sitestatic/less/base.less</string>
-		<string>sitestatic/less/enjoy_base.less</string>
+		<string>sitestatic/js-libs/deck/themes/transition/fade.css</string>
+		<string>sitestatic/js-libs/deck/themes/transition/horizontal-slide-zach.css</string>
+		<string>sitestatic/js-libs/deck/core/deck.core.css</string>
+		<string>stable-req.txt</string>
 	</array>
 	<key>showFileHierarchyDrawer</key>
 	<false/>
@@ -206,6 +144,28 @@
 											<key>subItems</key>
 											<dict/>
 										</dict>
+										<key>themes</key>
+										<dict>
+											<key>isExpanded</key>
+											<true/>
+											<key>subItems</key>
+											<dict>
+												<key>style</key>
+												<dict>
+													<key>isExpanded</key>
+													<true/>
+													<key>subItems</key>
+													<dict/>
+												</dict>
+												<key>transition</key>
+												<dict>
+													<key>isExpanded</key>
+													<true/>
+													<key>subItems</key>
+													<dict/>
+												</dict>
+											</dict>
+										</dict>
 									</dict>
 								</dict>
 							</dict>
@@ -245,6 +205,6 @@
 		</dict>
 	</dict>
 	<key>windowFrame</key>
-	<string>{{74, 0}, {1234, 746}}</string>
+	<string>{{75, 1}, {1234, 746}}</string>
 </dict>
 </plist>

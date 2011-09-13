@@ -38,7 +38,7 @@
 
 <header id="header">
 <a href="/">Guides.ly</a>
-<div class="small">Controls<br> &amp; Contents</div>
+<div class="small">Controls<br> Contents <br> Comments</div>
 	<div class="toc">
 	
 	{%for card in guide.cards.all %}
@@ -66,7 +66,7 @@
 			
 			{# TITLE of CARD  #}
 			{%if card.title%}
-				<h1>{{card.title}} </h1>
+				<h1 class="card_title">{{card.title}} </h1>
 			{%endif%}
 		
 			{# PRIMARY MEDIA #}

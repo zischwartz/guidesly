@@ -45,7 +45,6 @@ class Theme (models.Model):
 class Guide (models.Model):
 	title = models.CharField(max_length=500)
 	slug = AutoSlugField(populate_from='title', unique=True)
-	# slug = models.SlugField(unique=True, blank=True, max_length=250) #blank=true is silly but neccesary 
 	description = models.TextField(blank=True)
 	created = models.DateTimeField(auto_now_add=True)
 	modified = models.DateTimeField(auto_now=True)
@@ -64,7 +63,9 @@ class Guide (models.Model):
 	first_card = models.ForeignKey('Card', blank=True, null=True, related_name="+")
 	published = models.BooleanField(default=True)
 	private = models.BooleanField(default=False)
-	private_url = models.CharField(max_length=500, blank=True)
+	private_url = models.CharField(max_length=500, blank=True, null=True)
+	thumb = models.ForeignKey(UserFile, null=True, blank=True)
+	
 	
 	def save(self, *args, **kwargs):
 		i=0
@@ -133,9 +134,9 @@ class Card (models.Model):
 	owner = models.ForeignKey(User, blank=True, null=True)
 	autoplay = models.BooleanField(default=False)
 	primary_is_bg = models.BooleanField(default=False)
-	# has_lots_of_text = models.BooleanField(default=False)
-	# show_next = models.BooleanField(default=True)
-	# show_prev = models.BooleanField(default=True)
+	has_lots_of_text = models.BooleanField(default=False)
+	show_next = models.BooleanField(default=True)
+	show_prev = models.BooleanField(default=True)
 	
 	def __unicode__(self):
 		if self.title !="":
@@ -252,6 +253,9 @@ class Card (models.Model):
 		else: 
 			return None
 		
+class CommentCard (Card):
+	parent_card = models.OneToOneField(Card, related_name="child_comment_card", blank=True, null=True)
+	parent_comment_card = models.OneToOneField("self", related_name="comments_child_comment_card", blank=True, null=True)
 
 class MediaElement (models.Model):
 	title = models.CharField(max_length=250, blank=True, null=True, default="")
@@ -261,14 +265,14 @@ class MediaElement (models.Model):
 	file = models.ForeignKey(UserFile, null=True)
 	external_file = models.URLField(blank=True) #,verify_exists=True)
 	action_when_complete= models.OneToOneField('Action', blank=True, null=True)
-	# big = models.BooleanField(default=True)
 	def __unicode__(self):
 		return "media-el: %s  (%s)" % (self.title, self.file)
 
 class Action (models.Model):
 	goto = models.ForeignKey(Card, blank=True, null=True)
-	save_choice = models.BooleanField(default=False)
-	play_static = models.ForeignKey(MediaElement, blank=True, null=True)
+	goto_guide = models.ForeignKey(Guide, blank=True, null=True)
+	save = models.BooleanField(default=False)
+	
 	def __unicode__(self):
 		return "action-goto: %s" % self.goto
 
@@ -283,16 +287,12 @@ COND_TYPE = (
 )
 
 
-class ConditionalAction (models.Model):
+class Condition (models.Model):
 	condition = models.CharField(max_length=2, choices = COND_TYPE, blank=True, null=True)
-	text__match_answer = models.CharField(max_length=512, blank=True, null=True)
-	b_number = models.FloatField( blank=True, null=True)
-	goto_on_true = models.ForeignKey(Card, blank=True, null=True, related_name="goto_on_true")
-	goto_on_false = models.ForeignKey(Card, blank=True, null=True, related_name="goto_on_false")
-	save_choice = models.BooleanField(default=False)
-	play_static = models.ForeignKey(MediaElement, blank=True, null=True)
-
-
+	answer = models.CharField(max_length=512, blank=True, null=True)
+	message = models.CharField(max_length=512, blank=True, null=True)
+	action = models.OneToOneField(Action, blank=True, null=True)
+	input = models.ForeignKey('InputElement')
 
 class MapPointElement (models.Model):
 	point = models.IntegerField(max_length=500)
@@ -309,9 +309,11 @@ class MapElement (models.Model):
 class InputElement (models.Model):
 	card = models.ForeignKey(Card)
 	big = models.BooleanField(default=False)
-	button_text = models.CharField(max_length=100)
+	button_text = models.CharField(max_length=250)
+	sub_title = models.CharField(max_length=250, blank=True)
 	type = models.CharField(blank=True,  max_length=8, choices = IELEMENT_TYPE)
 	default_action = models.OneToOneField(Action, blank=True, null=True)
+	big = models.BooleanField(default=False)
 	
 	# for timer
 	seconds = models.IntegerField(default=0)
@@ -322,6 +324,8 @@ class InputElement (models.Model):
 	
 	# for text/ number input
 	required = models.BooleanField(default=False)
+	no_match_message =models.CharField(max_length=250, blank=True, null=True)
+	
 	
 	def el_template(self):
 		if self.type=="timer":

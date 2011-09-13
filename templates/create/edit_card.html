@@ -25,6 +25,7 @@
 		
 		
 		<script type="text/javascript">
+			var static_url = "{{STATIC_URL}}";
 			var current_card_id ="{{card.id}}";
 			var guide_id = {{card.guide.id}};
 			var initial_card_json= '{{card_json|safe|escapejs}}';
@@ -185,7 +186,7 @@
 
 
 
-		<div class="adder text" tabindex="5" data-bind="event: { focusin: turnOnEditing, focusout: turnOffEditing}">
+		<div class="adder text" tabindex="5" data-bind="event: { focusin: turnOnEditing, focusout: turnOffEditing},  css: { notBlank: text() }">
 			<a class="closex closer" href="#">x</a>
 			<div class="adder_inner">
 				 <div class="cardtext" data-bind="visible: !text()"><p>Text for your card. Easy Markdown formatting. Totally optional.</p></div>
@@ -300,7 +301,7 @@
 				<img class="preview_image" data-bind="attr: { id: (client_id() + 'img'), src: medium_url }"/>
 			</div>
 			<div class="mediaOptions">
-				<div class="uploading_indicator"> Uploading <br><img src="/static/img/ajax-loader.gif"></div> <br>
+				<div class="uploading_indicator"> Uploading <br><img src="${static_url}img/ajax-loader.gif"></div> <br>
 				
 				{{ if VM.check_if_primary($item.data) }}
 					<label class="capitalized"><span data-bind="text: type"></span> Title: <input class="tinput xlarge" type="text" data-bind="value: title, valueUpdate: 'afterkeydown'"><br><br>

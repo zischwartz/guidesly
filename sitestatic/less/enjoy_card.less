@@ -1,7 +1,7 @@
 
 /*VARS*/
 
-@titleSize: 3em;
+@titleSize: 3.5em;
 @editingColor: @green;
 @static-url: "/media/";
 
@@ -14,7 +14,7 @@ body
 {
 	font-family: 'Helvetica Neue', Arial, sans-serif;
 	font-weight: 300;
-	font-size: 1em;
+/*	font-size: 1em;*/
 	width: 100%;
 	height: 100%;
 /*	background-color: gray;*/
@@ -108,10 +108,11 @@ body
 	
 } // end .card
 
-h1
+h1.card_title
 {
 	text-align: center;
 	font-size: @titleSize;
+
 }
 
 .primary_media
@@ -160,13 +161,13 @@ h1
 
 .card_text
 {
-	width: @primaryMediaWidth;
+/*	width: @primaryMediaWidth;*/
+	width: 600px;
 	margin: .5em auto;
 	display: block;
 	text-align: left;
-	p //list all the dang elements.... 
+	*
 	{
-		font-size: 1.2em;
 		color: @grayDark;
 	}
 }
@@ -178,23 +179,45 @@ h1
 
 .prev_and_next
 {
-	position: fixed;
-	top: 25%;
+/*	position: fixed;*/
+/*	top: 25%;*/
 }
 
-
+/* BACKGROUND IMAGES, changes everything*/
 .card.primary_is_bg
 {
-	h1, .card_text
+	h1.card_title, .card_text
 	{
-		#translucent > .background(@grayDark, 0.3);
+		#translucent > .background(@grayDark, 0.5);
 		.border-radius(5px);
 		padding: 10px;
 		color: white;
-		p {color: white;}
-	}
+		
+		
+		//everything is white
+		* 
+		{
+			color: white;
+			a
+			{ 	
+				#translucent > .background(@black, 0.5);  padding: 2px; .border-radius(3px);
+				&:hover { background-color: @black; }
+			}// end a
+		} //end *
+		
+		code 
+		{
+			color: black;
+			text-shadow: none;
+			
+			
+		}
+		
+		p {margin: 1em 0;}
+		
+	} //end h1 and cardtext
 	
-	h1
+	h1.card_title
 	{
 		width: 70%;
 		margin: .5em auto;
@@ -202,7 +225,7 @@ h1
 	}
 	.thumbs
 	{
-		margin-top:50%;
+/*		margin-top:50%;*/
 	}
 	.card_text, 
 	{
@@ -211,6 +234,7 @@ h1
 	}
 	
 }
+
 
 
 /*DECK CSS TAKEN FROM CORE.CSS*/

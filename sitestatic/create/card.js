@@ -1,4 +1,6 @@
-var static_url = "/static/"
+var static_url = "/media/"  
+//was /static/
+
 
 var card_api_url='/api/v1/card/';
 var media_api_url='/api/v1/mediaelement/';
@@ -397,9 +399,15 @@ $(".mediaTemplate").live("mouseover mouseout", function(event) {
 
 	VM.InputVM= ko.observable(new anInput());
 	// VM.InputVM().save_element = function(){ console.log('saveeeeeplease at bottom');}; //this may have to exist?
+
+	//for saving, subscribe to all elements that you might want to change... this doesn't work, because it's subscribed to the array
+	// VM.mediaelements.subscribe(function(newvalue){
+	// 	console.log('newvalue:')
+	// 	console.log(newvalue);
+	// });
 	
 	ko.applyBindings(VM);
-	
+
 
 	$(".uibutton").button();
 

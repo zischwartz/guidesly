@@ -4,18 +4,17 @@
 
 {%if user.get_profile.is_new_here %}
 	<h2> Welcome to Guidesly</h2>
-	<p> New here? Checkout this 30 second guide on how to create guides.</p>
-	Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+	{# <p> New here? Checkout this 30 second guide on how to create guides. Soon, this will be here.</p> #}
+	<p>Hi there. Thanks for trying out the beta.</p><p> <strong>Warning, Guidesly is still in beta, and you may loose your work</strong>. We'll try to prevent that, but it's possible. Thanks for trying it out!</p>
 	<br>
 {%endif%}
 
 <div class="row">
 	<div class="span10 columns">
-		<h2>Your Guides</h2>
-		<div class="listedGuides">
+		<h2>Guides by You</h2>
+		<div class="listedGuides yourGuides">
 			{%for guide in your_guides%}
-			<div class="smallcardWrapper"> 
-				{# <div class="cardNumber"><span></span> </div> #}
+			<div class="smallcardWrapper">
 				<div class="smallcard">
 					<div>{{guide}}</div>
 					{%if guide.get_guide_thumb %}<img src="{{guide.get_guide_thumb}}" alt="{{guide}}">{%endif%}
@@ -26,11 +25,10 @@
 		</div> {# /listedGuides #}
 
 		<br>
-		<h2> Other People's Guides</h2>
+		<h2>Guides by Others</h2>
 		<div class="listedGuides">
 			{%for guide in guide_list%}
 				<div class="smallcardWrapper"> 
-					{# <div class="cardNumber"><span></span> </div> #}
 					<a class="smallcard" href="{{guide.get_absolute_url}}">
 						<div>{{guide}}</div>
 						{%if guide.get_guide_thumb %}<img src="{{guide.get_guide_thumb}}" alt="{{guide}}">{%endif%}
@@ -43,8 +41,9 @@
 		<br>
 		<br>
 	</div> {# /span10 #}
-	<div class="span6 columns"><br>
-		Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+	<div class="span6 columns"><br><br>
+		<p>Some really pithy text should go here. Probably a link to the iphone and android app too. </p>
+		<p>And news! Everyone loves news! Right?</p>
 	</div>
 </div> {# /row #}
 {% endblock %}
