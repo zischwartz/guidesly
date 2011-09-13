@@ -196,7 +196,7 @@ INSTALLED_APPS = (
 	'registration',
 	'thef',
     'tastypie',
-    # 'south',
+    'south',
 
     'accounts',
 	'fileupload',
