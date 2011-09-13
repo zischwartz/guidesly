@@ -45,6 +45,7 @@ class UserFileCreateView(CreateView):
 		self.object.slug=f.name
 		self.object.save()
 		
+		#we're uploading from a card editing page
 		if card:
 			new_media_element= MediaElement(file=self.object, card=card, type=file_type) #card, owner etc needs to be passed
 			new_media_element.save()

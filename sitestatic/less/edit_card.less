@@ -497,12 +497,20 @@ strong.green {
 	{
 		display: none;
 		font-size: 1.5em;
-		padding: @editorSpacingSmall auto;
+		padding: 1em 0;
+		text-shadow: 1px 1px 1px @grayDark;
+		#translucent > .background(@grayDark, 0.8);
+		color: white;
+		width: inherit;
+		overflow: hidden;
+		margin-top: 12px;
+		
 	}
 	
 	&.uploading .uploading_indicator
 	{
-		display: block;
+		display: inline-block;
+		position: absolute;
 	}
 	
 	h3 {color: white;}
@@ -519,6 +527,7 @@ strong.green {
 		display: none;
 /*		display: inline-block;*/
 		overflow: hidden;
+/*		padding-top: 10px;*/
 		
 
 	}

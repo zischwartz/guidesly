@@ -58,7 +58,8 @@
 
 {%for card in guide.cards.all %}
 			{# This uglyness gives cards classes relating to whats inside them #}
-	<div data-title="{%firstof card.title card.card_number%}" data-slug="{{card.slug}}" class="card {%if card.is_floating_card%} is_floating_card {%endif %} {%if not card.title%} notitle {%endif%}  {%if card.primary_media%} hasprimarymedia{%endif%} {%if not card.primary_media%} noprimarymedia{%endif%} {%if not card.text%} notext {%endif%} {%if card.input_elements%} hasinputs{%endif%} {%if not card.is_floating_card%} hasprevandnext {%endif%} {%if card.primary_is_bg %} primary_is_bg {%endif%}"
+
+	<div data-title="{%firstof card.title card.card_number%}" data-slug="{{card.slug}}" class="card {%if card.is_floating_card%} is_floating_card {%endif %} {%if not card.title%} notitle {%endif%}  {%if card.primary_media%} hasprimarymedia{%endif%} {%if not card.primary_media%} noprimarymedia{%endif%} {%if not card.text%} notext {%endif%} {%if card.input_elements%} hasinputs{%endif%} {%if not card.is_floating_card%} hasprevandnext {%endif%} {%if card.primary_is_bg %} primary_is_bg {%endif%} {%if card.has_thumbs%}hasthumbs {%endif%}"
 			id = "{%firstof card.slug card.card_number card.id %}" {%if card.primary_is_bg%}style="background: url( '{{card.primary_media.file.url}}' ) center center no-repeat; background-size: cover" {%endif%}
 			{%if card.autoplay%} data-autoplay="1"{%endif%}>
 			
@@ -96,17 +97,17 @@
 			<div class="thumbs">
 			{%for el in card.mediaelement_set.all%}
 				{%if el.type == 'image' %}
-					<a href="{%if card.primary_is_bg %}{{el.file.url}} {%else%}{{el.file.image.display_image.url}}{%endif%}" class="thumblink {% if el == card.primary_media %} activeThumbLink{%endif%}" data-media_type="{{el.type}}">
+					<a href="{%if card.primary_is_bg %}{{el.file.url}} {%else%}{{el.file.image.display_image.url}}{%endif%}" class="thumblink {% if el == card.primary_media %} activeThumbLink{%endif%}" data-media_type="{{el.type}}" title="{{el.title}}">
 						<img src="{{el.file.thumb_url}}" title="{{el.title}}">
 					</a>
 				{%endif%}
 				{%if el.type == 'video'%}
-				    <a href="{{el.file.url}}" class="thumblink" data-media_type="{{el.type}}">
+				    <a href="{{el.file.url}}" class="thumblink" data-media_type="{{el.type}}" title="{{el.title}}">
 						<img src="{{el.file.thumb_url}}" title="{{el.title}}">
 					</a>
 				{%endif%}
 				{%if el.type == 'other'%}
-				    <a href="{{el.file.url}}" class="thumblink" data-media_type="{{el.type}}">
+				    <a href="{{el.file.url}}" class="thumblink" data-media_type="{{el.type}}" title="{{el.title}}">
 						<img src="{{el.file.thumb_url}}" title="{{el.title}}">
 					</a>
 				{%endif%}
@@ -258,6 +259,9 @@ $(document).ready(function(){
 		$(this).addClass("activeThumbLink");
 		var thumb_media_type = $(this).data("media_type");
         var url = this.href;
+		var media_title = this.title;
+		
+		card.find(".caption").text(media_title);
 
 		if (thumb_media_type == 'image')
 		{

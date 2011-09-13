@@ -21,7 +21,7 @@
 		
 		
 		{# <link rel="stylesheet" href="{{STATIC_URL}}create/card.css"> #}
-		// <script src="{{STATIC_URL}}create/card.js"></script>
+		<script type="text/javascript" src="{{STATIC_URL}}create/card.js"></script>
 		
 		
 		<script type="text/javascript">
@@ -297,13 +297,12 @@
  	<script id="mediaTemplate" type="text/html">	
 	
 		<div class="mediaTemplate" id="${client_id}" data-bind="attr: { id:  client_id}, css: {primary_media: VM.check_if_primary($item.data), not_primary_media: !(VM.check_if_primary($item.data))}">
+			<div class="uploading_indicator"> Uploading <br><br><img src="${static_url}img/ajax-loader.gif"></div> <br>
 			<div class="preview">
-				<img class="preview_image" data-bind="attr: { id: (client_id() + 'img'), src: medium_url }"/>
+				<img class="preview_image" data-bind="attr: { id: (client_id() + 'img'), src: medium_url }"/>				
 			</div>
-			<div class="mediaOptions">
-				<div class="uploading_indicator"> Uploading <br><img src="${static_url}img/ajax-loader.gif"></div> <br>
-				
-				{{ if VM.check_if_primary($item.data) }}
+			<div class="mediaOptions">				
+				{{ if VM.check_if_primary($item.data) }}<br>
 					<label class="capitalized"><span data-bind="text: type"></span> Title: <input class="tinput xlarge" type="text" data-bind="value: title, valueUpdate: 'afterkeydown'"><br><br>
 					{{if type() == 'image'}}<button class="btn info" data-bind="click: VM.editImage">Edit Image</button> {{/if}}
 				 	<button class="btn danger" data-bind="click: VM.deleteFromCard"> Remove </button><br><br>
