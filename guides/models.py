@@ -254,8 +254,8 @@ class Card (models.Model):
 			return None
 		
 class CommentCard (Card):
-	parent_card = models.OneToOneField(Card, related_name="child_comment_card", blank=True, null=True)
-	parent_comment_card = models.OneToOneField("self", related_name="comments_child_comment_card", blank=True, null=True)
+	parent_card = models.ForeignKey(Card, related_name="child_comment_card", blank=True, null=True)
+	parent_comment_card = models.ForeignKey("self", related_name="comments_child_comment_card", blank=True, null=True)
 
 class MediaElement (models.Model):
 	title = models.CharField(max_length=250, blank=True, null=True, default="")
@@ -271,7 +271,6 @@ class MediaElement (models.Model):
 class Action (models.Model):
 	goto = models.ForeignKey(Card, blank=True, null=True)
 	goto_guide = models.ForeignKey(Guide, blank=True, null=True)
-	save = models.BooleanField(default=False)
 	
 	def __unicode__(self):
 		return "action-goto: %s" % self.goto
@@ -310,7 +309,7 @@ class InputElement (models.Model):
 	card = models.ForeignKey(Card)
 	big = models.BooleanField(default=False)
 	button_text = models.CharField(max_length=250)
-	sub_title = models.CharField(max_length=250, blank=True)
+	sub_title = models.CharField(max_length=250, blank=True, null=True)
 	type = models.CharField(blank=True,  max_length=8, choices = IELEMENT_TYPE)
 	default_action = models.OneToOneField(Action, blank=True, null=True)
 	big = models.BooleanField(default=False)
@@ -325,7 +324,7 @@ class InputElement (models.Model):
 	# for text/ number input
 	required = models.BooleanField(default=False)
 	no_match_message =models.CharField(max_length=250, blank=True, null=True)
-	
+	should_save_answer = models.BooleanField(default=False)
 	
 	def el_template(self):
 		if self.type=="timer":
