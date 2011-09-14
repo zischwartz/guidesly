@@ -1,0 +1,403 @@
+
+/**********************************************************************************/
+/* SLIDE BEING EDITED */
+/**********************************************************************************/
+
+#card_being_edited
+{
+	width:90%;
+/*	min-height: 24em;*/
+	padding: 1em 5%;
+/*	border: 1px solid white;*/
+	overflow: hidden;
+	background-color: #eee;
+	background-color: white;
+	box-shadow: 0px 0px 5px gray;
+	margin-bottom: 1em;
+	text-align: center;
+	
+}
+
+
+/* *******************************************/
+/* *********ELEMENT EDITING       ************/
+/* *******************************************/
+
+/*/*#card_being_edited MIGHT AS WELL BE IMPLIED*/
+ .ue
+{
+	padding: 1em;
+	border: 2px solid white;
+	text-align: center;
+	margin: 0em auto;
+	display: inline-block;
+	cursor: pointer;
+	font-size: 1em;
+
+}
+
+ .ue:hover 
+{
+	border:2px dashed orange;
+/*	background-color: #ffe7d1;*/
+	background-image: url('/static/img/stripes-orange2.png');
+}
+
+ .ue_active, .ue_active:hover
+{
+	border:3px dashed orange;
+	background-image: url('/static/img/stripes-lightorange.png');
+	padding: 1em;
+}
+
+.optional
+{
+	color: gray;
+}
+
+/*Images in ue's*/
+/*.ue:hover img {border: 1px solid black;}
+.ue img {border: 1px solid white;}*/
+
+.closex
+{
+	display: block;
+	display: none;
+	position: absolute;
+	top: -.25em;
+	right: 0px;
+	padding: 0 .4em 0 .4em;
+	background-color: gray;
+	color: white;
+	font-size: .7em;
+}
+
+.closex:hover
+{
+	text-decoration: none;
+	background-color: black;
+	color: orange;
+}
+
+
+/******************/
+/* General elements */
+.delete
+{
+	color: #b50000;
+}
+
+.disabled
+{
+	color: gray;
+}
+
+/*HIDDEN for flip*/
+.back 
+{
+	display: none;
+}
+
+/**************************/
+/******specific card elements*/
+textarea.cardtext
+{
+	width: 30em;
+	height: 15em;
+	text-align: left;
+	font-size: 1em;
+
+}
+.front.cardtext 
+{ 
+	width: 30em; 
+	min-height: 5em; 
+	text-align: left;
+
+}
+
+input#title
+{
+	width: 20em;
+	font-size: 1em;
+}
+
+
+
+.front .media_holder
+{
+/*	border: 1px solid gray;*/
+/*	color: gray;*/
+	width: 8em;  /* need better sizing code, probably resort ot js */
+	height: 8em;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.is_primary .front .media_holder
+{
+	width: 29em;  /* need better sizing code, probably resort ot js */
+	height: 20em;
+}
+
+.ue.is_primary
+{
+	clear: none;
+	display: block;
+/*	overflow:auto;*/
+}
+
+#card_being_edited p
+{
+	margin-bottom: .8em;
+}
+
+/**********************************************************************************/
+		/* SIDE BAR */
+/**********************************************************************************/
+
+#card_element_toolbar
+{
+/*	margin-right: -25%;*/
+	width: 110%;
+	margin-top: -1em;
+
+}
+#card_element_toolbar h3  {margin-top: 1em;}
+
+#card_element_toolbar h3 a
+{
+	font-size: 1.2em;
+ 	text-transform: capitalize ;
+padding-left: 1.5em;
+/*	overflow: overlay;*/
+}
+
+
+#card_element_toolbar h3 img.uibutton
+{
+	
+	width: 1.1em;
+	margin-top: -.2em;
+	padding: .2em;
+	border-radius: 2px;
+}
+
+#card_element_toolbar h4 img, #card_element_toolbar button img
+{
+	width: 1.5em;
+	margin-bottom: -.5em;
+	padding: .2em;
+	border-radius: 2px;
+}
+
+/*for upload */
+#card_element_toolbar label.fileinput-button img
+{
+	width: 2em;
+	margin-bottom: -0.7em;
+	padding-right: 0.8em;
+	border-radius: 2px;
+}
+.fileupload-content i
+{
+	font-size: .7em;
+}
+
+label.fileinput-button 
+{
+/*	background: none !important;*/
+/*	background-color: #aaaaaa !important;*/
+	color: #028c00 !important;
+}
+/*.fileupload-buttonbar */
+
+#card_element_toolbar h4
+{
+	margin-bottom: 1em;
+}
+
+/*icons on the accordian header*/
+#card_element_toolbar .iconbuttons
+{
+	float: right;
+	margin-right: 5%;
+/*	clear: both;*/
+}
+
+
+#card_element_toolbar .userfiles
+{
+/*	background-color: gray;*/
+	overflow: hidden;
+	margin-top: -1em;
+}
+
+#card_element_toolbar .userfiles .media
+{ 
+	background-color: #cdcdcd;
+	padding: .5em .5em; 
+	float: left;
+	display: block;
+	margin: .2em;
+	color:black;
+	border: 1px solid gray;
+	cursor: pointer;
+	font-size: .7em;
+	text-align: center;
+
+}
+
+#card_element_toolbar .userfiles .media:hover
+{
+	background-color: #ffae00;
+	color:black;
+
+}
+
+
+
+#card_element_toolbar .image_title
+{
+	font-size: .5em;
+}
+
+
+#card_element_toolbar .userfiles img
+{
+/*	width: 5em;*/
+	margin-left: auto;
+	margin-right: auto;
+	display: block;
+}
+
+
+.ui-accordion .ui-accordion-content
+{
+	padding: 1em;
+}
+
+
+
+/****************************************/
+/********* ADDING INPUTS ************/
+/****************************************/
+.all_card_holder
+{
+	display: block;
+	width: 100%;
+	float: left;
+}
+
+.smallcard
+{
+	display: block;
+/*	padding: .5em;*/
+/*	border: 1px solid gray;*/
+	margin: .5em;
+	text-align: center;
+	width: 6.2em;
+	height: 6.2em;
+	float: left;
+	overflow: hidden;
+}
+
+.smallcard .ui-button
+{
+	height: 6em;
+	width: 6em;
+}
+
+.goto_new_card_button
+{
+	background-color: gray;
+	height: 4.2em;
+	border: 1px dashed gray;
+	
+}
+.goto_new_card_button .ui-button
+{
+	height: 4em;
+}
+
+
+.smallcard .ui-state-default 
+{
+	background: none;
+	background-color: white;
+}
+.smallcard .ui-state-active
+{
+	background: -webkit-gradient( linear, left bottom, left top, color-stop(1, rgb(185,224,245)), color-stop(0, rgb(146,189,214)) );
+}
+
+
+.input-button
+{
+	border: 1px solid gray;
+	margin: .5em;
+	padding: .5em;
+}
+
+.ue .button_text
+{
+	font-size: 1em;
+}
+
+
+/*
+.ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default 
+{
+	background-image: -webkit-gradient(
+    linear,
+    left bottom,
+    left top,
+    color-stop(0, rgb(171,183,196)),
+    color-stop(1, rgb(214,218,232))
+	);
+	background-image: -moz-linear-gradient(
+	    center bottom,
+	    rgb(171,183,196) 0%,
+	    rgb(214,218,232) 100%
+	);
+
+}
+
+.ui-state-hover, .ui-widget-content .ui-state-hover, .ui-widget-header .ui-state-hover 
+{
+	background-image: -webkit-gradient(
+    linear,
+    left bottom,
+    left top,
+    color-stop(0, rgb(135,153,194)),
+    color-stop(1, rgb(193,201,232))
+	);
+	background-image: -moz-linear-gradient(
+	    center bottom,
+	    rgb(135,153,194) 0%,
+	    rgb(193,201,232) 100%
+	);
+}
+
+img.ui-state-hover
+{
+	background-image: -webkit-gradient(
+    linear,
+    left bottom,
+    left top,
+    color-stop(0, rgb(149,171,222)),
+    color-stop(1, rgb(221,228,252))
+	);
+	background-image: -moz-linear-gradient(
+	    center bottom,
+	    rgb(149,171,222) 0%,
+	    rgb(221,228,252) 100%
+	);
+}
+
+.ui-accordion-content h4
+{
+	float: left;
+	margin-bottom: .5em;
+	margin-left: .5em;
+}*/

@@ -1,0 +1,821 @@
+
+/*VARS*/
+@adderWidth: 550px;
+
+@cardWidth: 600px;
+
+@adderMinimizedWidth:  14%; // 200px; //adderMinimizedWidth: 15%;
+
+@editorSpacing: 1em;
+
+@editorSpacingSmall: .5em;
+
+@editingColor: #bfffde;
+
+@graySuperLight: #f3f3f3;
+
+@titleSize: 3.5em;
+
+@static-url: "/media/";
+
+.capitalized
+{text-transform: capitalize;}
+
+.left
+{text-align: left;}
+
+.center
+{text-align:center;}
+
+/*LESSCSS*/
+.sidebar, .content
+{
+	margin-top: 4em;
+}
+
+.notBlank
+{
+	color: @grayDark !important;
+}
+
+.card
+{
+	width: @cardWidth;
+	border: 1px solid @gray;
+	.border-radius(4px);
+	min-height: 500px;
+	margin: 0 auto;
+	.box-shadow(0 0px 8px rgba(0,0,0,.45));
+	padding-bottom: .3em;
+	line-height: 1em;
+}
+
+.cardwrap
+{
+	margin-left: -100px;
+}
+
+
+.adder
+{
+	.center-block;
+	width: @adderWidth;
+	overflow: hidden;
+	text-align: center;	
+	margin: @editorSpacing auto;
+	.transition(all ease-in-out .3s);
+	background-color: white;
+	color: @gray;
+
+	.SoM
+	{display:none;}
+}
+
+.adder.media
+{
+	background: url( '@{static-url}img/placeholder.png' ) center center no-repeat; background-size: cover;
+}
+
+.adder.input
+{
+
+	background: url( '@{static-url}img/interaction_placeholder.png' ) top center no-repeat; background-size: auto;
+}
+
+.adder .adder_inner
+{
+	.opacity(0);
+	/*debug zzz */
+	
+	.transition(opacity .4s);
+	background-color: white;
+	overflow: hidden;
+	width: 100%;
+	//this is hacky, to get it to work with the closex
+	margin-top: -1px;
+}
+
+.adder.title .adder_inner,
+.adder.text .adder_inner
+{
+	.opacity(100);	
+	input, textarea
+	{
+		float: left; //hrmmm
+		width: @adderWidth - 16;
+		//wtf? I'm not sure why this is neccesary. from static html mockup to django, something screwed with the forms happened
+		
+		//this is hacky, but ok to get inputs to work with the closex
+		margin-top: 1px;
+	}
+	
+	input
+	{
+		width: @adderWidth - 8;
+		//see above wtf	
+	}
+}
+
+.adder.media.hovered, .adder.input.hovered
+{
+	.box-shadow(0 0px 8px rgba(0,0,0,.45));
+}
+
+.adder:hover
+{
+	.box-shadow(1px 0px 8px rgba(0, 200, 150,.95));
+}
+
+
+	
+.adder:hover .adder_inner, .adder.hovered .adder_inner
+{
+	.opacity(100);
+}
+
+.smallOK
+{
+	margin-top: -20px;
+	margin-right: 0em;
+	display:none;
+	float: right;
+}
+
+.adder.editing
+{
+	h1
+	{
+		display: none;
+	}
+	input#title, .smallOK, textarea#wmd-input
+	{
+		display: block;
+	}
+}
+
+
+
+
+
+
+// Title Specific Editing
+h1 
+{
+	margin-top: .2em;
+	text-align: center;
+	font-size: @titleSize;
+	outline: none;
+	z-index: 2;
+
+}
+
+input#title
+{
+	font-size: @titleSize !important; 
+	color: @black;
+	outline: none;
+	text-align: center;
+	float: left;
+	display: none;
+}
+
+
+// Media Specific
+.adder.media .sub_add
+{
+	float: left;
+	width: 50%;
+	min-height: 11em;
+}
+
+.adder .sub_bottom
+{
+	float: left;
+	width: 100%;
+	border-top: 1px solid @grayLight;
+}
+
+.green_plus
+{
+	font-weight: bold; color: green; color: #00ff00; font-size: 1.5em;
+	line-height: .1em;
+	text-shadow: 0px 0px 2px green;
+}
+
+strong.green {
+	color:@green;
+	border: 1px dashed;
+	padding: 3px;
+
+	}
+
+
+.adder .addertop
+{
+	background-color: @grayLighter;
+	border-bottom: 1px solid @grayLight;
+	font-size: 2.5em;
+	padding: 0.1em .1em;	
+}
+
+.adder.media .addertop h2, .adder.media .addertop h2 span
+{
+
+	font-size: 1em;
+	color: @grayDark;
+	padding: 4px;
+}
+
+
+.adder p
+{
+	padding: 1em .2em;
+}
+
+.adder.media .sub_add .left_wrap
+{border-right:  1px solid #cacaca;}
+
+
+.adder.text 
+{
+	font-size: 1.2em !important;
+	
+	#wmd-button-bar
+	{
+		display: none;
+		.transition(all ease-in-out .3s);	
+	}
+	
+	textarea
+	{
+		overflow: auto;
+		height: 0px;
+		font-size: 1.2em;
+		padding: 0px;
+		border: 1px solid white;
+/*		display: none;*/
+		.transition(all ease-in-out .3s);
+		
+	/*	width: @adderWidth;*/		
+	}
+
+ 	&.editing #wmd-button-bar
+	{
+		display: block;
+	}
+	
+	&.editing textarea
+	{
+/*		display: block;*/
+		height: 8em;
+		padding: 6px;
+		border: 1px solid @gray;
+	}
+	
+	.cardtext
+	{
+		font-size: 1.2em;
+		text-align: left;
+/*		overflow: visible;*/
+
+		* {font-size: 1em;}
+		h1 {font-size: 1.8em; text-align: center; display: block;}
+		h2 {font-size: 1.6em; display: block;}
+		h3 {font-size: 1.4em;}
+		h3 {font-size: 1.3em;}
+
+		
+	}
+	
+}
+
+
+
+
+.btn
+{
+	letter-spacing: 1px;
+/*	#gradient > .vertical(@linkColor, @linkColorHover);*/
+}
+
+
+.closex {
+	
+	float: right;
+	margin-top: -2px;
+	margin-right: 5px;
+	margin-bottom: 5px;
+	color: #000;
+	font-size: 20px;
+	text-shadow: 0 1px 0 #ffffff;
+	.opacity(30);
+	line-height: 1em;
+}
+.media .closex {.opacity(80);}
+.closex:hover {
+	text-decoration: none;
+	.opacity(80);
+	color: red;
+}
+
+// ********************************************
+// ***********     Minimized     **************
+// ********************************************
+.adder.minimized
+{
+	width: @adderMinimizedWidth;
+	float: right;
+	clear: right;
+	margin: .5em .1em;
+	position: absolute;
+	right: 0px;
+	.box-shadow(0 0px 3px rgba(0,0,0,.85));
+	border-radius: 5px, 0, 0, 5px;
+	
+	.adder_inner
+	{
+		.opacity(100);
+		margin-top: 0em;
+	}
+	.sub_add
+	{
+		width: 100%;
+		min-height: 0;
+	}
+	
+	h1, h2, h3, h4, button, p
+	{
+		line-height: 1.1em;
+		margin: 0px;
+		padding: 3px;
+	}
+	
+	h1 {font-size: 2em;}
+	
+/*	.addertop*/
+
+	h2, h2 span
+	{
+		font-size: 1em !important;
+/*		background-color: @graySuperLight;*/
+	}
+	
+	.icon
+	{
+		width:40px;
+		height:40px;
+		
+	}
+	
+	h4
+	{
+		font-weight: normal;
+	}
+	
+	.closex
+	{display: none;}
+	
+	.HoM //hide on minimize
+	{
+		display:none;
+	}
+	.SoM //show on minimize
+	{
+		display: inherit;
+	}
+	
+	.sub_add .left_wrap
+	{
+		border-right: none;
+		border-bottom: 1px solid @grayLight;
+	}
+	
+	.btn, label.btn
+	{
+		margin: .3em auto;
+		text-align: center;
+	}
+	
+	textarea
+	{width: 100%;}
+	
+} /*end .adder.minimized*/
+
+.adder.title {top: 5em;}
+.adder.media {top: 11em;}
+.adder.text {top: 33em;}
+.adder.input {top: 43em;}
+
+.prev_and_next
+{
+
+	text-align: center;
+}
+
+.sidebar
+{
+	form.form-stacked
+	{
+		padding:0px;
+	}
+	
+	.btn
+	{
+		margin: .5em auto;
+	}
+/*	input[type=text]
+	{
+		height: @baseline*1.5 !important;
+	}*/
+}
+
+/**********************************/
+/***** IN PLACE UPLOADS ***********/
+/**********************************/
+
+.adder #fileupload
+{
+	text-align: center;
+	input
+	{
+		height: 1px;
+		.opacity(0);
+	}
+	
+	.fileupload-buttonbar
+	{
+		height: 2em;
+/*		border: none;*/
+		}
+	
+	form
+	{
+/*		margin: 0px;*/
+		
+		label.btn
+		{
+
+			margin: 0 auto !important;
+			text-align: center;
+
+		}
+	}
+	
+	.fileupload-content
+	{
+		padding: 0;
+	}
+	
+	table
+	{
+
+	}
+}
+
+
+/****************************************/
+/*******   (CLIENTSIDE) TEMPLATES    ****/
+/****************************************/
+
+@mediaOptionsHeight: 100px;
+
+#media
+{
+	display: block;
+	margin: 0 auto;
+	overflow: hidden;
+	width: @adderWidth;
+}
+.mediaTemplate
+{
+	width: @adderWidth;
+	margin: @editorSpacing auto;
+	overflow: hidden;
+	text-align: center;
+	
+	.uploading_indicator
+	{
+		display: none;
+		font-size: 1.5em;
+		padding: 1em 0;
+		text-shadow: 1px 1px 1px @grayDark;
+		#translucent > .background(@grayDark, 0.8);
+		color: white;
+		width: inherit;
+		overflow: hidden;
+		margin-top: 12px;
+		
+	}
+	
+	&.uploading .uploading_indicator
+	{
+		display: inline-block;
+		position: absolute;
+	}
+	
+	h3 {color: white;}
+	
+	.mediaOptions
+	{
+		border-top: 1px solid @grayLight;
+		color: white;
+		text-align: center;
+		#translucent > .background(@grayDark, 0.5);
+		#translucent > .border(@grayLighter, 0.5);
+		height: @mediaOptionsHeight;
+		width: 100%;
+		display: none;
+/*		display: inline-block;*/
+		overflow: hidden;
+/*		padding-top: 10px;*/
+		
+
+	}
+	.preview
+	{
+/*		margin-bottom: 0 - (@mediaOptionsHeight + 2); //+2 for the border*/
+		
+		.preview_image
+		{
+			width: @adderWidth;
+		}
+	}
+	
+	.mediaTitle
+	{
+		width: 100%;
+		display: block;
+
+		margin-top: @editorSpacingSmall;
+	}
+	
+	&.not_primary_media
+	{
+		float: left;
+		margin: 0 .5em .5em .5em;
+		.square(150px);
+		
+		.preview_image
+		{
+			.square(150px);
+		}
+	} // end not primary
+
+
+	&:hover, &.hovered
+	{
+	.mediaOptions {display: inline-block;}
+	.preview
+	{
+		margin-bottom: 0 - (@mediaOptionsHeight + 2); //+2 for the border
+	}
+	
+ 	} //end hovered and :hvoer
+
+} //end .mediaTemplate
+
+
+
+/********************************/
+/****  MODALs for editing  ******/
+/*******************************/
+
+.modal-backdrop
+{
+	display:none;
+}
+
+
+
+.modal,
+{
+	font-size: 1.7em;
+	width: ;
+	input
+	{
+		font-size: 1em;
+	}
+	
+	h3
+	{
+		font-size: 1.3em;
+	}
+	
+	.action_properties
+	{
+		margin: @editorSpacing auto;
+	}
+	
+	p
+	{
+		margin-bottom: 1em;
+		font-size: .8em;
+	}
+	
+	label input
+	{
+		display: none;
+	}
+	
+	.checked
+	{
+		#gradient > .vertical(#E0F0F9, #BDEEF9);
+		border: 1px solid @grayDark;
+		color: @grayDark;
+/*		color: @red;*/
+	}
+	
+	.cardbtn
+	{
+		height: 75px;
+		width: 70px;
+		float: left;
+		margin: .3em;
+		text-align: center;
+		
+		img
+		{
+			width: 75%;
+			}
+	}
+	
+}
+
+
+
+/* SMALL CARDS for guide editing, and homescreen (guides are shown like cards...)*/
+
+
+
+
+.smallcard
+{
+	display: block;
+	padding: .5em;
+	border: 1px solid gray;
+	margin: .5em;
+	text-align: center;
+	width: 8em;
+	height: 8em;
+	float: left;
+	overflow: hidden;
+	background-color: white;
+	border-radius: 3px;
+	cursor: move;
+	
+}
+
+.smallcardWrapper
+{
+	display: block;
+	float: left;
+/*	padding: .3em;*/
+	margin: .3em;
+	margin-bottom: 1em;
+	text-align: center;
+	border-radius: 3px;
+	background-color: #cacaca;
+	box-shadow: 0px 0px 1px gray;
+}
+
+.smallcardWrapper:hover
+{
+	background-color: #e0e0e0;
+}
+
+.smallcardWrapper:hover .cardNumber
+{
+	background-color: #f3f3f3;
+
+}
+
+.smallcardWrapper .cardNumber:hover
+{
+	cursor: move;
+}
+
+.smallcardWrapper:hover .controls a
+{
+	display: inline;
+}
+
+
+.smallcardWrapper .cardNumber
+{
+	height: 1em;
+	font-size: 1.2em;
+	background-color: #e8e8e8;
+	padding: 3px;
+}
+
+
+.normal_card_container
+{
+	overflow: auto;
+	display:block;
+	width: 100%;
+	padding: .5em;
+	min-height: 10em;
+}
+
+.floating_card_container
+{
+	overflow: auto;
+	display:block;
+	width: 100%;
+	margin-top: 1em;
+
+}
+
+.connectedSortable
+{
+	min-height: 10em;
+}
+
+.smallcardWrapper .controls 
+{
+	height: 2em;
+	width: 100%;
+	float: left;
+	clear: both;
+}
+
+.smallcardWrapper .controls a
+{
+	font-size: .9em;
+	margin: 0 .2em;
+	padding: 0 .2em;
+	display:none;
+}
+
+.smallcardWrapperPlaceHolder
+{
+	padding: .3em;
+	margin: .3em;
+	background-color: black;
+	height: 13em;
+	width: 10em;
+	display: block;
+	float: left;
+	border-radius: 3px;
+}
+.ui-sortable-helper:hover, .ui-sortable-helper .cardNumber
+{
+	background: rgba(255, 255, 0, 0.5);
+	cursor: move;
+/*	background-color: yellow !important;*/
+}
+.ui-sortable-helper .cardNumber span, .ui-sortable-helper .controls a
+{
+	display:none;
+}
+
+.floating_card_container .cardNumber span 
+{
+	display:none;
+}
+
+
+.floating_card_container h2, .floating_card_container h3
+{
+	clear: both;
+}
+
+.smallcardWrapper:hover .controls a.delete_link_real
+{
+	display: none;
+}
+
+.smallcardWrapper:hover .controls.making_sure_delete  a.delete_link_real
+{
+	display: inline;
+}
+.smallcardWrapper:hover .controls.making_sure_delete  .delete_link
+{
+	display: none;
+}
+
+
+/*HOME SCREEEEEEN*/
+.listedGuides
+{
+	width: 100%;
+	float: left;
+}
+
+.listedGuides .smallcard
+{
+	height: 10em;
+	cursor: pointer;
+}
+
+.listedGuides.yourGuides .smallcard
+{
+	cursor: default;
+}
+
+
+.listedGuides .smallcardWrapper .controls a
+{
+	display: inline;
+}
