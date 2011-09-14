@@ -1,0 +1,59 @@
+{%extends "enjoy/base.html"%} 
+{%debug%}
+
+{%block extrahead%}
+
+<script src="http://maps.google.com/maps/api/js?sensor=false"></script>
+
+<script type="text/javascript">
+
+function initialize() {
+	
+	  
+  {% if mappointelements %}
+  var results = {{mappointelements|safe}};
+  {% endif %}
+  
+  var latlngbounds = new google.maps.LatLngBounds();
+  
+
+  var startlatlng = results[0].split(',');
+  var myLatlng = new google.maps.LatLng(parseFloat(startlatlng[1]), parseFloat(startlatlng[0]));
+  var myOptions = {
+    zoom: 10,
+    center: myLatlng,
+    mapTypeId: google.maps.MapTypeId.ROADMAP
+  }
+  
+  var map = new google.maps.Map(document.getElementById("map_canvas"),
+    myOptions);
+    
+  for (var i = 0; i < results.length; i++) {
+  	var latlng = results[i].split(',');
+  	var clickedLocation = new google.maps.LatLng(parseFloat(latlng[1]), parseFloat(latlng[0]));
+  	latlngbounds.extend(clickedLocation);
+  	var marker = new google.maps.Marker({
+   	 position: clickedLocation, 
+   	 map: map,
+   	 draggable: false 
+ 	 });
+  console.log(marker);
+  }
+  map.fitBounds(latlngbounds);
+} 
+
+google.maps.event.addDomListener(window, 'load', initialize);
+</script>
+{%endblock%}
+
+{% block content %} 
+<style> 
+  #map_canvas {
+    width: 500px;
+    height: 400px;
+    float: left;
+  }
+  </style> 
+  <div id="map_canvas"></div> 
+
+{% endblock %} 

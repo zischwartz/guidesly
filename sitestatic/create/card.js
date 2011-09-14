@@ -6,6 +6,7 @@ var card_api_url='/api/v1/card/';
 var media_api_url='/api/v1/mediaelement/';
 var input_api_url='/api/v1/inputelement/';
 var map_api_url='/api/v1/mapelement/';
+var mappoint_api_url='/api/v1/mappointelement/';
 var action_api_url='/api/v1/action/';
 var file_api_url='/api/v1/userfile/';
 var guide_api_url='/api/v1/guide/';
@@ -383,6 +384,56 @@ $(".mediaTemplate").live("mouseover mouseout", function(event) {
 				return 'errorNoTemplate';
 	}
 
+  VM.addMap2Card= function(){
+    console.log('map');
+	mapToAdd= new Object();
+	var postURL_input;
+	mapToAdd.type= ko.observable('map');
+	mapToAdd.card= VM.resource_uri();
+	mapToAdd.map_title= ko.observable('temptitle');
+	jsonData = ko.toJSON(mapToAdd);
+	console.log(jsonData);
+	postURL_input=$.ajax({
+		url: map_api_url,
+		type: "POST",
+		data: jsonData,
+		success:function(data) {
+				console.log('map added!');	
+				console.log(data); 
+				mapToAdd.resource_uri=ko.observable(postURL_input.getResponseHeader('location'));
+				mapToAdd.id = mapToAdd.resource_uri().match(/\/mapelement\/(.*)\//)[1];
+				VM.mapelements.push(mapToAdd); 
+			},
+		contentType: "application/json",
+		});
+} 
+	
+	
+VM.addPoint2Map= function(point){
+	console.log(point);
+	pointToAdd= new Object();
+	var postURL_input;
+	join_cords = String(point.Ka) + ', ' + String(point.La);
+	pointToAdd.point= join_cords;
+	//pointToAdd.point_title = VM.resource_uri();
+	//pointToAdd.manual_addy = ko.observable( VM.newMapText());
+	jsonData = ko.toJSON(pointToAdd);
+	console.log(jsonData);
+	postURL_input=$.ajax({
+		url: mappoint_api_url,
+		type: "POST",
+		data: jsonData,
+		success:function(data) {
+				console.log('point added!');	
+				console.log(data); 
+				pointToAdd.resource_uri=ko.observable(postURL_input.getResponseHeader('location'));
+				pointToAdd.id = pointToAdd.resource_uri().match(/\/mappointelement\/(.*)\//)[1];
+				//VM.mappointelements.push(pointToAdd); 
+			},
+		contentType: "application/json",
+		});
+} 
+
 
 
 	//REPLACE CARDS WITH GUIDE TODO because guide has the relevant info about each card anyway
@@ -439,6 +490,7 @@ var anInput = function(type) {
 		}
 
 }
+
 
 
 addInputHelper =function(that){

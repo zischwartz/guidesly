@@ -1,0 +1,20 @@
+#map_canvas {
+    width: 500px;
+    height: 400px;
+}
+#shelf {
+    position:fixed; 
+    top:340px; 
+    left:350px; 
+    height:50px;
+    width:125px;
+    background:white;
+    opacity:0.8;
+}
+#draggable {
+    position:absolute;
+    top:37px, left:34px;
+    width: 30px; 
+    height: 30px;
+    z-index:1000000000;
+}
