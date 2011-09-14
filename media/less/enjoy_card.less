@@ -1,0 +1,307 @@
+
+/*VARS*/
+
+@titleSize: 3.5em;
+@editingColor: @green;
+@static-url: "/media/";
+
+@primaryMediaWidth: 950px;
+@cardTextSize: 16px;
+
+html {min-height: 100%;}
+
+body
+{
+	font-family: 'Helvetica Neue', Arial, sans-serif;
+	font-weight: 300;
+/*	font-size: 1em;*/
+	width: 100%;
+	height: 100%;
+/*	background-color: gray;*/
+}
+
+#header
+{
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	z-index: 20;
+	background-color: @grayDark;
+	color: white;
+	padding: 5px;
+	text-align:center;
+
+	.border-radius(0 0 4px 0);
+	.opacity(100);
+	.transition(all ease-in-out .3s);
+	
+	.toc {display: none;}
+	.mute {display: none;}
+	
+	&.hovered
+	{
+		&:hover
+		{
+			.opacity(100);
+		}
+/*		width: 300px;*/
+		padding: 10px;		
+		.toc {display: block;}
+		.mute {display: block;}
+		.opacity(75);
+		text-align: left;
+
+		.small br {display:none;}
+	}
+	
+	.small
+	{
+		font-size: .8em;
+	}
+	a.active
+	{color: white !important; background-color: red !important;	}
+	
+/*	a*/
+/*	{text-shadow: 1px 1px 1px rgba(100,100,255, .5);}*/
+}
+
+.deck-container
+{
+/*	overflow: hidden;*/
+
+}
+
+.card
+{
+	float:left;
+	display: block;
+	width: 100%;
+	height: 100%;
+	margin: 0;
+  	min-height: 100%;
+  	position: relative;
+	background-color: white;
+	text-align: center;
+	
+/*	overflow: hidden;*/
+	
+	.loader
+	{
+		display: none;
+	}
+	
+	&.loading .loader
+	{
+		color: white;
+		text-align: center;
+		position: absolute;
+		padding: 1em 0;
+		top: 30%;
+		left: 50%;
+		z-index: 2000;
+		width: 25%;
+		margin-left: -12.5%;
+		.border-radius(5px);
+		background-color: rgba(0,0,0,.5);
+		display: block;
+	}
+	
+} // end .card (though the stuff below is also in it)
+
+
+h1.card_title
+{
+	text-align: center;
+	font-size: @titleSize;
+	line-height: 1em;
+
+}
+
+.primary_media
+{
+	margin: 0 auto !important;
+	display: block;
+
+
+
+}
+
+.video-js-box 
+{
+	background-color: @gray; //this should show up briefly while loading the flash fallback
+} 
+
+.caption
+{
+	width: 100%;
+	text-align: center;
+	margin: .2em auto;
+}
+
+.thumbs
+{
+	margin: .5em auto;
+	width: @primaryMediaWidth;
+	.clearfix;
+	text-align: center;
+	
+}
+
+.thumbLink
+{
+	.box-shadow(0px 0px 5px @grayDark);
+	margin: 0 .5em;
+	display: inline-block;
+	
+	img
+	{float:left; width: 100px; height: 75px;}
+	
+	&.activeThumbLink
+	{
+		.box-shadow(0px 0px 8px @orange);
+	}
+}
+
+
+.card_text
+{
+/*	width: @primaryMediaWidth;*/
+	width: 600px;
+	margin: .5em auto;
+	display: block;
+	text-align: left;
+	
+	*
+	{
+		color: @grayDark;
+		font-size: @cardTextSize;
+	}
+	
+	h1 {font-size: @cardTextSize+10; text-align: center;}
+	h2 {font-size: @cardTextSize+6; }
+	h3 {font-size: @cardTextSize+4; }
+	h4 {font-size: @cardTextSize+2; }
+	h5 {font-size: @cardTextSize; }
+	h5 {font-size: @cardTextSize - 4; }
+	
+}
+
+.input_element a //this really should go in card_elements, but..
+{
+	#translucent > .border(@white, 0.5);
+}
+
+.prev_and_next
+{
+	position: fixed;
+	bottom: 0;
+}
+
+
+
+/* Modifications By Class of Card / Type of Content on card*/
+
+.card.noprimarymedia
+{
+	h1.card_title 
+	{
+		margin-top: 1em;
+		font-size: @titleSize + 1;
+	}
+}
+
+.card.hasthumbs
+{
+	.primary_media
+	{
+		height: 70%;
+	}
+}
+
+.card.notitle
+{
+	.primary_media
+	{
+		margin-top: 1em !important;
+	}
+}
+
+/* PM is BACKGROUND IMAGE, changes everything*/
+.card.primary_is_bg
+{
+	h1.card_title, .card_text
+	{
+		#translucent > .background(@grayDark, 0.5);
+		.border-radius(5px);
+		padding: 10px;
+		color: white;
+		
+		
+		//everything is white
+		* 
+		{
+			color: white;
+			a
+			{ 	
+				#translucent > .background(@black, 0.5);  padding: 2px; .border-radius(3px);
+				&:hover { background-color: @black; }
+			}// end a
+		} //end *
+		
+		code 
+		{
+			color: black;
+			text-shadow: none;
+			
+			
+		}
+		
+		p {margin: 1em 0;}
+		
+	} //end h1 and cardtext
+	
+	h1.card_title
+	{
+		width: 70%;
+		margin: .5em auto;
+		text-shadow: 1px 1px 1px @grayDark;
+	}
+	.thumbs
+	{
+/*		margin-top:50%;*/
+	}
+	.card_text, 
+	{
+		text-shadow: 1px 1px 1px @grayDark;
+		
+	}
+	
+}
+
+
+
+/*DECK CSS TAKEN FROM CORE.CSS*/
+.deck-before, .deck-previous, .deck-next, .deck-after {
+  position: absolute;
+  left: -999em;
+  top: -999em;
+}
+
+/*.deck-current {
+  z-index: 2;
+}*/
+
+.deck-container img, .deck-container iframe, .deck-container video {
+  display: block;
+  max-width: 100%;
+}
+.deck-container video, .deck-container iframe, .deck-container img {
+  display: block;
+  margin: 0 auto;
+}
+
+.deck-loading
+{
+	display: none;
+	visibility: hidden;
+}
