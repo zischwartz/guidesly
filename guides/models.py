@@ -239,6 +239,15 @@ class Card (models.Model):
 	def the_video(self):
 		return self.mediaelement_set.filter(type='video')
 		
+	def has_thumbs(self):
+		count = len(self.mediaelement_set.filter(type='image'))
+		count+= len(self.mediaelement_set.filter(type='video'))
+		count+= len(self.mediaelement_set.filter(type='other'))
+		if count > 1:
+			return True
+		else:
+			return False
+		
 	def cget_prev_card(self):
 		prev_card_number = self.card_number -2 # 2 because the list card_order is zero based
 		if prev_card_number >=0:

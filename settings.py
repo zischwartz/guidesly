@@ -32,10 +32,10 @@ sys.path.insert(0, join(SITE_ROOT, "apps"))
 DATABASES = {
     'default': {
         'ENGINE': 'mysql',
-        'NAME': 'guideslybeta',
-        'HOST': 'guideslybeta.cbwmwyqhy9ab.us-east-1.rds.amazonaws.com',
+        'NAME': 'guidesly2',
+        'HOST': 'guidesly2.cbwmwyqhy9ab.us-east-1.rds.amazonaws.com',
         'PORT': '3306',
-        'USER': 'guidesly',
+        'USER': 'guidesly2',
         'PASSWORD': 'nem0nemo'
     }
 }
@@ -79,7 +79,7 @@ MEDIA_URL = 'http://guideslybetauserfiles.s3.amazonaws.com/'
 # Don't put anything in this directory yourself; store your static files
 # in apps' "static/" subdirectories and in STATICFILES_DIRS.
 # Example: "/home/media/media.lawrence.com/static/"
-STATIC_ROOT = os.path.join(SITE_ROOT, 'sitestatic')
+STATIC_ROOT = os.path.join(SITE_ROOT, 'media')
 #STATIC_ROOT = '/home/zazerr/webapps/static_g/'
 
 # URL prefix for static files.
@@ -132,7 +132,7 @@ MIDDLEWARE_CLASSES = (
 
 INTERNAL_IPS = ('127.0.0.1',)
 
-ROOT_URLCONF = 'Project.urls'
+ROOT_URLCONF = 'guidesly.urls'
 
 TEMPLATE_DIRS = (
     os.path.join(SITE_ROOT, 'templates'),
@@ -196,7 +196,7 @@ INSTALLED_APPS = (
 	'registration',
 	'thef',
     'tastypie',
-    # 'south',
+    'south',
 
     'accounts',
 	'fileupload',
@@ -212,7 +212,7 @@ ACCOUNT_ACTIVATION_DAYS = 5
 
 ACCOUNT_INVITATION_DAYS = 7
 
-INVITATIONS_PER_USER = 0   
+INVITATIONS_PER_USER = 2   
 
 LOGIN_REDIRECT_URL = '/home/'
 

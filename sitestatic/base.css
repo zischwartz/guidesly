@@ -2367,10 +2367,17 @@ strong.green {
 .mediaTemplate .uploading_indicator {
   display: none;
   font-size: 1.5em;
-  padding: 0.5em auto;
+  padding: 1em 0;
+  text-shadow: 1px 1px 1px #404040;
+  background-color: rgba(64, 64, 64, 0.8);
+  color: white;
+  width: inherit;
+  overflow: hidden;
+  margin-top: 12px;
 }
 .mediaTemplate.uploading .uploading_indicator {
-  display: block;
+  display: inline-block;
+  position: absolute;
 }
 .mediaTemplate h3 {
   color: white;
@@ -2388,6 +2395,8 @@ strong.green {
   /*		display: inline-block;*/
 
   overflow: hidden;
+  /*		padding-top: 10px;*/
+
 }
 .mediaTemplate .preview {
   /*		margin-bottom: 0 - (@mediaOptionsHeight + 2); //+2 for the border*/

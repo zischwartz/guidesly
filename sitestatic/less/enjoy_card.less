@@ -6,7 +6,7 @@
 @static-url: "/media/";
 
 @primaryMediaWidth: 950px;
-
+@cardTextSize: 16px;
 
 html {min-height: 100%;}
 
@@ -106,12 +106,14 @@ body
 		display: block;
 	}
 	
-} // end .card
+} // end .card (though the stuff below is also in it)
+
 
 h1.card_title
 {
 	text-align: center;
 	font-size: @titleSize;
+	line-height: 1em;
 
 }
 
@@ -119,6 +121,9 @@ h1.card_title
 {
 	margin: 0 auto !important;
 	display: block;
+
+
+
 }
 
 .video-js-box 
@@ -131,7 +136,6 @@ h1.card_title
 	width: 100%;
 	text-align: center;
 	margin: .2em auto;
-	
 }
 
 .thumbs
@@ -150,7 +154,7 @@ h1.card_title
 	display: inline-block;
 	
 	img
-	{float:left;}
+	{float:left; width: 100px; height: 75px;}
 	
 	&.activeThumbLink
 	{
@@ -166,10 +170,20 @@ h1.card_title
 	margin: .5em auto;
 	display: block;
 	text-align: left;
+	
 	*
 	{
 		color: @grayDark;
+		font-size: @cardTextSize;
 	}
+	
+	h1 {font-size: @cardTextSize+10; text-align: center;}
+	h2 {font-size: @cardTextSize+6; }
+	h3 {font-size: @cardTextSize+4; }
+	h4 {font-size: @cardTextSize+2; }
+	h5 {font-size: @cardTextSize; }
+	h5 {font-size: @cardTextSize - 4; }
+	
 }
 
 .input_element a //this really should go in card_elements, but..
@@ -180,10 +194,37 @@ h1.card_title
 .prev_and_next
 {
 /*	position: fixed;*/
-/*	top: 25%;*/
+/*	bottom: 0;*/
 }
 
-/* BACKGROUND IMAGES, changes everything*/
+
+
+/* Modifications By Class of Card / Type of Content on card*/
+
+.card.noprimarymedia
+{
+	h1.card_title 
+	{
+		margin-top: 1em;
+		font-size: @titleSize + 1;
+	}
+}
+
+
+
+.card.hasthumbs
+{
+	.primary_media
+	{
+		height: 70%;
+	}
+	
+
+}
+
+
+
+/* PM is BACKGROUND IMAGE, changes everything*/
 .card.primary_is_bg
 {
 	h1.card_title, .card_text

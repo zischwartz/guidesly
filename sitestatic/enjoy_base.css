@@ -2116,6 +2116,7 @@ body {
 h1.card_title {
   text-align: center;
   font-size: 3.5em;
+  line-height: 1em;
 }
 .primary_media {
   margin: 0 auto !important;
@@ -2151,6 +2152,8 @@ h1.card_title {
 }
 .thumbLink img {
   float: left;
+  width: 100px;
+  height: 75px;
 }
 .thumbLink.activeThumbLink {
   -webkit-box-shadow: 0px 0px 8px #f89406;
@@ -2167,6 +2170,26 @@ h1.card_title {
 }
 .card_text * {
   color: #404040;
+  font-size: 16px;
+}
+.card_text h1 {
+  font-size: 26px;
+  text-align: center;
+}
+.card_text h2 {
+  font-size: 22px;
+}
+.card_text h3 {
+  font-size: 20px;
+}
+.card_text h4 {
+  font-size: 18px;
+}
+.card_text h5 {
+  font-size: 16px;
+}
+.card_text h5 {
+  font-size: 12px;
 }
 .input_element a {
   border-color: rgba(255, 255, 255, 0.5);
@@ -2175,10 +2198,18 @@ h1.card_title {
 .prev_and_next {
   /*	position: fixed;*/
 
-  /*	top: 25%;*/
+  /*	bottom: 0;*/
 
 }
-/* BACKGROUND IMAGES, changes everything*/
+/* Modifications By Class of Card / Type of Content on card*/
+.card.noprimarymedia h1.card_title {
+  margin-top: 1em;
+  font-size: 4.5em;
+}
+.card.hasthumbs .primary_media {
+  height: 70%;
+}
+/* PM is BACKGROUND IMAGE, changes everything*/
 .card.primary_is_bg h1.card_title, .card.primary_is_bg .card_text {
   background-color: rgba(64, 64, 64, 0.5);
   -webkit-border-radius: 5px;
