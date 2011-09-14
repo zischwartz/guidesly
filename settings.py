@@ -269,7 +269,7 @@ EMAIL_PORT = 587
 
 EMAIL_USE_TLS = True
 
-# try:
-#    from settings_local import *
-# except ImportError, e:
-#    pass
+try:
+   from settings_local import *
+except ImportError, e:
+   pass
