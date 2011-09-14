@@ -137,6 +137,7 @@ class Card (models.Model):
 	has_lots_of_text = models.BooleanField(default=False)
 	show_next = models.BooleanField(default=True)
 	show_prev = models.BooleanField(default=True)
+	give_images_shadows = models.BooleanField(default=False)
 	
 	def __unicode__(self):
 		if self.title !="":
