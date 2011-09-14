@@ -77,17 +77,17 @@
 	</script>
 {%endverbatim%}
 
-
+<form action="" method="post">
+{% csrf_token %}
+<table>	{{form.as_table}}</table>
+<input type="submit" value="Edit guide" />
+</form>
 {% endblock %} {# end content #}
 
 {# {%block sidebar%} #}
 
 
 
-	{# <form action="" method="post"> #}
-	{# {% csrf_token %} #}
-	{# <table>	{{form.as_table}}</table> #}
-	{# <input type="submit" value="Edit guide" /> #}
-	{# </form> #}
+
 	
 {# {%endblock %} #}

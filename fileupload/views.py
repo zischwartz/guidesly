@@ -111,7 +111,10 @@ def GetVideoSample(object, user_name, file_name):
 
 	# ffmpeg  -itsoffset -1  -i hand.mov -vcodec mjpeg -vframes 1 -an -f rawvideo tes
 	# subprocess.call(['ffmpeg', '-itsoffset', '-1', '-i', 'hand.mov', '-vcodec', 'mjpeg', '-vframes', '1', '-an', '-f', 'rawvideo', 'test.jpg'])
-	output = subprocess.check_output(['ffmpeg', '-itsoffset', '-1', '-i', source_url, '-vcodec', 'mjpeg', '-vframes', '1', '-an', '-f', 'rawvideo', '-'])
+
+	# works
+	# output = subprocess.check_output(['ffmpeg', '-itsoffset', '-1', '-i', source_url, '-vcodec', 'mjpeg', '-vframes', '1', '-an', '-f', 'rawvideo', '-'])
+	output = subprocess.check_output(['ffmpeg', '-ss', '-1', '-i', source_url, '-vcodec', 'mjpeg', '-vframes', '1', '-an', '-f', 'rawvideo', '-'])
 	
 	post_path = default_storage.save(pre_path, ContentFile(output))
 	# logger.info(post_path)
