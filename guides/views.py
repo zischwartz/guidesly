@@ -133,7 +133,7 @@ def EditGuide (request, gslug):
 
 def BuildCard (request, gslug):
 	your_guide=get_object_or_404(Guide, slug=gslug)
-	if guide.is_linear:
+	if your_guide.is_linear:
 		s = Card(guide=your_guide)
 	else:
 		s = Card(guide=your_guide, is_floating_card=True)
