@@ -2431,6 +2431,7 @@ strong.green {
 .mediaTemplate .preview .preview_image {
   max-width: 550px;
   max-height: 550px -100;
+  min-width: 200px;
 }
 .mediaTemplate .mediaTitle {
   width: 100%;
