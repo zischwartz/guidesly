@@ -110,10 +110,11 @@ class Guide (models.Model):
 			return None
 			
 	def get_guide_thumb(self):
+		
 		if self.card_order:
 			card = Card.objects.get(id=self.card_order[0])
 		else:
-			card = Card.objects.all()[0]
+			card = Card.objects.filter(guide=self)[0]
 		if card.primary_media:
 			return card.primary_media.file.thumb_url
 		else:
