@@ -1089,6 +1089,10 @@ form.form-stacked .actions {
   -moz-transition: 0.3s;
   transition: 0.3s;
 }
+.tinput.big {
+  width: 100%;
+  font-size: 1em;
+}
 .tinput:focus {
   background-color: #bfffde;
 }
@@ -1970,7 +1974,10 @@ footer {
   text-align: center;
 }
 /*LESSCSS*/
-.sidebar, .content {
+.container > .sidebar,
+.container > .content,
+.container-fluid > .sidebar,
+.container-fluid > .content {
   margin-top: 4em;
 }
 .notBlank {
@@ -2750,4 +2757,10 @@ strong.green {
 }
 strong, .strong {
   font-weight: bold;
+}
+.hidden {
+  display: none;
+}
+.centext {
+  text-align: center;
 }

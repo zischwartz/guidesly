@@ -6,3 +6,4 @@ log.log
 .DS_Store
 sitestatic/.DS_Store
 /migrations
+db

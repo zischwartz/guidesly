@@ -1079,6 +1079,10 @@ form.form-stacked .actions {
   -moz-transition: 0.3s;
   transition: 0.3s;
 }
+.tinput.big {
+  width: 100%;
+  font-size: 1em;
+}
 .tinput:focus {
   background-color: #46a546;
 }

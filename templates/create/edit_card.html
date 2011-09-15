@@ -303,9 +303,10 @@
 			</div>
 			<div class="mediaOptions">				
 				{{ if VM.check_if_primary($item.data) }}<br>
-					<label class="capitalized"><span data-bind="text: type"></span> Title: <input class="tinput xlarge" type="text" data-bind="value: title, valueUpdate: 'afterkeydown'"><br><br>
+					<label class="capitalized"><span data-bind="text: type"></span> Title: <input class="tinput xlarge" type="text" data-bind="value: title, valueUpdate: 'afterkeydown'"> <button class="btn tiny" data-bind="click: VM.save_element">OK</button>
+					 <br><br>
 					{{if type() == 'image'}}<button class="btn info" data-bind="click: VM.editImage">Edit Image</button> {{/if}}
-				 	<button class="btn danger" data-bind="click: VM.deleteFromCard"> Remove </button><br><br>
+					<button class="btn danger" data-bind="click: VM.deleteFromCard"> Remove </button><br><br>
 				{{else}}
 					<button  class="btn primary" data-bind="click: VM.makePrimary">Edit / Make Main</button>
 					<button class="btn danger small" data-bind="click: VM.deleteFromCard"> Remove </button><br><br>
@@ -317,7 +318,6 @@
 		</div>
 	</script>
 	
-{# 	<button class="btn tiny" data-bind="click: VM.save_element">OK</button> #}
 	
 
 	
@@ -477,7 +477,7 @@
 			<div class="clearfix"></div>
 				
 			
-		</div>
+		</div>  {# /modal body #}
 
 		
 		<div class="modal-footer">

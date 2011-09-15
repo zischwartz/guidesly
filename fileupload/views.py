@@ -58,13 +58,24 @@ class UserFileCreateView(CreateView):
 			data = [{'name': f.name, 'url': self.object.image.display_image.url, 'id': relevant_id, 'medium_image_url': self.object.image.medium_image.url, 'display_image_url': self.object.image.display_image.url}]
 			# notes: using display_image.url for the url for the image. no reason to use anything bigger than the 950px one + aviary won't do well with it.
 
+		elif self.object.type=='audio':
+			self.object.medium_url = '/media/img/audio-icon.png'
+			data = [{'name': f.name, 'url': self.object.url, 'id': relevant_id, 'medium_image_url': self.object.medium_url}]
+			self.object.save()
+	
+		elif self.object.type=='other':
+			self.object.medium_url = '/media/img/document-icon.png'
+			data = [{'name': f.name, 'url': self.object.url, 'id': relevant_id, 'medium_image_url': self.object.medium_url}]
+			self.object.save()
+			
 
-		# elif self.object.type=='video':
+		elif self.object.type=='video':
 		# 	video_sample_url= GetVideoSample(self.object, self.request.user.username, f.name.split('.')[0])
 		# 	self.object.medium_url = video_sample_url
 		# 	self.object.display_url = video_sample_url
-		# 	data = [{'name': f.name, 'url': self.object.url, 'id': relevant_id, 'medium_image_url': self.object.medium_url, 'display_image_url': self.object.display_url}]
-		# 	self.object.save()
+			self.object.medium_url = '/media/img/video-icon.png'
+			data = [{'name': f.name, 'url': self.object.url, 'id': relevant_id, 'medium_image_url': self.object.medium_url}]
+			self.object.save()
 
 		else:
 			data = [{'name': f.name,'id': relevant_id, 'url': self.object.url}]
