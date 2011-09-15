@@ -17,27 +17,34 @@
 {% block content %} 
 
 <h1>{{guide.title}}</h1>
-<h2>{{guide.description}}</h2>
+<h3>{{guide.description}}</h3>
 <br><br>
 
-<h2>Cards</h2> 
 {%if guide.is_linear %}
+	<div class="row">
+		<div class="span10 columns"><h2>Cards</h2> </div>
+		<div class="span6 columns"><h2> Side Cards</h2> </div>
+	</div>
+	
 	<div class="row">
 		<div class="normal_card_container connectedSortable span10 columns" data-bind="template: {name: 'smallCardTemplate',
 						  						foreach: VM.normal_cards, templateOptions: { parentList: VM.normal_cards}},
 						 						sortableList: VM.normal_cards">
-				<a  href="{% url BuildCard gslug=guide.slug %}"class="uibutton"/>Add a New Card</a>			
+				<div class="clearfix"></div>
+				<a  href="{% url BuildCard gslug=guide.slug %}"class="btn primary"/>Add a New Card</a>			
 		</div>
-
+		
 		<div class="floating_card_container span6 columns" >
-			<h2>Side Cards</h2> 
-			<p>These cards are outside the normal flow of your guide. Mostly, this means they don't have previous and next buttons, and you have to create buttons to get your users to these cards. </p>
 			<div data-bind="template: {name: 'smallCardTemplate',
 						  						foreach: VM.floating_cards, templateOptions: { parentList: VM.floating_cards}},
 												sortableList: VM.floating_cards" class="connectedSortable ">
-			</div>
+			</div>									
+			<div class="clearfix"></div>
+			<a  href="{% url BuildFloatingCard gslug=guide.slug %}"class="btn primary"/>Add a New Side Card</a>
+			<br>
+			<p>These cards are outside the normal flow of your guide. Mostly, this means they don't have previous and next buttons, and you have to create buttons to get your users to these cards. </p>
+		
 		</div>
-		<a  href="{% url BuildFloatingCard gslug=guide.slug %}"class="uibutton"/>Add a New Side Card</a>
 
 	</div> {# /row #}
 {%else%}

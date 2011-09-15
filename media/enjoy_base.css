@@ -474,6 +474,7 @@ a:hover {
   text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
   border-color: #df8505 #df8505 #945904;
   border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+  color: black;
 }
 .btn.large {
   font-size: 16px;
@@ -2008,6 +2009,7 @@ footer {
 /*VARS*/
 html {
   min-height: 100%;
+  background-color: white;
 }
 body {
   font-family: 'Helvetica Neue', Arial, sans-serif;
@@ -2016,8 +2018,7 @@ body {
 
   width: 100%;
   height: 100%;
-  /*	background-color: gray;*/
-
+  background-color: white;
 }
 #header {
   position: absolute;
@@ -2095,6 +2096,7 @@ body {
   position: relative;
   background-color: white;
   text-align: center;
+  z-index: 1;
   /*	overflow: hidden;*/
 
 }
@@ -2173,6 +2175,7 @@ h1.card_title {
   text-align: left;
 }
 .card_text * {
+  line-height: 24px;
   color: #404040;
   font-size: 16px;
 }
@@ -2201,7 +2204,8 @@ h1.card_title {
 }
 .prev_and_next {
   position: fixed;
-  bottom: 0;
+  bottom: 1%;
+  z-index: -1;
 }
 /* Modifications By Class of Card / Type of Content on card*/
 .card.noprimarymedia h1.card_title {
@@ -2209,10 +2213,13 @@ h1.card_title {
   font-size: 4.5em;
 }
 .card.hasthumbs .primary_media {
-  height: 70%;
+  height: 60%;
 }
 .card.notitle .primary_media {
   margin-top: 1em !important;
+}
+.card.hasthumbs.notext .primary_media {
+  height: 70%;
 }
 /* PM is BACKGROUND IMAGE, changes everything*/
 .card.primary_is_bg h1.card_title, .card.primary_is_bg .card_text {

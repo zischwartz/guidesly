@@ -14,11 +14,11 @@
 
 	<link rel="stylesheet" href="{{STATIC_URL}}enjoy_base.css" type="text/css" media="screen"  charset="utf-8">
 	
-	<script src="{{STATIC_URL}}/js-libs/deck/modernizr.custom.js"></script>
+	 <script src="{{STATIC_URL}}/js-libs/deck/modernizr.custom.js"></script>
 	
 	{# Video JS #}
 	<link rel="stylesheet" href="{{STATIC_URL}}js-libs/video-js.css" type="text/css" media="screen" title="Video JS" charset="utf-8">
-   	<script src="{{STATIC_URL}}js-libs/video.js" type="text/javascript" charset="utf-8"></script>
+   	 <script src="{{STATIC_URL}}js-libs/video.js" type="text/javascript" charset="utf-8"></script>
     
 	
 	<script>
@@ -27,7 +27,7 @@
 	var current_card_slug;
 	</script>
 
-	<style>{{card.guide.theme.text}}</style>
+{# /*	<style>{{card.guide.theme.text}}</style>*/ #}
 	<script type="text/javascript">
 
 	  var _gaq = _gaq || [];
@@ -52,7 +52,8 @@
 
 <header id="header">
 <a href="/">Guides.ly</a>
-<div class="small">Controls<br> Contents <br> Comments</div>
+{# <div class="small">Controls<br> Contents <br> Comments</div> #}
+<div class="small">Contents</div>
 	<div class="toc">
 	
 	{%for card in guide.cards.all %}
@@ -165,20 +166,11 @@
 
 
 
-{# <script src="{{STATIC_URL}}js-libs/jquery.jplayer.min.js" type="text/javascript"></script> #}
-{# <script src="{{STATIC_URL}}enjoy/nav.js" type="text/javascript" charset="utf-8"></script> #}
-{# // <script src="{{STATIC_URL}}enjoy/card.js"></script> #}
 
-{# Good #}
+
+
 <script src="{{STATIC_URL}}js-libs/deck/core/deck.core.js"></script>
 <script src="{{STATIC_URL}}js-libs/deck/extensions/hash/deck.hash.js"></script>
-
-{# Meh #}
-{# <script src="{{STATIC_URL}}js-libs/deck/extensions/navigation/deck.navigation.js"></script> #}
-
-{# <script src="{{STATIC_URL}}js-libs/deck/extensions/menu/deck.menu.js"></script> #}
-{# <script src="{{STATIC_URL}}js-libs/deck/extensions/goto/deck.goto.js"></script> #}
-{# <script src="{{STATIC_URL}}js-libs/deck/extensions/status/deck.status.js"></script> #}
 
 <script>
 $(document).ready(function(){

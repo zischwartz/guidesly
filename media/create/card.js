@@ -48,7 +48,6 @@ $(".mediaTemplate").live("mouseover mouseout", function(event) {
 
 
 
-
 //Prep inital data for card that's been saved previously and has existing
 	initial_card_object= jQuery.parseJSON(initial_card_json);
 	VM = ko.mapping.fromJS(initial_card_object);
@@ -94,6 +93,8 @@ $(".mediaTemplate").live("mouseover mouseout", function(event) {
 			}//end element = primary
 			
 	}); //end each
+	
+	VM.saving_message = ko.observable();
 	
 	
 
@@ -240,10 +241,16 @@ $(".mediaTemplate").live("mouseover mouseout", function(event) {
 	// Save Element
 	VM.save_element = function()
 	{
-		console.log('this');
-		console.log(this);
+		// console.log('this');
+		// console.log(this.type());
+
+		if (this.type())
+			VM.saving_message('Saving ' + this.type());
+		else
+			VM.saving_message('Saving!');
+			
 		var that = this; //cleanClientStuff(this);
-		console.log();
+		// console.log();
 		
 		var jsonData = ko.mapping.toJSON(that);
 		$.ajax({
@@ -251,6 +258,11 @@ $(".mediaTemplate").live("mouseover mouseout", function(event) {
 			type: "PUT",
 			data:jsonData,
 			success:function(data) { 
+				if (that.type())
+					VM.saving_message('Saved ' + that.type());
+				else
+					VM.saving_message('Save!');
+				$.doTimeout('saved', 1000, function(){VM.saving_message('')}); 				
 				console.log(data); 
 				},
 			contentType: "application/json",
@@ -273,7 +285,7 @@ $(".mediaTemplate").live("mouseover mouseout", function(event) {
 		//     return item;
 		// })
 		// VM.mediaelements(mappedItems);
-
+		VM.saving_message('Saving Card!');
 		var jsData = ko.mapping.toJS(VM);
 		// if (VM.primary_media())
 		// 	jsData.primary_media= VM.primary_media();
@@ -285,7 +297,9 @@ $(".mediaTemplate").live("mouseover mouseout", function(event) {
 			url: VM.resource_uri(),
 			type: "PUT",
 			data:jsonData,
-			//success:function(data) { console.log(data); },
+			success:function(data) { console.log(data); 
+				VM.saving_message('Saved Card!');
+				$.doTimeout('saved', 1000, function(){VM.saving_message('')}); },
 			contentType: "application/json",
 			})
 	};
@@ -386,11 +400,13 @@ $(".mediaTemplate").live("mouseover mouseout", function(event) {
 
 
 	//REPLACE CARDS WITH GUIDE TODO because guide has the relevant info about each card anyway
+	initial_guide_object= jQuery.parseJSON(guide_json);
+	
+	
 	VM.all_cards = ko.observableArray();
-	var json_all_cards = jQuery.parseJSON(all_cards);
-	for (x in json_all_cards)
+	for (x in initial_guide_object.cards)
 		{
-			VM.all_cards.push(json_all_cards[x]);
+			VM.all_cards.push(initial_guide_object.cards[x]);
 		}
 
 //**********************************************
@@ -504,6 +520,9 @@ addCardFromInput = function(that)
 			console.log(new_card_uri);
 			cardToAdd.resource_uri=ko.observable(new_card_uri);
 			cardToAdd.id = cardToAdd.resource_uri().match(/\/card\/(.*)\//)[1];
+			cardToAdd.edit_url = '/create/' + guide_slug + '/' + cardToAdd.id + '/';
+			cardToAdd.absolute_url = '/i/' + cardToAdd.id + '/'
+			//guide_slug is defined in the html document, and the absolute id is a redirect...
 			VM.all_cards.push(cardToAdd);
 			VM.InputVM().default_action.goto(cardToAdd.resource_uri());
 			addInputHelper(VM.InputVM());
@@ -525,6 +544,22 @@ cleanClientStuff = function(that)
 	return that;
 }
 
+
+var deleteCard= function(event)
+{
+	// console.log(event.target.parents(".smallcardWrapper"));
+	$.ajax({
+		url: this.resource_uri,
+		type: "DELETE",
+		success:function(data) { console.log(data); },
+		contentType: "application/json",
+	});
+	
+	// console.log($(this));
+	
+	VM.all_cards.remove(this);
+
+};
 
 (function(a){a.fn.autoResize=function(j){var b=a.extend({onResize:function(){},animate:true,animateDuration:150,animateCallback:function(){},extraSpace:20,limit:1000},j);this.filter('textarea').each(function(){var c=a(this).css({resize:'none','overflow-y':'hidden'}),k=c.height(),f=(function(){var l=['height','width','lineHeight','textDecoration','letterSpacing'],h={};a.each(l,function(d,e){h[e]=c.css(e)});return c.clone().removeAttr('id').removeAttr('name').css({position:'absolute',top:0,left:-9999}).css(h).attr('tabIndex','-1').insertBefore(c)})(),i=null,g=function(){f.height(0).val(a(this).val()).scrollTop(10000);var d=Math.max(f.scrollTop(),k)+b.extraSpace,e=a(this).add(f);if(i===d){return}i=d;if(d>=b.limit){a(this).css('overflow-y','');return}b.onResize.call(this);b.animate&&c.css('display')==='block'?e.stop().animate({height:d},b.animateDuration,b.animateCallback):e.height(d)};c.unbind('.dynSiz').bind('keyup.dynSiz',g).bind('keydown.dynSiz',g).bind('change.dynSiz',g)});return this}})(jQuery);
 

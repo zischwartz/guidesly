@@ -18,8 +18,15 @@
 
 @static-url: "/media/";
 
+.topbar
+{
+	position: relative !important;
+}
+
 .capitalized
-{text-transform: capitalize;}
+{
+	text-transform: capitalize;
+}
 
 .left
 {text-align: left;}
@@ -27,10 +34,12 @@
 .center
 {text-align:center;}
 
+
+
 /*LESSCSS*/
 .container>.sidebar, .container>.content, .container-fluid >.sidebar, .container-fluid > .content
 {
-	margin-top: 4em;
+	margin-top: 2em;
 }
 
 .notBlank
@@ -48,6 +57,8 @@
 	.box-shadow(0 0px 8px rgba(0,0,0,.45));
 	padding-bottom: .3em;
 	line-height: 1em;
+	
+	background-color: white;
 }
 
 .cardwrap
@@ -239,6 +250,9 @@ strong.green {
 .adder.text 
 {
 	font-size: 1.2em !important;
+	padding: 1px;
+	#markdownhelpbutton
+	{display:none;}
 	
 	#wmd-button-bar
 	{
@@ -272,10 +286,16 @@ strong.green {
 		border: 1px solid @gray;
 	}
 	
+	&.editing #markdownhelpbutton
+	{
+		display: block;
+	}
+	
 	.cardtext
 	{
 		font-size: 1.2em;
 		text-align: left;
+		line-height: 22px;
 /*		overflow: visible;*/
 
 		* {font-size: 1em;}
@@ -283,6 +303,7 @@ strong.green {
 		h2 {font-size: 1.6em; display: block;}
 		h3 {font-size: 1.4em;}
 		h3 {font-size: 1.3em;}
+		p { padding: 0; margin-bottom: 1em; line-height: 22px;}
 
 		
 	}
@@ -414,6 +435,8 @@ strong.green {
 
 .sidebar
 {
+	#translucent > .background(@white, 0.8);
+	
 	form.form-stacked
 	{
 		padding:0px;
@@ -537,7 +560,8 @@ strong.green {
 		
 		.preview_image
 		{
-			width: @adderWidth;
+			max-width: @adderWidth;
+			max-height: @adderWidth -100;
 		}
 	}
 	
@@ -638,12 +662,25 @@ strong.green {
 		img
 		{
 			width: 75%;
-			}
+		}
+		
+		&.is_current_card
+		{
+			display: none;
+		}
 	}
 	
 }
 
-
+.smallcardWrapper.is_current_card
+{
+	.box-shadow(0px 0px 4px @black);
+	background-color: @editingColor !important;
+	.cardNumber
+	{
+		background-color: darken(@editingColor, 10) !important;
+	}
+}
 
 /* SMALL CARDS for guide editing, and homescreen (guides are shown like cards...)*/
 
@@ -663,8 +700,16 @@ strong.green {
 	overflow: hidden;
 	background-color: white;
 	border-radius: 3px;
-	cursor: move;
-	
+}
+
+.normal_card_container, .floating_card_container
+{
+	.smallcard{
+		cursor:move;}
+	.smallcardWrapper .cardNumber:hover
+	{
+		cursor: move;
+	}
 }
 
 .smallcardWrapper
@@ -691,10 +736,7 @@ strong.green {
 
 }
 
-.smallcardWrapper .cardNumber:hover
-{
-	cursor: move;
-}
+
 
 .smallcardWrapper:hover .controls a
 {
@@ -711,27 +753,9 @@ strong.green {
 }
 
 
-.normal_card_container
-{
-/*	overflow: auto;
-	display:block;
-	width: 100%;
-	padding: .5em;
-	min-height: 10em;*/
-}
-
-.floating_card_container
-{
-/*	overflow: auto;
-	display:block;
-	width: 100%;
-	margin-top: 1em;
-*/
-}
-
 .connectedSortable
 {
-	min-height: 10em;
+	min-height: 15em;
 }
 
 .smallcardWrapper .controls 
@@ -820,4 +844,13 @@ strong.green {
 .listedGuides .smallcardWrapper .controls a
 {
 	display: inline;
+}
+
+
+
+
+//
+.popover p
+{
+	margin-bottom: 1em !important;
 }

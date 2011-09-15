@@ -28,8 +28,9 @@
 			var static_url = "{{STATIC_URL}}";
 			var current_card_id ="{{card.id}}";
 			var guide_id = {{card.guide.id}};
+			var guide_slug = "{{card.guide.slug}}";
 			var initial_card_json= '{{card_json|safe|escapejs}}';
-			var all_cards = '{{all_cards_json|safe|escapejs}}'; 
+			var guide_json = '{{guide_json|safe|escapejs}}'; 
 			var primary_media_json = '{{primary_media_json|safe|escapejs}}'; 
 			// TODO replace with all_cards with guide
 			
@@ -82,6 +83,22 @@
 			});
 				
 			
+			$(".delete_link").live('click',function(event){
+				$(this).parent().addClass('making_sure_delete');
+				event.preventDefault();
+
+			});
+			
+			$("#markdownhelpbutton").click(function(){
+				is_displayed = $("#markdownhelp").css('display');
+				console.log(is_displayed);
+				if (is_displayed == 'none')
+					$("#markdownhelp").slideDown();
+				else
+					$("#markdownhelp").slideUp();
+			});
+			
+			
 		}); //end docready
 
 	function didPressEnter(event)
@@ -105,7 +122,8 @@
 	function turnOffEditing(event)
 	{
 		el=$(event.target);
-		// console.log(el.hasClass('editing'));
+		console.log(el.hasClass('editing'));
+		console.log(el);
 		if (el.hasClass('editing'))
 		{
 			event.stopPropagation();
@@ -113,8 +131,9 @@
 		}
 		$(el).removeClass('editing');
 		$(el).parents('.editing').removeClass('editing');
+		$("#markdownhelp").hide();
+
 		event.stopPropagation();
-		
 		VM.save_card();
 	}
 	
@@ -143,10 +162,9 @@
 {%load verbatim_templatetag%} 
 
 {%block content%}
-<div class="cardwrap"> 
-	{# <div class="card" data-bind="style:{background: primary_is_bg() ? 'url('+ VM.mediaelements()[0].file.file() +' ) center center no-repeat' : 'none'}"> #}
+<div class="cardwrap">
+{# <div class="cardwrap" data-bind="style:{background: primary_is_bg()&&VM.mediaelements().length ? 'url('+ VM.mediaelements()[0].file.file() +' ) center center no-repeat' : 'none'}" style='background-size: cover'>  #}
 	<div class="card">
-
 		<div class="title adder " tabindex="3" data-bind="event:{ focusin: turnOnEditing, focusout: turnOffEditing, keypress: didPressEnter}">
 
 			<a class="closex closer" href="#">x</a>				
@@ -192,10 +210,12 @@
 				 <div class="cardtext" data-bind="visible: !text()"><p>Text for your card. Easy Markdown formatting. Totally optional.</p></div>
 				 <div id="wmd-preview" class="wmd-panel wmd-preview cardtext" data-bind="visible: text()">Placeholder</div>
 
-	              <form class="wmd-panel"><div id="wmd-button-bar"></div> 
+	              <form class="wmd-panel"><div id="wmd-button-bar"></div>
 					<textarea data-bind="value:text, valueUpdate: 'afterkeydown'" class="xxlarge tinput wmd-input" id="wmd-input" name="textarea" placeholder="Add some text here. You know, if you want to..."></textarea> </form>
 					<button class="btn tiny smallOK" id="card_textOK" data-bind="click: function(event){turnOffEditing(event), VM.save_card()}">OK</button>
 			</div>
+			<a class="#" id="markdownhelpbutton">Formatting Help</a>
+			{% include "create/markdownhelp.html"%}
 		</div>
 		
 		<div class="adder input">
@@ -232,33 +252,46 @@
 	</div> <!-- /card --> 
 </div> <!-- /cardwrap -->
 
+
+
 {# end new #}
 {# 	********************************************************************************************************************************************************************************** #}
 {# 	********************************************************************************************************************************************************************************** #}
+{%endblock%}
 
-
-
+{%block more%}
+<br>
+<h3> Cards In <i>{{guide.title}}</i></h3>
+<div class="all_card_holder" data-bind="template: {name: 'smallCardTemplate',
+  						foreach: VM.all_cards,
+		 				beforeRemove: function(elem) {$(elem).slideUp() },
+						afterAdd: function(elem) {$(elem).hide().slideDown() } }">
+</div>
 
 {%endblock%}
+
 
 
 {%block sidebar%}
 
 <div class="sidebar">
+	<button class="btn primary large" data-bind="click: VM.save_card, text: VM.saving_message() ? VM.saving_message : 'Save', css: {crazy: VM.saving_message} ">Save Card</button>	<br>
+	<a href="{% url CardDetailViewByIdRedirect id=card.id %}" target="_blank" class="btn info ">Preview <span data-bind="text: !title()  ? 'Card': title"></span></a>
+	<a href="{% url EditGuide gslug=card.guide.slug %}" target="_blank" class="btn ">Guide Overview</a>
 	<h3>Card Options</h3>
-	<a href="{% url CardDetailViewByIdRedirect id=card.id %}" target="_blank" class="btn info ">Preview Card</a>
-	<button class="btn primary" data-bind="click: VM.save_card">Save Card</button>
+
+
 	<form class="form-stacked">
 		<div class="input">
 			<ul class="inputs-list">
 				<li>
 					<label>
 						<input type="checkbox" data-bind="checked: is_floating_card" id="is_floating_card">
-						<span>This is a sidecard</span>
+						<span>This is a sidecard 
+							 <a href="#explain-sidecard" class="bootstrap-popover" title="Sidecard?">?</a>
+						</span>
 					</label>
-					<span class="help-block">Side cards are outside the normal flow of the guide. Mostly, they don't have previous and next buttons.</span>
 					</li>
-					<br>
 					<li>
 						<label>
 							<input type="checkbox" data-bind="checked: autoplay">
@@ -268,10 +301,10 @@
 					<li>
 						<label>
 							<input type="checkbox" name="primary_is_bg" value="primary_is_bg" data-bind="checked: primary_is_bg">
-							<span>Make the main image the card background </span>
+							<span>Main Image is Background
+								<a href="#explain-pm-is-bg" class="bootstrap-popover" title="Big, Pretty Images?">?</a>
+								</span>
 						</label>
-						<span class="help-block">Show off your image, full bleed.</span>
-						
 					</li>
 					<li>
 						<label>
@@ -284,7 +317,7 @@
 </form>
 <br><a class="btn primary" href="{% url BuildCard gslug=card.guide.slug %}">Add New Card</a><br><br>
 
-	<button class="btn danger">Delete Card</button>	
+	<button class="btn danger">Delete <span data-bind="text: !title()  ? 'This Card': title" class="capitalized"> a </span></button>	
 </div> {# /sidebar #}
 
 
@@ -303,7 +336,8 @@
 			</div>
 			<div class="mediaOptions">				
 				{{ if VM.check_if_primary($item.data) }}<br>
-					<label class="capitalized"><span data-bind="text: type"></span> Title: <input class="tinput xlarge" type="text" data-bind="value: title, valueUpdate: 'afterkeydown'"> <button class="btn tiny" data-bind="click: VM.save_element">OK</button>
+					<label class="capitalized"><span data-bind="text: type"></span> Title: <input class="tinput xlarge" type="text" data-bind="value: title, valueUpdate: 'afterkeydown'">
+					<button class="btn tiny mediaOK" data-bind="click: VM.save_element">OK</button>
 					 <br><br>
 					{{if type() == 'image'}}<button class="btn info" data-bind="click: VM.editImage">Edit Image</button> {{/if}}
 					<button class="btn danger" data-bind="click: VM.deleteFromCard"> Remove </button><br><br>
@@ -384,6 +418,28 @@
 		</div>
 	</script>
 	
+
+		<script id='smallCardTemplate' type='text/html'>
+		<div class="smallcardWrapper" data-bind="css: {is_current_card: id == VM.id()}"> 
+			<div class="cardNumber">
+				{{ if ((typeof(card_number) != "undefined")) }}
+					<span data-bind="text: card_number ? card_number: ''"></span> 
+				{{/if}}
+			</div>
+			<a class="smallcard" href="${edit_url}">
+				<span data-bind="text: title ? title: 'Untitled Card '"></span>
+				{{if primary_media }}<br><img src="${primary_media.file.thumb_url}">{{/if}} 
+			</a>
+			<div class="controls">
+				<a href="${edit_url}">Edit</a>
+				<a href="${absolute_url}">Preview</a>
+				<a href="#" class="delete_link">Delete</a>
+				<a href="#" class="delete_link_real" data-bind="click: deleteCard">Sure?</a>
+			</div>
+		</div>
+		</script>
+
+	
 {%endverbatim%}
 
 <div class="modal-backdrop" id="addExternalMediaModal">
@@ -450,7 +506,7 @@
 				<p>Now, pick a card for the <span data-bind="text:VM.InputVM().type"></span> to go to:</p>
 
 				{# For each card... #}
-				<div class="all_card_holder" data-bind="template: {name: 'smallCardTemplate',
+				<div class="all_card_holder" data-bind="template: {name: 'smallCardPickerTemplate',
 				  						foreach: VM.all_cards,
 						 				beforeRemove: function(elem) {$(elem).slideUp() },
 										afterAdd: function(elem) {$(elem).hide().slideDown() } }">
@@ -458,17 +514,17 @@
 				
 				{# The template #}
 				{%verbatim%}
-				<script id='smallCardTemplate' type='text/html'>
-					<label class="btn cardbtn" for="radiob-card-${id}" data-bind="css: {checked: VM.InputVM().default_action.goto()==resource_uri}, click: function() { VM.InputVM().default_action.goto(resource_uri); return true; } ">
+				<script id='smallCardPickerTemplate' type='text/html'>
+					<label class="btn cardbtn" for="radiob-card-${id}" data-bind="css: {checked: VM.InputVM().default_action.goto()==resource_uri, is_current_card: id == VM.id() }, click: function() { VM.InputVM().default_action.goto(resource_uri); return true; } ">
 						<span data-bind="text: title ? title.slice(0,15): 'Untitled'"></span> 
 						<input type="radio" id="radiob-card-${id}" data-bind="value: resource_uri, checked:  VM.InputVM().default_action.goto" name="pickacard">
-							{{if primary_media }}<br><img src="${primary_media}">{{/if}}
+							{{if primary_media }}<br><img src="${primary_media.file.thumb_url}">{{/if}} 
 						</label>
 				</script>
 				{%endverbatim%}
 				
 				{# *************************** #}
-				<br><br>
+				<div class="clearfix"></div>
 					<label class="btn cardbtn" for="radiob-card-new" data-bind="css: {checked: VM.InputVM().default_action.goto()=='addcard'}"> <span data-bind="text: !newCardTitle() ? 'An Entirely New Card' : newCardTitle "></span>
 						<input type="radio" id="radiob-card-new" data-bind="checked: VM.InputVM().default_action.goto" value="addcard" name="pickacard"/>
 					</label> 
@@ -488,5 +544,20 @@
 		</div>
 	</div> 
 </div> {# /#addExternalMediaModal #}
+
+{# POPOVER EXPLAINERS #}
+<div style="display:none;">
+    <div id="explain-sidecard">
+	<p>Side cards are outside the normal flow of the guide.</p><p> Mostly, this means they don't have previous and next buttons, and your users won't get to them from the previous and next buttons on other cards.</p>
+	</div>
+	
+	<div id="explain-pm-is-bg">
+	<p>If your main media is an image, this will make it the full-bleed background of your card. Very pretty, but can slow down your guide if you've used a super-duper high resolution image</p>
+	</div>
+	
+	<div id="explain-markdown">
+	<p>If your main media is an image, this will make it the full-bleed background of your card. Very pretty, but can slow down your guide if you've used a super-duper high resolution image</p>
+	</div>
+</div>
 
 {%endblock%}

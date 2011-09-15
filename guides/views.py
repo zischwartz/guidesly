@@ -163,23 +163,11 @@ def EditCard (request, gslug, id):
 		primary_media_bundle= mr.build_bundle(obj=card.primary_media, request=request)
 		primary_media_json = mr.serialize(request, mr.full_dehydrate(primary_media_bundle),'application/json' )
 
-	#and all the cards in the guide
-	all_cards = get_list_or_404(Card, guide__slug=gslug)
-	c=CardResource()
-	card_list = []
-	# TODO REPLACE WITH GUIDE... as that works much better, and makes more sense.
-	for a_card in all_cards:
-		# card_list.append({'title':card.title,'resource_uri': c.get_resource_uri(card), 'id':card.id})
-		if a_card.primary_media:
-			card_list.append({'title':a_card.title,'resource_uri': c.get_resource_uri(a_card), 'id':a_card.id, 'primary_media':a_card.primary_media.file.thumb_url})
-		else:
-			card_list.append({'title':a_card.title,'resource_uri': c.get_resource_uri(a_card), 'id':a_card.id})
-
-	all_cards_json = simplejson.dumps(card_list)
-
 	
 	#should get the guide instead, that has the relevant card info and would be more consistant TODO delete above and impliment the below
-	# guide = get_object_or_404(Guide, slug=gslug)
-	# g = GuideResource()
-	# guide_json = g.serialize(None, g.full_dehydrate(guide), 'application/json')
+	guide = get_object_or_404(Guide, slug=gslug)
+	g = GuideResource()
+	guide_bundle= g.build_bundle(obj=guide, request=request)
+	guide_json = g.serialize(request, g.full_dehydrate(guide_bundle), 'application/json')
+	
 	return render_to_response("create/edit_card.html", locals(), context_instance=RequestContext(request))

@@ -103,8 +103,7 @@
 
 {%if is_fluid%}
 <div class="container-fluid">
-{%block sidebar%}
-{%endblock%}
+{%block sidebar%}{%endblock%}
 {%else%} <div class="container">{%endif%}
 	<div class="content">
 		{% if messages %}<div id="messages">
@@ -117,7 +116,14 @@
 
 		</div> {# /content #}
 	</div> {# /container #}
-
+	
+	{# for stuff like more cards in the card editor #}
+	{%if is_fluid%}
+	<div class="container-fluid">
+		{%block more%}{%endblock%}
+	</div>
+	{%endif%}
+	
 	<footer id="footer">
 		<div class="container">
 			<div class="centext">Guidesly.com</div> 

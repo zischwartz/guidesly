@@ -484,6 +484,7 @@ a:hover {
   text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
   border-color: #df8505 #df8505 #945904;
   border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+  color: black;
 }
 .btn.large {
   font-size: 16px;
@@ -1964,6 +1965,9 @@ footer {
   margin-bottom: 0;
 }
 /*VARS*/
+.topbar {
+  position: relative !important;
+}
 .capitalized {
   text-transform: capitalize;
 }
@@ -1978,7 +1982,7 @@ footer {
 .container > .content,
 .container-fluid > .sidebar,
 .container-fluid > .content {
-  margin-top: 4em;
+  margin-top: 2em;
 }
 .notBlank {
   color: #404040 !important;
@@ -1996,6 +2000,7 @@ footer {
   box-shadow: 0 0px 8px rgba(0, 0, 0, 0.45);
   padding-bottom: .3em;
   line-height: 1em;
+  background-color: white;
 }
 .cardwrap {
   margin-left: -100px;
@@ -2141,6 +2146,10 @@ strong.green {
 }
 .adder.text {
   font-size: 1.2em !important;
+  padding: 1px;
+}
+.adder.text #markdownhelpbutton {
+  display: none;
 }
 .adder.text #wmd-button-bar {
   display: none;
@@ -2171,9 +2180,13 @@ strong.green {
   padding: 6px;
   border: 1px solid #808080;
 }
+.adder.text.editing #markdownhelpbutton {
+  display: block;
+}
 .adder.text .cardtext {
   font-size: 1.2em;
   text-align: left;
+  line-height: 22px;
   /*		overflow: visible;*/
 
 }
@@ -2194,6 +2207,11 @@ strong.green {
 }
 .adder.text .cardtext h3 {
   font-size: 1.3em;
+}
+.adder.text .cardtext p {
+  padding: 0;
+  margin-bottom: 1em;
+  line-height: 22px;
 }
 .btn {
   letter-spacing: 1px;
@@ -2315,6 +2333,7 @@ strong.green {
   text-align: center;
 }
 .sidebar {
+  background-color: rgba(255, 255, 255, 0.8);
   /*	input[type=text]
 	{
 		height: @baseline*1.5 !important;
@@ -2410,7 +2429,8 @@ strong.green {
 
 }
 .mediaTemplate .preview .preview_image {
-  width: 550px;
+  max-width: 550px;
+  max-height: 550px -100;
 }
 .mediaTemplate .mediaTitle {
   width: 100%;
@@ -2486,6 +2506,18 @@ strong.green {
 .modal .cardbtn img {
   width: 75%;
 }
+.modal .cardbtn.is_current_card {
+  display: none;
+}
+.smallcardWrapper.is_current_card {
+  -webkit-box-shadow: 0px 0px 4px #000000;
+  -moz-box-shadow: 0px 0px 4px #000000;
+  box-shadow: 0px 0px 4px #000000;
+  background-color: #bfffde !important;
+}
+.smallcardWrapper.is_current_card .cardNumber {
+  background-color: #8cffc4 !important;
+}
 /* SMALL CARDS for guide editing, and homescreen (guides are shown like cards...)*/
 .smallcard {
   display: block;
@@ -2499,6 +2531,11 @@ strong.green {
   overflow: hidden;
   background-color: white;
   border-radius: 3px;
+}
+.normal_card_container .smallcard, .floating_card_container .smallcard {
+  cursor: move;
+}
+.normal_card_container .smallcardWrapper .cardNumber:hover, .floating_card_container .smallcardWrapper .cardNumber:hover {
   cursor: move;
 }
 .smallcardWrapper {
@@ -2519,9 +2556,6 @@ strong.green {
 .smallcardWrapper:hover .cardNumber {
   background-color: #f3f3f3;
 }
-.smallcardWrapper .cardNumber:hover {
-  cursor: move;
-}
 .smallcardWrapper:hover .controls a {
   display: inline;
 }
@@ -2531,24 +2565,8 @@ strong.green {
   background-color: #e8e8e8;
   padding: 3px;
 }
-.normal_card_container {
-  /*	overflow: auto;
-	display:block;
-	width: 100%;
-	padding: .5em;
-	min-height: 10em;*/
-
-}
-.floating_card_container {
-  /*	overflow: auto;
-	display:block;
-	width: 100%;
-	margin-top: 1em;
-*/
-
-}
 .connectedSortable {
-  min-height: 10em;
+  min-height: 15em;
 }
 .smallcardWrapper .controls {
   height: 2em;
@@ -2610,6 +2628,9 @@ strong.green {
 }
 .listedGuides .smallcardWrapper .controls a {
   display: inline;
+}
+.popover p {
+  margin-bottom: 1em !important;
 }
 .wmd-panel {
   /*	margin-left: 25%;*/
