@@ -14,20 +14,26 @@
 
 	<link rel="stylesheet" href="{{STATIC_URL}}enjoy_base.css" type="text/css" media="screen"  charset="utf-8">
 	
-	<script src="{{STATIC_URL}}/js-libs/deck/modernizr.custom.js"></script>
-	
-	{# Video JS #}
-	<link rel="stylesheet" href="{{STATIC_URL}}js-libs/video-js.css" type="text/css" media="screen" title="Video JS" charset="utf-8">
-   	<script src="{{STATIC_URL}}js-libs/video.js" type="text/javascript" charset="utf-8"></script>
+	<script src="{{STATIC_URL}}js-libs/deck/modernizr.custom.js"></script>
+	                
+
+   {# Mediaelement JS #}     
+	<script src="{{STATIC_URL}}js-libs/mediaplayer/jquery.js"></script>  
+	<script src="{{STATIC_URL}}js-libs/mediaplayer/mediaelement-and-player.min.js"></script>  
+	<script src="{{STATIC_URL}}js-libs/mediaplayer/mediaelement-and-player.js"></script>
+	<link rel="stylesheet" href="{{STATIC_URL}}js-libs/mediaplayer/mediaelementplayer.css"/>   
+	<link rel="stylesheet" href="{{STATIC_URL}}js-libs/mediaplayer/mediaelementplayer.min.css"/>    
     
 	
 	<script>
 	var current_media_type;
 	var guide_title = "{{guide.title}}";
-	var current_card_slug;
+	var current_card_slug;          
+
 	</script>
 
-	<style>{{card.guide.theme.text}}</style>
+	<style>{{card.guide.theme.text}}</style>  
+	
 	<script type="text/javascript">
 
 	  var _gaq = _gaq || [];
@@ -94,15 +100,24 @@
 		    {%if card.primary_media.type == "video"%}
 				{%include "enjoy/videoplayer.html" %} {# there's still a div with class primary_media in there #}
 				{# [Video Player: ] {{card.primary_media.file}} #}
-				<script>current_media_type = 'video'</script>
-				<div class="caption">{{card.primary_media.title}}</div>
-				
+				<script>current_media_type = 'video' </script>
+				<div class="caption">{{card.primary_media.title}}</div>   
 		    {%endif%}
 		
 			{# Audio will never be primary, and there will only be one audio #}
 		    {%if card.the_audio %}
-				{{card.the_audio}}
-				[An Audio Player]
+			   {#{{card.the_audio}}#}
+			<center>  
+				<audio id="player" type="audio/mp3" controls="controls">   
+						<source src="{{card.primary_media.file.file.url}}"> 
+							</audio>        
+			 </center>
+							
+				 
+				<script>
+			    current_media_type = 'audio'
+			    $('video,audio').mediaelementplayer();     
+				</script>
 		    {%endif%}
 
 	
@@ -183,7 +198,8 @@
 <script>
 $(document).ready(function(){
 	console.log('your doc is ready, ser');
-	VideoJS.setupAllWhenReady();  
+   // VideoJS.setupAllWhenReady(); 
+   
 	
 	$.deck('.card', {
 			keys: {
@@ -198,7 +214,7 @@ $(document).ready(function(){
 	
 	$("#header").find("a.goto[data-destination="+current_card_slug+"]").addClass("active");
 	if (inital_card.data("autoplay"))
-		$.doTimeout(300, function(){inital_card.find(".video-js").player().play();});
+	 //   $.doTimeout(300, function(){inital_card.find(".video-js").player().play();});
 		
 	$("#header").hover(
 		function(){

@@ -1,6 +1,17 @@
 
+<video id="player" width="540" height="303" controls="control" preload="none"> 
+							<source src="{{card.primary_media.file.url}}" type="video/mp4" /> 
+							
+							
+						    <object width="600" height="800" type="application/x-shockwave-flash" data="/js/flashmediaelement.swf"> 
+								<param name="movie" value="{{SITE_STATIC}}js-libs/mediaplayer/flashmediaelement.swf" /> 
+								<param name="flashvars" value="controls=true&amp;file={{primary_media.file.file.url}}" /> 
+							</object> 
+						</video>       
 
-<div class="video-js-box primary_media">
+
+
+<!--<div class="video-js-box primary_media">
      <video id="video" 
 			class="video-js"
 			width="800" 
@@ -19,4 +30,4 @@
 				    <param name="flashvars" value='config={"clip":{"url": "{{card.primary_media.file.file.url}}","autoPlay":false,"autoBuffering":true}}' />
 				</object>                     
 		</video>	       
-</div> {# end video-js-box and primary media #}
+</div> {# end video-js-box and primary media #} -->         
