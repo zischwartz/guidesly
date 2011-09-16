@@ -114,7 +114,10 @@ class Guide (models.Model):
 		if self.card_order:
 			card = Card.objects.get(id=self.card_order[0])
 		else:
-			card = Card.objects.filter(guide=self)[0]
+			try:
+				card = Card.objects.filter(guide=self)[0]
+			except:
+				return None;
 		if card.primary_media:
 			return card.primary_media.file.thumb_url
 		else:
