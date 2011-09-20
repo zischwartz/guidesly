@@ -78,8 +78,12 @@ class Guide (models.Model):
 				card.card_number = i
 				card.is_floating_card= False
 				card.saved_by_guide()
+		j=0
 		for c in self.floating_list:
+			j+=1
 			card=Card.objects.get(pk=c)
+			if not self.first_card and j==1 and not self.show_toc:
+				self.first_card = card	
 			card.is_floating_card= True
 			card.card_number= 0
 			card.saved_by_guide()

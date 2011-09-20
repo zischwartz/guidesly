@@ -49,6 +49,16 @@
 	</div> {# /row #}
 {%else%}
 	<div class="row">
+		{# <div class="floating_card_container connectedSortable span2 columns" data-bind="template: {name: 'smallCardTemplate', #}
+		{# 				  							foreach: VM.floating_cards, #}
+		{# 										templateOptions: { parentList: VM.floating_cards}}, #}
+		{# 				 						sortableList: VM.floating_cards"> #}
+		{# 	FIRST CARD #}
+		{#  #}
+		{#  #}
+		{#  #}
+		{# </div> #}
+		
 		<div class="floating_card_container span16 columns" >
 
 			<div data-bind="template: {name: 'smallCardTemplate',
@@ -57,7 +67,7 @@
 			</div>
 		</div>
 	</div>
-	<a  href="{% url BuildFloatingCard gslug=guide.slug %}"class="uibutton"/>Add a New Card</a>
+	<a  href="{% url BuildFloatingCard gslug=guide.slug %}"class="btn primary"/>Add a New Card</a>
 {%endif%}
 
 
@@ -89,6 +99,7 @@
 {# <table>	{{form.as_table}}</table> #}
 {# <input type="submit" value="Edit guide" /> #}
 {# </form> #}
+
 {% endblock %} {# end content #}
 
 {# {%block sidebar%} #}

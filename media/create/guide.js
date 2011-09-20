@@ -104,7 +104,7 @@ var deleteCard= function(event)
 
 $(document).ready(function(){	
 
-	$(".uibutton").button();
+	// $(".uibutton").button();
 	
 	$(".delete_link").live('click',function(event){
 		$(this).parent().addClass('making_sure_delete');

@@ -425,7 +425,7 @@ $(".mediaTemplate").live("mouseover mouseout", function(event) {
 	ko.applyBindings(VM);
 
 
-	$(".uibutton").button();
+	// $(".uibutton").button();
 
 
 });// end docreadyy ---  end docreadyy ---  end docreadyy ---  end docreadyy ---  end docreadyy 

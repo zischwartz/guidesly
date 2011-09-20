@@ -197,6 +197,7 @@ INSTALLED_APPS = (
 	'thef',
     'tastypie',
     'south',
+    'compress',
 
     'accounts',
 	'fileupload',

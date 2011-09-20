@@ -2,20 +2,17 @@
 
 {%block extrahead%}
 		
-		<link rel="stylesheet" media="all" href="{{STATIC_URL}}upload-plugin/jquery.fileupload-ui.css"/>
-		<script type="text/javascript" src="{{STATIC_URL}}upload-plugin/jquery.iframe-transport.js"></script>
-		<script type="text/javascript" src="{{STATIC_URL}}upload-plugin/jquery.fileupload.js"></script>
-		<script type="text/javascript" src="{{STATIC_URL}}upload-plugin/jquery.fileupload-ui.js"></script>
-		<script type="text/javascript" src="{{STATIC_URL}}upload-plugin/jquery.tmpl.min.js"></script>
-		<script type="text/javascript" src="{{STATIC_URL}}upload-plugin/application-original.js"></script>
-		<link rel="stylesheet" href="{{STATIC_URL}}upload-plugin/thumbnail-scaling.css">
+		{# <link rel="stylesheet" media="all" href="{{STATIC_URL}}upload-plugin/jquery.fileupload-ui.css"/> #}
+		{# <script type="text/javascript" src="{{STATIC_URL}}upload-plugin/jquery.iframe-transport.js"></script> #}
+		{# <script type="text/javascript" src="{{STATIC_URL}}upload-plugin/jquery.fileupload.js"></script> #}
+		{# <script type="text/javascript" src="{{STATIC_URL}}upload-plugin/jquery.fileupload-ui.js"></script> #}
+		{# <script type="text/javascript" src="{{STATIC_URL}}upload-plugin/jquery.tmpl.min.js"></script> #}
+		{# <script type="text/javascript" src="{{STATIC_URL}}upload-plugin/application-original.js"></script> #}
+		{# <link rel="stylesheet" href="{{STATIC_URL}}upload-plugin/thumbnail-scaling.css"> #}
 	
 		<script>
 		
 		$(document).ready(function(){	
-		
-
-			$(".radioset").buttonset();
 			
 			$(".advanced").hide();
 			
@@ -63,13 +60,13 @@
 			</tr>
 	
 	
-				<tr class="advanced">
-					<td class="labels"><label >Start With</label></td>
-					<td class="radioset">
-						<input type="radio" id="in_toc2" name="show_toc" checked="checked"  value=""  /><label for="in_toc2">First Card</label>
-						<input type="radio" id="in_toc" name="show_toc" value="true" /><label for="in_toc">A Table of Contents</label> 
-					</td>
-				</tr>
+				{# <tr class="advanced"> #}
+				{# 	<td class="labels"><label >Start With</label></td> #}
+				{# 	<td class="radioset"> #}
+				{# 		<input type="radio" id="in_toc2" name="show_toc" checked="checked"  value=""  /><label for="in_toc2">First Card</label> #}
+				{# 		<input type="radio" id="in_toc" name="show_toc" value="true" /><label for="in_toc">A Table of Contents</label>  #}
+				{# 	</td> #}
+				{# </tr> #}
 	
 				<tr class="advanced">
 					<td class="labels"><label >Comments</label></td>
@@ -94,7 +91,8 @@
 					<td></td><td class="explain">Is this guide for everyone or a select few? <br>Don't worry, nobody will see anything till you click publish, later. </td>
 				</tr>
 
-			<tr><td></td><td><br><input type="submit" class="btn primary" value="Create guide" /></td>
+			<tr><td></td><td><br>
+				<input type="submit" class="btn primary" value="Create Guide" /></td>
 			</table>
 		
 				<input type="hidden" name="owner" id="id_owner" value="{{user.id}}">
