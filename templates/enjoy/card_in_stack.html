@@ -170,19 +170,48 @@
 
 
 <script src="{{STATIC_URL}}js-libs/deck/core/deck.core.js"></script>
-<script src="{{STATIC_URL}}js-libs/deck/extensions/hash/deck.hash.js"></script>
+
+{# HISTORY JS from https://github.com/balupton/History.js #}
+<script>if ( typeof window.JSON === 'undefined' ) { document.write('<script src="{{STATIC_URL}}js-libs/history/json2.js"><\/script>'); }</script>
+<script src="{{STATIC_URL}}js-libs/history/amplify.store.js"></script>
+<script src="{{STATIC_URL}}js-libs/history/history.adapter.jquery.js"></script>
+<script src="{{STATIC_URL}}js-libs/history/history.js"></script>
+<script src="{{STATIC_URL}}js-libs/history/history.html4.js"></script>
+
+{# <script src="{{STATIC_URL}}js-libs/deck/extensions/hash/deck.hash.js"></script> #}
 
 <script>
+
+var History = window.History;
+
+// Bind to StateChange Event
+History.Adapter.bind(window,'statechange',function(){ // Note: We are using statechange instead of popstate
+    var State = History.getState(); // Note: We are using History.getState() instead of event.state
+	console.log('Statechange historyjs: ' + State.data.slug);
+    History.log(State.data, State.title, State.url);
+	// console.log(event);
+	// if (event.type=='popstate')
+	// {
+		var index= $(".card").index( document.getElementById(State.data.slug));
+	// 	console.log("PopStateEvent HACK");
+		$.deck('go', index);
+	// 	// ARG this is registering twice, because of Deck, and because of the lack of isinternal
+	// }
+});
+
+History.Adapter.bind(window,'popstate',function(){ 
+	var State = History.getState(); // Note: We are using History.getState() instead of event.state
+    console.log('Popstate historyjs : ' + State.data.slug);
+	
+})
+	
+
+
 $(document).ready(function(){
-	console.log('your doc is ready, ser');
 	VideoJS.setupAllWhenReady();  
 	
-	$.deck('.card', {
-			keys: {
-				next: -1, // No key activation
-				previous: -1 // No key activation
-			}
-		});
+	$.deck('.card', { keys: {next: -1, previous: -1} }); // No key activation	
+		
 	
 //set the TOC up with the current card, and the video player
 	inital_card = $.deck('getSlide');
@@ -197,7 +226,8 @@ $(document).ready(function(){
 			$(this).addClass("hovered");
 			$(this).doTimeout('showtoc'); //cancels the timer
 		},
-		function(){	$(this).doTimeout('showtoc', 1000, function(){this.removeClass("hovered");});	}	);
+		function(){	
+			$(this).doTimeout('showtoc', 1000, function(){this.removeClass("hovered");});	}	);
 
 //Bind the keys for back and forward
 	$(window).keydown(function(event) {
@@ -232,6 +262,12 @@ $(document).ready(function(){
 		$("#header a.goto").removeClass("active");
 		$("#header").find("a.goto[data-destination="+current_card_slug+"]").addClass("active");
 		
+		// History.js
+		History.pushState({slug: current_card_slug } , title, current_card_slug);
+		
+		console.log('pushing state :' +current_card_slug);
+		console.log('and event: ' + event.type);
+		
 		if (card.data("autoplay"))
 			card.find(".video-js").player().play();
 
@@ -242,7 +278,7 @@ $(document).ready(function(){
 	$('.input_element.next').click(function(event) { $.deck('next'); return false;});
 	
 	
-// Bind other buttons to move deck	
+// Bind other input buttons to move deck	
 	$('a.goto').click(function(event) {
 		// console.log($.deck('getSlides'));
 		destination= $(event.target).data("destination");

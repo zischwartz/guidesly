@@ -49,9 +49,9 @@ def GuideDetailView (request, slug):
 	return render_to_response("enjoy/guide_detail.html", locals(), context_instance=RequestContext(request))
 
 
-# def CardInStack (request, gslug, slug):
-def CardInStack (request, gslug):
-	# current_card = get_object_or_404(Card, guide__slug=gslug, slug=slug)
+def CardInStack (request, gslug, slug):
+# def CardInStack (request, gslug):
+	current_card = get_object_or_404(Card, guide__slug=gslug, slug=slug)
 	guide = get_object_or_404(Guide, slug=gslug)
 	return render_to_response("enjoy/card_in_stack.html", locals(), context_instance=RequestContext(request))
 	
