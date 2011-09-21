@@ -53,15 +53,17 @@
 <header id="header">
 <a href="/">Guides.ly</a>
 {# <div class="small">Controls<br> Contents <br> Comments</div> #}
+{%if guide.owner == user%}
+<div id="editCard"> <a href="">Edit Card</a></div>
+{%endif%}
 <div class="small">Contents</div>
-	<div class="toc">
-	
-	{%for card in guide.cards.all %}
-	 	<a href="{{card.get_absolute_url}}" data-destination="{{card.slug}}" class="goto" >
-		{{card}}
-		</a><br>
-	{%endfor%}
-	</div>
+	<div class="toc">	
+		{%for card in guide.cards.all %}
+		 	<a href="{{card.get_absolute_url}}" data-destination="{{card.slug}}" class="goto" >
+			{{card}}
+			</a><br>
+		{%endfor%}
+	</div> {# /.toc #}
 	
 	<div class="mute">
 		<label for="mute">Mute Media?</label><input type="checkbox" id="mute">
@@ -69,15 +71,17 @@
 	
 </header>
 
+
 <article class="deck-container">
 
 {%for card in guide.cards.all %}
+			
 			{# This uglyness gives cards classes relating to whats inside them #}
 
-	<div data-title="{%firstof card.title card.card_number%}" data-slug="{{card.slug}}" class="card {%if card.is_floating_card and guide.is_linear %} is_floating_card {%endif %} {%if not card.title%} notitle {%endif%}  {%if card.primary_media%} hasprimarymedia{%endif%} {%if not card.primary_media%} noprimarymedia{%endif%} {%if not card.text%} notext {%endif%} {%if card.input_elements%} hasinputs{%endif%} {%if not card.is_floating_card%} hasprevandnext {%endif%} {%if card.primary_is_bg %} primary_is_bg {%endif%} {%if card.has_thumbs%}hasthumbs {%endif%}"
+	<div data-title="{%firstof card.title card.card_number%}" data-slug="{{card.slug}}" class="card {%if card.is_floating_card and guide.is_linear %} is_floating_card {%endif %} {%if not card.title%} notitle {%endif%}  {%if card.primary_media%} hasprimarymedia{%endif%} {%if not card.primary_media%} noprimarymedia{%endif%} {%if not card.text%} notext {%endif%} {%if card.input_elements%} hasinputs{%endif%} {%if not card.is_floating_card%} hasprevandnext {%endif%} {%if card.primary_is_bg %} primary_is_bg {%endif%} {%if card.has_thumbs%}hasthumbs {%endif%} {%if card == requested_card %} the_requested_card {% endif %}  "
 			id = "{%firstof card.slug card.card_number card.id %}" {%if card.primary_is_bg%}style="background: url( '{{card.primary_media.file.url}}' ) center center no-repeat; background-size: cover" {%endif%}
 			{%if card.autoplay%} data-autoplay="1"{%endif%}>
-			
+
 			<div class="loader">Loading<br><img src="{{STATIC_URL}}/img/ajax-loader.gif"></div>					
 			
 			{# TITLE of CARD  #}
@@ -153,7 +157,7 @@
 			</div>
 			{%endif%}
 
-
+			{%if guide.owner == user%}<div style="display:none;"> <a class="edit_card_link" href="{%url EditCard gslug=guide.slug id=card.id  %}">Edit Card</a></div>{%endif%}
 			
 	</div> {# end .card #}
 			
@@ -187,35 +191,37 @@ var History = window.History;
 // Bind to StateChange Event
 History.Adapter.bind(window,'statechange',function(){ // Note: We are using statechange instead of popstate
     var State = History.getState(); // Note: We are using History.getState() instead of event.state
-	console.log('Statechange historyjs: ' + State.data.slug);
-    History.log(State.data, State.title, State.url);
-	// console.log(event);
-	// if (event.type=='popstate')
-	// {
-		var index= $(".card").index( document.getElementById(State.data.slug));
-	// 	console.log("PopStateEvent HACK");
-		$.deck('go', index);
-	// 	// ARG this is registering twice, because of Deck, and because of the lack of isinternal
-	// }
+	// console.log('Statechange historyjs: ' + State.data.slug);
+    // History.log(State.data, State.title, State.url);
+	var index= $(".card").index( document.getElementById(State.data.slug));
+	$.deck('go', index);
 });
 
-History.Adapter.bind(window,'popstate',function(){ 
-	var State = History.getState(); // Note: We are using History.getState() instead of event.state
-    console.log('Popstate historyjs : ' + State.data.slug);
-	
-})
 	
 
 
 $(document).ready(function(){
+	
+	//Video Setup
 	VideoJS.setupAllWhenReady();  
 	
+	//Initialize Deckjs
 	$.deck('.card', { keys: {next: -1, previous: -1} }); // No key activation	
-		
 	
-//set the TOC up with the current card, and the video player
+	//Go to previous/existing state
+	var initialState = History.getState();
+	console.log(initialState);
+	var index= $(".card").index( document.getElementById(initialState.data.slug));
+	$.deck('go', index);
+	
+	
+	//set the TOC up with the current card, and the video player
 	inital_card = $.deck('getSlide');
-	current_card_slug = inital_card.data("slug");
+	current_card_slug = initialState.data.slug;
+	
+	//if owner, set edit url for first card
+	edit_url= inital_card.find(".edit_card_link").attr('href');
+	$("#editCard a").attr('href', edit_url);
 	
 	$("#header").find("a.goto[data-destination="+current_card_slug+"]").addClass("active");
 	if (inital_card.data("autoplay"))
@@ -265,11 +271,12 @@ $(document).ready(function(){
 		// History.js
 		History.pushState({slug: current_card_slug } , title, current_card_slug);
 		
-		console.log('pushing state :' +current_card_slug);
-		console.log('and event: ' + event.type);
-		
 		if (card.data("autoplay"))
 			card.find(".video-js").player().play();
+		
+		//only matters if owner
+		edit_url= card.find(".edit_card_link").attr('href');
+		$("#editCard a").attr('href', edit_url);
 
 	});
 

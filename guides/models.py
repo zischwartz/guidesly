@@ -157,10 +157,10 @@ class Card (models.Model):
 				return "Untitled Floating Card"
 				
 
-	# @models.permalink # comment this out if using the hash...
+	@models.permalink # comment this out if using the hash...
 	def get_absolute_url(self):
-		return '/s/' + self.guide.slug +"/#" + self.slug
-		# return ('CardDetailView', (), {'gslug': self.guide.slug, 'slug':self.slug })
+		# return '/s/' + self.guide.slug +"/#" + self.slug
+		return ('CardInStackView', (), {'gslug': self.guide.slug, 'slug':self.slug })
 				
 	def firstsave(self, *args, **kwargs):
 		self.owner= self.guide.owner

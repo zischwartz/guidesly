@@ -31,42 +31,6 @@ class StaticElementForm(ModelForm):
 
 
 
-# class ImageSelect(forms.Select): 
-# 	def render(self, name, value, attrs=None):
-# 		# value = self._format_value(value)
-# 		# return super(TimeInput, self).render(name, value, attrs)
-# 		return 'x' + value
-
-# 
-# class ImageElementForm(ModelForm):
-# 	# file = forms.ModelChoiceField()
-# 	
-# 	class Meta:
-# 		model=ImageElement
-# 		widgets = {
-# 			'card': HiddenInput,
-# 			'type': HiddenInput,
-# 			'file': HiddenInput,
-# 			'display_title': HiddenInput,
-# 			'title': TextInput(attrs={'placeholder': 'Title (optional)'})
-# 			}
-# 
-# class AudioElementForm(ModelForm):
-# 	class Meta:
-# 		model=AudioElement
-# 		widgets = {
-# 			'card': HiddenInput,
-# 			'type': HiddenInput,
-# 			}
-# 
-# 
-# class VideoElementForm(ModelForm):
-# 	class Meta:
-# 		model=VideoElement
-# 		widgets = {
-# 			'card': HiddenInput,
-# 			'type': HiddenInput,
-# 			}
 
 
 
