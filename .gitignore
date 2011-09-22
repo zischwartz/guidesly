@@ -7,4 +7,4 @@ log.log
 sitestatic/.DS_Store
 /migrations
 db
-local_settings.py
+settings_local.py
