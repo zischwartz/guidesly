@@ -107,7 +107,7 @@ $(document).ready(function(){
 	// $(".uibutton").button();
 	
 	$(".delete_link").live('click',function(event){
-		$(this).parent().addClass('making_sure_delete');
+		$(this).parent().addClass('confirm_delete');
 		event.preventDefault();
 		
 	});

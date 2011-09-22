@@ -1978,6 +1978,8 @@ footer {
   text-align: center;
 }
 /*LESSCSS*/
+/*LESSCSS*/
+/*LESSCSS*/
 .container > .sidebar,
 .container > .content,
 .container-fluid > .sidebar,
@@ -2606,13 +2608,13 @@ strong.green {
 .floating_card_container h2, .floating_card_container h3 {
   clear: both;
 }
-.smallcardWrapper:hover .controls a.delete_link_real {
+.smallcardWrapper:hover .controls a.delete_link_real, button.delete_link_real {
   display: none;
 }
-.smallcardWrapper:hover .controls.making_sure_delete  a.delete_link_real {
+.smallcardWrapper:hover .controls.confirm_delete a.delete_link_real, .confirm_delete button.delete_link_real {
   display: inline;
 }
-.smallcardWrapper:hover .controls.making_sure_delete  .delete_link {
+.smallcardWrapper:hover .controls.confirm_delete .delete_link, .confirm_delete button.delete_link {
   display: none;
 }
 /*HOME SCREEEEEEN*/

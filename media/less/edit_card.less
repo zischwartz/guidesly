@@ -34,12 +34,19 @@
 .center
 {text-align:center;}
 
+body
+{
+	
+}
 
 
+/*LESSCSS*/
+/*LESSCSS*/
 /*LESSCSS*/
 .container>.sidebar, .container>.content, .container-fluid >.sidebar, .container-fluid > .content
 {
 	margin-top: 2em;
+
 }
 
 .notBlank
@@ -808,16 +815,16 @@ strong.green {
 	clear: both;
 }
 
-.smallcardWrapper:hover .controls a.delete_link_real
+.smallcardWrapper:hover .controls a.delete_link_real, button.delete_link_real
 {
 	display: none;
 }
 
-.smallcardWrapper:hover .controls.making_sure_delete  a.delete_link_real
+.smallcardWrapper:hover .controls.confirm_delete  a.delete_link_real, .confirm_delete button.delete_link_real
 {
 	display: inline;
 }
-.smallcardWrapper:hover .controls.making_sure_delete  .delete_link
+.smallcardWrapper:hover .controls.confirm_delete  .delete_link, .confirm_delete button.delete_link
 {
 	display: none;
 }

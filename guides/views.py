@@ -142,6 +142,7 @@ def BuildFloatingCard (request, gslug):
 	s.firstsave()
 	return HttpResponseRedirect(reverse('EditCard', kwargs={'gslug':gslug, 'id': s.id}))
 
+
 @login_required
 def EditCard (request, gslug, id):
 	is_fluid =1
@@ -168,3 +169,9 @@ def EditCard (request, gslug, id):
 	guide_json = g.serialize(request, g.full_dehydrate(guide_bundle), 'application/json')
 	
 	return render_to_response("create/edit_card.html", locals(), context_instance=RequestContext(request))
+
+# @login_required
+# def DeleteCard (request, gslug, id):
+# 	card = get_object_or_404(Card, guide__slug=gslug, id=id)
+# 	card.delete()
+# 	return HttpResponseRedirect(reverse('EditGuide', kwargs={'gslug':gslug}))
