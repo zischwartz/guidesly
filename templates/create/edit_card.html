@@ -527,6 +527,7 @@
 						<span data-bind="text: title ? title.slice(0,15): 'Untitled'"></span> 
 						<input type="radio" id="radiob-card-${id}" data-bind="value: resource_uri, checked:  VM.InputVM().default_action.goto" name="pickacard">
 							{{if primary_media }}<br><img src="${primary_media.file.thumb_url}">{{/if}} 
+							${resource_uri}
 						</label>
 				</script>
 				{%endverbatim%}

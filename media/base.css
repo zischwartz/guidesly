@@ -2463,7 +2463,7 @@ strong.green {
   display: none;
 }
 .modal {
-  font-size: 1.7em;
+  font-size: 1.3em;
   width: ;
 }
 .modal input {
@@ -2784,6 +2784,9 @@ strong, .strong {
 }
 .hidden {
   display: none;
+}
+.shown {
+  display: block !important;
 }
 .centext {
   text-align: center;

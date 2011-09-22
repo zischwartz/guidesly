@@ -114,7 +114,7 @@ class MediaElementResource(ModelResource):
 		excludes = ['created']
 		
 class ActionResource(ModelResource):
-	goto= fields.ForeignKey(CardResource, 'goto', null=True)
+	goto= fields.ForeignKey(SmallCardResource, 'goto', null=True) #made it smallCard instead of card
 	class Meta:
 		queryset= Action.objects.all()
 		authorization = Authorization()

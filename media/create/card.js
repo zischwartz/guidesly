@@ -10,7 +10,7 @@ var action_api_url='/api/v1/action/';
 var file_api_url='/api/v1/userfile/';
 var guide_api_url='/api/v1/guide/';
 var timer_api_url='/api/v1/timer/';
-// var smallcard_api_url='/api/v1/smallcard/';
+var smallcard_api_url='/api/v1/smallcard/';
 
 var VM; //our main viewmodel
 
@@ -358,7 +358,6 @@ $(".mediaTemplate").live("mouseover mouseout", function(event) {
 						addInputHelper(this);
 					$("#inputModal").fadeOut('fast');
 					}; //end save element
-
 			}
 
 		$("#inputModal").fadeIn('fast');
@@ -458,8 +457,6 @@ var anInput = function(type) {
 
 
 addInputHelper =function(that){
-
-
 	var postURL_input;
 	
 	if (that.resource_uri()) //if it has a resource uri, it exists, and should be put
@@ -508,7 +505,7 @@ addCardFromInput = function(that)
 	jsonData = ko.toJSON(cardToAdd);
 	console.log(jsonData);
 	postURL_newcard=$.ajax({
-		url: card_api_url,
+		url: smallcard_api_url,
 		type: "POST",
 		data: jsonData,
 		success:function(data) {
@@ -519,13 +516,14 @@ addCardFromInput = function(that)
 			new_card_uri= new_card_uri.slice(uri_string_n-1);
 			console.log(new_card_uri);
 			cardToAdd.resource_uri=ko.observable(new_card_uri);
-			cardToAdd.id = cardToAdd.resource_uri().match(/\/card\/(.*)\//)[1];
+			cardToAdd.id = cardToAdd.resource_uri().match(/\/smallcard\/(.*)\//)[1];
 			cardToAdd.edit_url = '/create/' + guide_slug + '/' + cardToAdd.id + '/';
 			cardToAdd.absolute_url = '/i/' + cardToAdd.id + '/'
-			//guide_slug is defined in the html document, and the absolute id is a redirect...
+			//guide_slug is defined in the html document, and the absolute id is a redirect based on the id...
 			VM.all_cards.push(cardToAdd);
 			VM.InputVM().default_action.goto(cardToAdd.resource_uri());
 			addInputHelper(VM.InputVM());
+			VM.newCardTitle('');
 		},
 	contentType: "application/json",	
 	});
@@ -544,25 +542,6 @@ cleanClientStuff = function(that)
 	return that;
 }
 
-
-var deleteCard= function(event)
-{
-	// console.log(event.target.parents(".smallcardWrapper"));
-	$.ajax({
-		url: this.resource_uri,
-		type: "DELETE",
-		success:function(data) { console.log(data); },
-		contentType: "application/json",
-	});
-	
-	console.log($(this));
-	console.log(this.resource_uri);
-	console.log(VM.id());
-
-	VM.all_cards.remove(this);
-	if (parseInt(this.id, 10) == VM.id())
-		window.location = edit_guide_url;
-};
 
 var deleteCard= function(event)
 {
