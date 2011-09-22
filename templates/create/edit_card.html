@@ -278,7 +278,7 @@
 <div class="sidebar">
 	<button class="btn primary large" data-bind="click: VM.save_card, text: VM.saving_message() ? VM.saving_message : 'Save', css: {crazy: VM.saving_message} ">Save Card</button>	<br>
 	<a href="{% url CardDetailViewByIdRedirect id=card.id %}" target="_blank" class="btn info ">Preview <span data-bind="text: !title()  ? 'Card': title"></span></a>
-	<a href="{% url EditGuide gslug=card.guide.slug %}" target="_blank" class="btn ">Guide Overview</a>
+	<a href="{% url EditGuide gslug=card.guide.slug %}" class="btn ">Guide Overview</a>
 	<h3>Card Options</h3>
 
 
