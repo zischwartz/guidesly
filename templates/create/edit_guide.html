@@ -1,9 +1,9 @@
 {%extends "base.html" %}
 
-{%block extrahead%}
-		<link rel="stylesheet" media="all" href="{{STATIC_URL}}create/guide.css"/>
+{%block title%} Edit Guide {%endblock%}
 
-	<script src="{{STATIC_URL}}create/guide.js"></script>
+{%block extrahead%}
+	<script src="{{STATIC_URL}}create-guide.js"></script>
 	<script type="text/javascript">
 		var guide_json = '{{guide_json|safe|escapejs}}'; 
 	</script>
@@ -11,13 +11,14 @@
 {%endblock%}
 
 {%block header%}
-	<li><a> Edit Guide</a></li>
+	<li><span class="location"> Editing Guide</span></li>
+	<li><a href="{%url PublishGuide gslug=guide.slug%}"> Publish {{guide.title|title}}</a>
 {%endblock%}
 
 {% block content %} 
 
 <h1>{{guide.title}}</h1>
-<h3>{{guide.description}}</h3>
+<h3 class="centext">{{guide.description}}</h3>
 <br><br>
 
 {%if guide.is_linear %}
@@ -31,7 +32,7 @@
 						  						foreach: VM.normal_cards, templateOptions: { parentList: VM.normal_cards}},
 						 						sortableList: VM.normal_cards">
 				<div class="clearfix"></div>
-				<p>These are normal cards, so your users can move between them easily, in order</p><p> You can reorder these cards by dragging and dropping them. Drag one over to the side card section to take it out of the order.</p>		
+				<p>These are normal cards, so your users can move between them easily, in this order.</p><p> You can reorder these cards by <strong>dragging and dropping</strong> them. Drag one over to the side card section to take it out of the order.</p>		
 				
 		</div>
 		
@@ -42,8 +43,7 @@
 			</div>									
 			<div class="clearfix"></div>
 			<p><strong>Side cards</strong> are outside the normal flow of your guide. Mostly, this means they don't have previous and next buttons, and you have to create buttons to get your users to these cards. </p>
-			
-			<br>
+
 		
 		</div>
 
@@ -57,16 +57,6 @@
 	
 {%else%}
 	<div class="row">
-		{# <div class="floating_card_container connectedSortable span2 columns" data-bind="template: {name: 'smallCardTemplate', #}
-		{# 				  							foreach: VM.floating_cards, #}
-		{# 										templateOptions: { parentList: VM.floating_cards}}, #}
-		{# 				 						sortableList: VM.floating_cards"> #}
-		{# 	FIRST CARD #}
-		{#  #}
-		{#  #}
-		{#  #}
-		{# </div> #}
-		
 		<div class="floating_card_container span16 columns" >
 
 			<div data-bind="template: {name: 'smallCardTemplate',
@@ -102,31 +92,130 @@
 	</script>
 {%endverbatim%}
 
+
+
+
+
+{#  #}
 {# <form action="" method="post"> #}
 {# {% csrf_token %} #}
-<table>	{{form.as_table}}</table>
+{# <table>	{{form.as_table}}</table> #}
 {# <input type="submit" value="Edit guide" /> #}
 {# </form> #}
 
-
-
-<div class="modal-backdrop shown" id="editGuide">
-	<div class="modal">
-		<div class="modal-header">
-			<h3>Add Media From The Web</h3>
-			<a href="#" class="close closer" >×</a>
-		</div>
-		<div class="modal-body">
-			<p>Copy and paste the web address of your image, or video below. </p>
-			<p>For images, you want thing that ends in .jpg, .png or something similar.</p>
-			<p>For video, we currently only support youtube. Just give us the url of the video page</p>
-			<input id="external_file_url" name="external_file_url" type="text" class="tinput" size="30" placeholder="http://">
+<br><br><hr><br>
+<div class="row standout" id="publish">
+	{%if guide.published%}
+		{%if guide.private%}
+		<div class="column span10 offset3 centext postpub" >
+		<h2 class="centext">Secretly Published Guide </h2>
+		
+			<p>Your guide is secret*, and can be accessed at:<br>
+				<a class="big" target="_blank" href="{%url SecretGuideView private_url=guide.private_url%}">guides.ly{%url SecretGuideView private_url=guide.private_url%}</a>
+			</p>
+			<p> Only share that link with people you want to see it!</p>
+			<p class="small centext"><br>* <strong>Relatively</strong> secret, but probably not 100% secure. Please don't store state secrets in your guide. </p>
 			
-		</div>
-		<div class="modal-footer">
-			<a href="#" class="btn primary" >Add!</a>
-			<a href="#" class="btn secondary closer">Cancel</a>
-		</div>
+			</div> {# /column #}
+			<div class="row centext"><br><br><br><button class="btn" data-bind="click: function(){$('#publishOptions').slideDown(); $('.postpub').slideUp(); }"> Change publishing options</button></div>
+			
+		{%else%}
+		<div class="column span6 offset5 centext postpub">
+		
+		<h2 class="centext">Published Guide </h2>
+		
+		<p>Your guide is available at:<br>
+			<a class="big" href="{{guide.get_absolute_url}}" target="_blank">guides.ly{{guide.get_absolute_url}}</a></p>
+		<p>Consider sharing your guide with these fine services:</p>
+		<div class="row">
+			<div class="column span1 ">
+				<div id="fb-root"></div>
+				<script>(function(d, s, id) {
+				  var js, fjs = d.getElementsByTagName(s)[0];
+				  if (d.getElementById(id)) {return;}
+				  js = d.createElement(s); js.id = id;
+				  js.src = "//connect.facebook.net/en_US/all.js#xfbml=1";
+				  fjs.parentNode.insertBefore(js, fjs);
+				}(document, 'script', 'facebook-jssdk'));</script>
+		
+				<div class="fb-like center-block" data-href="guides.ly{{guide.get_absolute_url}}" data-send="false" data-layout="button_count" data-width="40" data-show-faces="false"></div>
+			</div>
+			<div class="column span1 offset1">
+				<script src="http://platform.twitter.com/widgets.js" type="text/javascript"></script>
+				<a id="twitshare" href="http://twitter.com/share?url= &text=Check out the my guide: {{guide.title}}  guides.ly{{guide.get_absolute_url}}&count=none " class="twitter-share-button">Tweet</a>
+			</div>
+			<div class="column span1 offset1">
+				<g:plusone annotation="none" href="http://guides.ly{{guide.get_absolute_url}}"></g:plusone>
+				<script type="text/javascript">
+				  (function() {
+				    var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
+				    po.src = 'https://apis.google.com/js/plusone.js';
+				    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
+				  })();
+				</script>
+				
+			</div>	{# / share column #}
+			</div> {# /share row #}
+			<div class="row centext"><br><br><br><button class="btn" data-bind="click: function(){$('#publishOptions').slideDown(); $('.postpub').slideUp(); }"> Change publishing options</button></div>
+						
+		</div> {# /column #}
+		{%endif%}
+		
+	{%endif%} {# end if published #}
+
+	<div id="publishOptions" class="column  span14 offset1 {% if guide.published %} hidden {% endif %}" >
+	
+		<h1 class="centext">Publish  <i>{{guide.title|title}}</i> </h1>
+		<h5 class="centext">Guide looking good? Share it with the world.  </h5>
+	
+		<form action="{%url PublishGuide gslug=guide.slug%}" method="post">
+		{% csrf_token %}
+
+			<input type="hidden" name="published" value="True"/> 	
+
+			<p class="centext" data-bind="style: {textDecoration: private_guide() ? 'line-through': 'none'}">Your guide will be publicly available at: <a href="{{guide.get_absolute_url}}" target="_blank">guides.ly{{guide.get_absolute_url}}</a>
+		
+			<div class="row">
+				<div class="column span6">
+					<h4>Don't want it public?</h4>
+					<p><label class="strong"> <input type="checkbox" name="private" data-bind="checked: private_guide" /> Make it a Private Guide </label></p>
+					<p>After you hit publish, we'll give you a secret web address to share with special folks.</p>
+				
+				</div>
+			
+				<div class="column span6 offset2">
+					<h4>Make something awesome?</h4>
+					<p><label class="strong" data-bind="css:{disabled: private_guide}"><input type="checkbox" name="submit_to_cat" checked data-bind="checked: !private_guide(), enable: !private_guide()"/> Showcase it!</label></p>
+					<p>We'll check it out, and send you a message when and if we feature it in our showcase.</p>
+				</div>
+		
+			</div>
+		
+			<br><br>
+			<br><br>
+			<br><br>
+			{# <p> {{guide.thumb}} This is the image we're using to represent your guide. You can <a href="#">change it</a>.</p> #}
+
+			<div class="row centext">
+				<button type="submit" class="btn primary large">Publish it!</button>
+			</div>
+		</form>
+		<br>
+	</div> {# /column #}
+
+
+</div> {# /row #}
+
+<div class="row"><br><br><br><br>
+<div class="centext column span6 offset5 standout">Or you can always<br><br>
+<a class="btn danger ">Delete This Guide</a>
+<br><br> if you really want to.
+</div>
+</div>
+
+<div class="modal-backdrop" id="pickFile">
+	<div class="modal">
+
 	</div> 
 </div> {# /#addExternalMediaModal #}
 

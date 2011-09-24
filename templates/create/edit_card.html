@@ -17,11 +17,9 @@
 	    <script type="text/javascript" src="{{STATIC_URL}}js-libs/Markdown.Editor.js"></script>
 	
 	
-	 	 <script type="text/javascript" src="http://feather.aviary.com/js/feather.js"></script>
+	 	<script type="text/javascript" src="http://feather.aviary.com/js/feather.js"></script>
 		
-		
-		{# <link rel="stylesheet" href="{{STATIC_URL}}create/card.css"> #}
-		<script type="text/javascript" src="{{STATIC_URL}}create/card.js"></script>
+		<script type="text/javascript" src="{{STATIC_URL}}create-card.js"></script>
 		
 		
 		<script type="text/javascript">
@@ -144,18 +142,17 @@
 {%endblock%}
 
 {%block header%}
-
+<li> <span class="location">Editing Card</span></li>
 <li class="menu"> 
   <a href="#" class="menu active">{{card.guide.title}}</a> 
   <ul class="menu-dropdown"> 
-    <li><a href="{% url EditGuide gslug=card.guide.slug %}">Overview of {{card.guide.title}}</a></li> 
-    <li><a href="{% url EditGuide gslug=card.guide.slug %}">Guide Options</a></li> 
+    <li><a href="{% url EditGuide gslug=card.guide.slug %}">Overview/ Edit {{card.guide.title}}</a></li> 
     <li><a href="{% url BuildCard gslug=card.guide.slug %}">Add a New Card</a></li> 
     <li class="divider"></li> 
     <li><a href="#">Publish</a></li> 
   </ul> 
 </li> 
-<li><a target="_blank" href="{% url CardDetailViewByIdRedirect id=card.id %}">Preview <span data-bind="text: !title()  ? 'This Card': title"></span></a></li> 
+{# <li><a target="_blank" href="{% url CardDetailViewByIdRedirect id=card.id %}">Preview <span data-bind="text: !title()  ? 'This Card': title"></span></a></li>  #}
 
 
 {%endblock%}

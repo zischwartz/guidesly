@@ -5,18 +5,15 @@
 		<title>Guides.ly - {% block title %}{%endblock%}</title>
 	
 		<script type="text/javascript" src="{{STATIC_URL}}js-libs/jquery-1.6.1.min.js"></script>
-		
-		 <script type="text/javascript" src="{{STATIC_URL}}js-libs/jquery-ui-1.8.16.custom.min.js"></script>
+		<script type="text/javascript" src="{{STATIC_URL}}js-libs/jquery-ui-1.8.16.custom.min.js"></script>
 
-		
 		<script type="text/javascript" src="{{STATIC_URL}}js-libs/jquery.tmpl.js"></script>
 		
-		<script type="text/javascript" src="{{STATIC_URL}}js-libs/knockout-1.2.1.js"></script>
-		{# // <script type="text/javascript" src="{{STATIC_URL}}js-libs/knockout-1.2.1.debug.js"></script> #}
+		<script type="text/javascript" src="{{STATIC_URL}}js-libs/knockout-1.2.1.js"></script>	{# // <script type="text/javascript" src="{{STATIC_URL}}js-libs/knockout-1.2.1.debug.js"></script> #}
 		<script type="text/javascript" src="{{STATIC_URL}}js-libs/knockout.mapping.js"></script>
 		<script type="text/javascript" src="{{STATIC_URL}}js-libs/jquery.bootstrappopover.js"></script>
 
-		<link rel="stylesheet" media="all" href="{{STATIC_URL}}base.css"/>
+		<link rel="stylesheet" media="all" href="{{STATIC_URL}}css/base.css"/>
 
 		<script type="text/javascript">
 			var current_url ="{{request.path}}";
@@ -70,9 +67,8 @@
           </ul> <!-- /-nav -->
 
           <ul class="nav secondary-nav"> 
-            {# <li class="active"><a href="/create">Create</a></li>  #}
             <li><a href="/create">Create</a></li> 
-            <li><a href="#">Enjoy</a></li>
+            <li><a href="/enjoy">Enjoy</a></li>
 	        <li><a href="/home">⌂ Home</a></li> 
 
 			{% if user.is_authenticated %}
@@ -100,9 +96,7 @@
 {%block sidebar%}{%endblock%}
 {%else%} <div class="container">{%endif%}
 	<div class="content">
-		{% if messages %}<div id="messages">
-			{%for message in messages%}<p{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>{% endfor %}
-		</div>{%endif%}
+		{% if messages %}<div id="messages">{%for message in messages%}<p{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>{% endfor %}</div>{%endif%}
 
 			{% block content %}
 				Hi. If you're seeing this, something messed up. This is the base template dude...
@@ -111,7 +105,7 @@
 		</div> {# /content #}
 	</div> {# /container #}
 	
-	{# for stuff like more cards in the card editor #}
+	{# for situations like cards in the card editor, which need MORE, another content container #}
 	{%if is_fluid%}
 	<div class="container-fluid">
 		{%block more%}{%endblock%}

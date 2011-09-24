@@ -5,8 +5,8 @@ from imagekit import processors
 
 # first we define our thumbnail resize processor
 class ResizeThumb(processors.Resize):
-    width = 100
-    height = 75
+    width = 200
+    height = 150
     crop = True
 
 # now we define a display size resize processor

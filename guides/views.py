@@ -18,25 +18,25 @@ logger=getlogger()
 from django.utils import simplejson
 from fileupload.models import UserFile
 from api import CardResource, SmallCardResource, GuideResource, MediaElementResource
-from django.contrib.auth.decorators import login_required
 
+
+from decorators import require_owner, require_published_and_public
+from django.contrib.auth.decorators import login_required
 
 # Viewing Guides
 # -------------------------
 
 def Landing (request): 
 	if request.user.is_authenticated():		  
-		guide_list = Guide.objects.all()
-		your_guides= request.user.guide_set.all()
-		return render_to_response("site/home.html", locals(), context_instance=RequestContext(request))   	
+		return HttpResponseRedirect('/home/')
 	return render_to_response("site/landing.html", locals(), context_instance=RequestContext(request))
 	
 
 @login_required
-def GuideListView (request):
+def Home (request):
 	if request.user.is_authenticated():
 		your_guides= request.user.guide_set.all()
-	guide_list = Guide.objects.all()
+	guide_list = Guide.objects.filter(published=True, private=False) #add accepted_to_cat	
 	return render_to_response("site/home.html", locals(), context_instance=RequestContext(request))
 
 
@@ -44,66 +44,53 @@ def GuideDetailView (request, slug):
 	guide = get_object_or_404(Guide, slug=slug)
 	if guide.first_card:
 		return HttpResponseRedirect(reverse('CardDetailViewByIdRedirect', kwargs={'id': guide.first_card.id}))
-		
 	card_list= guide.card_set.all()
 	return render_to_response("enjoy/guide_detail.html", locals(), context_instance=RequestContext(request))
 
-
+@require_published_and_public
 def CardInStack (request, gslug, slug):
 	requested_card = get_object_or_404(Card, guide__slug=gslug, slug=slug)
 	guide = get_object_or_404(Guide, slug=gslug)
 	return render_to_response("enjoy/card_in_stack.html", locals(), context_instance=RequestContext(request))
 	
+
+def SecretGuideView (request, private_url):
+	import re
+	SHA1_RE = re.compile('^[a-f0-9]{40}$')
+	if not SHA1_RE.search(private_url):
+		return HttpResponseRedirect('/')
+	guide = get_object_or_404(Guide, private_url = private_url)
+	if guide.first_card:
+		return HttpResponseRedirect(reverse('SecretCardView', kwargs={'private_url': private_url, 'slug': guide.first_card.slug}))
 	
-def CardDetailView (request, gslug, id=None, slug=None, cnumber=None):
-	if slug:
-		card = get_object_or_404(Card, guide__slug=gslug, slug=slug)
-	elif cnumber:
-		card = get_object_or_404(Card, guide__slug=gslug, card_number=cnumber)		
-	elif id:
-		card = get_object_or_404(Card, id=id)
-	
-	images = []
-	audio= None
-	for element in card.mediaelement_set.all():
-		if element.type=='image':
-			images.append(element)
-		if element.type == 'audio':
-			audio=element
-	# media_elements = card.mediaelement_set.all()
-	input_elements=card.inputelement_set.all()
-	map_elements=card.mapelement_set.all()
-	primary_media=card.primary_media
-	if not card.is_floating_card:
-		prev_card = card.guide.get_prev_card(card)
-		next_card = card.guide.get_next_card(card)
-	return render_to_response("enjoy/card.html", locals(), context_instance=RequestContext(request))
+	return render_to_response("enjoy/card_in_stack.html", locals(), context_instance=RequestContext(request))
+
+def SecretCardView (request, private_url, slug):
+	import re
+	SHA1_RE = re.compile('^[a-f0-9]{40}$')
+	if not SHA1_RE.search(private_url):
+		return HttpResponseRedirect('/')
+	guide = get_object_or_404(Guide, private_url = private_url)
+	requested_card = get_object_or_404(Card, guide=guide, slug=slug)
+	return render_to_response("enjoy/card_in_stack.html", locals(), context_instance=RequestContext(request))
+
 
 
 def CardDetailViewByIdRedirect (request, id):
 	card = get_object_or_404(Card, id=id)
 	return HttpResponseRedirect(card.get_absolute_url())
 
-	# if card.slug:
-		# return HttpResponseRedirect(reverse('CardDetailView', kwargs={'gslug':card.guide.slug, 'slug': card.slug}))
-	# elif card.card_number:
-		# return HttpResponseRedirect(reverse('CardDetailViewByNum', kwargs={'gslug':card.guide.slug, 'cnumber': card.card_number}))
-	# else:
-		# return HttpResponseRedirect(reverse('CardDetailViewById', kwargs={'gslug':card.guide.slug, 'id': card.id}))
-
-
 
 # Creating Guides
 # -------------------------
+
 @login_required
 def CreateGuide (request):
 	if request.method == 'POST':
 		logger.info('posted')
 		form = GuideForm(request.POST)
 		if form.is_valid():
-			logger.info('is_valid')
 			g =form.save()
-			# g.save()
 			return HttpResponseRedirect(reverse('BuildCard', kwargs={'gslug':g.slug}))
 		else:
 			messages.add_message(request, messages.INFO, form.errors)
@@ -112,22 +99,7 @@ def CreateGuide (request):
 		form = GuideForm()
 	return render_to_response("create/create_guide.html", locals(), context_instance=RequestContext(request) )
 
-@login_required
-def EditGuide (request, gslug):
-	guide = get_object_or_404(Guide, slug=gslug)
-	if request.method == 'POST':
-		form = GuideForm(request.POST, instance=guide)
-		if form.is_valid():
-			g =form.save()
-			return render_to_response("create/edit_guide.html", locals(), context_instance=RequestContext(request))
-	else:
-		form = GuideForm(instance= guide)
-		g = GuideResource()
-		guide_bundle= g.build_bundle(obj=guide, request=request)
-		guide_json = g.serialize(request, g.full_dehydrate(guide_bundle), 'application/json')
-	return render_to_response("create/edit_guide.html", locals(), context_instance=RequestContext(request))
-
-
+@require_owner
 def BuildCard (request, gslug):
 	your_guide=get_object_or_404(Guide, slug=gslug)
 	if your_guide.is_linear:
@@ -137,13 +109,14 @@ def BuildCard (request, gslug):
 	s.firstsave()
 	return HttpResponseRedirect(reverse('EditCard', kwargs={'gslug':gslug, 'id': s.id}))
 
+@require_owner
 def BuildFloatingCard (request, gslug):
 	s = Card(guide=get_object_or_404(Guide, slug=gslug), is_floating_card=True)
 	s.firstsave()
 	return HttpResponseRedirect(reverse('EditCard', kwargs={'gslug':gslug, 'id': s.id}))
 
 
-@login_required
+@require_owner
 def EditCard (request, gslug, id):
 	is_fluid =1
 	card = get_object_or_404(Card, guide__slug=gslug, id=id)
@@ -170,8 +143,59 @@ def EditCard (request, gslug, id):
 	
 	return render_to_response("create/edit_card.html", locals(), context_instance=RequestContext(request))
 
-# @login_required
-# def DeleteCard (request, gslug, id):
-# 	card = get_object_or_404(Card, guide__slug=gslug, id=id)
-# 	card.delete()
-# 	return HttpResponseRedirect(reverse('EditGuide', kwargs={'gslug':gslug}))
+
+@require_owner
+def EditGuide (request, gslug):
+	guide = get_object_or_404(Guide, slug=gslug)
+	if request.method == 'POST':
+		form = GuideForm(request.POST, instance=guide)
+		if form.is_valid():
+			g =form.save()
+			return render_to_response("create/edit_guide.html", locals(), context_instance=RequestContext(request))
+	else:
+		form = GuideForm(instance= guide)
+		g = GuideResource()
+		guide_bundle= g.build_bundle(obj=guide, request=request)
+		guide_json = g.serialize(request, g.full_dehydrate(guide_bundle), 'application/json')
+		
+	return render_to_response("create/edit_guide.html", locals(), context_instance=RequestContext(request))
+
+
+
+@require_owner
+def PublishGuide (request, gslug):
+	guide = get_object_or_404(Guide, slug=gslug)
+	if request.method == 'POST':
+		form = PublishForm(request.POST, instance=guide)
+		if form.is_valid():
+			messages.add_message(request, messages.INFO, 'Guide Published!')
+			g =form.save()
+			if g.private:
+				g.private_url= CreatePrivateURL(g.slug)
+				g.save()
+			return HttpResponseRedirect(reverse('EditGuide', kwargs={'gslug':gslug}))
+			# return render_to_response("create/publish_guide.html", locals(), context_instance=RequestContext(request))
+		else:
+			messages.add_message(request, messages.INFO, form.errors)
+			return render_to_response("create/publish_guide.html", locals(), context_instance=RequestContext(request))
+			
+	else:
+		form = PublishForm(instance= guide)
+	return render_to_response("create/publish_guide.html", locals(), context_instance=RequestContext(request))
+	
+	
+
+	
+	
+#UTILITIES
+
+def CreatePrivateURL(gslug):
+	import hashlib
+	from django.utils.hashcompat import sha_constructor
+	import random
+	import re
+	m = hashlib.md5()
+	m.hexdigest()
+	salt = sha_constructor(str(random.random())).hexdigest()[:5]
+	key = sha_constructor("%s%s%s" % (datetime.datetime.now(), salt, gslug)).hexdigest()
+	return(key)

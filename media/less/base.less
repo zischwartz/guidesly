@@ -9,40 +9,66 @@
  * Date: @DATE
  */
  
+/*
+ 	CREATE VARIABLES
+*/
+
+@adderWidth: 550px;
+
+@cardWidth: 600px;
+
+@adderMinimizedWidth:  14%; // 200px; //adderMinimizedWidth: 15%;
+
+@editorSpacing: 1em;
+
+@editorSpacingSmall: .5em;
+
+@editingColor: #bfffde;
+
+@graySuperLight: #f3f3f3;
+
+@titleSize: 3.5em;
+
+@static-url: "/media/";
+
+
+/*
+ 	ENJOY VARIABLES
+*/
+
+@titleSize: 3.5em;
+@editingColor: #8effc5;
+@static-url: "/media/";
+
+@primaryMediaWidth: 950px;
+@cardTextSize: 16px;
+
  
+/*
+ 	Site VARIABLES
+*/
+
+@standOutBG: #f3f3f3;
+
 // CSS Reset
-@import "reset.less";
+@import "bs/reset.less";
 
 // Core
-@import "preboot.less";
-@import "scaffolding.less";
+@import "bs/preboot.less";
+@import "bs/scaffolding.less";
+
+
 
 // Styled patterns and elements
-@import "type.less";
-@import "forms.less";
-@import "tables.less";
-@import "patterns.less";
+@import "bs/type.less";
+@import "bs/forms.less";
+@import "bs/tables.less";
+@import "bs/patterns.less";
+@import "bs/wmd.less";
 
-@import "edit_card.less";
-@import "wmd.less";
-@import "card_elements.less";
 
-strong, .strong
-{
-	font-weight: bold;
-}
+@import "card-elements.less";
+@import "create.less";
+/*@import "enjoy.less";*/
+@import "site.less";
 
-.hidden
-{
-	display:none;
-}
-
-.shown
-{
-	display: block !important;
-}
-
-.centext
-{
-	text-align: center;
-}

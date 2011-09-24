@@ -12,6 +12,10 @@ class GuideForm(ModelForm):
 			'number_of_cards': HiddenInput,
 			}	
 
+class PublishForm(ModelForm):
+	class Meta:
+		model=Guide
+		fields = ('private', 'submit_to_cat', 'published' )
 				
 class CardForm(ModelForm):
 	class Meta:
@@ -27,11 +31,6 @@ class StaticElementForm(ModelForm):
 			'title': TextInput(attrs={'placeholder': 'Title (optional)'})
 
 			}
-
-
-
-
-
 
 
 # this, at it's base, is a simple button

@@ -36,15 +36,19 @@ urlpatterns = patterns('',
     # (r'^$', ListView.as_view(model=Guide)),
 
     (r'^$', Landing),
-    (r'^home/$', GuideListView),
+    (r'^home/$', Home),
     url(r'^g/(?P<slug>[^/]+)/?$', GuideDetailView, name='GuideDetailView'),
-    url(r'^s/(?P<gslug>[^/]+)/(?P<slug>[^/]+)/?$', CardInStack,  name='CardInStackView'),
+    url(r'^g/(?P<gslug>[^/]+)/(?P<slug>[^/]+)/?$', CardInStack,  name='CardInStackView'),
+    url(r'^shhh/(?P<private_url>[^/]+)/?$', SecretGuideView,  name='SecretGuideView'),
+    url(r'^shhh/(?P<private_url>[^/]+)/(?P<slug>[^/]+)/?$', SecretCardView,  name='SecretCardView'),
     # url(r'^s/(?P<gslug>[^/]+)/?$', CardInStack),
-    url(r'^g/(?P<gslug>[^/]+)/(?P<slug>[^/]+)/?$', CardDetailView, name='CardDetailView'),
+    # url(r'^g/(?P<gslug>[^/]+)/(?P<slug>[^/]+)/?$', CardDetailView, name='CardDetailView'),
     url(r'^i/(?P<id>[^/]+)/?$', CardDetailViewByIdRedirect, name='CardDetailViewByIdRedirect'),
-
+	
+	
 	url(r'create/?$', CreateGuide, name='CreateGuide'),
 	url(r'create/(?P<gslug>[^/]+)/?$', EditGuide, name='EditGuide'),
+	url(r'create/publish/(?P<gslug>[^/]+)/?$', PublishGuide, name='PublishGuide'),
 	url(r'create/(?P<gslug>[^/]+)/add/?$', BuildCard, name='BuildCard'),
 	url(r'create/(?P<gslug>[^/]+)/addfloating/?$', BuildFloatingCard, name='BuildFloatingCard'),
 	url(r'create/(?P<gslug>[^/]+)/(?P<id>[^/]+)/?$', EditCard, name='EditCard'),

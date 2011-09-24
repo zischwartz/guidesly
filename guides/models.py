@@ -61,14 +61,17 @@ class Guide (models.Model):
 	
 	show_toc = models.BooleanField(default=False)
 	first_card = models.ForeignKey('Card', blank=True, null=True, related_name="+")
-	published = models.BooleanField(default=True)
+	published = models.BooleanField(default=False)
 	private = models.BooleanField(default=False)
-	private_url = models.CharField(max_length=500, blank=True, null=True)
+	private_url = models.CharField(max_length=40, blank=True, null=True) #500 on server
 	thumb = models.ForeignKey(UserFile, null=True, blank=True)
 	
+	submit_to_cat = models.BooleanField(default=True) #new to server
+	accepted_to_cat = models.BooleanField(default=False) #new to server
 	
 	def save(self, *args, **kwargs):
 		i=0
+		thumb= self.thumb
 		if self.is_linear:
 			for c in self.card_order: #ugly
 				i+=1
@@ -78,6 +81,12 @@ class Guide (models.Model):
 				card.card_number = i
 				card.is_floating_card= False
 				card.saved_by_guide()
+				if not thumb:
+					images = card.mediaelement_set.filter(type='image')
+					if len(images):
+						if not images[0].external_file:
+							self.thumb= images[0].file
+					
 		j=0
 		for c in self.floating_list:
 			j+=1
@@ -87,6 +96,11 @@ class Guide (models.Model):
 			card.is_floating_card= True
 			card.card_number= 0
 			card.saved_by_guide()
+			if not thumb:
+				images = card.mediaelement_set.filter(type='image')
+				if len(images):
+					if not images[0].external_file:
+						self.thumb= images[0].file
 		super(Guide, self).save(*args, **kwargs)
 	
 	def __unicode__(self):
@@ -114,18 +128,8 @@ class Guide (models.Model):
 			return None
 			
 	def get_guide_thumb(self):
-		
-		if self.card_order:
-			card = Card.objects.get(id=self.card_order[0])
-		else:
-			try:
-				card = Card.objects.filter(guide=self)[0]
-			except:
-				return None;
-		if card.primary_media:
-			return card.primary_media.file.thumb_url
-		else:
-			return None
+		if self.thumb:
+			return self.thumb.thumb_url
 
 class Card (models.Model):
 	title = models.CharField(max_length=500, blank=True, null=True, default="")
@@ -221,6 +225,19 @@ class Card (models.Model):
 				self.card_number = number_of_cards +1
 				self.guide.card_order.append(self.id)
 				self.guide.save()
+				
+		# If they didn't select a primary, give it one
+		if not self.primary_media:
+			images = self.mediaelement_set.filter(type='image')
+			if len(images):
+				self.primary_media = images[0]
+		
+		# Video is always the primary, this needs to be implimented on the front end
+		videos = self.mediaelement_set.filter(type='video')
+		if len(videos):
+			self.primary_media = videos[0]
+				
+		
 		super(Card, self).save(*args, **kwargs)
 
 	
