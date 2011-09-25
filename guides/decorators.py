@@ -20,11 +20,15 @@ def require_owner(func):
 def require_published_and_public(func):
     def inner(request, gslug, *args, **kwargs):
         guide = get_object_or_404(Guide, slug=gslug)
-
+		
+        # first, is it your guide?
+        if  guide.owner == request.user:
+            return func(request, gslug, *args, **kwargs)
+		
+        # next, is it not published yet, or private?
         if not guide.published or guide.private:
             return HttpResponseForbidden(
-                "Not published, not public, or doesn't exist"
-            )
+                "Not published, not public, or doesn't exist")
         else:
             return func(request, gslug, *args, **kwargs)
     return inner

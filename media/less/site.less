@@ -168,10 +168,60 @@ a.guide_thumb:hover
 
 
 
-
 /*Guide Editing Specific*/
 
 #publish
 {
 	margin-top: 8em;
+}
+
+.input input, .input textarea
+{
+	color: @grayDark;
+	&:focus
+	{
+		background-color: @editingColor;	
+		
+	}
+}
+
+
+// FOR DJANGO FORM ERRORS in messages
+.alert-message
+{
+	ul.errorlist li
+	{
+		font-size: @basefont + 5;
+		list-style: none;
+		color: white !important;
+		text-transform: capitalize;
+		
+		ul
+		{padding: 0; margin: 0;	}
+		
+		ul li
+		{
+			display: block;
+			float: left;
+			color: white;
+			font-size: @basefont;
+			list-style: none;
+		}
+	}
+}
+
+
+
+.no-text-select
+{
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-o-user-select: none;
+	user-select: none;
+}
+
+.cf
+{
+.clearfix;
 }

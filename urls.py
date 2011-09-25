@@ -37,6 +37,8 @@ urlpatterns = patterns('',
 
     (r'^$', Landing),
     (r'^home/$', Home),
+    (r'^guides/$', GuidesList),
+
     url(r'^g/(?P<slug>[^/]+)/?$', GuideDetailView, name='GuideDetailView'),
     url(r'^g/(?P<gslug>[^/]+)/(?P<slug>[^/]+)/?$', CardInStack,  name='CardInStackView'),
     url(r'^shhh/(?P<private_url>[^/]+)/?$', SecretGuideView,  name='SecretGuideView'),
@@ -63,7 +65,9 @@ urlpatterns = patterns('',
 	url(r'^accounts/', include('registration.auth_urls')),        
 	url(r'^accounts/', include('accounts.urls')),	    
 	url(r'^user/', include('accounts.urls')),  
-  
+	
+	url(r'^tagging_autocomplete/', include('tagging_autocomplete.urls')),
+
 	# url(r'^photologue/', include('photologue.urls')),
 
 )

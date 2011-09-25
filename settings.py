@@ -198,13 +198,15 @@ INSTALLED_APPS = (
     'tastypie',
     'south',
     'compress',
+    'tagging_autocomplete',
 
     'accounts',
 	'fileupload',
     'guides',
 
 )                  
-            
+
+
 AUTH_PROFILE_MODULE = 'accounts.userprofile'
 
 INVITE_MODE = True 

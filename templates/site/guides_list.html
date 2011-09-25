@@ -1,0 +1,32 @@
+{%extends "base.html"%}
+
+{% block content %} 
+
+		<h2>All Guides</h2>
+		
+		{%for t in popular_tags%}
+		Popular Tags: {{t}}
+		{%endfor%}
+		<br>
+		{%for t in all_tags%}
+		All tags: {{t}}
+		{%endfor%}
+		<br>
+		<br>
+
+		<div class="listedGuides">
+			{%for guide in guide_list%}
+
+					<a class="guide_thumb" href="{{guide.get_absolute_url}}">
+						{%if guide.get_guide_thumb %}<img src="{{guide.get_guide_thumb}}" alt="{{guide}}">{%endif%}
+						<div class="guide_title">{{guide}}</div>
+					</a>
+
+			{%endfor%}
+		</div> {# /listedGuides #}
+
+		<br>
+		<br>
+		<br>
+
+{% endblock %}

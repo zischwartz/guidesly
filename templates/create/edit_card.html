@@ -142,17 +142,19 @@
 {%endblock%}
 
 {%block header%}
-<li> <span class="location">Editing Card</span></li>
+{# <li> <span class="location">Editing Card</span></li> #}
 <li class="menu"> 
-  <a href="#" class="menu active">{{card.guide.title}}</a> 
+  {# <a href="#" class="menu active">{{card.guide.title}}</a>  #}
+  <a href="#" class="menu active">Editing <span data-bind="text: !title()  ? 'This Card': title"></span></a> 
   <ul class="menu-dropdown"> 
-    <li><a href="{% url EditGuide gslug=card.guide.slug %}">Overview/ Edit {{card.guide.title}}</a></li> 
+	<li><a target="_blank" href="{% url CardDetailViewByIdRedirect id=card.id %}">Preview <span data-bind="text: !title()  ? 'This Card': title"></span></a></li> 
+    <li><a href="{% url EditGuide gslug=card.guide.slug %}">Overview / Edit {{card.guide.title}}</a></li> 
     <li><a href="{% url BuildCard gslug=card.guide.slug %}">Add a New Card</a></li> 
     <li class="divider"></li> 
-    <li><a href="#">Publish</a></li> 
+    <li><a href="{% url EditGuide gslug=card.guide.slug %}#publish">Publish {{card.guide.title}}</a></li> 
   </ul> 
 </li> 
-{# <li><a target="_blank" href="{% url CardDetailViewByIdRedirect id=card.id %}">Preview <span data-bind="text: !title()  ? 'This Card': title"></span></a></li>  #}
+
 
 
 {%endblock%}
@@ -163,7 +165,7 @@
 <div class="cardwrap">
 {# <div class="cardwrap" data-bind="style:{background: primary_is_bg()&&VM.mediaelements().length ? 'url('+ VM.mediaelements()[0].file.file() +' ) center center no-repeat' : 'none'}" style='background-size: cover'>  #}
 	<div class="card">
-		<div class="title adder " tabindex="3" data-bind="event:{ focusin: turnOnEditing, focusout: turnOffEditing, keypress: didPressEnter}">
+		<div class="title adder" tabindex="3" data-bind="event:{ focusin: turnOnEditing, focusout: turnOffEditing, keypress: didPressEnter}">
 
 			<a class="closex closer" href="#">x</a>				
 			<div class="adder_inner">
@@ -279,40 +281,33 @@
 	<h3>Card Options</h3>
 
 
-	<form class="form-stacked">
-		<div class="input">
-			<ul class="inputs-list">
-				<li>
-					<label>
-						<input type="checkbox" data-bind="checked: is_floating_card" id="is_floating_card">
-						<span>This is a sidecard 
-							 <a href="#explain-sidecard" class="bootstrap-popover" title="Sidecard?">?</a>
-						</span>
-					</label>
-					</li>
-					<li>
-						<label>
-							<input type="checkbox" data-bind="checked: autoplay">
-							<span>Autoplay Video and Audio </span>
-						</label>
-					</li>
-					<li>
-						<label>
-							<input type="checkbox" name="primary_is_bg" value="primary_is_bg" data-bind="checked: primary_is_bg">
-							<span>Main Image is Background
-								<a href="#explain-pm-is-bg" class="bootstrap-popover" title="Big, Pretty Images?">?</a>
-								</span>
-						</label>
-					</li>
-					<li>
-						<label>
-							<input type="checkbox" name="optionsCheckboxes" value="option2" >
-							<span>Give Images Shadows</span>
-						</label>
-					</li>
-				</ul>
-			</div> {# end input div #}
-</form>
+	<form class="inputs-list no-text-select">
+
+	<label>
+		<input type="checkbox" data-bind="checked: is_floating_card" id="is_floating_card">
+		<span>This is a sidecard <a href="#explain-sidecard" class="bootstrap-popover" title="Sidecard?">?</a>
+		</span>
+	</label>
+
+	<label>
+		<input type="checkbox" data-bind="checked: autoplay">
+		<span>Autoplay Video and Audio </span>
+	</label>
+
+	<label>
+		<input type="checkbox" name="primary_is_bg" value="primary_is_bg" data-bind="checked: primary_is_bg">
+		<span>Main Image is Background
+			<a href="#explain-pm-is-bg" class="bootstrap-popover" title="Big, Pretty Images?">?</a>
+			</span>
+	</label>
+
+	<label>
+		<input type="checkbox" name="optionsCheckboxes" value="option2" >
+		<span>Give Images Shadows</span>
+	</label>
+
+	</form>
+	
 <br><a class="btn primary" href="{% url BuildCard gslug=card.guide.slug %}">Add New Card</a><br><br>
 
 	<button class="btn danger delete_link">Delete Card</button>
@@ -524,7 +519,7 @@
 						<span data-bind="text: title ? title.slice(0,15): 'Untitled'"></span> 
 						<input type="radio" id="radiob-card-${id}" data-bind="value: resource_uri, checked:  VM.InputVM().default_action.goto" name="pickacard">
 							{{if primary_media }}<br><img src="${primary_media.file.thumb_url}">{{/if}} 
-							${resource_uri}
+
 						</label>
 				</script>
 				{%endverbatim%}
@@ -552,23 +547,6 @@
 </div> {# /#addExternalMediaModal #}
 
 
-{# <div class="modal-backdrop" id="deleteCardModal"> #}
-{# 	<div class="modal"> #}
-{# 		<div class="modal-header"> #}
-{# 			<h3>Delete This Card?</h3> #}
-{# 			<a href="#" class="close closer" >×</a> #}
-{# 		</div> #}
-{# 		<div class="modal-body"> #}
-{# 		<p> Are you sure you want to delete this card?</p> #}
-{#  #}
-{# 			 #}
-{# 		</div> #}
-{# 		<div class="modal-footer"> #}
-{# 			<a href="#" class="btn danger" >Delete</a> #}
-{# 			<a href="#" class="btn secondary closer">Cancel</a> #}
-{# 		</div> #}
-{# 	</div>  #}
-{# </div> {# /#deleteCard #}
 
 
 

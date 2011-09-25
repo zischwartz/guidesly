@@ -96,11 +96,21 @@
 {%block sidebar%}{%endblock%}
 {%else%} <div class="container">{%endif%}
 	<div class="content">
-		{% if messages %}<div id="messages">{%for message in messages%}<p{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>{% endfor %}</div>{%endif%}
+		{% if messages %}
+			<div id="messages">
+				{%for message in messages%}
+				<div class="alert-message {{ message.tags }}">
+				        <a class="close" href="#">×</a>
+				        <p>{{ message }}</p>
+				      </div>
+				{% endfor %}
+			</div>
+		{%endif%}
 
-			{% block content %}
-				Hi. If you're seeing this, something messed up. This is the base template dude...
-			{% endblock %}
+		{# THE ACTUAL PAGE CONTENT!  #}
+		{% block content %}
+			Hi. If you're seeing this, something messed up. This is the base template dude...
+		{% endblock %}
 
 		</div> {# /content #}
 	</div> {# /container #}

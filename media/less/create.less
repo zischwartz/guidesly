@@ -114,8 +114,8 @@
 
 .smallOK
 {
-	margin-top: -20px;
-	margin-right: 0em;
+	margin-top: -22px;
+	margin-right: 1px;
 	display:none;
 	float: right;
 }
@@ -154,6 +154,7 @@ input#title
 	text-align: center;
 	float: left;
 	display: none;
+	height: auto;
 }
 
 
@@ -776,3 +777,71 @@ strong.green {
 {
 	margin-bottom: 1em !important;
 }
+
+
+
+
+
+
+.tinput {
+  display: inline-block;
+  margin: 0;
+  padding: 3px;
+  color: @black !important;
+  border: 1px solid #ccc;
+  .border-radius(3px);
+  .transition(0.3s);
+
+	&.big
+	{
+		width:100%;
+		font-size: 1em;
+	}
+	
+}
+
+.tinput:focus
+{
+	background-color: @editingColor;	
+}
+
+
+.btn.crazy {
+  .gradientBar(lighten(@orange, 20%), darken(@orange, 5%));
+}
+
+.btn.tiny {
+  padding-right: 5px;
+  padding-left: 5px;
+  font-size: 9px;
+	line-height: 9px;
+	font-weight: bold;
+}
+
+
+
+.ui-autocomplete 
+{
+	.span6;
+/*	width: 400px !important;*/
+	background-color: @grayLight;
+	.ui-state-hover
+	{
+		background-color: @editingColor;
+		color: @black;
+	}
+	
+	li
+	{
+		list-style: none;
+		padding: 5px;
+		
+		a
+		{
+			padding: 5px;
+			cursor: pointer;
+		}
+	}
+}
+
+.ui-autocomplete-loading { background: red ; /*url('images/ui-anim_basic_16x16.gif') right center no-repeat;*/ }

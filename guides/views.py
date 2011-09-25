@@ -18,7 +18,7 @@ logger=getlogger()
 from django.utils import simplejson
 from fileupload.models import UserFile
 from api import CardResource, SmallCardResource, GuideResource, MediaElementResource
-
+from tagging.models import Tag
 
 from decorators import require_owner, require_published_and_public
 from django.contrib.auth.decorators import login_required
@@ -81,6 +81,14 @@ def CardDetailViewByIdRedirect (request, id):
 	return HttpResponseRedirect(card.get_absolute_url())
 
 
+def GuidesList(request):
+	popular_tags = Tag.objects.usage_for_model(Guide, min_count=2)
+	all_tags = Tag.objects.usage_for_model(Guide, min_count=1)
+	guide_list = Guide.objects.filter(published=True, private=False) #add accepted_to_cat	
+	return render_to_response("site/guides_list.html", locals(), context_instance=RequestContext(request))
+	
+
+
 # Creating Guides
 # -------------------------
 
@@ -93,11 +101,12 @@ def CreateGuide (request):
 			g =form.save()
 			return HttpResponseRedirect(reverse('BuildCard', kwargs={'gslug':g.slug}))
 		else:
-			messages.add_message(request, messages.INFO, form.errors)
-			return render_to_response("create/create_guide.html", locals(), context_instance=RequestContext(request) )
+			# return HttpResponse(form.errors['title'])
+			messages.add_message(request, messages.ERROR, form.errors)
+			return render_to_response("create/new_guide.html", locals(), context_instance=RequestContext(request) )
 	else:
 		form = GuideForm()
-	return render_to_response("create/create_guide.html", locals(), context_instance=RequestContext(request) )
+	return render_to_response("create/new_guide.html", locals(), context_instance=RequestContext(request) )
 
 @require_owner
 def BuildCard (request, gslug):
@@ -151,7 +160,8 @@ def EditGuide (request, gslug):
 		form = GuideForm(request.POST, instance=guide)
 		if form.is_valid():
 			g =form.save()
-			return render_to_response("create/edit_guide.html", locals(), context_instance=RequestContext(request))
+			messages.add_message(request, messages.INFO, 'Saved those changes to your guide.')
+			return HttpResponseRedirect(reverse('EditGuide', kwargs={'gslug':gslug}))
 	else:
 		form = GuideForm(instance= guide)
 		g = GuideResource()

@@ -50,21 +50,24 @@
 
 @standOutBG: #f3f3f3;
 
+
 // CSS Reset
-@import "bs/reset.less";
+@import "lib/reset.less";
 
-// Core
-@import "bs/preboot.less";
-@import "bs/scaffolding.less";
+// Core variables and mixins
+@import "lib/variables.less"; // Modify this for custom colors, font-sizes, etc
+@import "lib/mixins.less";
 
-
+// Grid system and page structure
+@import "lib/scaffolding.less";
 
 // Styled patterns and elements
-@import "bs/type.less";
-@import "bs/forms.less";
-@import "bs/tables.less";
-@import "bs/patterns.less";
-@import "bs/wmd.less";
+@import "lib/type.less";
+@import "lib/forms.less";
+@import "lib/tables.less";
+@import "lib/patterns.less";
+
+@import "lib/wmd.less";
 
 
 @import "card-elements.less";

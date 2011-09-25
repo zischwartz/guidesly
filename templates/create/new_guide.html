@@ -1,0 +1,65 @@
+{%extends "base.html" %}
+
+{# {%block extrahead%}{%endblock%} #}
+
+
+{%block header%}
+<li> <span class="location">Create A New Guide</a> </li>
+{%endblock%}
+
+{%block content%}
+
+<br>
+<h1> Your Awesome New Guide</h1>
+<br><br>
+<div class="row">
+	<div class=" column span10  offset3">
+
+		<form action="" method="post">
+			{% csrf_token %}
+			
+			<div class="clearfix">
+	            <label for="id_title">Title of Your Guide</label>
+	            <div class="input">
+	              <input class="span6" id="id_title" name="title"  type="text">
+	            </div>
+	         </div>
+	
+			<div class="clearfix">
+	            <label for="id_description">A sentence or two  describing it</label>
+	            <div class="input">
+	              <textarea class="span6" id="id_description" name="textarea2" rows="3"></textarea>
+	            </div>
+			 </div>
+			
+			<div class="clearfix">
+	            <label> Ordering</label>
+	            <div class="input">
+					<label for="in_lin"> Mostly Ordered <input type="radio" id="in_lin" name="is_linear" value="true" checked="checked" /></label>  
+					<label for="in_lin2">Totally Freeform <input type="radio" id="in_lin2" name="is_linear" value=""  /></label>
+	            </div>
+          </div>
+		<br>
+		<div class="clearfix centext">
+			<button type="submit" class="btn primary">Create Guide &amp; Start Building </button>
+		</div>
+		
+				<input type="hidden" name="owner" id="id_owner" value="{{user.id}}">
+				<div class="hidden">{{form.card_order}}{{form.floating_list}}</div>
+
+		</form>
+		
+		
+	</div> {# /span10 #}
+	<div class="span3 columns"></div>
+</div> {# /row #}
+<br><br><br><br><br><br>	
+	
+{# POPOVERS	 #}
+<div title="Ordered or Freeform?"style="display:none;">
+    <div id="explain-order">Ordered: Cards have an order, prev and next buttons.</div>
+</div>
+
+
+{%endblock%}
+

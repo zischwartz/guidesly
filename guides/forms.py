@@ -3,10 +3,15 @@ from django import forms
 from models import *
 from django.forms.widgets import *
 # from log import *
+from tagging.forms import TagField
+from tagging_autocomplete.widgets import TagAutocomplete
 
 class GuideForm(ModelForm):
+	# tags = TagField(widget=TagAutocomplete())
 	class Meta:
 		model=Guide
+		fields = ('title', 'description', 'tags', 'enable_comments')#, 'first_card' )
+		
 		widgets = {
 			'slug': HiddenInput,
 			'number_of_cards': HiddenInput,

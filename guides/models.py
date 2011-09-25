@@ -131,6 +131,9 @@ class Guide (models.Model):
 		if self.thumb:
 			return self.thumb.thumb_url
 
+
+
+
 class Card (models.Model):
 	title = models.CharField(max_length=500, blank=True, null=True, default="")
 	created = models.DateTimeField(auto_now_add=True, blank=True, null=True)
