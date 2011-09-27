@@ -10,7 +10,7 @@ class GuideForm(ModelForm):
 	# tags = TagField(widget=TagAutocomplete())
 	class Meta:
 		model=Guide
-		fields = ('title', 'description', 'tags', 'enable_comments')#, 'first_card' )
+		fields = ('title', 'description', 'tags', 'enable_comments', 'owner')#, 'first_card' )
 		
 		widgets = {
 			'slug': HiddenInput,

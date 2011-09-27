@@ -37,7 +37,7 @@ urlpatterns = patterns('',
 
     (r'^$', Landing),
     (r'^home/$', Home),
-    (r'^guides/$', GuidesList),
+    (r'^enjoy/$', GuidesList),
 
     url(r'^g/(?P<slug>[^/]+)/?$', GuideDetailView, name='GuideDetailView'),
     url(r'^g/(?P<gslug>[^/]+)/(?P<slug>[^/]+)/?$', CardInStack,  name='CardInStackView'),

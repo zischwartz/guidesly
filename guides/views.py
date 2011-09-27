@@ -95,8 +95,8 @@ def GuidesList(request):
 @login_required
 def CreateGuide (request):
 	if request.method == 'POST':
-		logger.info('posted')
 		form = GuideForm(request.POST)
+		form.owner= request.user
 		if form.is_valid():
 			g =form.save()
 			return HttpResponseRedirect(reverse('BuildCard', kwargs={'gslug':g.slug}))

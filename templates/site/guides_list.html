@@ -1,7 +1,13 @@
 {%extends "base.html"%}
 
-{% block content %} 
+{% block extrahead%}
+<script src="{{STATIC_URL}}js-libs/jquery.isotope.min.js"></script>
+<script src="{{STATIC_URL}}site.js"></script>
 
+{% endblock %}
+
+{% block content %} 
+{%load  tagging_tags %}
 		<h2>All Guides</h2>
 		
 		{%for t in popular_tags%}
@@ -14,19 +20,32 @@
 		<br>
 		<br>
 
-		<div class="listedGuides">
+		<div id="guideList">
 			{%for guide in guide_list%}
 
-					<a class="guide_thumb" href="{{guide.get_absolute_url}}">
+						{% tags_for_object guide as tag_list %}
+					<a class="guide_thumb {% for tag in tag_list %} {{tag}} {%endfor%}" href="{{guide.get_absolute_url}}">
 						{%if guide.get_guide_thumb %}<img src="{{guide.get_guide_thumb}}" alt="{{guide}}">{%endif%}
-						<div class="guide_title">{{guide}}</div>
+						<div class="guide_title">{{guide}}
+							
+							</div>
 					</a>
 
 			{%endfor%}
-		</div> {# /listedGuides #}
+		</div> {# /#guideList #}
 
 		<br>
 		<br>
 		<br>
+		
+		<ul id="filters">
+		  <li><a href="#" data-filter="*">show all</a></li>
+		  <li><a href="#" data-filter=".cooking">cooking</a></li>
+		  <li><a href="#" data-filter=".transition">transition</a></li>
+		  <li><a href="#" data-filter=".alkali, .alkaline-earth">alkali and alkaline-earth</a></li>
+		  <li><a href="#" data-filter=":not(.transition)">not transition</a></li>
+		  <li><a href="#" data-filter=".metal:not(.transition)">metal but not transition</a></li>
+		</ul>
+		
 
 {% endblock %}

@@ -40,12 +40,15 @@
 	            </div>
           </div>
 		<br>
+		
+		<input type="hidden" name="owner" id="id_owner" value="{{user.id}}">
+		<div class="hidden">{{form.card_order}}{{form.floating_list}}</div>
+		
 		<div class="clearfix centext">
 			<button type="submit" class="btn primary">Create Guide &amp; Start Building </button>
 		</div>
 		
-				<input type="hidden" name="owner" id="id_owner" value="{{user.id}}">
-				<div class="hidden">{{form.card_order}}{{form.floating_list}}</div>
+
 
 		</form>
 		

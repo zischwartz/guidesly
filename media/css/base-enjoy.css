@@ -168,11 +168,11 @@ p.small{font-size:.9em !important;}
 .left{text-align:left;}
 .center{text-align:center;}
 .closex{float:right;margin-top:-2px;margin-right:5px;margin-bottom:5px;color:#000;font-size:20px;text-shadow:0 1px 0 #ffffff;filter:alpha(opacity=30);-khtml-opacity:0.3;-moz-opacity:0.3;opacity:0.3;line-height:1em;}
-.listedGuides{width:100%;float:left;}
+.listedGuidess{width:100%;float:left;}
 .listedGuides .smallcard{height:10em;cursor:pointer;}
 .listedGuides.yourGuides .smallcard{cursor:default;}
 .listedGuides .smallcardWrapper .controls a{display:inline;}
-a.guide_thumb{width:200px;height:150px;margin:0 1em 1em 0;position:relative;overflow:hidden;-webkit-box-shadow:1px 1px 5px #808080;-moz-box-shadow:1px 1px 5px #808080;box-shadow:1px 1px 5px #808080;float:left;}a.guide_thumb .guide_title{width:190px;text-align:center;position:absolute;background-color:rgba(64, 64, 64, 0.6);color:white;text-decoration:none;text-shadow:0px 1px 1px #404040;font-size:1.5em;bottom:0px;left:0px;padding:5px;}
+a.guide_thumb{width:200px;height:150px;margin:0 1.5em 1.5em 0;position:relative;overflow:hidden;-webkit-box-shadow:1px 1px 5px #808080;-moz-box-shadow:1px 1px 5px #808080;box-shadow:1px 1px 5px #808080;float:left;}a.guide_thumb .guide_title{width:190px;text-align:center;position:absolute;background-color:rgba(64, 64, 64, 0.6);color:white;text-decoration:none;text-shadow:0px 1px 1px #404040;font-size:1.5em;bottom:0px;left:0px;padding:5px;}
 a.guide_thumb:hover{text-decoration:none;}
 a.guide_thumb:hover{}a.guide_thumb:hover .guide_title{background-color:rgba(0, 0, 0, 0.7);}
 .topbar li span.location{display:block;float:none;padding:10px 10px 11px;padding:10px 10px 5px;line-height:19px;text-decoration:none;background-color:#222;background-color:rgba(0, 0, 0, 0.5);-webkit-border-radius:0 0 8px 8px;-moz-border-radius:0 0 8px 8px;border-radius:0 0 8px 8px;color:#808080;}
