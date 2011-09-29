@@ -79,7 +79,7 @@
 			{# This uglyness gives cards classes relating to whats inside them #}
 
 	<div data-title="{%firstof card.title card.card_number%}" data-slug="{{card.slug}}" class="card {%if card.is_floating_card and guide.is_linear %} is_floating_card {%endif %} {%if not card.title%} notitle {%endif%}  {%if card.primary_media%} hasprimarymedia{%endif%} {%if not card.primary_media%} noprimarymedia{%endif%} {%if not card.text%} notext {%endif%} {%if card.input_elements%} hasinputs{%endif%} {%if not card.is_floating_card%} hasprevandnext {%endif%} {%if card.primary_is_bg %} primary_is_bg {%endif%} {%if card.has_thumbs%}hasthumbs {%endif%} {%if card == requested_card %} the_requested_card {% endif %}  "
-			id = "{%firstof card.slug card.card_number card.id %}" {%if card.primary_is_bg%}style="background: url( '{{card.primary_media.file.url}}' ) center center no-repeat; background-size: cover" {%endif%}
+			id = "{%firstof card.slug card.card_number card.id %}" {%if card.primary_is_bg%}style="background: url( '{% firstof card.primary_media.external_file card.primary_media.file.image.display_image.url %}' ) center center no-repeat; background-size: cover" {%endif%}
 			{%if card.autoplay%} data-autoplay="1"{%endif%}>
 
 			<div class="loader">Loading<br><img src="{{STATIC_URL}}/img/ajax-loader.gif"></div>					
@@ -91,7 +91,7 @@
 		
 			{# PRIMARY MEDIA #}
 			{%if not card.primary_is_bg and card.primary_media.type == 'image' %}
-				<img src="{{card.primary_media.file.image.display_image.url}}" class="primary_media">
+				<img src="{% firstof card.primary_media.external_file card.primary_media.file.image.display_image.url %}" class="primary_media">
 				<script>current_media_type = 'image'</script>
 				<div class="caption">{{card.primary_media.title}}</div>
 			{%endif%}

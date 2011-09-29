@@ -2,50 +2,62 @@
 
 {% block extrahead%}
 <script src="{{STATIC_URL}}js-libs/jquery.isotope.min.js"></script>
-<script src="{{STATIC_URL}}site.js"></script>
+
 
 {% endblock %}
 
 {% block content %} 
 {%load  tagging_tags %}
-		<h2>All Guides</h2>
 		
-		{%for t in popular_tags%}
-		Popular Tags: {{t}}
-		{%endfor%}
-		<br>
-		{%for t in all_tags%}
-		All tags: {{t}}
-		{%endfor%}
-		<br>
-		<br>
+		{# {%for t in all_tags%} #}
+		{# All tags: {{t}} #}
+		{# {%endfor%} #}
+		{# <br> #}
+
 
 		<div id="guideList">
 			{%for guide in guide_list%}
 
-						{% tags_for_object guide as tag_list %}
-					<a class="guide_thumb {% for tag in tag_list %} {{tag}} {%endfor%}" href="{{guide.get_absolute_url}}">
-						{%if guide.get_guide_thumb %}<img src="{{guide.get_guide_thumb}}" alt="{{guide}}">{%endif%}
-						<div class="guide_title">{{guide}}
-							
-							</div>
-					</a>
+					{% tags_for_object guide as tag_list %}
+					<div class="guideBox lifted drop-shadow {% for tag in tag_list %} {{tag}} {%endfor%}">
+						{%if guide.get_guide_thumb %}
+							<a class="guide_thumb innerShadow" href="{{guide.get_absolute_url}}"
+							{# rel="popover" data-content="{{guide.description}}" data-original-title="{{guide.title}}" class="tip" #}
+							>
+								<img src="{{guide.get_guide_thumb}}" alt="{{guide}}">
+								<div class="guide_title">{{guide}}</div>
+							</a>
+						{%else%}
+							<a class="guide_thumb innerShadow" href="{{guide.get_absolute_url}}"
+							{# rel="popover" data-content="{{guide.description}}" data-original-title="{{guide.title}}" class="tip" #}
+							>
+								<br><br><h3 class="guide_title">{{guide}}</h3>
+							</a>
+						{%endif%}
+						
+					</div>
 
 			{%endfor%}
 		</div> {# /#guideList #}
 
 		<br>
 		<br>
-		<br>
-		
-		<ul id="filters">
-		  <li><a href="#" data-filter="*">show all</a></li>
-		  <li><a href="#" data-filter=".cooking">cooking</a></li>
-		  <li><a href="#" data-filter=".transition">transition</a></li>
-		  <li><a href="#" data-filter=".alkali, .alkaline-earth">alkali and alkaline-earth</a></li>
-		  <li><a href="#" data-filter=":not(.transition)">not transition</a></li>
-		  <li><a href="#" data-filter=".metal:not(.transition)">metal but not transition</a></li>
-		</ul>
-		
-
+		<br>	
 {% endblock %}
+
+{# <a rel="popover" data-content="<p>Side cards are outside the normal flow of the guide.</p><p> Mostly, this means they don't have previous and next buttons, and your users won't get to them from the previous and next buttons on other cards.</p>" data-original-title="Sidecards" class="tip">?</a> #}
+
+
+{% block sidebar%}
+<div class="sidebar">
+<h3>Popular Tags</h3>
+	<div id="popular_tags">
+			<ul class="pills">
+				<li class="active"><a href="#" data-filter="*"><strong>All Guides</strong></a></li>				
+				{%for t in popular_tags%}
+					<li><a href="#" data-filter=".{{t}}">{{t|title}}</a></li>
+				{%endfor%}
+		</ul>
+	</div> {# /popular_tags #}
+</div>
+{% endblock%}

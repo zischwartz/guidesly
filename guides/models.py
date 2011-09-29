@@ -234,11 +234,10 @@ class Card (models.Model):
 			images = self.mediaelement_set.filter(type='image')
 			if len(images):
 				self.primary_media = images[0]
-		
-		# Video is always the primary, this needs to be implimented on the front end
-		videos = self.mediaelement_set.filter(type='video')
-		if len(videos):
-			self.primary_media = videos[0]
+			#defaults to video
+			videos = self.mediaelement_set.filter(type='video')
+			if len(videos):
+				self.primary_media = videos[0]
 				
 		
 		super(Card, self).save(*args, **kwargs)

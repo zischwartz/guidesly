@@ -10,9 +10,29 @@
 
 }
 
+.container-fluid > .sidebar
+{
+/*	width: 150px !important;*/
+}
+
+.container-fluid > .content
+{
+/*	margin-left: auto;
+	margin-right: auto;
+	float: none;
+	overflow: hidden;
+	min-width: none;*/
+
+}
+
 .notBlank
 {
 	color: @grayDark !important;
+}
+
+.cardwrap
+{
+	margin-left: -115px;
 }
 
 .card
@@ -25,14 +45,13 @@
 	.box-shadow(0 0px 8px rgba(0,0,0,.45));
 	padding-bottom: .3em;
 	line-height: 1em;
-	
 	background-color: white;
+	
+	margin: 0 auto;
+	
 }
 
-.cardwrap
-{
-	margin-left: -100px;
-}
+
 
 
 .adder
@@ -45,6 +64,7 @@
 	.transition(all ease-in-out .3s);
 	background-color: white;
 	color: @gray;
+	h1 {color: @gray;}
 
 	.SoM
 	{display:none;}
@@ -125,6 +145,7 @@
 	h1
 	{
 		display: none;
+		
 	}
 	input#title, .smallOK, textarea#wmd-input
 	{
@@ -278,8 +299,6 @@ strong.green {
 }
 
 
-
-
 .btn
 {
 	letter-spacing: 1px;
@@ -293,6 +312,7 @@ strong.green {
 	.opacity(80);
 	color: red;
 }
+
 
 // ******************************************************
 // ***********     Minimized  Toolbar   **************
@@ -423,18 +443,21 @@ strong.green {
 	.fileupload-buttonbar
 	{
 		height: 2em;
+		float: none;
+/*		padding:0.2em 4em !important;*/
+		
 /*		border: none;*/
 		}
 	
 	form
 	{
-/*		margin: 0px;*/
 		
 		label.btn
 		{
 
 			margin: 0 auto !important;
 			text-align: center;
+			float: none;
 
 		}
 	}
@@ -450,6 +473,29 @@ strong.green {
 	}
 }
 
+
+.media_standin
+{
+	background-color: @grayLight;
+	height: 250px;
+	.innerShadow();
+	
+	&.audio
+	{
+		background: @white url('@{static-url}img/audio-icon.png ') no-repeat center center;
+	}
+	
+	&.video
+	{
+		background: @white url('@{static-url}img/video-icon.png ') no-repeat center center;
+	}
+	
+	&.other
+	{
+		background: @white url('@{static-url}img/document-icon.png ') no-repeat center center;
+		
+	}
+}
 
 /****************************************/
 /*******   (CLIENTSIDE) TEMPLATES    ****/
@@ -470,6 +516,9 @@ strong.green {
 	margin: @editorSpacing auto;
 	overflow: hidden;
 	text-align: center;
+	position: relative;
+	
+	
 	
 	.uploading_indicator
 	{
@@ -483,6 +532,11 @@ strong.green {
 		overflow: hidden;
 		margin-top: 12px;
 		
+	}
+	
+	&.uptest
+	{
+		border: 5px dashed red;
 	}
 	
 	&.uploading .uploading_indicator
@@ -500,18 +554,26 @@ strong.green {
 		text-align: center;
 		#translucent > .background(@grayDark, 0.5);
 		#translucent > .border(@grayLighter, 0.5);
-		height: @mediaOptionsHeight;
 		width: 100%;
+		width: @adderWidth;
 		display: none;
-/*		display: inline-block;*/
 		overflow: hidden;
-/*		padding-top: 10px;*/
-		
+		position: absolute;
+		color: white;
+		text-shadow: 0px 1px 1px @grayDark;
+		bottom: 1.5em;
+		left: 0px;
+	
+		label
+		{
+			float: none !important;
+			color: white;
+			font-size: 1.2em;
+		}
 
 	}
 	.preview
 	{
-/*		margin-bottom: 0 - (@mediaOptionsHeight + 2); //+2 for the border*/
 		
 		.preview_image
 		{
@@ -525,7 +587,7 @@ strong.green {
 	{
 		width: 100%;
 		display: block;
-
+		height: 1em;
 		margin-top: @editorSpacingSmall;
 	}
 	
@@ -535,20 +597,37 @@ strong.green {
 		margin: 0 .5em .5em .5em;
 		.square(150px);
 		
+		.media_standin
+		{
+			height: 130px !important;
+		}
+		
 		.preview_image
 		{
 			.square(150px);
 		}
+		&:hover, &.hovered
+		{
+		.mediaOptions {
+			display: block;
+			width: 150px;
+		}}
+
+		
+		
 	} // end not primary
 
 
 	&:hover, &.hovered
 	{
-	.mediaOptions {display: inline-block;}
-	.preview
+	.mediaOptions {
+		display: block;
+
+	}
+/*	.preview
 	{
 		margin-bottom: 0 - (@mediaOptionsHeight + 2); //+2 for the border
-	}
+	}*/
 	
  	} //end hovered and :hvoer
 
@@ -560,15 +639,15 @@ strong.green {
 /****  MODALs for editing  ******/
 /*******************************/
 
-.modal-backdrop
+/*.modal-backdrop
 {
 	display:none;
-}
+}*/
 
 .modal,
 {
 	font-size: 1.3em;
-	width: ;
+/*	width: ;*/
 	input
 	{
 		font-size: 1em;

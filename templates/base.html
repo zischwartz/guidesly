@@ -11,18 +11,16 @@
 		
 		<script type="text/javascript" src="{{STATIC_URL}}js-libs/knockout-1.2.1.js"></script>	{# // <script type="text/javascript" src="{{STATIC_URL}}js-libs/knockout-1.2.1.debug.js"></script> #}
 		<script type="text/javascript" src="{{STATIC_URL}}js-libs/knockout.mapping.js"></script>
-		<script type="text/javascript" src="{{STATIC_URL}}js-libs/jquery.bootstrappopover.js"></script>
+		<script type="text/javascript" src="{{STATIC_URL}}js-libs/bootstrap-twipsy.js"></script>
+		<script type="text/javascript" src="{{STATIC_URL}}js-libs/bootstrap-popover.js"></script>
+		<script type="text/javascript" src="{{STATIC_URL}}js-libs/bootstrap-modal.js"></script>
+
+		<script type="text/javascript" src="{{STATIC_URL}}site.js"></script>
 
 		<link rel="stylesheet" media="all" href="{{STATIC_URL}}css/base.css"/>
 
 		<script type="text/javascript">
 			var current_url ="{{request.path}}";
-			$(document).ready(function(){	
-				$("body").bind("click", function (e) {$('a.menu').parent("li").removeClass("open");});
-				$("a.menu").click(function (e) {var $li = $(this).parent("li").toggleClass('open'); return false; });
-				$('a.bootstrap-popover').bootstrapPopover();
-	            
-			});
 		</script>
 		
 		<link rel="shortcut icon" href="{{STATIC_URL}}img/favicon.ico">
@@ -93,7 +91,9 @@
 
 {%if is_fluid%}
 <div class="container-fluid">
+
 {%block sidebar%}{%endblock%}
+
 {%else%} <div class="container">{%endif%}
 	<div class="content">
 		{% if messages %}

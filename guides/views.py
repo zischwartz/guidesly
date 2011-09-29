@@ -35,7 +35,8 @@ def Landing (request):
 @login_required
 def Home (request):
 	if request.user.is_authenticated():
-		your_guides= request.user.guide_set.all()
+		your_published_guides= request.user.guide_set.filter(published=True)
+		your_unpublished_guides= request.user.guide_set.filter(published=False)
 	guide_list = Guide.objects.filter(published=True, private=False) #add accepted_to_cat	
 	return render_to_response("site/home.html", locals(), context_instance=RequestContext(request))
 
@@ -82,6 +83,7 @@ def CardDetailViewByIdRedirect (request, id):
 
 
 def GuidesList(request):
+	is_fluid=1
 	popular_tags = Tag.objects.usage_for_model(Guide, min_count=2)
 	all_tags = Tag.objects.usage_for_model(Guide, min_count=1)
 	guide_list = Guide.objects.filter(published=True, private=False) #add accepted_to_cat	

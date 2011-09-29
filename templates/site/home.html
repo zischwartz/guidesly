@@ -11,9 +11,9 @@
 
 <div class="row">
 	<div class="span10 columns">
-		<h2>Guides by You</h2>
-		<div class="listedGuides yourGuides">
-			{%for guide in your_guides%}
+		<h2>Your Guides <small> Published</small></h2> 
+		<div class="listedGuides yourGuides cf">
+			{%for guide in your_published_guides%}
 			<div class="smallcardWrapper">
 				<div class="smallcard">
 					<div>{{guide}}</div>
@@ -25,25 +25,27 @@
 		</div> {# /listedGuides #}
 
 		<br>
-		<h2>Guides by Others</h2>
-		<div class="listedGuides">
-			{%for guide in guide_list%}
+		<br>
 
-					<a class="guide_thumb" href="{{guide.get_absolute_url}}">
-						{%if guide.get_guide_thumb %}<img src="{{guide.get_guide_thumb}}" alt="{{guide}}">{%endif%}
-						<div class="guide_title">{{guide}}</div>
-					</a>
-
+		<h2>Your Guides <small> Unpublished</small></h2> 
+		<div class="listedGuides yourGuides">
+			{%for guide in your_unpublished_guides%}
+			<div class="smallcardWrapper">
+				<div class="smallcard">
+					<div>{{guide}}</div>
+					{%if guide.get_guide_thumb %}<img src="{{guide.get_guide_thumb}}" alt="{{guide}}">{%endif%}
+				</div>
+				<div class="controls"><a href="{% url EditGuide gslug=guide.slug %}">Edit</a>  <a href="{{guide.get_absolute_url}}">View</a>  <a href="#" data-bind="click: deleteCard">Delete</a></div>
+			</div>
 			{%endfor%}
 		</div> {# /listedGuides #}
-
-		<br>
-		<br>
-		<br>
+		
+		
+		
 	</div> {# /span10 #}
 	<div class="span6 columns"><br><br>
-		<p>Some really pithy text should go here. Probably a link to the iphone and android app too. </p>
-		<p>And news! Everyone loves news! Right?</p>
+		{# <p>Some really pithy text should go here. Probably a link to the iphone and android app too. </p> #}
+		{# <p>And news! Everyone loves news! Right?</p> #}
 	</div>
 </div> {# /row #}
 {% endblock %}

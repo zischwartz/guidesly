@@ -47,34 +47,18 @@ class UserFile(models.Model):
 
 	@property
 	def url(self):
-		# return (self.file.name) #removed string /media/ and changed slug to file
 		return (settings.MEDIA_URL + self.file.name) #removed string /media/ and changed slug to file
 
-	# def realsave(self, *args, **kwargs):		
-	# 	if self.type == 'image':
-	# 		self.thumb_url = self.image.thumbnail_image.url
-	# 		self.medium_url = self.image.medium_image.url
-	# 	if self.type == 'video':
-	# 		self.thumb_url = "/static/img/video-icon.png"
-	# 		self.medium_url = "/static/img/video-icon.png"
-	# 	if self.type== 'audio':
-	# 		self.thumb_url = "/static/img/audio-icon.png"
-	# 		self.medium_url = "/static/img/audio-icon.png"
-	# 	if self.type== 'other':
-	# 		self.thumb_url = "/static/img/document-icon.png"
-	# 		self.medium_url = "/static/img/document-icon.png"		
-	# 	super(UserFile, self).save(*args, **kwargs)
+
 
 
 
 def resize_images(sender, instance=None, **kwargs):
-	if instance.type=='image':	
+	if instance.image:	
 		instance.thumb_url = instance.image.thumbnail_image.url
 		instance.medium_url = instance.image.medium_image.url
 		instance.display_url = instance.image.display_image.url
-	# if instance.type == 'video':
-	# 	instance.thumb_url = "/static/img/video-icon.png"
-	# 	instance.medium_url = "/static/img/video-icon.png"
+
 
 
 

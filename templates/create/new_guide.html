@@ -33,7 +33,10 @@
 			 </div>
 			
 			<div class="clearfix">
-	            <label> Ordering</label>
+	            <label> 
+					Ordering 
+					<a rel="popover" data-content="<b>Ordered:</b> Cards have an order, prev and next buttons. <br><b>Freeform:</b> You must create inputs to let users move through your guide." data-original-title="Ordering?" class="tip">?</a>
+				</label>
 	            <div class="input">
 					<label for="in_lin"> Mostly Ordered <input type="radio" id="in_lin" name="is_linear" value="true" checked="checked" /></label>  
 					<label for="in_lin2">Totally Freeform <input type="radio" id="in_lin2" name="is_linear" value=""  /></label>
@@ -57,11 +60,7 @@
 	<div class="span3 columns"></div>
 </div> {# /row #}
 <br><br><br><br><br><br>	
-	
-{# POPOVERS	 #}
-<div title="Ordered or Freeform?"style="display:none;">
-    <div id="explain-order">Ordered: Cards have an order, prev and next buttons.</div>
-</div>
+
 
 
 {%endblock%}

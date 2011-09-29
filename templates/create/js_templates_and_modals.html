@@ -1,0 +1,235 @@
+{%load verbatim_templatetag%} 
+
+	{# NEW #}
+	{# <img class="preview_image" data-bind="attr: { id: (client_id() + 'img'), src: medium_url }"/> #}
+{# template-upload #} {# /x-jquery-tmpl #}
+
+{# attr: { id:  client_id}, #}
+{% verbatim %}
+
+ 	<script id="mediaTemplate" type="text/html">	
+	
+		<div class="mediaTemplate" id="${client_id}" data-bind=" css: { primary_media: VM.check_if_primary($item.data), not_primary_media: !(VM.check_if_primary($item.data))}">
+			<div class="uploading_indicator"> Uploading <br><br><img src="${static_url}img/ajax-loader.gif"></div> <br>
+
+			<div class="preview ${type()}" data-bind=" css: {media_standin: !medium_url() }" > 
+				<img class="preview_image" data-bind="visible: medium_url(), attr: { id: (client_id() + 'img'), src: medium_url }"/>
+			</div>
+
+
+			<div class="mediaOptions">				
+				{{ if VM.check_if_primary($item.data) }}<br>
+
+					<label class="capitalized"><span data-bind="text: type"></span> Title: </label><input class="tinput xlarge" type="text" data-bind="value: title, valueUpdate: 'afterkeydown'">
+					<button class="btn tiny mediaOK" data-bind="click: VM.save_element">OK</button>
+					 <br><br>
+					{{if type() == 'image'}}<button class="btn info" data-bind="click: VM.editImage">Edit Image</button> {{/if}}
+					<button class="btn danger" data-bind="click: VM.deleteFromCard"> Remove </button><br><br>
+
+				{{else}}
+					<button  class="btn primary" data-bind="click: VM.makePrimary">Edit / Make Main</button>
+					<button class="btn danger small" data-bind="click: VM.deleteFromCard"> Remove </button><br><br>
+				 	
+				{{/if}}
+				
+			</div>
+			<div class="mediaTitle" data-bind="text: title"> </div>
+		</div>
+	</script>
+	
+	
+
+	
+	<!-- In betweeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeennnnnnnnnnnnnnnnnnnnnnnnnnnnn --> 
+	
+	
+	<script id='buttonTemplate' type='text/html'>
+		<div class="input_element">
+			<a data-bind="text:button_text, click: VM.showInputModal" data-input_type="button" data-input_verb="edit" ></a>
+			</div>
+			
+		</div>
+	</script>	
+	{% endverbatim %}
+
+	
+	{# OLD #}
+
+	{% verbatim %}
+	
+	<script id='mapTemplate' type='text/html'>
+		<div class="ue" data-bind="event: { focusin: VM.flipEl, focusout: VM.unflipEl }, attr: { tabindex: typeof(id)!='undefined' ? id: -1 }">
+			<figure class="front">
+				<div class="media_holder" style="background-image: url('/static/img/map-icon.png')"></div>
+				<div class="front input-button" data-bind="text: title"></div>
+			</figure>
+			
+			<div class="back">
+			
+			<div class="clearfix"></div>
+			<a class="uibutton delete" data-bind="click: VM.deleteFromCard">Remove</a>
+			
+			</div>
+		</div> 
+	</script>
+
+
+
+	<script id='timerTemplate' type='text/html'>
+		<div class="ue" data-bind="event: { focusin: VM.flipEl, focusout: VM.unflipEl }, attr: { tabindex: typeof(id)!='undefined' ? id: -1 }">
+			<div class="front input-button"><span data-bind="text:button_text"></span> <br><span data-bind="text:minutes"></span>:<span data-bind="text:seconds"></span></div>
+			
+			<div class="back">
+			<input class="button_text" data-bind="value:button_text">
+			<input class="button_text" data-bind="value:minutes">
+			<input class="button_text" data-bind="value:seconds">
+
+			<a class="uibutton delete" data-bind="click: VM.deleteFromCard">Remove</a>
+
+			</div>
+			
+		</div>
+	</script>
+
+		
+	
+	<script id='errorNoTemplate' type='text/html'>
+		<div class="smallcard"> 
+		ERROR NO TEMPLATE. You gota have one....
+		
+		<div class="clearfix"></div>
+		<a class="uibutton delete" data-bind="click: VM.deleteFromCard">Remove</a>
+			
+		</div>
+	</script>
+	
+
+		<script id='smallCardTemplate' type='text/html'>
+		<div class="smallcardWrapper" data-bind="css: {is_current_card: id == VM.id()}"> 
+			<div class="cardNumber">
+				{{ if ((typeof(card_number) != "undefined")) }}
+					<span data-bind="text: card_number ? card_number: ''"></span> 
+				{{/if}}
+			</div>
+			<a class="smallcard" href="${edit_url}">
+				{{if id == VM.id() }}
+					<span data-bind="text: VM.title() ? VM.title(): 'The Card  You\'re Editing'"></span>
+				{{else}}
+					<span data-bind="text: title ? title: 'Untitled Card '"></span>
+				{{/if}}
+				{{if primary_media }}<br><img src="${primary_media.file.thumb_url}">{{/if}} 
+			</a>
+			<div class="controls">
+				<a href="${edit_url}">Edit</a>
+				<a href="${absolute_url}">Preview</a>
+				<a href="#" class="delete_link">Delete</a>
+				<a href="#" class="delete_link_real" data-bind="click: deleteCard">Sure?</a>
+			</div>
+		</div>
+		</script>
+
+	
+{%endverbatim%}
+
+<div class="modal hide fade" id="addExternalMediaModal">
+	<div class="modal-header">
+		<a href="#" class="close ">&times;</a> 
+		<h3>Add Media From The Web</h3>
+		{# <a href="#" class="close closer" >×</a> #}
+	</div>
+	<div class="modal-body">
+		<p>Copy and paste the web address of your image. </p>
+		<p>For images, you want thing that ends in .jpg, .png or .gif .</p>
+		{# <p>For video, we currently only support youtube. Just give us the url of the video page</p> #}
+		<div class="alert-message block-message error"><p> Only works for Images right now. Sorry!</p></div>
+		<input id="external_file_url" name="external_file_url" type="text" class="input span8" placeholder="http://">
+		
+	</div>
+	<div class="modal-footer">
+		<a href="#" class="btn primary" >Add!</a>
+		<a href="#" class="btn secondary closer">Cancel</a>
+	</div>
+</div> {# /#addExternalMediaModal #}
+
+
+{# INTERACTION MODAL #}
+{# INTERACTION MODAL #}
+{# INTERACTION MODAL #}
+
+	<div class="modal hide fade" id="inputModal">
+		<div class="modal-header">
+			<a href="#" class="close">&times;</a> 
+			
+			<h3 class="capitalized"><span data-bind= "text: VM.current_input_verb"></span> <span data-bind= "text: VM.InputVM().type"></span></h3>
+		</div>
+		<div class="modal-body">
+			
+			
+			{# It's a Button!  #}
+			<div class="button_properties" data-bind="visible: VM.InputVM().type()=='button' ">
+				<label for="adder_button_text">Button Label:</label>
+				<input class="tinput" type="text" name="" placeholder="Do Something" id="adder_button_text" data-bind="value:VM.InputVM().button_text,  valueUpdate: 'afterkeydown'"><br>
+ 			</div>
+			
+			{# It's a Timer!  #}
+			<div class="timer_properties" data-bind="visible: VM.InputVM().type()=='timer' ">	
+				<div class="alert-message error"><p><strong>Not Yet! </strong> Sorry, we haven't implemented this feature yet.</p></div>
+				
+				<label for="adder_timer_text">Timer Label:</label>	<input id="adder_timer_text" type="text" data-bind="value:VM.InputVM().button_text, valueUpdate: 'afterkeydown'" placeholder="Do something sometime"><br>
+				<label for="timer_seconds">Seconds : </label><input id="timer_seconds" type="number" step="1" min="0" max="60" value="0" data-bind="value: VM.InputVM().seconds, valueUpdate: 'afterkeydown' ">
+				<label for="timer_minutes">Minutes : </label><input id="timer_minutes" type="number" step="1" min="0" max="60" value="0" data-bind="value: VM.InputVM().minutes, valueUpdate: 'afterkeydown' ">
+				Go to a card? Or just get attention.
+			</div> {# end timer properties #}
+			
+			{# It's a map! #}
+			<div class="map_properties" data-bind="visible: VM.InputVM().type()=='map' ">	
+				<div class="alert-message error"><p><strong>Not Yet! </strong> Sorry, we haven't implemented this feature yet.</p></div>
+				{# <form data-bind="submit:addMap2Card"> #}
+				<input type="submit" value="Add Map">
+
+			</div> {# end map properties, this one will be different, user will add map, map will pop up, then points will be edited with this... #}
+			
+			
+			{# Action below. Pick one for your input to trigger. #}
+			<div class="action_properties" data-bind="visible: VM.InputVM().button_text">
+				<p>Now, pick a card for the <span data-bind="text:VM.InputVM().type"></span> to go to:</p>
+
+				{# For each card... #}
+				<div class="all_card_holder" data-bind="template: {name: 'smallCardPickerTemplate',
+				  						foreach: VM.all_cards,
+						 				beforeRemove: function(elem) {$(elem).slideUp() },
+										afterAdd: function(elem) {$(elem).hide().slideDown() } }">
+				</div>
+				
+				{# The template #}
+				{%verbatim%}
+				<script id='smallCardPickerTemplate' type='text/html'>
+					<label class="btn cardbtn" for="radiob-card-${id}" data-bind="css: {checked: VM.InputVM().default_action.goto()==resource_uri, is_current_card: id == VM.id() }, click: function() { VM.InputVM().default_action.goto(resource_uri); return true; } ">
+						<span data-bind="text: title ? title.slice(0,15): 'Untitled'"></span> 
+						<input type="radio" id="radiob-card-${id}" data-bind="value: resource_uri, checked:  VM.InputVM().default_action.goto" name="pickacard">
+							{{if primary_media }}<br><img src="${primary_media.file.thumb_url}">{{/if}} 
+
+						</label>
+				</script>
+				{%endverbatim%}
+				
+				{# *************************** #}
+				<div class="clearfix"></div>
+					<label class="btn cardbtn" for="radiob-card-new" data-bind="css: {checked: VM.InputVM().default_action.goto()=='addcard'}"> <span data-bind="text: !newCardTitle() ? 'An Entirely New Card' : newCardTitle "></span>
+						<input type="radio" id="radiob-card-new" data-bind="checked: VM.InputVM().default_action.goto" value="addcard" name="pickacard"/>
+					</label> 
+					<br><input type="text" data-bind="value: newCardTitle, visible: VM.InputVM().default_action.goto()=='addcard', valueUpdate: 'afterkeydown' " placeholder="New Card Title">
+			</div> {#end action properties#}	
+			<div class="clearfix"></div>
+				
+			
+		</div>  {# /modal body #}
+
+		
+		<div class="modal-footer">
+			<button class="btn primary" data-bind="click: function(){ VM.InputVM().save_element()}, enable:  VM.InputVM().default_action.goto()&&VM.InputVM().button_text(), css:{'disabled': !(VM.InputVM().default_action.goto()&&VM.InputVM().button_text())}">
+				<span class="capitalized" data-bind= "visible: current_input_verb()=='add'">Add &amp; </span>Save Your <span class="capitalized" data-bind= "text: VM.InputVM().type"></span>
+			</button>
+			<a href="#" class="btn secondary closer">Cancel</a>
+		</div>
+	</div> {# /#inputmodal #}

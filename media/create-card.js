@@ -158,9 +158,11 @@ $(".mediaTemplate").live("mouseover mouseout", function(event) {
 					console.log(file)
 					
 					var el = new Object();
-					el.title = ko.observable(); //ko.observable(file.name.split('.')[0]);
+					el.title = ko.observable(file.name.split('.')[0]); //open question as to whether this should default to blank or the file name
 					el.file_url = ko.observable();
 					el.type = ko.observable(file.type.split('/')[0]);
+					if ((el.type() != 'image') && (el.type() != 'video') && (el.type() != 'audio'))
+						el.type('other');
 					el.client_id = ko.observable('media' + file.name.split('.')[0].split(' ')[0] + file.size);
 					el.card= VM.resource_uri();
 					el.resource_uri= ko.observable();
@@ -173,11 +175,11 @@ $(".mediaTemplate").live("mouseover mouseout", function(event) {
 					//if it's the first item, make it primary
 					if 	(VM.mediaelements().length ==1)
 						VM.pmcid(el.client_id());
-					else if (el.type() == 'video')
-						VM.pmcid(el.client_id());
+					// else if (el.type() == 'video') 
+					// 	VM.pmcid(el.client_id());
 					
 						
-					var the_element_jq= $("#"+ el.client_id());				
+					var the_element_jq= $("#"+ el.client_id());			
 					the_element_jq.addClass("uploading");
 					
 					if (el.type() =='image')
@@ -185,15 +187,16 @@ $(".mediaTemplate").live("mouseover mouseout", function(event) {
 						$('#fileupload').data('fileupload')._loadImage(file, function (img) {
 		                    // console.log(img.src);
 							el.medium_url(img.src);
-							// $(id_string).find('.preview_image').attr("src", img.src).fadeIn();	// $(img).clone().hide().prependTo($(id_string).find('.preview_wrapper')).fadeIn().attr("class", "preview_image");
+							
 							}, //end callback
 							$('#fileupload').fileupload('option') ); //end _loadimage
 					}
 					else
 					{
-						img = $("<img src='"+ static_url +"img/upload-icon.png' />");
-					    $(img).hide().prependTo(the_element_jq.find('.preview')).fadeIn().attr("class", "preview_image").addClass("fake_preview");	
+						the_element_jq.find(".preview").addClass("media_standin").addClass(el.type());
 					}
+								
+					
 					
 				}); //end each	
 				// console.log(data);
@@ -215,7 +218,7 @@ $(".mediaTemplate").live("mouseover mouseout", function(event) {
 				the_element_ko.resource_uri(media_api_url + data.result[0].id + '/');
 				the_element_ko.medium_url(data.result[0].medium_image_url);
 				
-				the_element_jq.removeClass('uploading').find('.fake_preview').slideUp().remove();
+				the_element_jq.removeClass('uploading'); //.find('.fake_preview').slideUp().remove();
 				
 				//set the primary media here 
 				if 	(VM.mediaelements().length ==1)
@@ -343,7 +346,8 @@ $(".mediaTemplate").live("mouseover mouseout", function(event) {
 					else
 						addInputHelper(this);
 					
-					$("#inputModal").fadeOut('fast');
+						$('#inputModal').modal('hide');
+						
 					
 				}
 			}
@@ -356,11 +360,16 @@ $(".mediaTemplate").live("mouseover mouseout", function(event) {
 						addCardFromInput(this); //this needs to handle the rest
 					else
 						addInputHelper(this);
-					$("#inputModal").fadeOut('fast');
+						$('#inputModal').modal('hide');
+						
 					}; //end save element
 			}
-
-		$("#inputModal").fadeIn('fast');
+		$('#inputModal').modal({
+			show:true,
+			backdrop:true,
+			keyboard:true,
+			});
+			
 	}
 
 
@@ -396,7 +405,43 @@ $(".mediaTemplate").live("mouseover mouseout", function(event) {
 				return 'errorNoTemplate';
 	}
 
+	var converter = Markdown.getSanitizingConverter();
+	var editor = new Markdown.Editor(converter);
+	editor.run();
+	
+	$(".adder .closer").click(function(event){
+		adder= $(this).parent();
+		adder.addClass("minimized").removeClass('editing');
+		event.stopPropagation();
+		if (adder.hasClass('title'))
+			VM.title('');
+		return (false);
+	});
+	
+	$(".modal .closer").click(function(event){
+		$(this).parents('.modal').modal('hide')
+	});
+	
 
+	$(".adder.minimized").live('click', function(){
+		$(this).removeClass('minimized');
+	});
+		
+	
+	$(".delete_link").live('click',function(event){
+		$(this).parent().addClass('confirm_delete');
+		event.preventDefault();
+
+	});
+	
+	$("#markdownhelpbutton").click(function(){
+		is_displayed = $("#markdownhelp").css('display');
+		console.log(is_displayed);
+		if (is_displayed == 'none')
+			$("#markdownhelp").slideDown();
+		else
+			$("#markdownhelp").slideUp();
+	});
 
 	//REPLACE CARDS WITH GUIDE TODO because guide has the relevant info about each card anyway
 	initial_guide_object= jQuery.parseJSON(guide_json);
@@ -413,21 +458,15 @@ $(".mediaTemplate").live("mouseover mouseout", function(event) {
 
 
 	VM.InputVM= ko.observable(new anInput());
-	// VM.InputVM().save_element = function(){ console.log('saveeeeeplease at bottom');}; //this may have to exist?
-
-	//for saving, subscribe to all elements that you might want to change... this doesn't work, because it's subscribed to the array
-	// VM.mediaelements.subscribe(function(newvalue){
-	// 	console.log('newvalue:')
-	// 	console.log(newvalue);
-	// });
 	
 	ko.applyBindings(VM);
 
 
-	// $(".uibutton").button();
+
 
 
 });// end docreadyy ---  end docreadyy ---  end docreadyy ---  end docreadyy ---  end docreadyy 
+// end docreadyy ---  end docreadyy ---  end docreadyy ---  end docreadyy ---  end docreadyy 
 
 
 // HEEEEEEEEEEEEEEEEELLLLLLLLLLLLLLLLLLLLLLLLLLPPPPPPPPPPPPPPPPPPPEEEEEERRRRRRRRRRRRRRRRRRRs
@@ -571,8 +610,46 @@ var deleteCard= function(event)
 		window.location = edit_guide_url;
 
 		VM.all_cards.remove(this);
-	
 };
+
+
+function didPressEnter(event)
+{if ( event.which == 13 )
+		{
+			turnOffEditing(event);
+		}
+	return (true);}
+
+function turnOnEditing(event)
+{	
+	console.log('turnOnEditing');
+	el=$(event.currentTarget);
+	el.addClass('editing');
+	el.find("textarea:first").focus();
+	el.find("input:first").focus();
+	event.stopPropagation();
+	return false;
+}
+
+function turnOffEditing(event)
+{
+	el=$(event.target);
+	console.log(el.hasClass('editing'));
+	console.log(el);
+	if (el.hasClass('editing'))
+	{
+		event.stopPropagation();
+		return false;
+	}
+	$(el).removeClass('editing');
+	$(el).parents('.editing').removeClass('editing');
+	$("#markdownhelp").hide();
+
+	event.stopPropagation();
+	VM.save_card();
+}
+
+
 
 // (function(a){a.fn.autoResize=function(j){var b=a.extend({onResize:function(){},animate:true,animateDuration:150,animateCallback:function(){},extraSpace:20,limit:1000},j);this.filter('textarea').each(function(){var c=a(this).css({resize:'none','overflow-y':'hidden'}),k=c.height(),f=(function(){var l=['height','width','lineHeight','textDecoration','letterSpacing'],h={};a.each(l,function(d,e){h[e]=c.css(e)});return c.clone().removeAttr('id').removeAttr('name').css({position:'absolute',top:0,left:-9999}).css(h).attr('tabIndex','-1').insertBefore(c)})(),i=null,g=function(){f.height(0).val(a(this).val()).scrollTop(10000);var d=Math.max(f.scrollTop(),k)+b.extraSpace,e=a(this).add(f);if(i===d){return}i=d;if(d>=b.limit){a(this).css('overflow-y','');return}b.onResize.call(this);b.animate&&c.css('display')==='block'?e.stop().animate({height:d},b.animateDuration,b.animateCallback):e.height(d)};c.unbind('.dynSiz').bind('keyup.dynSiz',g).bind('keydown.dynSiz',g).bind('change.dynSiz',g)});return this}})(jQuery);
 
