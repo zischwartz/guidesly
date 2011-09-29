@@ -77,6 +77,7 @@ class SmallCardResource(ModelResource):
 		# logger.info(bundle.data)
 		bundle.data['edit_url'] = reverse('EditCard', kwargs={'gslug':bundle.obj.guide.slug, 'id': bundle.obj.id})
 		bundle.data['absolute_url'] = bundle.obj.get_absolute_url()
+		bundle.data['thumb'] = bundle.obj.get_thumb()
 		return bundle
 
 class GuideResource(ModelResource):

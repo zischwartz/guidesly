@@ -289,6 +289,22 @@ class Card (models.Model):
 			return Card.objects.get(pk=(self.guide.card_order[next_card_number]))
 		else: 
 			return None
+			
+	def get_thumb(self):
+		if self.primary_media:
+			if self.primary_media.type=='image':
+				if self.primary_media.external_file:
+					return self.primary_media.external_file
+				else:
+					return self.primary_media.file.thumb_url
+			else:
+				if self.primary_media.type=='video':
+					return SETTINGS.STATIC_URL + 'img/video-icon.png'
+				if self.primary_media.type=='audio':
+					return SETTINGS.STATIC_URL + 'img/audio-icon.png'
+				if self.primary_media.type=='other':
+					return SETTINGS.STATIC_URL + 'img/other-icon.png'
+		return None
 		
 class CommentCard (Card):
 	parent_card = models.ForeignKey(Card, related_name="child_comment_card", blank=True, null=True)

@@ -43,12 +43,19 @@
 				theme: 'black',
 				apiKey: 'f64d09c9c2b5ea52e4c167b4264e4344',
 				// tools: ['rotate', 'flip', 'resize'],
+				onLoad: function() {
+					$('#avpw_controls').css('top', '50px !important');
+					// console.log('loaded aviary');
+					$("#avpw_fullscreen_bg").click(function(){ featherEditor.close(); });
+				},
 				onSave: function(imageID, newURL) {
 					var img = document.getElementById(imageID);
 					img.src = newURL;
 					featherEditor.close();
 					the_element_ko = ko.utils.arrayFirst(VM.mediaelements(), function(item) { return (item.client_id()+ 'img') === imageID;})
-					the_element_ko.external_file(newURL)
+					the_element_ko.external_file(newURL);
+					// alert(the_element_ko.type());
+					save_this_element(the_element_ko);
 				},
 			}); //end aviary inialization
 			
@@ -59,7 +66,7 @@
 {# <li> <span class="location">Editing Card</span></li> #}
 <li class="menu"> 
   {# <a href="#" class="menu active">{{card.guide.title}}</a>  #}
-  <a href="#" class="menu active">Editing <span data-bind="text: !title()  ? 'This Card': title"></span></a> 
+  <a href="#" class="menu active">Editing <i data-bind="text: !title()  ? 'This Card': title"></i></a> 
   <ul class="menu-dropdown"> 
 	<li><a target="_blank" href="{% url CardDetailViewByIdRedirect id=card.id %}">Preview <span data-bind="text: !title()  ? 'This Card': title"></span></a></li> 
     <li><a href="{% url EditGuide gslug=card.guide.slug %}"> Edit Guide</a></li> 

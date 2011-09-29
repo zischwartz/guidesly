@@ -117,7 +117,7 @@
 				{{else}}
 					<span data-bind="text: title ? title: 'Untitled Card '"></span>
 				{{/if}}
-				{{if primary_media }}<br><img src="${primary_media.file.thumb_url}">{{/if}} 
+				{{if primary_media }}<br><img src="${thumb}">{{/if}} 
 			</a>
 			<div class="controls">
 				<a href="${edit_url}">Edit</a>
@@ -142,11 +142,23 @@
 		<p>For images, you want thing that ends in .jpg, .png or .gif .</p>
 		{# <p>For video, we currently only support youtube. Just give us the url of the video page</p> #}
 		<div class="alert-message block-message error"><p> Only works for Images right now. Sorry!</p></div>
-		<input id="external_file_url" name="external_file_url" type="text" class="input span8" placeholder="http://">
+		
+		<p>Media Type:</p>
+		<label class="btn">
+			<input type="radio" data-bind="checked:  media_type_to_add" value="image" name="external_media_type">
+			 Image
+		</label>
+		<br> <br>
+		<input name="external_media_url" type="text" class="input span8" placeholder="http://"
+			data-bind="value: external_media_url"
+			>
+			
+
+			
 		
 	</div>
 	<div class="modal-footer">
-		<a href="#" class="btn primary" >Add!</a>
+		<a href="#" class="btn primary" data-bind="click: addMedia" >Add!</a>
 		<a href="#" class="btn secondary closer">Cancel</a>
 	</div>
 </div> {# /#addExternalMediaModal #}
@@ -167,18 +179,24 @@
 			
 			{# It's a Button!  #}
 			<div class="button_properties" data-bind="visible: VM.InputVM().type()=='button' ">
-				<label for="adder_button_text">Button Label:</label>
+				<label for="adder_button_text">Button Title: </label>
 				<input class="tinput" type="text" name="" placeholder="Do Something" id="adder_button_text" data-bind="value:VM.InputVM().button_text,  valueUpdate: 'afterkeydown'"><br>
  			</div>
 			
 			{# It's a Timer!  #}
-			<div class="timer_properties" data-bind="visible: VM.InputVM().type()=='timer' ">	
-				<div class="alert-message error"><p><strong>Not Yet! </strong> Sorry, we haven't implemented this feature yet.</p></div>
+			<div class="timer_properties " data-bind="visible: VM.InputVM().type()=='timer' ">	
+				{# <div class="alert-message error"><p><strong>Not Yet! </strong> Sorry, we haven't implemented this feature yet.</p></div> #}
 				
-				<label for="adder_timer_text">Timer Label:</label>	<input id="adder_timer_text" type="text" data-bind="value:VM.InputVM().button_text, valueUpdate: 'afterkeydown'" placeholder="Do something sometime"><br>
-				<label for="timer_seconds">Seconds : </label><input id="timer_seconds" type="number" step="1" min="0" max="60" value="0" data-bind="value: VM.InputVM().seconds, valueUpdate: 'afterkeydown' ">
-				<label for="timer_minutes">Minutes : </label><input id="timer_minutes" type="number" step="1" min="0" max="60" value="0" data-bind="value: VM.InputVM().minutes, valueUpdate: 'afterkeydown' ">
-				Go to a card? Or just get attention.
+				<label for="adder_timer_text"> Timer Title: </label>	<input id="adder_timer_text" type="text" data-bind="value:VM.InputVM().button_text, valueUpdate: 'afterkeydown'" placeholder="Do something sometime"><br>
+				
+				<div class="input cf">
+				              <div class="inline-inputs">
+								<label for="timer_seconds">Seconds : <input id="timer_seconds" class="span1" type="number" step="1" min="0" max="60" value="0" data-bind="value: VM.InputVM().seconds, valueUpdate: 'afterkeydown' "></label>
+								<label for="timer_minutes">Minutes : <input id="timer_minutes" class="span1" type="number" step="1" min="0" max="60" value="0" data-bind="value: VM.InputVM().minutes, valueUpdate: 'afterkeydown' "></label>
+				              </div>
+				            </div>
+
+				<p>	Go to a card? Or just get attention.</p>
 			</div> {# end timer properties #}
 			
 			{# It's a map! #}
@@ -207,7 +225,7 @@
 					<label class="btn cardbtn" for="radiob-card-${id}" data-bind="css: {checked: VM.InputVM().default_action.goto()==resource_uri, is_current_card: id == VM.id() }, click: function() { VM.InputVM().default_action.goto(resource_uri); return true; } ">
 						<span data-bind="text: title ? title.slice(0,15): 'Untitled'"></span> 
 						<input type="radio" id="radiob-card-${id}" data-bind="value: resource_uri, checked:  VM.InputVM().default_action.goto" name="pickacard">
-							{{if primary_media }}<br><img src="${primary_media.file.thumb_url}">{{/if}} 
+						{{if primary_media }}<br><img src="${thumb}">{{/if}} 
 
 						</label>
 				</script>

@@ -40,7 +40,6 @@ $(".mediaTemplate").live("mouseover mouseout", function(event) {
 	  if ( event.type == "mouseover" ) {
 		$(this).addClass("hovered");
 		$(this).doTimeout('hov'); //cancels the timer
-		console.log('hovvvver');
 	  } else {
 		$(this).doTimeout('hov', 2000, function(){this.removeClass("hovered");})
 	  }
@@ -65,11 +64,13 @@ $(".mediaTemplate").live("mouseover mouseout", function(event) {
 			{
 				element.file_url = ko.observable(element.external_file());
 				element.medium_url = ko.observable(element.external_file());
+				element.thumb_url = ko.observable(element.external_file());
 			}
 			else
 			{
 				element.file_url = ko.observable(element.file.display_url());
 				element.medium_url = ko.observable(element.file.medium_url());
+				element.thumb_url = ko.observable(element.file.thumb_url());
 			}
 			
 			//if this element has the same r-uri as the primary media, assign pmcid
@@ -154,8 +155,8 @@ $(".mediaTemplate").live("mouseover mouseout", function(event) {
 				
 				//Pre Upload, File is added, preview is created if it's an image
 				$.each(data.files, function (index, file) {
-			        console.log('Added file: ' + file.name);
-					console.log(file)
+			        // console.log('Added file: ' + file.name);
+					// console.log(file);
 					
 					var el = new Object();
 					el.title = ko.observable(file.name.split('.')[0]); //open question as to whether this should default to blank or the file name
@@ -241,19 +242,16 @@ $(".mediaTemplate").live("mouseover mouseout", function(event) {
 	// END UPLOAD PLUGIN
 
 
-	// Save Element
+	// Save Generic Element, from implied KO event. See also save_this_element() below, which you pass the element to be saved. 
 	VM.save_element = function()
 	{
-		// console.log('this');
-		// console.log(this.type());
 
 		if (this.type())
 			VM.saving_message('Saving ' + this.type());
 		else
 			VM.saving_message('Saving!');
-			
+		
 		var that = this; //cleanClientStuff(this);
-		// console.log();
 		
 		var jsonData = ko.mapping.toJSON(that);
 		$.ajax({
@@ -271,6 +269,7 @@ $(".mediaTemplate").live("mouseover mouseout", function(event) {
 			contentType: "application/json",
 			});
 	}
+	
 	
 
 	//Save Card
@@ -442,6 +441,53 @@ $(".mediaTemplate").live("mouseover mouseout", function(event) {
 		else
 			$("#markdownhelp").slideUp();
 	});
+	
+	
+	
+	// MEDIA ADDING, from external resources, or stuff user already uploaded
+	VM.external_media_url = ko.observable('');
+	VM.media_type_to_add = ko.observable('image');
+	
+	VM.addMedia = function (element) {
+		var el = new Object();
+		el.title = ko.observable('')
+		el.file_url = ko.observable();
+		el.type = ko.observable(VM.media_type_to_add());
+		// el.client_id = ko.observable('media' + file.name.split('.')[0].split(' ')[0] + file.size);
+		el.card= VM.resource_uri();
+		el.external_file= ko.observable(VM.external_media_url());
+		el.medium_url= ko.observable(VM.external_media_url());
+		
+		
+		jsonData = ko.toJSON(el); 	// console.log(jsonData);
+		postURL_input=$.ajax({
+			url: media_api_url,
+			type: "POST",
+			data: jsonData,
+			success:function(data) {
+				el.resource_uri=ko.observable(postURL_input.getResponseHeader('location'));
+				el.id = el.resource_uri().match(/\/mediaelement\/(.*)\//)[1];
+				el.client_id = ko.observable('media'+ el.id);
+				VM.mediaelements.push(el); 
+				//if it's the first item, make it primary
+				if 	(VM.mediaelements().length ==1)
+					VM.pmcid(el.client_id());
+					
+				$('#addExternalMediaModal').modal('hide');
+				
+				VM.save_card();
+				},
+			contentType: "application/json",
+			});
+		
+		
+		
+		// VM.mediaelements.push(el);
+		
+
+	}
+	
+	
 
 	//REPLACE CARDS WITH GUIDE TODO because guide has the relevant info about each card anyway
 	initial_guide_object= jQuery.parseJSON(guide_json);
@@ -452,9 +498,6 @@ $(".mediaTemplate").live("mouseover mouseout", function(event) {
 		{
 			VM.all_cards.push(initial_guide_object.cards[x]);
 		}
-
-//**********************************************
-
 
 
 	VM.InputVM= ko.observable(new anInput());
@@ -649,8 +692,33 @@ function turnOffEditing(event)
 	VM.save_card();
 }
 
+function save_this_element(element)
+{
 
 
-// (function(a){a.fn.autoResize=function(j){var b=a.extend({onResize:function(){},animate:true,animateDuration:150,animateCallback:function(){},extraSpace:20,limit:1000},j);this.filter('textarea').each(function(){var c=a(this).css({resize:'none','overflow-y':'hidden'}),k=c.height(),f=(function(){var l=['height','width','lineHeight','textDecoration','letterSpacing'],h={};a.each(l,function(d,e){h[e]=c.css(e)});return c.clone().removeAttr('id').removeAttr('name').css({position:'absolute',top:0,left:-9999}).css(h).attr('tabIndex','-1').insertBefore(c)})(),i=null,g=function(){f.height(0).val(a(this).val()).scrollTop(10000);var d=Math.max(f.scrollTop(),k)+b.extraSpace,e=a(this).add(f);if(i===d){return}i=d;if(d>=b.limit){a(this).css('overflow-y','');return}b.onResize.call(this);b.animate&&c.css('display')==='block'?e.stop().animate({height:d},b.animateDuration,b.animateCallback):e.height(d)};c.unbind('.dynSiz').bind('keyup.dynSiz',g).bind('keydown.dynSiz',g).bind('change.dynSiz',g)});return this}})(jQuery);
+	if (element.type())
+		VM.saving_message('Saving ' + element.type());
+	else
+		VM.saving_message('Saving!');
+	
+	
+	var jsonData = ko.mapping.toJSON(element);
+	$.ajax({
+		url: element.resource_uri(),
+		type: "PUT",
+		data:jsonData,
+		success:function(data) { 
+			if (element.type())
+				VM.saving_message('Saved ' + element.type());
+			else
+				VM.saving_message('Save!');
+			$.doTimeout('saved', 1000, function(){VM.saving_message('')}); 				
+			console.log(data); 
+			},
+		contentType: "application/json",
+		});
+}
+
+
 
 (function($){var a={},c="doTimeout",d=Array.prototype.slice;$[c]=function(){return b.apply(window,[0].concat(d.call(arguments)))};$.fn[c]=function(){var f=d.call(arguments),e=b.apply(this,[c+f[0]].concat(f));return typeof f[0]==="number"||typeof f[1]==="number"?this:e};function b(l){var m=this,h,k={},g=l?$.fn:$,n=arguments,i=4,f=n[1],j=n[2],p=n[3];if(typeof f!=="string"){i--;f=l=0;j=n[1];p=n[2]}if(l){h=m.eq(0);h.data(l,k=h.data(l)||{})}else{if(f){k=a[f]||(a[f]={})}}k.id&&clearTimeout(k.id);delete k.id;function e(){if(l){h.removeData(l)}else{if(f){delete a[f]}}}function o(){k.id=setTimeout(function(){k.fn()},j)}if(p){k.fn=function(q){if(typeof p==="string"){p=g[p]}p.apply(m,d.call(n,i))===true&&!q?o():e()};o()}else{if(k.fn){j===undefined?e():k.fn(j===false);return true}else{e()}}}})(jQuery);

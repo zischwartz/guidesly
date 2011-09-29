@@ -475,6 +475,7 @@ strong.green{color:#46a546;border:1px dashed;padding:3px;}
 .tinput:focus{background-color:#8effc5;}
 .btn.crazy{background-color:#df8505;background-repeat:repeat-x;background-image:-khtml-gradient(linear, left top, left bottom, from(#fbbf69), to(#df8505));background-image:-moz-linear-gradient(top, #fbbf69, #df8505);background-image:-ms-linear-gradient(top, #fbbf69, #df8505);background-image:-webkit-gradient(linear, left top, left bottom, color-stop(0%, #fbbf69), color-stop(100%, #df8505));background-image:-webkit-linear-gradient(top, #fbbf69, #df8505);background-image:-o-linear-gradient(top, #fbbf69, #df8505);background-image:linear-gradient(top, #fbbf69, #df8505);filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#fbbf69', endColorstr='#df8505', GradientType=0);text-shadow:0 -1px 0 rgba(0, 0, 0, 0.25);border-color:#df8505 #df8505 #945904;border-color:rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);}
 .btn.tiny{padding-right:5px;padding-left:5px;font-size:9px;line-height:9px;font-weight:bold;}
+.modal label{width:auto;}
 .ui-autocomplete{width:340px;background-color:#bfbfbf;}.ui-autocomplete .ui-state-hover{background-color:#8effc5;color:#000000;}
 .ui-autocomplete li{list-style:none;padding:5px;}.ui-autocomplete li a{padding:5px;cursor:pointer;}
 .ui-autocomplete-loading{background:red ;}
@@ -489,6 +490,7 @@ p.small{font-size:.9em !important;}
 .left{text-align:left;}
 .center{text-align:center;}
 .tip{background-color:#f3f3f3;border-radius:5px;padding:1px 2px 1px 2px;}
+label.btn{width:auto;}
 .closex{float:right;margin-top:-2px;margin-right:5px;margin-bottom:5px;color:#000;font-size:20px;text-shadow:0 1px 0 #ffffff;filter:alpha(opacity=30);-khtml-opacity:0.3;-moz-opacity:0.3;opacity:0.3;line-height:1em;}
 .container-fluid>.content{min-height:600px;}
 .listedGuidess{width:100%;float:left;}
