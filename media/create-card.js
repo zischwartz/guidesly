@@ -9,7 +9,7 @@ var map_api_url='/api/v1/mapelement/';
 var action_api_url='/api/v1/action/';
 var file_api_url='/api/v1/userfile/';
 var guide_api_url='/api/v1/guide/';
-var timer_api_url='/api/v1/timer/';
+// var timer_api_url='/api/v1/timer/';
 var smallcard_api_url='/api/v1/smallcard/';
 
 var VM; //our main viewmodel
@@ -46,14 +46,16 @@ $(".mediaTemplate").live("mouseover mouseout", function(event) {
 	});
 
 
-
 //Prep inital data for card that's been saved previously and has existing
+
 	initial_card_object= jQuery.parseJSON(initial_card_json);
 	VM = ko.mapping.fromJS(initial_card_object);
 
 	VM.pmcid = ko.observable(); //primary_media_client_id
 	VM.has_audio_or_video = ko.observable(); 
-
+	VM.saving_message = ko.observable();
+	
+//FOR MEDIA ELEMENTS.
 	//give all the existing elements a client_id, existing tag, and set their display stuff to external if it is
 	$.each(VM.mediaelements(), function (index, element) {
 
@@ -93,10 +95,7 @@ $(".mediaTemplate").live("mouseover mouseout", function(event) {
 				}
 			}//end element = primary
 			
-	}); //end each
-	
-	VM.saving_message = ko.observable();
-	
+	}); //end each for media elements	
 	
 
 	VM.check_if_primary = function(element)
@@ -129,7 +128,18 @@ $(".mediaTemplate").live("mouseover mouseout", function(event) {
 		VM.save_card();
 	} //end makePrimary
 	
+// FOR INPUTELEMENTS
+
+$.each(VM.inputelements(), function (index, element) {
 	
+	if (element.type()=='timer')
+		element.formattedtime = ko.dependentObservable(function() {
+			// return 'hello';
+			console.log(this);
+			return timerFormat(this.minutes(), this.seconds());
+		}, element);
+
+})
 		
 
 // **************************************
@@ -294,7 +304,6 @@ $(".mediaTemplate").live("mouseover mouseout", function(event) {
 		delete jsData.mediaelements;
 		jsonData = ko.toJSON(jsData);
 
-		
 		$.ajax({
 			url: VM.resource_uri(),
 			type: "PUT",
@@ -371,10 +380,12 @@ $(".mediaTemplate").live("mouseover mouseout", function(event) {
 			
 	}
 
-
+	//for media elements.
 	VM.deleteFromCard= function()
 	{
 		console.log("yess lets delete this:");
+		console.log(this.resource_uri());
+		
 		$.ajax({
 			url: this.resource_uri(),
 			type: "DELETE",
@@ -498,13 +509,13 @@ $(".mediaTemplate").live("mouseover mouseout", function(event) {
 		{
 			VM.all_cards.push(initial_guide_object.cards[x]);
 		}
-
+	
 
 	VM.InputVM= ko.observable(new anInput());
 	
 	ko.applyBindings(VM);
 
-
+	
 
 
 
@@ -529,13 +540,44 @@ var anInput = function(type) {
 	this.default_action= default_action;
     this.newCardTitle=ko.observable();
 
+	this.execute_action_when_done = ko.observable('true');
+
 	if (type == 'timer')
 		{
 			this.seconds= ko.observable(0);
 			this.minutes= ko.observable(0);
-		}
+			this.formattedtime = ko.dependentObservable(function() {
+				// return 'hello';
+				// console.log(this);
+				return timerFormat(this.minutes(), this.seconds());
+			}, this);
+			
+			this.ding_when_done = ko.observable();
+			this.auto_start = ko.observable('true');
+			
+			this.complete = ko.dependentObservable(function() {
+				if (this.button_text())
+					if (this.seconds() || this.minutes())
+						if (!this.execute_action_when_done())
+							return true;
+						else
+							if (this.default_action.goto())
+								return true;
+				return false;
+			}, this);
 
+		} //end if timer
+		
+	else  //if it's not a timer, this is the dO for completeness
+	{	this.complete = ko.dependentObservable(function() {
+			if (this.button_text() && this.default_action.goto())
+				return true;
+			else
+				return false;
+			}, this);
+	} //end if not timer
 }
+
 
 // BUG TODO , inputs with new cards don't show as selecting the new card/action  until you refresh the page.
 // when you click on it, the VM.InputVM().default_action.goto() is a function, need additional (), not sure where that's being introduced
@@ -687,20 +729,16 @@ function turnOffEditing(event)
 	$(el).removeClass('editing');
 	$(el).parents('.editing').removeClass('editing');
 	$("#markdownhelp").hide();
-
 	event.stopPropagation();
 	VM.save_card();
 }
 
 function save_this_element(element)
 {
-
-
 	if (element.type())
 		VM.saving_message('Saving ' + element.type());
 	else
 		VM.saving_message('Saving!');
-	
 	
 	var jsonData = ko.mapping.toJSON(element);
 	$.ajax({
@@ -719,6 +757,43 @@ function save_this_element(element)
 		});
 }
 
+function delete_this_element(element)
+{
+	console.log("lets delete THIS input");
+	console.log(element);
+
+	$.ajax({
+		url: element.resource_uri(),
+		type: "DELETE",
+		success:function(data) { console.log(data); },
+		contentType: "application/json",
+	});
+
+	if (VM.inputelements.indexOf(element)!=-1)
+		VM.inputelements.remove(element);
+}
 
 
 (function($){var a={},c="doTimeout",d=Array.prototype.slice;$[c]=function(){return b.apply(window,[0].concat(d.call(arguments)))};$.fn[c]=function(){var f=d.call(arguments),e=b.apply(this,[c+f[0]].concat(f));return typeof f[0]==="number"||typeof f[1]==="number"?this:e};function b(l){var m=this,h,k={},g=l?$.fn:$,n=arguments,i=4,f=n[1],j=n[2],p=n[3];if(typeof f!=="string"){i--;f=l=0;j=n[1];p=n[2]}if(l){h=m.eq(0);h.data(l,k=h.data(l)||{})}else{if(f){k=a[f]||(a[f]={})}}k.id&&clearTimeout(k.id);delete k.id;function e(){if(l){h.removeData(l)}else{if(f){delete a[f]}}}function o(){k.id=setTimeout(function(){k.fn()},j)}if(p){k.fn=function(q){if(typeof p==="string"){p=g[p]}p.apply(m,d.call(n,i))===true&&!q?o():e()};o()}else{if(k.fn){j===undefined?e():k.fn(j===false);return true}else{e()}}}})(jQuery);
+
+
+
+function timerFormat(minutes, seconds)
+{
+    var timestring =''; 
+    
+    if (minutes <10)
+        timestring= '0' + minutes;
+    else
+        timestring= minutes;
+    
+    timestring+= ':'
+    
+    if (seconds <10)
+        timestring+= '0' + seconds;
+    else
+        timestring+= seconds;
+
+    return timestring;
+      
+}

@@ -76,19 +76,11 @@
 
 
 	<script id='timerTemplate' type='text/html'>
-		<div class="ue" data-bind="event: { focusin: VM.flipEl, focusout: VM.unflipEl }, attr: { tabindex: typeof(id)!='undefined' ? id: -1 }">
-			<div class="front input-button"><span data-bind="text:button_text"></span> <br><span data-bind="text:minutes"></span>:<span data-bind="text:seconds"></span></div>
-			
-			<div class="back">
-			<input class="button_text" data-bind="value:button_text">
-			<input class="button_text" data-bind="value:minutes">
-			<input class="button_text" data-bind="value:seconds">
-
-			<a class="uibutton delete" data-bind="click: VM.deleteFromCard">Remove</a>
-
-			</div>
-			
+		<div class="input_element timer"  data-bind="click: VM.showInputModal" data-input_type="timer" data-input_verb="edit" >
+			<span data-bind="text:button_text"></span> <br>
+			<span data-bind="text: formattedtime"></span>
 		</div>
+	</div>
 	</script>
 
 		
@@ -150,12 +142,9 @@
 		</label>
 		<br> <br>
 		<input name="external_media_url" type="text" class="input span8" placeholder="http://"
-			data-bind="value: external_media_url"
-			>
+			data-bind="value: external_media_url">
 			
 
-			
-		
 	</div>
 	<div class="modal-footer">
 		<a href="#" class="btn primary" data-bind="click: addMedia" >Add!</a>
@@ -187,16 +176,22 @@
 			<div class="timer_properties " data-bind="visible: VM.InputVM().type()=='timer' ">	
 				{# <div class="alert-message error"><p><strong>Not Yet! </strong> Sorry, we haven't implemented this feature yet.</p></div> #}
 				
-				<label for="adder_timer_text"> Timer Title: </label>	<input id="adder_timer_text" type="text" data-bind="value:VM.InputVM().button_text, valueUpdate: 'afterkeydown'" placeholder="Do something sometime"><br>
+				<label for="adder_timer_text"> Timer Title: </label>	<input id="adder_timer_text" class="span5" type="text" data-bind="value:VM.InputVM().button_text, valueUpdate: 'afterkeydown'" placeholder=" Start cooking the asparagus!"><br>
 				
 				<div class="input cf">
 				              <div class="inline-inputs">
-								<label for="timer_seconds">Seconds : <input id="timer_seconds" class="span1" type="number" step="1" min="0" max="60" value="0" data-bind="value: VM.InputVM().seconds, valueUpdate: 'afterkeydown' "></label>
 								<label for="timer_minutes">Minutes : <input id="timer_minutes" class="span1" type="number" step="1" min="0" max="60" value="0" data-bind="value: VM.InputVM().minutes, valueUpdate: 'afterkeydown' "></label>
+								<label for="timer_seconds">Seconds : <input id="timer_seconds" class="span1" type="number" step="1" min="0" max="60" value="0" data-bind="value: VM.InputVM().seconds, valueUpdate: 'afterkeydown' "></label>
 				              </div>
 				            </div>
 
-				<p>	Go to a card? Or just get attention.</p>
+				<div class="input cf">
+				              <div class="inline-inputs">
+								<label>Go to another card when done : <input class="span1" type="checkbox" data-bind="checked: VM.InputVM().execute_action_when_done, valueUpdate: 'afterkeydown' "></label>
+								<label>Autostart : <input class="span1" type="checkbox" data-bind="checked: VM.InputVM().auto_start, valueUpdate: 'afterkeydown' "></label>
+								<label> Popup alert when done : <input class="span1" type="checkbox" data-bind="checked: VM.InputVM().ding_when_done, valueUpdate: 'afterkeydown' "></label>
+				              </div>
+				            </div>
 			</div> {# end timer properties #}
 			
 			{# It's a map! #}
@@ -209,7 +204,7 @@
 			
 			
 			{# Action below. Pick one for your input to trigger. #}
-			<div class="action_properties" data-bind="visible: VM.InputVM().button_text">
+			<div class="action_properties" data-bind="visible: (VM.InputVM().button_text() && VM.InputVM().execute_action_when_done() )">
 				<p>Now, pick a card for the <span data-bind="text:VM.InputVM().type"></span> to go to:</p>
 
 				{# For each card... #}
@@ -245,9 +240,12 @@
 
 		
 		<div class="modal-footer">
-			<button class="btn primary" data-bind="click: function(){ VM.InputVM().save_element()}, enable:  VM.InputVM().default_action.goto()&&VM.InputVM().button_text(), css:{'disabled': !(VM.InputVM().default_action.goto()&&VM.InputVM().button_text())}">
+			<button class="btn danger nofloat" data-bind= "visible: current_input_verb()=='edit', click: function(){delete_this_element(VM.InputVM())}">Delete <span class="capitalized" data-bind= "text: VM.InputVM().type"></span></button>
+			{# <button class="btn primary" data-bind="click: function(){ VM.InputVM().save_element()}, enable:  VM.InputVM().default_action.goto()&&VM.InputVM().button_text(), css:{'disabled': !(VM.InputVM().default_action.goto()&&VM.InputVM().button_text())}"> #}
+			<button class="btn primary" data-bind="click: function(){ VM.InputVM().save_element()}, enable:  VM.InputVM().complete(), css:{'disabled': !(VM.InputVM().complete())}">
 				<span class="capitalized" data-bind= "visible: current_input_verb()=='add'">Add &amp; </span>Save Your <span class="capitalized" data-bind= "text: VM.InputVM().type"></span>
 			</button>
 			<a href="#" class="btn secondary closer">Cancel</a>
-		</div>
+		</div> {# /footer #}
+		
 	</div> {# /#inputmodal #}

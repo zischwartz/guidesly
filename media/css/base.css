@@ -491,6 +491,7 @@ p.small{font-size:.9em !important;}
 .center{text-align:center;}
 .tip{background-color:#f3f3f3;border-radius:5px;padding:1px 2px 1px 2px;}
 label.btn{width:auto;}
+.nofloat{float:none !important;}
 .closex{float:right;margin-top:-2px;margin-right:5px;margin-bottom:5px;color:#000;font-size:20px;text-shadow:0 1px 0 #ffffff;filter:alpha(opacity=30);-khtml-opacity:0.3;-moz-opacity:0.3;opacity:0.3;line-height:1em;}
 .container-fluid>.content{min-height:600px;}
 .listedGuidess{width:100%;float:left;}
