@@ -156,16 +156,16 @@
 		</div> <!-- /adder input -->
 		
 		{# INPUT ELEMENTS #}
-		<div data-bind="template:{name: VM.inputTypeTemplate,  foreach: VM.inputelements,
+		<div class="input_wrapper" data-bind="template:{name: VM.inputTypeTemplate,  foreach: VM.inputelements,
 
 		 				beforeRemove: function(elem) {$(elem).slideUp() },
 						afterAdd: function(elem) {$(elem).hide().slideDown() }}"> </div>
 
 
-		<div data-bind="template:{name: VM.inputTypeTemplate,  foreach: VM.mapelements,
-
-		 				beforeRemove: function(elem) {$(elem).slideUp() },
-						afterAdd: function(elem) {$(elem).hide().slideDown() }}"> </div>
+		{# <div data-bind="template:{name: VM.inputTypeTemplate,  foreach: VM.mapelements, #}
+		{#  #}
+		{#  				beforeRemove: function(elem) {$(elem).slideUp() }, #}
+		{# 				afterAdd: function(elem) {$(elem).hide().slideDown() }}"> </div> #}
 							
 							
 			<div id="prev_and_next" class="prev_and_next" data-bind="visible: !(is_floating_card())">

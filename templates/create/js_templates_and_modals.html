@@ -44,11 +44,9 @@
 	
 	
 	<script id='buttonTemplate' type='text/html'>
-		<div class="input_element">
-			<a data-bind="text:button_text, click: VM.showInputModal" data-input_type="button" data-input_verb="edit" ></a>
-			</div>
-			
-		</div>
+		<div class="input_element" data-bind="click: VM.showInputModal" data-input_type="button" data-input_verb="edit">
+			<a data-bind="text:button_text"> </a>
+		</div>	
 	</script>	
 	{% endverbatim %}
 
@@ -77,10 +75,9 @@
 
 	<script id='timerTemplate' type='text/html'>
 		<div class="input_element timer"  data-bind="click: VM.showInputModal" data-input_type="timer" data-input_verb="edit" >
-			<span data-bind="text:button_text"></span> <br>
-			<span data-bind="text: formattedtime"></span>
+			<a data-bind="text:button_text"></a>
+			<div class="time" data-bind="text: formattedtime"></div>
 		</div>
-	</div>
 	</script>
 
 		
@@ -240,7 +237,7 @@
 
 		
 		<div class="modal-footer">
-			<button class="btn danger nofloat" data-bind= "visible: current_input_verb()=='edit', click: function(){delete_this_element(VM.InputVM())}">Delete <span class="capitalized" data-bind= "text: VM.InputVM().type"></span></button>
+			<button class="btn danger nofloat closer" data-bind= "visible: current_input_verb()=='edit', click: function(){delete_this_element(VM.InputVM())}">Delete <span class="capitalized" data-bind= "text: VM.InputVM().type"></span></button>
 			{# <button class="btn primary" data-bind="click: function(){ VM.InputVM().save_element()}, enable:  VM.InputVM().default_action.goto()&&VM.InputVM().button_text(), css:{'disabled': !(VM.InputVM().default_action.goto()&&VM.InputVM().button_text())}"> #}
 			<button class="btn primary" data-bind="click: function(){ VM.InputVM().save_element()}, enable:  VM.InputVM().complete(), css:{'disabled': !(VM.InputVM().complete())}">
 				<span class="capitalized" data-bind= "visible: current_input_verb()=='add'">Add &amp; </span>Save Your <span class="capitalized" data-bind= "text: VM.InputVM().type"></span>

@@ -46,10 +46,21 @@ $(".mediaTemplate").live("mouseover mouseout", function(event) {
 	});
 
 
+
+	// map existing inputelements to our js model (with dependent observables etc)
+	var mapping = {
+	    'inputelements': {
+	        create: function(options) {
+	            return new anInput(options.data);
+	        }
+	    }
+	}
+
 //Prep inital data for card that's been saved previously and has existing
 
 	initial_card_object= jQuery.parseJSON(initial_card_json);
-	VM = ko.mapping.fromJS(initial_card_object);
+	
+	VM = ko.mapping.fromJS(initial_card_object, mapping);
 
 	VM.pmcid = ko.observable(); //primary_media_client_id
 	VM.has_audio_or_video = ko.observable(); 
@@ -334,29 +345,25 @@ $.each(VM.inputelements(), function (index, element) {
 	VM.showInputModal = function()
 	{	
 		// console.log('this:');
-		console.log('showInputModal');
-		console.log(this);
+		// console.log('showInputModal');
+		// console.log(this);
 		
 		el=$('event.currentTarget');
 		el=$(event.currentTarget);
 		input_type = el.data("input_type");
 		input_verb = el.data("input_verb");
-		VM.InputVM().type(input_type);
 		VM.current_input_verb(input_verb);
 		
 		if (input_verb == 'add')
 			{
 				// console.log('input verb was add, adding a new input');
-				VM.InputVM(new anInput(input_type));
+				VM.InputVM(new anInput({"type":input_type}));
 				VM.InputVM().save_element = function(){
 					if (VM.InputVM().default_action.goto()=="addcard")
 						addCardFromInput(this); //this needs to handle the rest
 					else
 						addInputHelper(this);
-					
-						$('#inputModal').modal('hide');
-						
-					
+					$('#inputModal').modal('hide');
 				}
 			}
 		if (input_verb == 'edit')
@@ -510,8 +517,8 @@ $.each(VM.inputelements(), function (index, element) {
 			VM.all_cards.push(initial_guide_object.cards[x]);
 		}
 	
-
-	VM.InputVM= ko.observable(new anInput());
+	data = {};
+	VM.InputVM= ko.observable(new anInput(data));
 	
 	ko.applyBindings(VM);
 
@@ -526,34 +533,39 @@ $.each(VM.inputelements(), function (index, element) {
 // HEEEEEEEEEEEEEEEEELLLLLLLLLLLLLLLLLLLLLLLLLLPPPPPPPPPPPPPPPPPPPEEEEEERRRRRRRRRRRRRRRRRRRs
 
 
-var anInput = function(type) {
+function anInput (data) {
 	
 	var default_action = new Object();
-	default_action.goto = ko.observable();
-	default_action.id = null;
+	// default_action.goto = ko.observable(data.default_action.goto || '');
+	if (typeof data.default_action !='undefined')
+	{	default_action.goto = ko.observable(data.default_action.goto);
+		default_action.id = data.default_action.id;	
+	}
+	else
+	{	default_action.goto = ko.observable();
+		default_action.id =  null;	
+	}
 	
-    this.type = ko.observable(type);
-    this.card = ko.observable(VM.resource_uri());
-    this.button_text= ko.observable();
-    this.resource_uri=ko.observable();
+    this.type = ko.observable(data.type || '');
+    this.card = ko.observable(initial_card_object.resource_uri);
+    this.button_text= ko.observable(data.button_text || '');
+    this.resource_uri=ko.observable(data.resource_uri || '');
 
-	this.default_action= default_action;
+	this.default_action= default_action ;
     this.newCardTitle=ko.observable();
 
-	this.execute_action_when_done = ko.observable('true');
+	this.execute_action_when_done = ko.observable( data.execute_action_when_done || 'true');
 
-	if (type == 'timer')
+	if (data.type == 'timer')
 		{
-			this.seconds= ko.observable(0);
-			this.minutes= ko.observable(0);
+			this.seconds= ko.observable(data.seconds || 0);
+			this.minutes= ko.observable(data.minutes || 0);
 			this.formattedtime = ko.dependentObservable(function() {
-				// return 'hello';
-				// console.log(this);
 				return timerFormat(this.minutes(), this.seconds());
 			}, this);
 			
-			this.ding_when_done = ko.observable();
-			this.auto_start = ko.observable('true');
+			this.ding_when_done = ko.observable(data.ding_when_done || '');
+			this.auto_start = ko.observable(data.auto_start || 'true');
 			
 			this.complete = ko.dependentObservable(function() {
 				if (this.button_text())
@@ -579,9 +591,10 @@ var anInput = function(type) {
 }
 
 
+
+
 // BUG TODO , inputs with new cards don't show as selecting the new card/action  until you refresh the page.
 // when you click on it, the VM.InputVM().default_action.goto() is a function, need additional (), not sure where that's being introduced
-
 addInputHelper =function(that){
 	var postURL_input;
 	
@@ -622,8 +635,6 @@ addInputHelper =function(that){
 
 addCardFromInput = function(that)
 {
-	
-	console.log('addcarding');
 	cardToAdd= new Object();
 	cardToAdd.title= VM.newCardTitle();			
 	cardToAdd.guide= VM.guide();

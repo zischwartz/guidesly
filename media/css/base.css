@@ -352,8 +352,12 @@ button.btn::-moz-focus-inner,input[type=submit].btn::-moz-focus-inner{padding:0;
 .wmd-prompt-dialog>form>input[type="text"]{border:1px solid #999999;color:black;}
 .wmd-prompt-dialog>form>input[type="button"]{border:1px solid #888888;font-family:trebuchet MS,helvetica,sans-serif;font-size:0.8em;font-weight:bold;}
 .input_element{display:inline-block;}
-.input_element a{padding:.5em;overflow:auto;background-color:#6d6d6d;color:white;font-size:1.2em;letter-spacing:2px;text-shadow:0px 1px 1px black;font-weight:400;float:left;margin-right:.5em;margin-top:.5em;border:2px solid white;}
-.input_element a:hover{background-color:black;cursor:pointer;text-decoration:none;}
+.input_wrapper{text-align:center;}.input_wrapper .input_element{display:inline-block;margin-top:0px;height:50px;}.input_wrapper .input_element .time{font-size:1.2em;background-color:#bfbfbf;padding:.5em;letter-spacing:2px;display:block;clear:both;margin:0 .5em;overflow:hidden;cursor:pointer;border:2px solid white;border-top:none;}
+.input_wrapper .input_element .time:before{}
+.input_element a{padding:.5em;overflow:auto;background-color:#6d6d6d;color:white;font-size:1.2em;letter-spacing:2px;text-shadow:0px 1px 1px black;font-weight:400;float:left;margin:.5em;margin-bottom:0;border:2px solid white;display:block;}
+.input_element.timer a{border-bottom:none;}
+.input_element:hover a{background-color:black;cursor:pointer;text-decoration:none;}
+.input_element.timer{}
 .prev_and_next .input_element{display:block;}
 .prev_and_next .prev a{float:left;margin:0.5em 0.5em 0.5em 0;}
 .prev_and_next .next a{float:right;padding-left:1.5em;padding-right:1.5em;margin:0.5em 0 0.5em 0.5em;}

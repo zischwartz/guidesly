@@ -5,8 +5,48 @@
 
 .input_wrapper
 {
+	text-align: center;
+
 	
+	.input_element
+	{
+		display: inline-block;
+		margin-top: 0px;
+		height: 50px;
+		
+		.time
+		{
+
+			font-size: 1.2em;
+			background-color: @grayLight;
+			padding: .5em;
+			letter-spacing: 2px;
+
+			display: block;
+			clear: both;
+			margin: 0 .5em;
+			overflow: hidden;
+			cursor: pointer;
+			border: 2px solid white;
+			border-top: none;
+/*			text-align: left;*/
+
+		} //end time
+		
+		.time:before
+		{
+/*			content: '⌚';*/
+/*			content: 'Timer:';*/
+/*			font-size: 2.5em;*/
+/*			float: left;*/
+
+		}
+		
+
+	}
 }
+
+
 
 .input_element a
 {
@@ -19,18 +59,26 @@
 	text-shadow: 0px 1px 1px black;
 	font-weight: 400;
 	float: left;
-	margin-right: .5em;
-	margin-top: .5em;
+	margin: .5em;
+	margin-bottom: 0;
 	border: 2px solid white;
-
-	
+	display: block;
 }
 
-.input_element a:hover
+.input_element.timer a
+{border-bottom: none;}
+
+.input_element:hover a
 {
 	background-color: black;
 	cursor: pointer;
 	text-decoration: none;
+}
+
+.input_element.timer 
+{
+/*	text-align: center;*/
+/*	background-color: @grayLight;*/
 }
 
 .prev_and_next .input_element
@@ -65,6 +113,8 @@
 	width: 100%;
 	overflow: auto;
 }
+
+
 
 .timeBar
 {
