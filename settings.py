@@ -163,7 +163,7 @@ AWS_ACCESS_KEY_ID = 'AKIAJRCNWZLCRGKOA7FA'
 AWS_SECRET_ACCESS_KEY = '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'
 AWS_STORAGE_BUCKET_NAME= 'guideslybetauserfiles'
                                                  
-#AUTHENTICATION_BACKENDS='django.contrib.auth.backends.ModelBackend'
+AUTHENTICATION_BACKENDS= ('django.contrib.auth.backends.ModelBackend',)
 #AUTHENTICATION_BACKENDS= 'object_permissions.backend.ObjectPermBackend',
 
 # got Error importing authentication backends. Is AUTHENTICATION_BACKENDS a correctly defined list or tuple?
@@ -193,13 +193,13 @@ INSTALLED_APPS = (
     'django.contrib.admindocs',
     'django.contrib.markup',
 
-    'object_permissions',
+    # 'object_permissions',
     'tagging',
 	'invitation',
 	'registration',
 	'thef',
     'tastypie',
-    'south',
+    # 'south',
     'compress',
     'tagging_autocomplete',
 
