@@ -3,10 +3,15 @@
 							<source src="{{card.primary_media.file.url}}" type="video/mp4" /> 
 							
 							
-						    <object width="600" height="800" type="application/x-shockwave-flash" data="/js/flashmediaelement.swf"> 
+						  <!--  <object width="600" height="800" type="application/x-shockwave-flash" data="/js/flashmediaelement.swf"> 
 								<param name="movie" value="{{SITE_STATIC}}js-libs/mediaplayer/flashmediaelement.swf" /> 
 								<param name="flashvars" value="controls=true&amp;file={{primary_media.file.file.url}}" /> 
-							</object> 
+							</object>             -->     
+							
+							<script>
+							// using jQuery
+							$('video,audio').mediaelementplayer(/* Options */);
+							</script>
 						</video>       
 
 
