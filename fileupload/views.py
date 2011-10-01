@@ -10,7 +10,7 @@ from api import UserFileResource, ImageResource
 
 from guides.models import MediaElement, Card
 
-from django.views.decorators.csrf import csrf_exempt
+# from django.views.decorators.csrf import csrf_exempt
 
 
 from guides.log import *
@@ -22,7 +22,7 @@ from django.core.files.base import ContentFile
 class UserFileCreateView(CreateView):
 	model = UserFile
 
-	@csrf_exempt
+	# @csrf_exempt
 	def form_valid(self, form):
 		f = self.request.FILES.get('file')
 		file_type =  f.content_type.split('/')[0]
