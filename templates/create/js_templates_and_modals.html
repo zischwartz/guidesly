@@ -1,10 +1,6 @@
 {%load verbatim_templatetag%} 
 
-	{# NEW #}
-	{# <img class="preview_image" data-bind="attr: { id: (client_id() + 'img'), src: medium_url }"/> #}
-{# template-upload #} {# /x-jquery-tmpl #}
 
-{# attr: { id:  client_id}, #}
 {% verbatim %}
 
  	<script id="mediaTemplate" type="text/html">	
@@ -53,30 +49,30 @@
 	
 	{# OLD #}
 
-	{% verbatim %}
 	
-	<script id='mapTemplate' type='text/html'>
-		<div class="ue" data-bind="event: { focusin: VM.flipEl, focusout: VM.unflipEl }, attr: { tabindex: typeof(id)!='undefined' ? id: -1 }">
-			<figure class="front">
-				<div class="media_holder" style="background-image: url('/static/img/map-icon.png')"></div>
-				<div class="front input-button" data-bind="text: title"></div>
-			</figure>
-			
-			<div class="back">
-			
-			<div class="clearfix"></div>
-			<a class="uibutton delete" data-bind="click: VM.deleteFromCard">Remove</a>
-			
-			</div>
-		</div> 
-	</script>
+	{# <script id='mapTemplate' type='text/html'> #}
+	{# 	<div class="map_element"> #}
+	{# 		<div id="map_canvas"></div> #}
+	{# 		<div class="map_options"> #}
+	{# 				<p>Nice map. Now add some places.</p> #}
+	{# 				<button class="btn primary">Drop a point on by hand.</button> #}
+	{# 				or  #}
+	{# 				<button class="btn primary">Enter an address</button> #}
+	{# 				<input type="text" placeholder="address" id="address"> <input type="text" id="region"> <input type="button" value="Encode" onclick="codeAddress()"> #}
+	{# 			  	 #}
+	{# 		</div> #}
+	{# 	</div>  #}
+	{# </script> #}
+
+	{% verbatim %}
 
 
-
+	
 	<script id='timerTemplate' type='text/html'>
 		<div class="input_element timer"  data-bind="click: VM.showInputModal" data-input_type="timer" data-input_verb="edit" >
 			<a data-bind="text:button_text"></a>
-			<div class="time" data-bind="text: formattedtime"></div>
+			<div class="time"><img src="${static_url}img/timer-icon.png"> <span data-bind="text: formattedtime"></span></div>
+			<div class="timebar"></div>
 		</div>
 	</script>
 
@@ -192,8 +188,9 @@
 			</div> {# end timer properties #}
 			
 			{# It's a map! #}
-			<div class="map_properties" data-bind="visible: VM.InputVM().type()=='map' ">	
-				<div class="alert-message error"><p><strong>Not Yet! </strong> Sorry, we haven't implemented this feature yet.</p></div>
+			<div class="map_properties" data-bind="visible: VM.InputVM().type()=='map'">
+				
+			
 				{# <form data-bind="submit:addMap2Card"> #}
 				<input type="submit" value="Add Map">
 

@@ -19,29 +19,29 @@ sys.path.insert(0, join(SITE_ROOT, "apps"))
 
 
 
-# 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'mysql',
-#         'NAME': 'guidesly2',
-#         'HOST': 'guidesly2.cbwmwyqhy9ab.us-east-1.rds.amazonaws.com',
-#         'PORT': '3306',
-#         'USER': 'guidesly2',
-#         'PASSWORD': 'nem0nemo'
-#     }
-# }
-
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': os.path.join(SITE_ROOT, 'db'),                      # Or path to database file if using sqlite3.
-        'USER': '',                      # Not used with sqlite3.
-        'PASSWORD': '',                  # Not used with sqlite3.
-        'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
-        'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
+        'ENGINE': 'mysql',
+        'NAME': 'guidesly2',
+        'HOST': 'guidesly2.cbwmwyqhy9ab.us-east-1.rds.amazonaws.com',
+        'PORT': '3306',
+        'USER': 'guidesly2',
+        'PASSWORD': 'nem0nemo'
     }
 }
+
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
+#         'NAME': os.path.join(SITE_ROOT, 'db'),                      # Or path to database file if using sqlite3.
+#         'USER': '',                      # Not used with sqlite3.
+#         'PASSWORD': '',                  # Not used with sqlite3.
+#         'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
+#         'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
+#     }
+# }
 
 
 # Local time zone for this installation. Choices can be found here:

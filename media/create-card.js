@@ -341,7 +341,9 @@ $.each(VM.inputelements(), function (index, element) {
 	VM.current_input_type= ko.observable('');
 	VM.current_input_verb= ko.observable();
 	VM.newCardTitle= ko.observable('');
-
+	
+	VM.hasMap =  ko.observable(); // TODO change this to true if it loads with some points
+	
 	VM.showInputModal = function()
 	{	
 		// console.log('this:');
@@ -365,6 +367,13 @@ $.each(VM.inputelements(), function (index, element) {
 						addInputHelper(this);
 					$('#inputModal').modal('hide');
 				}
+				
+				if (input_type == 'map')
+				{
+					VM.hasMap('True');
+					initialize_map();
+					return true;
+				}
 			}
 		if (input_verb == 'edit')
 			{
@@ -385,6 +394,15 @@ $.each(VM.inputelements(), function (index, element) {
 			keyboard:true,
 			});
 			
+			// .bind('shown', function () {
+			// 	 if (map)
+			// 		{
+			// 			google.maps.event.trigger(map, "resize");
+			// 			// map.setCenter(map.getCenter());
+			// 			// map.setZoom( map.getZoom() );
+			// 		}
+			// });
+			
 	}
 
 	//for media elements.
@@ -404,8 +422,8 @@ $.each(VM.inputelements(), function (index, element) {
 			VM.mediaelements.remove(this);
 		if (VM.inputelements.indexOf(this)!=-1)
 			VM.inputelements.remove(this);
-		if (VM.mapelements.indexOf(this)!=-1)
-			VM.mapelements.remove(this);
+		// if (VM.mappoints.indexOf(this)!=-1)
+		// 	VM.mappoints.remove(this);
 	};
 	
 
@@ -416,8 +434,8 @@ $.each(VM.inputelements(), function (index, element) {
 				return 'buttonTemplate';
 			if (element.type() == 'timer')
 				return 'timerTemplate';
-			if (element.type() == 'map')
-				return 'mapTemplate';
+			// if (element.type() == 'map')
+			// 	return 'mapTemplate';
 			else			
 				return 'errorNoTemplate';
 	}

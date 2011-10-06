@@ -352,8 +352,8 @@ button.btn::-moz-focus-inner,input[type=submit].btn::-moz-focus-inner{padding:0;
 .wmd-prompt-dialog>form>input[type="text"]{border:1px solid #999999;color:black;}
 .wmd-prompt-dialog>form>input[type="button"]{border:1px solid #888888;font-family:trebuchet MS,helvetica,sans-serif;font-size:0.8em;font-weight:bold;}
 .input_element{display:inline-block;}
-.input_wrapper{text-align:center;}.input_wrapper .input_element{display:inline-block;margin-top:0px;height:50px;}.input_wrapper .input_element .time{font-size:1.2em;background-color:#bfbfbf;padding:.5em;letter-spacing:2px;display:block;clear:both;margin:0 .5em;overflow:hidden;cursor:pointer;border:2px solid white;border-top:none;}
-.input_wrapper .input_element .time:before{}
+.input_wrapper{text-align:center;}.input_wrapper .input_element{display:inline-block;margin-top:0px;height:50px;}.input_wrapper .input_element .time_wrap{font-size:1.2em;background-color:#bfbfbf;padding:.5em;letter-spacing:2px;display:block;clear:both;margin:0 .5em;overflow:hidden;cursor:pointer;border:2px solid white;border-top:none;}.input_wrapper .input_element .time_wrap img{width:20%;}
+.input_wrapper .input_element .time_wrap span{}
 .input_element a{padding:.5em;overflow:auto;background-color:#6d6d6d;color:white;font-size:1.2em;letter-spacing:2px;text-shadow:0px 1px 1px black;font-weight:400;float:left;margin:.5em;margin-bottom:0;border:2px solid white;display:block;}
 .input_element.timer a{border-bottom:none;}
 .input_element:hover a{background-color:black;cursor:pointer;text-decoration:none;}
@@ -483,6 +483,7 @@ strong.green{color:#46a546;border:1px dashed;padding:3px;}
 .ui-autocomplete{width:340px;background-color:#bfbfbf;}.ui-autocomplete .ui-state-hover{background-color:#8effc5;color:#000000;}
 .ui-autocomplete li{list-style:none;padding:5px;}.ui-autocomplete li a{padding:5px;cursor:pointer;}
 .ui-autocomplete-loading{background:red ;}
+#map_canvas{height:400px;width:550px;}
 body{background-color:white;}
 strong,.strong{font-weight:bold;}
 p.small{font-size:.9em !important;}
@@ -508,7 +509,7 @@ a.guide_thumb:hover{text-decoration:none;}
 a.guide_thumb:hover{background-color:#d6ffff;}a.guide_thumb:hover .guide_title{}
 #popular_tags ul.pills li{display:block;width:80%;clear:both;margin-left:-12px;}
 .topbar li span.location{display:block;float:none;padding:10px 10px 11px;padding:10px 10px 5px;line-height:19px;text-decoration:none;background-color:#222;background-color:rgba(0, 0, 0, 0.5);-webkit-border-radius:0 0 8px 8px;-moz-border-radius:0 0 8px 8px;border-radius:0 0 8px 8px;color:#808080;}
-.standout{background-color:#f3f3f3;padding:1em 0;}.standout p{font-size:1.1em;}
+.standout{background-color:#e6e6e6;padding:1em 0;}.standout p{font-size:1.1em;}
 .standout a.big{font-size:1.3em;}
 .disabled{color:#808080;}
 #publish{margin-top:8em;}

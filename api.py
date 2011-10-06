@@ -95,7 +95,7 @@ class ImageResource(ModelResource):
 
 
 class UserFileResource(ModelResource):
-	owner = fields.ForeignKey(UserResource, 'owner' )#, full=True)
+	owner = fields.ForeignKey(UserResource, 'owner',  null=True)#, full=True)
 	image = fields.ForeignKey(ImageResource, 'image', null=True)#, full=True)
 
 	class Meta:

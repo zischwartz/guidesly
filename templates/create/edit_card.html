@@ -20,7 +20,9 @@
 	 	<script type="text/javascript" src="http://feather.aviary.com/js/feather.js"></script>
 		
 		<script type="text/javascript" src="{{STATIC_URL}}create-card.js"></script>
-		
+		<script type="text/javascript" src="{{STATIC_URL}}create-map.js"></script>
+		<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=false"></script>
+		{# TODO change to true on mobile #}
 		
 		<script type="text/javascript">
 			var static_url = "{{STATIC_URL}}";
@@ -125,7 +127,7 @@
 			</div> <!-- /adder_inner -->
 		</div><!-- end adder media -->
 
-
+		
 
 		<div class="adder text" tabindex="5" data-bind="event: { focusin: turnOnEditing, focusout: turnOffEditing},  css: { notBlank: text() }">
 			<a class="closex closer" href="#">x</a>
@@ -141,7 +143,20 @@
 			{% include "create/markdownhelp.html"%}
 		</div>
 		
-
+		
+		<div class="map_element adder" data-bind="visible: hasMap">
+			<div id="map_canvas"></div>
+			<div class="map_options">
+					<p>Nice map. Now add some places to it.</p>
+					<button class="btn primary">Add by hand</button>
+					or use an address<br>
+					<input type="text" placeholder="Address" id="address"> <input type="text" id="region"> 
+					<button class="btn primary">Add address</button>
+					
+					{# <input type="button" value="Encode" onclick="codeAddress()"> #}
+				  	
+			</div>
+		</div>
 		
 		
 		<div class="adder input">
@@ -155,18 +170,14 @@
 			</div>
 		</div> <!-- /adder input -->
 		
+		
+		
 		{# INPUT ELEMENTS #}
 		<div class="input_wrapper" data-bind="template:{name: VM.inputTypeTemplate,  foreach: VM.inputelements,
 
 		 				beforeRemove: function(elem) {$(elem).slideUp() },
 						afterAdd: function(elem) {$(elem).hide().slideDown() }}"> </div>
-
-
-		{# <div data-bind="template:{name: VM.inputTypeTemplate,  foreach: VM.mapelements, #}
-		{#  #}
-		{#  				beforeRemove: function(elem) {$(elem).slideUp() }, #}
-		{# 				afterAdd: function(elem) {$(elem).hide().slideDown() }}"> </div> #}
-							
+											
 							
 			<div id="prev_and_next" class="prev_and_next" data-bind="visible: !(is_floating_card())">
 				<br>
@@ -180,7 +191,7 @@
 
 
 
-{# end new #}
+
 {# 	********************************************************************************************************************************************************************************** #}
 {# 	********************************************************************************************************************************************************************************** #}
 {%endblock%}

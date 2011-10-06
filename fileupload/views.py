@@ -6,9 +6,12 @@ from django.utils import simplejson
 from django.core.urlresolvers import reverse
 
 from django.conf import settings
-from api import UserFileResource, ImageResource
+from api import UserFileResource, ImageResource, CardResource
 
 from guides.models import MediaElement, Card
+
+# from tastypie import get_via_uri
+from api import CardResource
 
 # from django.views.decorators.csrf import csrf_exempt
 
@@ -28,8 +31,13 @@ class UserFileCreateView(CreateView):
 		file_type =  f.content_type.split('/')[0]
 		
 		if self.request.POST.get('card'):
-			card = Card.objects.get(id=self.request.POST.get('card')) # otherwise it's coming from the general upload form
-		
+			# card = Card.objects.get(id=self.request.POST.get('card')) # otherwise it's coming from the general upload form
+			cr = CardResource() # cardresource is imported at the end of this file
+			card = cr.get_via_uri(self.request.POST.get('card'))
+			#switched to uri from the id for consistency   TODO remind ben to switch it back
+		else:
+			card = None
+			
 		self.object = form.save(commit=False)
 
 		if file_type == 'image':

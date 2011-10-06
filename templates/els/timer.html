@@ -1,1 +1,3 @@
-<a class='ielement goto timer' href='{{el.default_action.goto.get_absolute_url}}' data-minutes="{{el.minutes}}" data-seconds="{{el.seconds}}">{{el.button_text}} <br> 0{{el.minutes}}:0{{el.seconds}}</a>
+<a data-bind="text:button_text"></a>
+<div class="time"><img src="{{MEDIA_URL}}img/timer-icon.png"> <span data-bind="text: formattedtime"></span></div>
+<div class="timebar"></div>

@@ -144,9 +144,22 @@
 
 			<div class="input_wrapper">	
 				{%for el in card.inputelement_set.all%}
-					<div class="input_element nonlinear">
+					
+					{%if el.type = 'button'%}
+					<div class="input_element nonlinear button">
 						<a data-destination="{{el.default_action.goto.slug}}" class='goto' href='{{el.default_action.goto.get_absolute_url}}'>{{el.button_text}}</a>
 					</div>
+					{%endif%}
+					
+					{%if el.type = 'timer'%}
+					<div class="input_element nonlinear timer" data-minutes="{{el.minutes}}" data-seconds="{{el.seconds}}" data-autostart="{{el.auto_start}}" data-ding_when_done="{{el.ding_when_done}}">
+						<a data-destination="{{el.default_action.goto.slug}}" href='{{el.default_action.goto.get_absolute_url}}'>{{el.button_text}}</a>
+						<div class="time_wrap"><img src="{{STATIC_URL}}img/timer-icon.png"> <span class="time"></span> <div class="timebar"></div></div>
+					</div>
+					{%endif%}
+					
+					
+					
 				{%endfor%}		
 			</div>
 		
@@ -178,180 +191,8 @@
 <script src="{{STATIC_URL}}js-libs/history/history.js"></script>
 <script src="{{STATIC_URL}}js-libs/history/history.html4.js"></script>
 
-<script>
+<script src="{{STATIC_URL}}enjoy-card.js"></script>
 
-var History = window.History;
-
-// Bind to StateChange Event
-History.Adapter.bind(window,'statechange',function(){ // Note: We are using statechange instead of popstate
-    var State = History.getState(); // Note: We are using History.getState() instead of event.state
-	// console.log('Statechange historyjs: ' + State.data.slug);
-    // History.log(State.data, State.title, State.url);
-	var index= $(".card").index( document.getElementById(State.data.slug));
-	$.deck('go', index);
-});
-
-	
-
-
-$(document).ready(function(){
-	
-	//Video Setup
-	VideoJS.setupAllWhenReady();  
-	
-	//Initialize Deckjs
-	$.deck('.card', { keys: {next: -1, previous: -1} }); // No key activation	
-	
-	//Go to previous/existing state
-	var initialState = History.getState();
-	console.log(initialState);
-	var index= $(".card").index( document.getElementById(initialState.data.slug));
-	$.deck('go', index);
-	
-	
-	//set the TOC up with the current card, and the video player
-	inital_card = $.deck('getSlide');
-	current_card_slug = initialState.data.slug;
-	
-	//if owner, set edit url for first card
-	edit_url= inital_card.find(".edit_card_link").attr('href');
-	$("#editCard a").attr('href', edit_url);
-	
-	$("#header").find("a.goto[data-destination="+current_card_slug+"]").addClass("active");
-	if (inital_card.data("autoplay"))
-		$.doTimeout(300, function(){inital_card.find(".video-js").player().play();});
-		
-	$("#header").hover(
-		function(){
-			$(this).addClass("hovered");
-			$(this).doTimeout('showtoc'); //cancels the timer
-		},
-		function(){	
-			$(this).doTimeout('showtoc', 1000, function(){this.removeClass("hovered");});	}	);
-
-//Bind the keys for back and forward
-	$(window).keydown(function(event) {
-		if (event.keyCode == '39')
-		{
-			next_button= $.deck('getSlide').find('.prev_and_next .input_element.next');
-			if (next_button.length)
-				$.deck('next');
-			event.preventDefault();
-			return false;
-		} //end 39
-		
-		if (event.keyCode == '37')
-		{
-			prev_button= $.deck('getSlide').find('.prev_and_next .input_element.prev');
-			if (prev_button.length)
-				$.deck('prev');
-			event.preventDefault();
-			return false;
-		} //end 37
-		
-	}); //end keypress binding
-	
-
-// On Deck Change, ...change the title and update the toc
-	$(document).bind('deck.change', function(event, from, to) {	
-		card = $.deck('getSlide', to);
-		title = $(card).data("title");
-		current_card_slug = $(card).data("slug");
-		
-		document.title = guide_title + ': '+ title;
-		$("#header a.goto").removeClass("active");
-		$("#header").find("a.goto[data-destination="+current_card_slug+"]").addClass("active");
-		
-		// History.js
-		History.pushState({slug: current_card_slug } , title, current_card_slug);
-		
-		if (card.data("autoplay"))
-			card.find(".video-js").player().play();
-		
-		//only matters if owner
-		edit_url= card.find(".edit_card_link").attr('href');
-		$("#editCard a").attr('href', edit_url);
-
-	});
-
-// Bind prev and next buttons to move the deck	
-	$('.input_element.prev').click(function(event) { $.deck('prev'); return false;});
-	$('.input_element.next').click(function(event) { $.deck('next'); return false;});
-	
-	
-// Bind other input buttons to move deck	
-	$('a.goto').click(function(event) {
-		// console.log($.deck('getSlides'));
-		destination= $(event.target).data("destination");
-		index= $(".card").index( document.getElementById(destination));
-		// console.log(index);
-		$.deck('go', index);
-		return false;
-	}); //end a.goto click
-	
-	
-// Bind media thumbnails to change the video or image in the appropriate card
-    $("a.thumbLink").live('click', function(event) {
-		event.preventDefault();
-		
-		if ($(this).hasClass("activeThumbLink"))
-			return false;
-		
-		var card = $.deck('getSlide');	
-		$(card).find(".activeThumbLink").removeClass("activeThumbLink");
-		$(this).addClass("activeThumbLink");
-		var thumb_media_type = $(this).data("media_type");
-        var url = this.href;
-		var media_title = this.title;
-		
-		card.find(".caption").text(media_title);
-
-		if (thumb_media_type == 'image')
-		{
-			if (current_media_type == 'video')
-			{
-				console.log('do something here to hide the video and replace it with an image');
-			}
-			
-			if (card.hasClass("primary_is_bg"))
-				{
-					$(card).css('background-image', "url("+ url +")" ).addClass("loading");
-					$('<img/>').attr('src', url).load(function(){
-						$(card).removeClass("loading");
-					});
-				}
-			else
-			{
-				$(card).addClass("loading").find(".primary_media").attr({ src: url});
-				// bind to hide the loading indicator .loader
-				$(card).find(".primary_media").load(function(){
-					$(card).removeClass("loading");
-				});
-			}
-		}//end if thumb_media_type is 'image'
-	}); //end thumbsnail code live
-
-}); //end docreadyyyyyyyyyyyyyyyyyyyyyy
-
-//Fix for weird firefox horizontal scroll issue
-window.addEventListener('MozMousePixelScroll', function(evt){
-    if(evt.axis === evt.HORIZONTAL_AXIS){
-        evt.preventDefault();
-    }
-}, false);
-
-
-/*
- * jQuery doTimeout: Like setTimeout, but better! - v1.0 - 3/3/2010
- * http://benalman.com/projects/jquery-dotimeout-plugin/
- * 
- * Copyright (c) 2010 "Cowboy" Ben Alman
- * Dual licensed under the MIT and GPL licenses.
- * http://benalman.com/about/license/
- */
-(function($){var a={},c="doTimeout",d=Array.prototype.slice;$[c]=function(){return b.apply(window,[0].concat(d.call(arguments)))};$.fn[c]=function(){var f=d.call(arguments),e=b.apply(this,[c+f[0]].concat(f));return typeof f[0]==="number"||typeof f[1]==="number"?this:e};function b(l){var m=this,h,k={},g=l?$.fn:$,n=arguments,i=4,f=n[1],j=n[2],p=n[3];if(typeof f!=="string"){i--;f=l=0;j=n[1];p=n[2]}if(l){h=m.eq(0);h.data(l,k=h.data(l)||{})}else{if(f){k=a[f]||(a[f]={})}}k.id&&clearTimeout(k.id);delete k.id;function e(){if(l){h.removeData(l)}else{if(f){delete a[f]}}}function o(){k.id=setTimeout(function(){k.fn()},j)}if(p){k.fn=function(q){if(typeof p==="string"){p=g[p]}p.apply(m,d.call(n,i))===true&&!q?o():e()};o()}else{if(k.fn){j===undefined?e():k.fn(j===false);return true}else{e()}}}})(jQuery);
-
-</script>
 
 
 </body>
