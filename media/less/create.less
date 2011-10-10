@@ -937,8 +937,19 @@ strong.green {
 	height: 400px;
 	width: @adderWidth;
 	}
-	
-.map_element
+
+/*#map_canvas .twipsy 
 {
-	
+	width: auto !important;
+}
+
+#map_canvas .twipsy .twipsy-inner
+{
+	max-width: none !important;
+}*/
+
+#map_canvas .twipsy:hover, #map_canvas .twipsy:hover .twipsy-inner:hover
+{
+	cursor: pointer !important;
+	color: @editingColor !important;
 }

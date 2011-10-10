@@ -6,6 +6,7 @@ from django.contrib.auth.models import User
 # from model_utils.managers import InheritanceManager
 from django.template.defaultfilters import slugify
 from autoslug import AutoSlugField
+from django.conf import settings
 
 import jsonfield 
 
@@ -31,7 +32,7 @@ IELEMENT_TYPE = (
 	('N', 'Enter Numerical Value'),
 	('S', 'Sensor'),
 	('timer', 'Timer'),
-	('map', 'Map'),
+	('place', 'Place'),
 )
 
 class Theme (models.Model):
@@ -275,6 +276,13 @@ class Card (models.Model):
 			return True
 		else:
 			return False
+			
+	def has_map(self):
+		count = len(self.inputelement_set.filter(type='map'))
+		if count:
+			return True
+		else:
+			return False
 		
 	def cget_prev_card(self):
 		prev_card_number = self.card_number -2 # 2 because the list card_order is zero based
@@ -299,11 +307,15 @@ class Card (models.Model):
 					return self.primary_media.file.thumb_url
 			else:
 				if self.primary_media.type=='video':
-					return SETTINGS.STATIC_URL + 'img/video-icon.png'
+					return settings.STATIC_URL + 'img/video-icon.png'
 				if self.primary_media.type=='audio':
 					return SETTINGS.STATIC_URL + 'img/audio-icon.png'
 				if self.primary_media.type=='other':
 					return SETTINGS.STATIC_URL + 'img/other-icon.png'
+					
+		if self.has_map:
+			return settings.STATIC_URL + 'img/map-thumb.png'
+			
 		return None
 		
 class CommentCard (Card):
@@ -347,16 +359,19 @@ class Condition (models.Model):
 	input = models.ForeignKey('InputElement')
 
 class MapPointElement (models.Model):
-	point = models.IntegerField(max_length=500)
-	point_title = models.CharField(max_length=100)
-	manual_addy = models.CharField(max_length=100, blank=True, null=True)
+	lat = models.FloatField(blank=True)
+	long = models.FloatField(blank=True)
+	button_text = models.CharField(max_length=150)
+	sub_title = models.CharField(max_length=250, blank=True, null=True)
+	manual_addy = models.CharField(max_length=250, blank=True)
 	default_action = models.OneToOneField(Action, blank=True, null=True)
-
-class MapElement (models.Model):
 	card = models.ForeignKey(Card)
-	map_title = models.CharField(max_length=100)
-	points = models.ManyToManyField(MapPointElement)
-	type = models.CharField(max_length=100, default = 'map')
+
+# class MapElement (models.Model):
+# 	card = models.ForeignKey(Card)
+# 	map_title = models.CharField(max_length=100)
+# 	points = models.ManyToManyField(MapPointElement)
+# 	type = models.CharField(max_length=100, default = 'map')
 
 class InputElement (models.Model):
 	card = models.ForeignKey(Card)
@@ -378,6 +393,11 @@ class InputElement (models.Model):
 	required = models.BooleanField(default=False)
 	no_match_message =models.CharField(max_length=250, blank=True, null=True)
 	should_save_answer = models.BooleanField(default=False)
+	
+	#for map
+	lat = models.FloatField(blank=True, null=True)
+	long = models.FloatField(blank=True, null=True)
+	manual_addy = models.CharField(max_length=250, blank=True)
 	
 	def el_template(self):
 		if self.type=="timer":

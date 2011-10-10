@@ -5,7 +5,7 @@ var static_url = "/media/"
 var card_api_url='/api/v1/card/';
 var media_api_url='/api/v1/mediaelement/';
 var input_api_url='/api/v1/inputelement/';
-var map_api_url='/api/v1/mapelement/';
+var map_api_url='/api/v1/mappoelement/';
 var action_api_url='/api/v1/action/';
 var file_api_url='/api/v1/userfile/';
 var guide_api_url='/api/v1/guide/';
@@ -47,7 +47,7 @@ $(".mediaTemplate").live("mouseover mouseout", function(event) {
 
 
 
-	// map existing inputelements to our js model (with dependent observables etc)
+	// map existing inputelements to our js model (with dependent observables etc) woo constructors
 	var mapping = {
 	    'inputelements': {
 	        create: function(options) {
@@ -65,6 +65,9 @@ $(".mediaTemplate").live("mouseover mouseout", function(event) {
 	VM.pmcid = ko.observable(); //primary_media_client_id
 	VM.has_audio_or_video = ko.observable(); 
 	VM.saving_message = ko.observable();
+	VM.hasMap =  ko.observable(); 
+	VM.draggable =  ko.observable(0); 
+	
 	
 //FOR MEDIA ELEMENTS.
 	//give all the existing elements a client_id, existing tag, and set their display stuff to external if it is
@@ -149,6 +152,12 @@ $.each(VM.inputelements(), function (index, element) {
 			console.log(this);
 			return timerFormat(this.minutes(), this.seconds());
 		}, element);
+		
+	if (element.type() == 'place')
+	{
+		VM.hasMap(1);
+		// initialize_map();
+	}	
 
 })
 		
@@ -342,24 +351,51 @@ $.each(VM.inputelements(), function (index, element) {
 	VM.current_input_verb= ko.observable();
 	VM.newCardTitle= ko.observable('');
 	
-	VM.hasMap =  ko.observable(); // TODO change this to true if it loads with some points
 	
+	VM.addingPointByHand= ko.observable(); 
+
 	VM.showInputModal = function()
 	{	
-		// console.log('this:');
+
 		// console.log('showInputModal');
 		// console.log(this);
 		
-		el=$('event.currentTarget');
+		// el=$('event.currentTarget');
 		el=$(event.currentTarget);
-		input_type = el.data("input_type");
-		input_verb = el.data("input_verb");
-		VM.current_input_verb(input_verb);
+		
+		var ko_el_clicked = true; //because we're allowing two ways to click mappoints
+		
+		
+		//check if this is normal input or a mappoint
+		if (el.data("input_type"))
+		{
+			input_type = el.data("input_type");
+			input_verb = el.data("input_verb");
+			VM.current_input_verb(input_verb);
+		}
+		//it's a mappoint
+		else
+		{
+			//we'll just assume 
+			input_type = "place";
+			input_verb = 'edit'
+			VM.current_input_verb(input_verb);
+			ko_el_clicked = false;
+		}
+
 		
 		if (input_verb == 'add')
 			{
 				// console.log('input verb was add, adding a new input');
+				if (input_type == 'map')
+				{
+					VM.hasMap('True');
+					initialize_map();
+					return true;
+				}
+				
 				VM.InputVM(new anInput({"type":input_type}));
+
 				VM.InputVM().save_element = function(){
 					if (VM.InputVM().default_action.goto()=="addcard")
 						addCardFromInput(this); //this needs to handle the rest
@@ -367,24 +403,25 @@ $.each(VM.inputelements(), function (index, element) {
 						addInputHelper(this);
 					$('#inputModal').modal('hide');
 				}
-				
-				if (input_type == 'map')
-				{
-					VM.hasMap('True');
-					initialize_map();
-					return true;
-				}
 			}
 		if (input_verb == 'edit')
 			{
 				// console.log('input verb was edit, editing an old input');
-				VM.InputVM(this); //assign the inputvm to the clicked element
+				
+				//for places clicked on the map, we're assigning it to the InputVM earlier. Otherwise assign it here.
+				if (input_type != "place" || ko_el_clicked)  
+					VM.InputVM(this); //assign the inputvm to the clicked element
+					
+					
 				VM.InputVM().save_element = function(){
 					if (VM.InputVM().default_action.goto()=="addcard")
 						addCardFromInput(this); //this needs to handle the rest
 					else
 						addInputHelper(this);
-						$('#inputModal').modal('hide');
+					if (input_type== "place")
+						this.stop_bouncing();
+					
+					$('#inputModal').modal('hide');
 						
 					}; //end save element
 			}
@@ -422,8 +459,7 @@ $.each(VM.inputelements(), function (index, element) {
 			VM.mediaelements.remove(this);
 		if (VM.inputelements.indexOf(this)!=-1)
 			VM.inputelements.remove(this);
-		// if (VM.mappoints.indexOf(this)!=-1)
-		// 	VM.mappoints.remove(this);
+
 	};
 	
 
@@ -434,11 +470,25 @@ $.each(VM.inputelements(), function (index, element) {
 				return 'buttonTemplate';
 			if (element.type() == 'timer')
 				return 'timerTemplate';
-			// if (element.type() == 'map')
-			// 	return 'mapTemplate';
+			if (element.type() == 'place')
+				return 'mapTemplate';
 			else			
 				return 'errorNoTemplate';
 	}
+	
+	
+	VM.inputsNotPlaces = ko.dependentObservable(function () {      
+	    return ko.utils.arrayFilter(this.inputelements(), function(el) {
+	        return el.type() != 'place';
+	    });
+	}.bind(VM));
+	
+	VM.justPlaces = ko.dependentObservable(function () {      
+	    return ko.utils.arrayFilter(this.inputelements(), function(el) {
+	        return el.type() == 'place' ;
+	    });
+	}.bind(VM));
+	
 
 	var converter = Markdown.getSanitizingConverter();
 	var editor = new Markdown.Editor(converter);
@@ -550,6 +600,7 @@ $.each(VM.inputelements(), function (index, element) {
 
 // HEEEEEEEEEEEEEEEEELLLLLLLLLLLLLLLLLLLLLLLLLLPPPPPPPPPPPPPPPPPPPEEEEEERRRRRRRRRRRRRRRRRRRs
 
+// var testmarker;
 
 function anInput (data) {
 	
@@ -564,6 +615,7 @@ function anInput (data) {
 		default_action.id =  null;	
 	}
 	
+	var that =this;
     this.type = ko.observable(data.type || '');
     this.card = ko.observable(initial_card_object.resource_uri);
     this.button_text= ko.observable(data.button_text || '');
@@ -574,6 +626,108 @@ function anInput (data) {
 
 	this.execute_action_when_done = ko.observable( data.execute_action_when_done || 'true');
 
+	if (data.type=='place')
+	{
+		if (!map)
+			initialize_map();
+
+		this.lat= ko.observable(data.lat);  //these really should never be blank
+		this.long= ko.observable(data.long);
+		this.manual_addy =ko.observable(data.manual_addy || '');
+	  
+		var marker = new google.maps.Marker({
+		        position: new google.maps.LatLng(data.lat, data.long),
+		        title: data.button_text || 'Your Place',
+		        map: map,
+				animation: this.button_text() ? null: google.maps.Animation.BOUNCE,
+		        // draggable: true
+		    });
+		
+		all_markers_bounds.extend(marker.position);
+		
+		 var boxText = document.createElement("div");	
+
+		 // boxText.innerHTML = "<div class='twipsy-arrow'></div><div class='twipsy-inner'>"+ marker.title +"</div>";
+		 t = this.button_text() ? this.button_text() : 'Click to edit';
+		 boxText.innerHTML = "<div class='twipsy-arrow'></div><div class='twipsy-inner'>"+ t +"</div>";
+		
+		 var infoBoxOptions = {
+		                 content: boxText
+		                ,disableAutoPan: false
+		                // ,maxWidth: "250px"
+						// ,alignBottom: true
+						,boxClass: 'twipsy fade below in'
+		                // ,pixelOffset: new google.maps.Size(15, -40)
+		                ,pixelOffset: new google.maps.Size(-55, 2) 
+		                ,closeBoxURL: ""
+		                // ,infoBoxClearance: new google.maps.Size(1, 1)
+		                ,pane: "floatPane"
+		                ,enableEventPropagation: false
+						,boxStyle: { 
+						                  opacity: 0.75
+						                  // ,minWidth: "50px"
+						                  ,width: "100px"
+						                  // ,width: "auto"
+						                 }
+		        };
+		
+		
+		$(boxText).click(function(){
+			VM.InputVM(that);
+			VM.showInputModal();
+		});
+		
+	    var ib = new InfoBox(infoBoxOptions);
+		ib.open(map, marker);
+	    
+		
+		// google.maps.event.addListener(marker, 'mouseover', function() {
+		//     ib.open(map, marker);
+		//     }.bind(this));
+		// 	
+		// 	
+		// google.maps.event.addListener(marker, 'mouseout', function() {
+		//     ib.close(map, marker);
+		//     }.bind(this));
+		
+		this.button_text.subscribe(function(newValue) {
+				ib.setContent("<div class='twipsy-arrow'></div><div class='twipsy-inner'>"+ that.button_text() +"</div>");
+			});
+		
+		google.maps.event.addListener(marker, 'click', function() {
+				if (!VM.draggable())
+				{
+					VM.InputVM(this);
+					VM.showInputModal();
+				}
+		    }.bind(this));
+		
+		
+	    google.maps.event.addListener(marker, 'dragend', function() {
+	        var pos = marker.getPosition();
+	        this.lat(pos.lat());
+	        this.long(pos.lng());
+			save_this_element(this);
+	    }.bind(this));
+		
+		this.delete_marker = function(){
+			marker.setMap(null);
+		};
+		
+		this.stop_bouncing = function(){
+			marker.setAnimation(null);
+		};
+		
+		this.make_dragable = function(){
+			marker.setDraggable(true);
+		};
+		
+		this.stop_draggable = function(){
+			marker.setDraggable(null);
+		};
+
+	}
+	
 	if (data.type == 'timer')
 		{
 			this.seconds= ko.observable(data.seconds || 0);
@@ -597,7 +751,7 @@ function anInput (data) {
 			}, this);
 
 		} //end if timer
-		
+	
 	else  //if it's not a timer, this is the dO for completeness
 	{	this.complete = ko.dependentObservable(function() {
 			if (this.button_text() && this.default_action.goto())
@@ -607,6 +761,8 @@ function anInput (data) {
 			}, this);
 	} //end if not timer
 }
+
+
 
 
 
@@ -800,6 +956,9 @@ function delete_this_element(element)
 
 	if (VM.inputelements.indexOf(element)!=-1)
 		VM.inputelements.remove(element);
+		
+	if (element.type()=='place')
+		element.delete_marker();
 }
 
 

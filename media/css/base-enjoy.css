@@ -654,6 +654,13 @@ pre {
 .input_element.timer a {
   border-bottom: none;
 }
+.input_element.place a {
+  background-color: #e6e6e6;
+  border: 1px solid #6d6d6d;
+  color: #404040;
+  font-weight: 300;
+  text-shadow: none;
+}
 .input_element:hover a {
   background-color: black;
   cursor: pointer;

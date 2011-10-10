@@ -38,7 +38,7 @@ class UserResource(ModelResource):
 class CardResource(ModelResource):
 	mediaelements = fields.ToManyField('api.MediaElementResource', 'mediaelement_set', full=True, readonly=True, null=True )#, readonly=True))
 	inputelements = fields.ToManyField('api.InputElementResource', 'inputelement_set', full=True, readonly=True, null=True)
-	mapelements = fields.ToManyField('api.MapElementResource', 'mapelement_set', full=True, readonly=True, null=True)
+	mappointelements = fields.ToManyField('api.MapPointElementResource', 'mappointelement_set', full=True, readonly=True, null=True)
 	guide = fields.ForeignKey('api.GuideResource', 'guide', null=True)
 	primary_media = fields.ForeignKey('api.MediaElementResource', 'primary_media', null=True, blank=True) #, full= True)
 	class Meta:
@@ -131,15 +131,11 @@ class InputElementResource(ModelResource):
 		
 class MapPointElementResource(ModelResource):
 	default_action= fields.ToOneField(ActionResource, 'default_action', null=True, full=True)  
+	card= fields.ForeignKey(CardResource, 'card')
 	class Meta:
 		queryset= MapPointElement.objects.all()
 		authorization = Authorization()
-		
-class MapElementResource(ModelResource):
-	card= fields.ForeignKey(CardResource, 'card')
-	class Meta:
-		queryset= MapElement.objects.all()
-		authorization = Authorization()
+
 
 
 

@@ -356,6 +356,7 @@ button.btn::-moz-focus-inner,input[type=submit].btn::-moz-focus-inner{padding:0;
 .input_wrapper .input_element .time_wrap span{}
 .input_element a{padding:.5em;overflow:auto;background-color:#6d6d6d;color:white;font-size:1.2em;letter-spacing:2px;text-shadow:0px 1px 1px black;font-weight:400;float:left;margin:.5em;margin-bottom:0;border:2px solid white;display:block;}
 .input_element.timer a{border-bottom:none;}
+.input_element.place a{background-color:#e6e6e6;border:1px solid #6d6d6d;color:#404040;font-weight:300;text-shadow:none;}
 .input_element:hover a{background-color:black;cursor:pointer;text-decoration:none;}
 .input_element.timer{}
 .prev_and_next .input_element{display:block;}
@@ -484,6 +485,7 @@ strong.green{color:#46a546;border:1px dashed;padding:3px;}
 .ui-autocomplete li{list-style:none;padding:5px;}.ui-autocomplete li a{padding:5px;cursor:pointer;}
 .ui-autocomplete-loading{background:red ;}
 #map_canvas{height:400px;width:550px;}
+#map_canvas .twipsy:hover,#map_canvas .twipsy:hover .twipsy-inner:hover{cursor:pointer !important;color:#8effc5 !important;}
 body{background-color:white;}
 strong,.strong{font-weight:bold;}
 p.small{font-size:.9em !important;}

@@ -47,25 +47,14 @@
 	{% endverbatim %}
 
 	
-	{# OLD #}
-
-	
-	{# <script id='mapTemplate' type='text/html'> #}
-	{# 	<div class="map_element"> #}
-	{# 		<div id="map_canvas"></div> #}
-	{# 		<div class="map_options"> #}
-	{# 				<p>Nice map. Now add some places.</p> #}
-	{# 				<button class="btn primary">Drop a point on by hand.</button> #}
-	{# 				or  #}
-	{# 				<button class="btn primary">Enter an address</button> #}
-	{# 				<input type="text" placeholder="address" id="address"> <input type="text" id="region"> <input type="button" value="Encode" onclick="codeAddress()"> #}
-	{# 			  	 #}
-	{# 		</div> #}
-	{# 	</div>  #}
-	{# </script> #}
 
 	{% verbatim %}
 
+	<script id='mapTemplate' type='text/html'>
+		<div class="input_element place"  data-bind="click: VM.showInputModal" data-input_type="place" data-input_verb="edit" >
+			<img src="${static_url}img/mapmarker.png"><a data-bind="text:button_text() ? button_text: 'Your Place' "></a>
+		</div>
+	</script>
 
 	
 	<script id='timerTemplate' type='text/html'>
@@ -188,11 +177,12 @@
 			</div> {# end timer properties #}
 			
 			{# It's a map! #}
-			<div class="map_properties" data-bind="visible: VM.InputVM().type()=='map'">
+			<div class="map_properties" data-bind="visible: VM.InputVM().type()=='place'">
+				<label for="adder_button_text">Place Title: </label>
+				<input class="tinput" type="text" name="" placeholder="My favorite place" id="adder_button_text" data-bind="value:VM.InputVM().button_text,  valueUpdate: 'afterkeydown'"><br>
 				
-			
+				
 				{# <form data-bind="submit:addMap2Card"> #}
-				<input type="submit" value="Add Map">
 
 			</div> {# end map properties, this one will be different, user will add map, map will pop up, then points will be edited with this... #}
 			
