@@ -2114,6 +2114,10 @@ h1.card_title {
   margin: 0 auto !important;
   display: block;
 }
+.popover {
+  /*	z-index: 1001;*/
+
+}
 .poptarget {
   background-color: black;
   height: 35px;

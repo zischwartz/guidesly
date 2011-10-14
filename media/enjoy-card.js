@@ -342,7 +342,6 @@ function setupMap(card)
 				var first = new google.maps.LatLng(places[0]['lat'], places[0]['long']);
 				var all_markers_bounds = new google.maps.LatLngBounds();
 
-
 				var mapOptions = {
 					zoom: 12,
 					center: first,
@@ -359,20 +358,27 @@ function setupMap(card)
 				$.each(places, function(index, value){
 					placeArray.push(new aPlace(this, map, all_markers_bounds));
 				});
-
 				map.fitBounds(all_markers_bounds);
+				
 
 				google.maps.event.addListener(map, 'tilesloaded', function(){ 
-				       // alert('hi'); 
+					if ($(map_canvas).hasClass('loaded'))
+						return true;
+						
 					$.each(placeArray, function(index, value){
-						setTimeout(function() {
+						$.doTimeout(200*index, function() {
 						      placeArray[index].add();
-						    }, index * 300 + 200);
-					});//end each	
-
+						    });
+					});//end each				
+						
+					$('.popover').live('mouseleave', function(event){
+						$(this).fadeOut();
+					});
+					
+					// 
+					$(map_canvas).addClass('loaded');
 					
 				});//end tilesloaded
-
 			}); // end getscript for infobox		
 		 	
 			
@@ -387,84 +393,122 @@ function setupMap(card)
 
 function aPlace (data, map, all_markers_bounds)
 {
+	title = data.button_text || 'A Place';
 	
 	var marker = new google.maps.Marker({
 	        position: new google.maps.LatLng(data.lat, data.long),
-	        title: data.button_text || 'A Place',
+	        // title: data.button_text || 'A Place',
 	        // map: map,
 			animation: google.maps.Animation.DROP,
 	    });
 	
 	all_markers_bounds.extend(marker.position);
 	
-	google.maps.event.addListener(marker, 'click', function() {
-		alert('clicked! ' + marker.title);
-	    });
-	    // }.bind(this));
 	
-	
-	 var boxText = document.createElement("div");	
+	 var markerMask = document.createElement("div");	
+	 var label = document.createElement("div");
+	 var popoverlabel = document.createElement("div");
 
-	 boxText.innerHTML = "<div class='poptarget' title=" + marker.title + " data-content=" + 'Lorem ipsum' + "> -- </div>";
+	//need to put quotes around title
+	 markerMask.innerHTML = "<div class='poptarget' data-original-title='" + title + "' data-content='" + 'Lorem Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. ipsum' + "'> -- </div>";
+	 label.innerHTML = "<div class='twipsy-arrow'></div><div class='twipsy-inner'>"+ title +"</div>";
+	 label.popoverlabel = "<div class='twipsy-arrow'></div><div class='twipsy-inner'>"+ title +"</div>";
+	
+	
 	
 	 var infoBoxOptions = {
-	                 content: boxText
-	                ,disableAutoPan: false
-	                // ,maxWidth: "250px"
-					// ,alignBottom: true
+	                 content: markerMask
+	                ,disableAutoPan: true
 					,boxClass: 'ib'
-					// ,boxClass: 'twipsy fade right in'
 	                ,pixelOffset: new google.maps.Size(-20, -35)
-	                // ,pixelOffset: new google.maps.Size(10, -30) 
-	                // ,pixelOffset: new google.maps.Size(0,0) 
+	                ,closeBoxURL: ""
+	                ,pane: "floatPane"
+	                ,enableEventPropagation: true
+					,boxStyle: {  opacity: 0 } //.75    }
+	        };
+	
+	 var infoBoxOptionsTwo = {
+	                 content: label
+	                ,disableAutoPan: true
+	 				,boxClass: 'twipsy above'
+					,alignBottom: true
+	                // ,pixelOffset: new google.maps.Size(15, -40)
+	                ,pixelOffset: new google.maps.Size(-55, -35) 
 	                ,closeBoxURL: ""
 	                // ,infoBoxClearance: new google.maps.Size(1, 1)
 	                ,pane: "floatPane"
-	                ,enableEventPropagation: false
-					,boxStyle: { 
-					                  opacity: 0.75
-					                  // ,minWidth: "50px"
-					                  // ,width: "100px"
-					                  // ,width: "auto"
-					                 }
+	                ,enableEventPropagation: true
+	 					,boxStyle: { 
+	 					                  opacity: 0.75
+	 					                  // ,minWidth: "50px"
+	 					                  ,width: "100px"
+	 					                  ,cursor: "pointer"
+	 					                  // ,width: "auto"
+	 					                 }
 	        };
 	
     var ib = new InfoBox(infoBoxOptions);
-	// console.log(ib);
+	var ib2 = new InfoBox(infoBoxOptionsTwo);
 	
-
+	var b = $($(markerMask).find(".poptarget")[0]);
+	
+	var l = $($(label).find(".twipsy-inner")[0]);
 	
 	
-
+	b.add(l).hover(
+		function(){
+			b.popover('show');
+			console.log('hovered');
+			// $(l).parent().fadeTo("fast", 0.2);
+		},
+		function(){
+			console.log('unhovered');
+			// b.popover('hide');
+			// $(l).parent().fadeTo("fast", 1);
+		}
+	); //end hover function for b and l
+	
+	
+	
+	google.maps.event.addListener(marker, 'click', function(event) {
+		alert('clicked! ' + title);
+	    });
+	    // }.bind(this));
+	
+	l.click(function(event){
+		alert('clicked! ' + title);
+	});
 	
 	this.add = function()
 	{
 		marker.setMap(map);
-		setTimeout(function() {
-			ib.open(map, marker);
-						
-			// $('.poptarget').popover({
-			// 	html: true,
-			// 	// live: true,
-			// 	fallback: 'FALLBACKz',
-			// });
-			// 
-			// $('.poptarget').twipsy({
-			// 	// live: true,
-			// 	// placement: 'right',
-			// 	fallback: 'FALLBACKz',
-			// 	trigger: 'manual'
-			// });
-			// 
-			// console.log($(boxText).find('.poptarget').get(0));
-			// 
-			// p=$(boxText).find('.poptarget').get(0);
-			// $(p).twipsy('show');
+
+		ib.open(map, marker);
+		ib2.open(map, marker);
+
+		$(b).popover({
+			html: true,
+			placement: 'above',
+			// live: true,
+			fallback: 'A Place',
+			animate: true,
+		});
+		
+		// r =$(b).twipsy('true');
+		// console.log('r');
+		// console.log(r);
+		
+		// $(b).twipsy({
+		// 	// live: true,
+		// 	// animate: false,
+		// 	placement: 'right',
+		// 	fallback: 'fallsszz',
+		// 	trigger: 'manual'
+		// });			
 			
-			
-		    },  200);	
 	} //end add
 	
 
+	
 
 } //end aPlace
