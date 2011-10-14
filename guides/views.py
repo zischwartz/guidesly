@@ -52,6 +52,11 @@ def GuideDetailView (request, slug):
 def CardInStack (request, gslug, slug):
 	requested_card = get_object_or_404(Card, guide__slug=gslug, slug=slug)
 	guide = get_object_or_404(Guide, slug=gslug)
+	
+	cr = CardResource()
+	card_bundle= cr.build_bundle(obj=requested_card, request=request)
+	requested_card_json= cr.serialize(request, cr.full_dehydrate(card_bundle), 'application/json') #with newer version, full dehyrate ur_bundle
+		
 	return render_to_response("enjoy/card_in_stack.html", locals(), context_instance=RequestContext(request))
 	
 
@@ -63,7 +68,6 @@ def SecretGuideView (request, private_url):
 	guide = get_object_or_404(Guide, private_url = private_url)
 	if guide.first_card:
 		return HttpResponseRedirect(reverse('SecretCardView', kwargs={'private_url': private_url, 'slug': guide.first_card.slug}))
-	
 	return render_to_response("enjoy/card_in_stack.html", locals(), context_instance=RequestContext(request))
 
 def SecretCardView (request, private_url, slug):
@@ -131,11 +135,11 @@ def BuildFloatingCard (request, gslug):
 def EditCard (request, gslug, id):
 	is_fluid =1
 	card = get_object_or_404(Card, guide__slug=gslug, id=id)
-	cr = CardResource()
 	if not card.is_floating_card:
 		prev_card = card.guide.get_prev_card(card)
 		next_card = card.guide.get_next_card(card)	
 
+	cr = CardResource()
 	card_bundle= cr.build_bundle(obj=card, request=request)
 	card_json= cr.serialize(request, cr.full_dehydrate(card_bundle), 'application/json') #with newer version, full dehyrate ur_bundle
 	# logger.info(card_json)

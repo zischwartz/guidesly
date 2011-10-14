@@ -8,6 +8,9 @@ from django.template.defaultfilters import slugify
 from autoslug import AutoSlugField
 from django.conf import settings
 
+from django.core import serializers
+
+
 import jsonfield 
 
 from fileupload.models import UserFile
@@ -276,9 +279,11 @@ class Card (models.Model):
 			return True
 		else:
 			return False
-			
+	
+	@property
 	def has_map(self):
-		count = len(self.inputelement_set.filter(type='map'))
+		count = len(self.inputelement_set.filter(type='place'))
+		
 		if count:
 			return True
 		else:
@@ -315,8 +320,10 @@ class Card (models.Model):
 					
 		if self.has_map:
 			return settings.STATIC_URL + 'img/map-thumb.png'
-			
+		else:
+			return None
 		return None
+
 		
 class CommentCard (Card):
 	parent_card = models.ForeignKey(Card, related_name="child_comment_card", blank=True, null=True)
@@ -340,6 +347,11 @@ class Action (models.Model):
 	def __unicode__(self):
 		return "action-goto: %s" % self.goto
 
+	def get_dest_slug(self):
+		if self.goto:
+			return self.goto.slug
+		else:
+			return None
 
 COND_TYPE = (
 	('==', '=='),
@@ -376,7 +388,7 @@ class MapPointElement (models.Model):
 class InputElement (models.Model):
 	card = models.ForeignKey(Card)
 	big = models.BooleanField(default=False)
-	button_text = models.CharField(max_length=250)
+	button_text = models.CharField(max_length=250, blank=True)
 	sub_title = models.CharField(max_length=250, blank=True, null=True)
 	type = models.CharField(blank=True,  max_length=8, choices = IELEMENT_TYPE)
 	default_action = models.OneToOneField(Action, blank=True, null=True)

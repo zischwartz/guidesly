@@ -14,6 +14,14 @@
 
 	<link rel="stylesheet" href="{{STATIC_URL}}css/base-enjoy.css" type="text/css" media="screen"  charset="utf-8">
 	
+	<script type="text/javascript" src="https://www.google.com/jsapi?key=ABQIAAAAC1MXyihyw4-SCshtFHEsUhQaX2oSJkwaYclP33v0pxwL2_vr2BRIodcW902hXtopW04R2Hx_9QHQGA"></script>
+	
+	<script type="text/javascript" src="{{STATIC_URL}}js-libs/bootstrap-twipsy.js"></script>
+	<script type="text/javascript" src="{{STATIC_URL}}js-libs/bootstrap-popover.js"></script>
+	
+	{# Imported w Getscript #}
+	{# // <script type="text/javascript" src="{{STATIC_URL}}js-libs/infobox_packed.js"></script> #}
+	
 	 <script src="{{STATIC_URL}}/js-libs/deck/modernizr.custom.js"></script>
 	
 	{# Video JS #}
@@ -22,9 +30,11 @@
     
 	
 	<script>
+	STATIC_URL = "{{STATIC_URL}}";
 	var current_media_type;
 	var guide_title = "{{guide.title}}";
 	var current_card_slug;
+	var requested_card_json= '{{requested_card_json|safe|escapejs}}' ;
 	</script>
 
 {# /*	<style>{{card.guide.theme.text}}</style>*/ #}
@@ -45,29 +55,28 @@
 {%endblock%}
 
 
-{% block content %} 
-{%load markup%}
+{% block content %} {%load markup%}
 
 <body>
 
 <header id="header">
-<a href="/">Guides.ly</a>
-{# <div class="small">Controls<br> Contents <br> Comments</div> #}
-{%if guide.owner == user%}
-<div id="editCard"> <a href="">Edit Card</a></div>
-{%endif%}
-<div class="small">Contents</div>
-	<div class="toc">	
-		{%for card in guide.cards.all %}
-		 	<a href="{{card.get_absolute_url}}" data-destination="{{card.slug}}" class="goto" >
-			{{card}}
-			</a><br>
-		{%endfor%}
-	</div> {# /.toc #}
+	<a href="/">Guides.ly</a>
+	{# <div class="small">Controls<br> Contents <br> Comments</div> #}
+	{%if guide.owner == user%}
+	<div id="editCard"> <a href="">Edit Card</a></div>
+	{%endif%}
+	<div class="small">Contents</div>
+		<div class="toc">	
+			{%for card in guide.cards.all %}
+			 	<a href="{{card.get_absolute_url}}" data-destination="{{card.slug}}" class="goto" >
+				{{card}}
+				</a><br>
+			{%endfor%}
+		</div> {# /.toc #}
 	
-	<div class="mute">
-		<label for="mute">Mute Media?</label><input type="checkbox" id="mute">
-	</div>
+		<div class="mute">
+			<label for="mute">Mute Media?</label><input type="checkbox" id="mute">
+		</div>
 	
 </header>
 
@@ -75,14 +84,15 @@
 <article class="deck-container">
 
 {%for card in guide.cards.all %}
-			
+
 			{# This uglyness gives cards classes relating to whats inside them #}
 
-	<div data-title="{%firstof card.title card.card_number%}" data-slug="{{card.slug}}" class="card {%if card.is_floating_card and guide.is_linear %} is_floating_card {%endif %} {%if not card.title%} notitle {%endif%}  {%if card.primary_media%} hasprimarymedia{%endif%} {%if not card.primary_media%} noprimarymedia{%endif%} {%if not card.text%} notext {%endif%} {%if card.input_elements%} hasinputs{%endif%} {%if not card.is_floating_card%} hasprevandnext {%endif%} {%if card.primary_is_bg %} primary_is_bg {%endif%} {%if card.has_thumbs%}hasthumbs {%endif%} {%if card == requested_card %} the_requested_card {% endif %}  "
+	<div data-title="{%firstof card.title card.card_number%}" data-pk="{{card.id}}" data-slug="{{card.slug}}" class="card {%if card.is_floating_card and guide.is_linear %} is_floating_card {%endif %} {%if not card.title%} notitle {%endif%}  {%if card.primary_media%} hasprimarymedia{%endif%} {%if not card.primary_media%} noprimarymedia{%endif%} {%if not card.text%} notext {%endif%} {%if card.input_elements%} hasinputs{%endif%} {%if not card.is_floating_card%} hasprevandnext {%endif%} {%if card.primary_is_bg %} primary_is_bg {%endif%} {%if card.has_thumbs%}hasthumbs {%endif%} {%if card == requested_card %} the_requested_card {% endif %} {%if card.has_map%} hasmap {%endif%} "
 			id = "{%firstof card.slug card.card_number card.id %}" {%if card.primary_is_bg%}style="background: url( '{% firstof card.primary_media.external_file card.primary_media.file.image.display_image.url %}' ) center center no-repeat; background-size: cover" {%endif%}
 			{%if card.autoplay%} data-autoplay="1"{%endif%}>
 
 			<div class="loader">Loading<br><img src="{{STATIC_URL}}/img/ajax-loader.gif"></div>					
+			
 			
 			{# TITLE of CARD  #}
 			{%if card.title%}
@@ -142,6 +152,14 @@
 			</div>
 			{%endif%}
 
+			{%if card.has_map%} 
+			<div class="map_canvas"></div>
+			
+			 This card has a map.
+			{%endif%}
+			
+			
+
 			<div class="input_wrapper">	
 				{%for el in card.inputelement_set.all%}
 					
@@ -152,16 +170,24 @@
 					{%endif%}
 					
 					{%if el.type = 'timer'%}
-					<div class="input_element nonlinear timer" data-minutes="{{el.minutes}}" data-seconds="{{el.seconds}}" data-autostart="{{el.auto_start}}" data-ding_when_done="{{el.ding_when_done}}">
+					<div class="input_element nonlinear timer" data-minutes="{{el.minutes}}" data-seconds="{{el.seconds}}" data-auto_start="{{el.auto_start}}" data-ding_when_done="{{el.ding_when_done}}" data-destination="{{el.default_action.goto.slug}}" data-execute_action_when_done="{{el.execute_action_when_done}}">
 						<a data-destination="{{el.default_action.goto.slug}}" href='{{el.default_action.goto.get_absolute_url}}'>{{el.button_text}}</a>
 						<div class="time_wrap"><img src="{{STATIC_URL}}img/timer-icon.png"> <span class="time"></span> <div class="timebar"></div></div>
 					</div>
 					{%endif%}
 					
-					
+
+					{# {%if el.type = 'place'%} #}
+					{# 		<div class="input_element nonlinear button">P #}
+					{# 			<a data-destination="{{el.default_action.goto.slug}}" class='goto' href='{{el.default_action.goto.get_absolute_url}}'>{{el.button_text}}</a> #}
+					{# 		</div> #}
+					{# 	{%endif%} #}
+
 					
 				{%endfor%}		
 			</div>
+			
+			
 		
 			{%if not card.is_floating_card%}
 			<div class="prev_and_next">

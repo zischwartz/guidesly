@@ -671,15 +671,16 @@ function anInput (data) {
 						                 }
 		        };
 		
-		
-		$(boxText).click(function(){
-			VM.InputVM(that);
-			VM.showInputModal();
-		});
-		
 	    var ib = new InfoBox(infoBoxOptions);
 		ib.open(map, marker);
 	    
+	
+		//theres a bug here, this isn't called when the text changes. maybe make this binding live
+		$(boxText).click(function(){
+			console.log('infoboxclicked');
+			VM.InputVM(that);
+			VM.showInputModal();
+		});
 		
 		// google.maps.event.addListener(marker, 'mouseover', function() {
 		//     ib.open(map, marker);
@@ -712,6 +713,7 @@ function anInput (data) {
 		
 		this.delete_marker = function(){
 			marker.setMap(null);
+			ib.close();
 		};
 		
 		this.stop_bouncing = function(){
@@ -752,7 +754,7 @@ function anInput (data) {
 
 		} //end if timer
 	
-	else  //if it's not a timer, this is the dO for completeness
+	else  //if it's not a timer or map, this is the dO for completeness
 	{	this.complete = ko.dependentObservable(function() {
 			if (this.button_text() && this.default_action.goto())
 				return true;
@@ -958,7 +960,10 @@ function delete_this_element(element)
 		VM.inputelements.remove(element);
 		
 	if (element.type()=='place')
+	{
 		element.delete_marker();
+		
+	}
 }
 
 

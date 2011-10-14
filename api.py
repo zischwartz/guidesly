@@ -47,6 +47,8 @@ class CardResource(ModelResource):
 		filtering = {
 		"slug": ('exact'),
 		}
+		
+	
 	# def hydrate_mediaelements(self, bundle):	
 	# 	emptylist = []
 	# 	# the below was totally unncessary, but a nice idea.
@@ -120,6 +122,10 @@ class ActionResource(ModelResource):
 		queryset= Action.objects.all()
 		authorization = Authorization()
 		include_resource_uri =False #having this false was screwing things up
+		
+	def dehydrate(self, bundle):
+		bundle.data['dest_slug'] = bundle.obj.get_dest_slug()
+		return bundle
 
 
 class InputElementResource(ModelResource):
@@ -128,6 +134,8 @@ class InputElementResource(ModelResource):
 	class Meta:
 		queryset= InputElement.objects.all()
 		authorization = Authorization()
+		filtering= {"type": ('exact'), "card": ('exact')}
+		
 		
 class MapPointElementResource(ModelResource):
 	default_action= fields.ToOneField(ActionResource, 'default_action', null=True, full=True)  

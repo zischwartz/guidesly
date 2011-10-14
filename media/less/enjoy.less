@@ -201,6 +201,17 @@ h1.card_title
 		margin-top: 1em;
 		font-size: @titleSize + 1;
 	}
+	
+	&.hasmap
+	{
+		h1.card_title 
+		{
+			margin-top: .5em;
+			font-size: @titleSize;
+		}
+	}
+	
+	
 }
 
 .card.hasthumbs
@@ -281,6 +292,24 @@ h1.card_title
 	
 }
 
+.map_canvas
+{
+	width: 95%;
+	height: 80%;
+/*	height: 500px;*/
+	margin: 0 auto !important;
+	display: block;
+}
+
+
+.poptarget
+{
+	background-color: black;
+	height: 35px;
+	width: 40px;
+	display: block;
+	opacity: 0;
+}
 
 
 /*DECK CSS TAKEN FROM CORE.CSS*/

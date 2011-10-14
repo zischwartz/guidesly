@@ -199,7 +199,7 @@ INSTALLED_APPS = (
 	'registration',
 	'thef',
     'tastypie',
-    # 'south',
+    'south',
     'compress',
     'tagging_autocomplete',
 

@@ -58,6 +58,8 @@ $(document).ready(function(){
 		$.doTimeout(300, function(){inital_card.find(".video-js").player().play();});
 	
 	setupTimers(inital_card);
+	if (inital_card.hasClass('hasmap'))
+		setupMap(inital_card)
 	
 	$("#header").hover(
 		function(){
@@ -113,6 +115,9 @@ $(document).ready(function(){
 		$("#editCard a").attr('href', edit_url);
 
 		setupTimers(card);
+		if (card.hasClass('hasmap'))
+			setupMap(card)
+		
 
 	});
 
@@ -183,35 +188,49 @@ window.addEventListener('MozMousePixelScroll', function(evt){
 }, false);
 
 
+
 function setupTimers(card){
 	card.find(".timer").each(function(index) {
-
-		// console.log(($(this).data("autostart")));
+		timer= $(this);	
+		$(timer).find(".timebar").width('100%');
 		
-		
-		if ($(this).data("autostart") == 'False')
+		if (timer.data("auto_start") == 'False')
 			{
 				console.log('not auto starting, you gota click');
-				$(this).click(function(event){
-					console.log(this);
-					activateTimer(this);
+				timer.click(function(event){
+					// console.log(this);
+					activateTimer(timer);
 					event.preventDefault();
 					return false;
 				});
 				
-			}
-		else if ($(this).data("autostart") == true)
-			activateTimer($(this));
+				var seconds = timer.data("seconds") + timer.data("minutes")*60 ;
+				timer.find('.time').html(timerFormat(seconds));
+			} //autostart false
+			
+		else if (timer.data("auto_start") == 'True')
+			activateTimer(timer);
 	})	
 } //end setup timer
 
 function activateTimer(timer)
 {
+	if (timer.hasClass("active"))
+		return false;
+	else
+		timer.addClass("active");
+		
 	console.log('timer active!');
 	var seconds = $(timer).data("seconds") + $(timer).data("minutes")*60 ;
 	var timebar = $(timer).find(".timebar");
-	
 	var seconds_passed=0;
+		
+	timer.unbind('click');
+	timer.click(function(event){
+		event.preventDefault();
+		console.log('clickckckc');
+		return false;
+	});
 	
 	$(timer).doTimeout(1000, function(){
 		seconds_passed+=1;		
@@ -219,10 +238,26 @@ function activateTimer(timer)
 		this.find('.time').html(timerFormat(seconds-seconds_passed));
 		if (seconds_passed >= seconds)
 			{
+				timer.unbind('click');
+				timer.removeClass("active");
+				
 				// do stuff and then
 				if (this.data("ding_when_done")=='True')
-					alert('Timer Complete!');
+					alert('Time is up!');
 				
+				destination = this.data('destination');
+				execute_action_when_done = (this.data('execute_action_when_done') == 'True') ;
+				// console.log(execute_action_when_done);
+				
+				if (destination && execute_action_when_done)
+				{
+					console.log('going to:');
+					console.log(destination);
+					index= $(".card").index( document.getElementById(destination));
+					$.deck('go', index);
+					return false;
+				}
+					
 				return false;
 			}
 		else
@@ -260,16 +295,176 @@ function timerFormat(total_seconds)
 	
 	minutes = total_seconds/60;
 	
-    var timestring =''; 
+    var timestring ='-'; 
     if (minutes <10)
-        timestring= '0' + minutes;
+        timestring+= '0' + minutes;
     else
-        timestring= minutes;
+        timestring+= minutes;
     timestring+= ':'
     if (seconds <10)
         timestring+= '0' + seconds;
     else
         timestring+= seconds;
     return timestring;
-      
 }
+
+
+function setupMap(card)
+{
+	var map;
+	var placeArray = [];
+	requested_card=jQuery.parseJSON(requested_card_json);
+
+	var places = requested_card.inputelements.filter(function(element){ if (element.type=='place') return element;})
+	 
+	var map_canvas= card.find(".map_canvas")[0]
+	
+	// $('.poptarget').popover({
+	// 	html: true,
+	// 	// live: true,
+	// 	fallback: 'FALLBACKz',
+	// });
+	
+	// $('.poptarget').twipsy({
+	// 	// live: true,
+	// 	// placement: 'right',
+	// 	fallback: 'FALLBACKz',
+	// 	// trigger: 'manual'
+	// });
+	
+	
+	if (current_card_slug == requested_card.slug)
+	{	
+		//yo dawg, I heard you like callbacks.
+		google.load("maps", "3", {'other_params':"sensor=false", callback: function(){
+			$.getScript(STATIC_URL+ 'js-libs/infobox_packed.js', function(data, textStatus)
+			{
+				var first = new google.maps.LatLng(places[0]['lat'], places[0]['long']);
+				var all_markers_bounds = new google.maps.LatLngBounds();
+
+
+				var mapOptions = {
+					zoom: 12,
+					center: first,
+					mapTypeId: google.maps.MapTypeId.ROADMAP,
+					streetViewControl: false,
+					zoomControl: true,
+					zoomControlOptions: {
+					style: google.maps.ZoomControlStyle.SMALL},
+					scrollwheel: false, // ?
+				};
+
+			  	map =  new google.maps.Map(map_canvas, mapOptions);
+
+				$.each(places, function(index, value){
+					placeArray.push(new aPlace(this, map, all_markers_bounds));
+				});
+
+				map.fitBounds(all_markers_bounds);
+
+				google.maps.event.addListener(map, 'tilesloaded', function(){ 
+				       // alert('hi'); 
+					$.each(placeArray, function(index, value){
+						setTimeout(function() {
+						      placeArray[index].add();
+						    }, index * 300 + 200);
+					});//end each	
+
+					
+				});//end tilesloaded
+
+			}); // end getscript for infobox		
+		 	
+			
+		}}); //end google load callback
+		
+		
+	}//end if current card
+	
+	// http://127.0.0.1:8000/api/v1/inputelement/?format=json&card=14&type=place
+
+}
+
+function aPlace (data, map, all_markers_bounds)
+{
+	
+	var marker = new google.maps.Marker({
+	        position: new google.maps.LatLng(data.lat, data.long),
+	        title: data.button_text || 'A Place',
+	        // map: map,
+			animation: google.maps.Animation.DROP,
+	    });
+	
+	all_markers_bounds.extend(marker.position);
+	
+	google.maps.event.addListener(marker, 'click', function() {
+		alert('clicked! ' + marker.title);
+	    });
+	    // }.bind(this));
+	
+	
+	 var boxText = document.createElement("div");	
+
+	 boxText.innerHTML = "<div class='poptarget' title=" + marker.title + " data-content=" + 'Lorem ipsum' + "> -- </div>";
+	
+	 var infoBoxOptions = {
+	                 content: boxText
+	                ,disableAutoPan: false
+	                // ,maxWidth: "250px"
+					// ,alignBottom: true
+					,boxClass: 'ib'
+					// ,boxClass: 'twipsy fade right in'
+	                ,pixelOffset: new google.maps.Size(-20, -35)
+	                // ,pixelOffset: new google.maps.Size(10, -30) 
+	                // ,pixelOffset: new google.maps.Size(0,0) 
+	                ,closeBoxURL: ""
+	                // ,infoBoxClearance: new google.maps.Size(1, 1)
+	                ,pane: "floatPane"
+	                ,enableEventPropagation: false
+					,boxStyle: { 
+					                  opacity: 0.75
+					                  // ,minWidth: "50px"
+					                  // ,width: "100px"
+					                  // ,width: "auto"
+					                 }
+	        };
+	
+    var ib = new InfoBox(infoBoxOptions);
+	// console.log(ib);
+	
+
+	
+	
+
+	
+	this.add = function()
+	{
+		marker.setMap(map);
+		setTimeout(function() {
+			ib.open(map, marker);
+						
+			// $('.poptarget').popover({
+			// 	html: true,
+			// 	// live: true,
+			// 	fallback: 'FALLBACKz',
+			// });
+			// 
+			// $('.poptarget').twipsy({
+			// 	// live: true,
+			// 	// placement: 'right',
+			// 	fallback: 'FALLBACKz',
+			// 	trigger: 'manual'
+			// });
+			// 
+			// console.log($(boxText).find('.poptarget').get(0));
+			// 
+			// p=$(boxText).find('.poptarget').get(0);
+			// $(p).twipsy('show');
+			
+			
+		    },  200);	
+	} //end add
+	
+
+
+} //end aPlace

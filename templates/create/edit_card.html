@@ -157,15 +157,22 @@
 					<button class="btn primary" data-bind="
 					 click:function(){ addingPointByHand() ? addingPointByHand(0): addingPointByHand(1)},
 					 css: {crazy: addingPointByHand()},
-					 text: addingPointByHand() ? 'Click the map to add a place. Click here to cancel' : 'Add by hand'">Add by hand</button>
+					 text: addingPointByHand() ? 'Click the map to add a place. Click here to cancel' : 'Add place by hand'">Add by hand</button>
+
+					<button class="btn info" data-bind="
+					click: toggleDraggable, 
+					visible: VM.justPlaces().length,
+					css: {crazy: draggable()},
+					text:draggable() ? 'Click and drag places on the map to move them around. Click here to stop.' : 'Adjust places by hand'"> Adjust places by hand</button>
 					
 					<p>or use an address</p>
 					<input type="text" placeholder="Address" id="address" class="span4"> 
-					{# <input type="text" id="region" class="span2" data-bind="visible:userRegion, value:userRegion">  #}
-					<button class="btn primary" data-bind="click: addAddress">Add address</button>
+					
+
+					<button class="btn" data-bind="click: addAddress">Go to address</button>
+					<button class="btn primary" data-bind="click: addAddress">Add address as place</button>
 
 					<button class="btn info" data-bind="click: showAllMarkers"> Zoom to show all places</button>
-					<button class="btn info" data-bind="click: toggleDraggable , css: {crazy: draggable()}"> Adjust places</button>
 					
 					
 				  	{# <div class="input_wrapper" data-bind="template:{name: VM.inputTypeTemplate,  foreach: VM.justPlaces, #}
