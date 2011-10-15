@@ -23,10 +23,10 @@ sys.path.insert(0, join(SITE_ROOT, "apps"))
 DATABASES = {
     'default': {
         'ENGINE': 'mysql',
-        'NAME': 'guidesly2',
-        'HOST': 'guidesly2.cbwmwyqhy9ab.us-east-1.rds.amazonaws.com',
+        'NAME': 'guidesly3',
+        'HOST': 'guidesly3.cbwmwyqhy9ab.us-east-1.rds.amazonaws.com',
         'PORT': '3306',
-        'USER': 'guidesly2',
+        'USER': 'guidesly3',
         'PASSWORD': 'nem0nemo'
     }
 }
