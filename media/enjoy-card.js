@@ -47,7 +47,7 @@ $(document).ready(function(){
 	
 	//set the TOC up with the current card, and the video player
 	inital_card = $.deck('getSlide');
-	current_card_slug = initialState.data.slug;
+	current_card_slug = initialSlug; //initialState.data.slug;
 	
 	//if owner, set edit url for first card
 	edit_url= inital_card.find(".edit_card_link").attr('href');
@@ -117,8 +117,6 @@ $(document).ready(function(){
 		setupTimers(card);
 		if (card.hasClass('hasmap'))
 			setupMap(card)
-		
-
 	});
 
 // Bind prev and next buttons to move the deck	
@@ -178,7 +176,15 @@ $(document).ready(function(){
 		}//end if thumb_media_type is 'image'
 	}); //end thumbsnail code live
 
+
+
 }); //end docreadyyyyyyyyyyyyyyyyyyyyyy
+
+
+
+
+
+
 
 //Fix for weird firefox horizontal scroll issue
 window.addEventListener('MozMousePixelScroll', function(evt){
@@ -186,7 +192,6 @@ window.addEventListener('MozMousePixelScroll', function(evt){
         evt.preventDefault();
     }
 }, false);
-
 
 
 function setupTimers(card){
@@ -316,23 +321,10 @@ function setupMap(card)
 	requested_card=jQuery.parseJSON(requested_card_json);
 
 	var places = requested_card.inputelements.filter(function(element){ if (element.type=='place') return element;})
-	 
-	var map_canvas= card.find(".map_canvas")[0]
-	
-	// $('.poptarget').popover({
-	// 	html: true,
-	// 	// live: true,
-	// 	fallback: 'FALLBACKz',
-	// });
-	
-	// $('.poptarget').twipsy({
-	// 	// live: true,
-	// 	// placement: 'right',
-	// 	fallback: 'FALLBACKz',
-	// 	// trigger: 'manual'
-	// });
-	
-	
+
+	 // We need the actual html element, without the jquery wrapper. Hence the [0]. Silly, but neccessary. 
+	var map_canvas= card.find(".map_canvas")[0];
+		
 	if (current_card_slug == requested_card.slug)
 	{	
 		//yo dawg, I heard you like callbacks.
@@ -344,6 +336,7 @@ function setupMap(card)
 
 				var mapOptions = {
 					zoom: 12,
+					maxZoom: 19,
 					center: first,
 					mapTypeId: google.maps.MapTypeId.ROADMAP,
 					streetViewControl: false,
@@ -354,12 +347,18 @@ function setupMap(card)
 				};
 
 			  	map =  new google.maps.Map(map_canvas, mapOptions);
-
+				
 				$.each(places, function(index, value){
 					placeArray.push(new aPlace(this, map, all_markers_bounds));
 				});
+				
 				map.fitBounds(all_markers_bounds);
 				
+				zoom_reset = $("<button class='btn' class='show_all_btn'>Show all / Reset Zoom</button>")
+				map_controls = card.find('.map_controls');
+				map_controls.append(zoom_reset).click(function(){
+					map.fitBounds(all_markers_bounds);
+				});
 
 				google.maps.event.addListener(map, 'tilesloaded', function(){ 
 					if ($(map_canvas).hasClass('loaded'))
@@ -371,17 +370,10 @@ function setupMap(card)
 						    });
 					});//end each				
 						
-					$('.popover').live('mouseleave', function(event){
-						$(this).fadeOut();
-					});
-					
-					// 
 					$(map_canvas).addClass('loaded');
 					
 				});//end tilesloaded
-			}); // end getscript for infobox		
-		 	
-			
+			}); // end getscript for infobox				
 		}}); //end google load callback
 		
 		
@@ -391,9 +383,16 @@ function setupMap(card)
 
 }
 
+
+
 function aPlace (data, map, all_markers_bounds)
 {
-	title = data.button_text || 'A Place';
+	this.title = data.button_text || 'A Place';
+	this.default_action = data.default_action || null;
+	this.sub_title = data.sub_title || '';
+	this.manual_addy = data.manual_addy || '';
+	
+	var that = this;
 	
 	var marker = new google.maps.Marker({
 	        position: new google.maps.LatLng(data.lat, data.long),
@@ -404,27 +403,23 @@ function aPlace (data, map, all_markers_bounds)
 	
 	all_markers_bounds.extend(marker.position);
 	
-	
-	 var markerMask = document.createElement("div");	
 	 var label = document.createElement("div");
 	 var popoverlabel = document.createElement("div");
+	 label.innerHTML = "<div class='twipsy-arrow'></div><div class='twipsy-inner'>"+ this.title +"</div>";
+	 popoverlabel.innerHTML = "<div class='arrow'></div><div class='inner'><h3 class='title'>" + this.title+ "</h3>	<div class='content'><i>"+this.sub_title  +"</i><p> "+ this.manual_addy + "<p></div></div>";
 
-	//need to put quotes around title
-	 markerMask.innerHTML = "<div class='poptarget' data-original-title='" + title + "' data-content='" + 'Lorem Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. ipsum' + "'> -- </div>";
-	 label.innerHTML = "<div class='twipsy-arrow'></div><div class='twipsy-inner'>"+ title +"</div>";
-	 label.popoverlabel = "<div class='twipsy-arrow'></div><div class='twipsy-inner'>"+ title +"</div>";
-	
-	
-	
+
 	 var infoBoxOptions = {
-	                 content: markerMask
+	                 content: popoverlabel
 	                ,disableAutoPan: true
-					,boxClass: 'ib'
-	                ,pixelOffset: new google.maps.Size(-20, -35)
+					,boxClass: 'popover above'
+					,alignBottom: true
+	                ,pixelOffset: new google.maps.Size(-153, -35)
 	                ,closeBoxURL: ""
 	                ,pane: "floatPane"
-	                ,enableEventPropagation: true
-					,boxStyle: {  opacity: 0 } //.75    }
+	                ,enableEventPropagation: false
+					,zIndex: 1030
+					,boxStyle: {  display: 'block', top: 'none', left: 'none', cursor: "pointer" } //, opacity: 1, width: '1px', height: 'auto', minHeight: '100px'   }
 	        };
 	
 	 var infoBoxOptionsTwo = {
@@ -432,83 +427,68 @@ function aPlace (data, map, all_markers_bounds)
 	                ,disableAutoPan: true
 	 				,boxClass: 'twipsy above'
 					,alignBottom: true
-	                // ,pixelOffset: new google.maps.Size(15, -40)
 	                ,pixelOffset: new google.maps.Size(-55, -35) 
 	                ,closeBoxURL: ""
-	                // ,infoBoxClearance: new google.maps.Size(1, 1)
 	                ,pane: "floatPane"
-	                ,enableEventPropagation: true
-	 					,boxStyle: { 
-	 					                  opacity: 0.75
-	 					                  // ,minWidth: "50px"
-	 					                  ,width: "100px"
-	 					                  ,cursor: "pointer"
-	 					                  // ,width: "auto"
-	 					                 }
+					,zIndex: 1000
+	                ,enableEventPropagation: false
+	 				,boxStyle: {  opacity: 0.75 , width: "100px" , cursor: "pointer" }
 	        };
-	
-    var ib = new InfoBox(infoBoxOptions);
-	var ib2 = new InfoBox(infoBoxOptionsTwo);
-	
-	var b = $($(markerMask).find(".poptarget")[0]);
-	
-	var l = $($(label).find(".twipsy-inner")[0]);
-	
-	
-	b.add(l).hover(
-		function(){
-			b.popover('show');
-			console.log('hovered');
-			// $(l).parent().fadeTo("fast", 0.2);
-		},
-		function(){
-			console.log('unhovered');
-			// b.popover('hide');
-			// $(l).parent().fadeTo("fast", 1);
-		}
-	); //end hover function for b and l
-	
-	
+
+    var ibPopover = new InfoBox(infoBoxOptions); //popover
+	var ibLabel = new InfoBox(infoBoxOptionsTwo); //label
+
 	
 	google.maps.event.addListener(marker, 'click', function(event) {
-		alert('clicked! ' + title);
-	    });
-	    // }.bind(this));
-	
-	l.click(function(event){
-		alert('clicked! ' + title);
+		that.doAction();
+	    });   // }.bind(this));
+
+	$(popoverlabel).bind('click', function(){
+		that.doAction();
 	});
+		
+	google.maps.event.addListener(marker, 'mouseover', function(event) {
+		ibLabel.close(map, marker);
+		ibPopover.open(map, marker);
+	    });   
+	
+	google.maps.event.addListener(marker, 'mouseout', function(event) {
+		ibPopover.close(map, marker);
+		ibLabel.open(map, marker);
+	    });
+	
+	$(label).bind('mouseenter', function(){
+		ibPopover.open(map, marker);
+		ibLabel.close(map, marker);
+		// $(popoverlabel).fadeTo("fast", 1);
+	});	
+	
+	$(popoverlabel).bind('mouseleave', function(){
+		// $(popoverlabel).fadeTo("fast", 0);
+		ibLabel.open(map, marker);
+		ibPopover.close(map, marker);
+	});
+	
 	
 	this.add = function()
 	{
 		marker.setMap(map);
-
-		ib.open(map, marker);
-		ib2.open(map, marker);
-
-		$(b).popover({
-			html: true,
-			placement: 'above',
-			// live: true,
-			fallback: 'A Place',
-			animate: true,
-		});
-		
-		// r =$(b).twipsy('true');
-		// console.log('r');
-		// console.log(r);
-		
-		// $(b).twipsy({
-		// 	// live: true,
-		// 	// animate: false,
-		// 	placement: 'right',
-		// 	fallback: 'fallsszz',
-		// 	trigger: 'manual'
-		// });			
-			
+		ibLabel.open(map, marker);					
+	} //end add
+	
+	this.doAction = function()
+	{
+		console.log('action!')
+		console.log(this.default_action)
+		if (this.default_action)
+		{
+			destination= this.default_action.dest_slug;
+			index= $(".card").index( document.getElementById(destination));
+			// console.log(index);
+			$.deck('go', index);
+		}
 	} //end add
 	
 
-	
-
 } //end aPlace
+

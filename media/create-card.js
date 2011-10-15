@@ -353,6 +353,8 @@ $.each(VM.inputelements(), function (index, element) {
 	
 	
 	VM.addingPointByHand= ko.observable(); 
+	VM.address= ko.observable(); 
+	VM.mapError= ko.observable(); 
 
 	VM.showInputModal = function()
 	{	
@@ -604,6 +606,8 @@ $.each(VM.inputelements(), function (index, element) {
 
 function anInput (data) {
 	
+	console.log('data');
+	console.log(data);
 	var default_action = new Object();
 	// default_action.goto = ko.observable(data.default_action.goto || '');
 	if (typeof data.default_action !='undefined')
@@ -619,6 +623,7 @@ function anInput (data) {
     this.type = ko.observable(data.type || '');
     this.card = ko.observable(initial_card_object.resource_uri);
     this.button_text= ko.observable(data.button_text || '');
+    this.sub_title= ko.observable(data.sub_title || '');
     this.resource_uri=ko.observable(data.resource_uri || '');
 
 	this.default_action= default_action ;
@@ -632,7 +637,7 @@ function anInput (data) {
 			initialize_map();
 
 		this.lat= ko.observable(data.lat);  //these really should never be blank
-		this.long= ko.observable(data.long);
+		this['long']= ko.observable(data['long']);
 		this.manual_addy =ko.observable(data.manual_addy || '');
 	  
 		var marker = new google.maps.Marker({
@@ -655,10 +660,10 @@ function anInput (data) {
 		                 content: boxText
 		                ,disableAutoPan: false
 		                // ,maxWidth: "250px"
-						// ,alignBottom: true
-						,boxClass: 'twipsy fade below in'
+						,alignBottom: true
+						,boxClass: 'twipsy fade above in'
 		                // ,pixelOffset: new google.maps.Size(15, -40)
-		                ,pixelOffset: new google.maps.Size(-55, 2) 
+		                ,pixelOffset: new google.maps.Size(-55, -35) 
 		                ,closeBoxURL: ""
 		                // ,infoBoxClearance: new google.maps.Size(1, 1)
 		                ,pane: "floatPane"
@@ -682,17 +687,10 @@ function anInput (data) {
 			VM.showInputModal();
 		});
 		
-		// google.maps.event.addListener(marker, 'mouseover', function() {
-		//     ib.open(map, marker);
-		//     }.bind(this));
-		// 	
-		// 	
-		// google.maps.event.addListener(marker, 'mouseout', function() {
-		//     ib.close(map, marker);
-		//     }.bind(this));
-		
 		this.button_text.subscribe(function(newValue) {
-				ib.setContent("<div class='twipsy-arrow'></div><div class='twipsy-inner'>"+ that.button_text() +"</div>");
+			boxText.innerHTML = "<div class='twipsy-arrow'></div><div class='twipsy-inner'>"+ that.button_text()  +"</div>";
+		 
+				// ib.setContent("<div class='twipsy-arrow'></div><div class='twipsy-inner'>"+ that.button_text() +"</div>");
 			});
 		
 		google.maps.event.addListener(marker, 'click', function() {

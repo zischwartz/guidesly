@@ -151,15 +151,15 @@
 			
 			{# It's a Button!  #}
 			<div class="button_properties" data-bind="visible: VM.InputVM().type()=='button' ">
-				<label for="adder_button_text">Button Title: </label>
-				<input class="tinput" type="text" name="" placeholder="Do Something" id="adder_button_text" data-bind="value:VM.InputVM().button_text,  valueUpdate: 'afterkeydown'"><br>
+				<label for="adder_button_text">Button Title : </label>
+				<input class="span6" type="text" placeholder="Do Something" id="adder_button_text" data-bind="value:VM.InputVM().button_text,  valueUpdate: 'afterkeydown'"><br>
  			</div>
 			
 			{# It's a Timer!  #}
 			<div class="timer_properties " data-bind="visible: VM.InputVM().type()=='timer' ">	
 				{# <div class="alert-message error"><p><strong>Not Yet! </strong> Sorry, we haven't implemented this feature yet.</p></div> #}
 				
-				<label for="adder_timer_text"> Timer Title: </label>	<input id="adder_timer_text" class="span5" type="text" data-bind="value:VM.InputVM().button_text, valueUpdate: 'afterkeydown'" placeholder=" Start cooking the asparagus!"><br>
+				<label for="adder_timer_text"> Timer Title : </label>	<input id="adder_timer_text" class="span6" type="text" data-bind="value:VM.InputVM().button_text, valueUpdate: 'afterkeydown'" placeholder=" Start cooking the asparagus!"><br>
 				
 				<div class="input cf">
 				              <div class="inline-inputs">
@@ -177,10 +177,14 @@
 				            </div>
 			</div> {# end timer properties #}
 			
-			{# It's a map! #}
+			{# It's a Place! #}
 			<div class="map_properties" data-bind="visible: VM.InputVM().type()=='place'">
-				<label for="adder_button_text">Place Title: </label>
-				<input class="tinput" type="text" name="" placeholder="My favorite place" id="adder_button_text" data-bind="value:VM.InputVM().button_text,  valueUpdate: 'afterkeydown'"><br>
+				<label for="adder_button_text">Place Title : </label>
+				<input class="span6" type="text" name="" placeholder="My favorite place" id="adder_button_text" data-bind="value:VM.InputVM().button_text,  valueUpdate: 'afterkeydown'"><br>
+				<label for="adder_button_subtitle">Subtitle : </label>
+				<input class="span6" type="text" id="adder_button_subtitle" placeholder="World's best ice cream. Ask for Mike. Optional." data-bind="value:VM.InputVM().sub_title,  valueUpdate: 'afterkeydown'"><br>
+				<label for="adder_button_manual_addy">Address: </label>
+				<input class="span6" type="text" id="adder_button_manual_addy" placeholder="Optional. Doesn't effect where your place actually is." data-bind="value:VM.InputVM().manual_addy,  valueUpdate: 'afterkeydown'"><br>
 				
 				
 				{# <form data-bind="submit:addMap2Card"> #}

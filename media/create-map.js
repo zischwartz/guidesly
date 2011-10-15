@@ -70,7 +70,6 @@ function initialize_map() {
 
 }
 
-
 function showAllMarkers()
 {
 	map.fitBounds(all_markers_bounds);
@@ -100,44 +99,66 @@ function toggleDraggable()
 }
 
 
-function addMarker(location) {
-	// var infowindow = new google.maps.InfoWindow({
-	//     content: 'Hello this is some content'
-	// });
-	// 
-	//   mappoint = new google.maps.Marker({
-	//     position: location,
-	//     map: map,
-	//     animation: google.maps.Animation.DROP,
-	// title:"Hello World!"
-	//   });
- // console.log(location);
-
- var newMapPoint = new anInput({"type":'place', 'lat': location.Ma, 'long': location.Na });
- addInputHelper(newMapPoint);
+function addMarker(location, address) {
+	if (address)
+ 	{
+		var newMapPoint = new anInput({"type":'place', 'lat': location.Ma, 'long': location.Na, 'manual_addy': address});
+	 	addInputHelper(newMapPoint);
+	}
+	else
+	{
+		var newMapPoint = new anInput({"type":'place', 'lat': location.Ma, 'long': location.Na, });
+	 	addInputHelper(newMapPoint);
+	}
 
 }
 
 
 
 function addAddress() {
-    var address = document.getElementById("address").value;
+	var address= VM.address();
+	lookupAddress(function(results){
+		map.setCenter(results[0].geometry.location);
+		map.setZoom(15);
+		addMarker(results[0].geometry.location, address);
+	});
 
+}	
+
+
+function goToAddress()
+{
+	lookupAddress(function(results){
+		map.setCenter(results[0].geometry.location);
+	});
+}
+
+function lookupAddress(callback) {
+	//first check in the user's area
+	var address= VM.address();
     geocoder.geocode( { 'address': address, 'bounds': user_bound}, function(results, status) {
       if (status == google.maps.GeocoderStatus.OK) {
-		console.log(results);
-        map.setCenter(results[0].geometry.location);
-		map.setZoom(15);
-		addMarker(results[0].geometry.location);
-        // var marker = new google.maps.Marker({
-        //     map: map,
-        //     position: results[0].geometry.location
-        // });
-      } else {
-        alert("Geocode was not successful for the following reason: " + status);
-      }
+		// console.log(results);
+		callback(results);
+
+      } 
+	///if no dice, search globally
+	 else {
+			geocoder.geocode( { 'address': address}, function(results, status) {
+		      if (status == google.maps.GeocoderStatus.OK) {
+			  	callback(results);
+				}
+			  else
+			{
+				// still no luck
+				VM.mapError("Sorry, we can't find that place. Try adding more info (or less)." )
+			} 
+				});
+		
+        // alert("Geocode was not successful for the following reason: " + status);
+      } //end else
     });
-  }
+  } //end lookupaddress
 
 
 
