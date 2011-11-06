@@ -135,7 +135,10 @@ class Guide (models.Model):
 		if self.thumb:
 			return self.thumb.thumb_url
 
-
+	@property
+	def resource_uri(self):
+		g = GuideResource() #  is imported at the end of this file
+		return g.get_resource_uri(self)
 
 
 class Card (models.Model):
@@ -422,4 +425,4 @@ class InputElement (models.Model):
 		return self.button_text
 
 
-from api import CardResource
+from api import CardResource, GuideResource

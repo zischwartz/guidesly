@@ -7,8 +7,13 @@ from fileupload.models import UserFile, Image
 
 from tastypie import fields
 from django.contrib.auth.models import User
+
+from tastypie.authentication import BasicAuthentication
+# from tastypie.authentication import DigestAuthentication
+
 from tastypie.authorization import Authorization
 from tastypie.authorization import DjangoAuthorization
+
 from tastypie.constants import ALL, ALL_WITH_RELATIONS
 from django.core.urlresolvers import reverse
 from guides.log import *
@@ -18,11 +23,11 @@ logger=getlogger()
 class myUserAuthorization(Authorization):
 	def is_authorized(self, request, object=None):
 		return True
-		# well that needs to be fixed TODO
-	def apply_limits(self, request, object_list):
-		if request and hasattr(request, 'user'):
-			return object_list.filter(owner__username=request.user.username)
-		return object_list.none()
+# 		# well that needs to be fixed TODO
+# 	def apply_limits(self, request, object_list):
+# 		if request and hasattr(request, 'user'):
+# 			return object_list.filter(owner__username=request.user.username)
+# 		return object_list.none()
 
 
 
@@ -32,7 +37,10 @@ class UserResource(ModelResource):
 		# excludes = ['email', 'password', 'is_active', 'is_staff', 'is_superuser']
 		fields = ['id', 'username']
 		allowed_methods = ['get']
+		# authentication = BasicAuthentication()
+		# authorization = DjangoAuthorization()
 		authorization = Authorization()
+		
 
 		
 class CardResource(ModelResource):
@@ -42,7 +50,11 @@ class CardResource(ModelResource):
 	guide = fields.ForeignKey('api.GuideResource', 'guide', null=True)
 	primary_media = fields.ForeignKey('api.MediaElementResource', 'primary_media', null=True, blank=True) #, full= True)
 	class Meta:
+		# authentication = BasicAuthentication()
+		# authorization = DjangoAuthorization()
+		authentication = BasicAuthentication()
 		authorization = Authorization()
+		
 		queryset= Card.objects.all()
 		filtering = {
 		"slug": ('exact'),
@@ -70,12 +82,12 @@ class SmallCardResource(ModelResource):
 		filtering= {"guide": ALL_WITH_RELATIONS,}
 	
 	# def hydrate(self, bundle):
-		# logger.info("HYDRATEEEEEEE/EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEd")
+		# logger.info("HYDRATEEEEd")
 		# logger.info(bundle.data)
 		# bundle.data['edit_url'] = None
 		# bundle.data['absolute_url'] = None
 	def dehydrate(self, bundle):
-		# logger.info("dehydrated---------------------------------")
+		# logger.info("dehydrated-------------")
 		# logger.info(bundle.data)
 		bundle.data['edit_url'] = reverse('EditCard', kwargs={'gslug':bundle.obj.guide.slug, 'id': bundle.obj.id})
 		bundle.data['absolute_url'] = bundle.obj.get_absolute_url()
@@ -88,7 +100,30 @@ class GuideResource(ModelResource):
 		authorization = Authorization()
 		excludes = ['created', 'modified']
 		queryset= Guide.objects.all()
-		filtering= {"slug": ('exact'),}
+		filtering= {"slug": ('exact'), "owner": ('exact')}
+
+class FullGuideResource(ModelResource):
+	cards = fields.ToManyField('api.CardResource', 'card_set', full=True, null=True, readonly=True) #eventually get rid of readonly true
+	class Meta:
+		authorization = Authorization()
+		excludes = ['created', 'modified']
+		queryset= Guide.objects.all()
+		filtering= {"slug": ('exact'), "owner": ('exact')}
+
+
+class SmallGuideResource(ModelResource):
+	class Meta:
+		authorization = Authorization()
+		excludes = ['created', 'modified']
+		queryset= Guide.objects.all()
+		filtering= {"slug": ('exact'), "owner": ('exact')}
+		
+	def dehydrate(self, bundle):
+		# logger.info("dehydrated-------------")
+		# g = GuideResource()
+		bundle.data['resource_uri'] = bundle.obj.resource_uri
+		# bundle.data['resource_uriz'] = g.get_resource_uri(bundle.obj) # this should work...
+		return bundle
 
 class ImageResource(ModelResource):
 	class Meta:
@@ -102,7 +137,7 @@ class UserFileResource(ModelResource):
 
 	class Meta:
 		queryset= UserFile.objects.all()
-		authorization= myUserAuthorization()
+		# authorization= myUserAuthorization()
 		excludes = ['created']
 		# include_resource_uri =False
 		filtering= {"type": ('exact'), "owner": ('exact')}
@@ -120,7 +155,7 @@ class ActionResource(ModelResource):
 	goto= fields.ForeignKey(SmallCardResource, 'goto', null=True) #made it smallCard instead of card
 	class Meta:
 		queryset= Action.objects.all()
-		authorization = Authorization()
+		# authorization = Authorization()
 		include_resource_uri =False #having this false was screwing things up
 		
 	def dehydrate(self, bundle):
@@ -133,7 +168,7 @@ class InputElementResource(ModelResource):
 	default_action= fields.ToOneField(ActionResource, 'default_action', null=True, full=True) #, full=True) #full being true made a mess on PUT 
 	class Meta:
 		queryset= InputElement.objects.all()
-		authorization = Authorization()
+		# authorization = Authorization()
 		filtering= {"type": ('exact'), "card": ('exact')}
 		
 		
@@ -142,7 +177,7 @@ class MapPointElementResource(ModelResource):
 	card= fields.ForeignKey(CardResource, 'card')
 	class Meta:
 		queryset= MapPointElement.objects.all()
-		authorization = Authorization()
+		# authorization = Authorization()
 
 
 
@@ -150,7 +185,7 @@ class MapPointElementResource(ModelResource):
 class TheFResource(ModelResource):
 	class Meta:
 		queryset = theF.objects.all()
-		authorization = Authorization()
+		# authorization = Authorization()
 
 		
 	# def full_hydrate(self, bundle):
