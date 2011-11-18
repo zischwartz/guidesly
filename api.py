@@ -52,7 +52,8 @@ class CardResource(ModelResource):
 	class Meta:
 		# authentication = BasicAuthentication()
 		# authorization = DjangoAuthorization()
-		authentication = BasicAuthentication()
+		
+		# authentication = BasicAuthentication()
 		authorization = Authorization()
 		
 		queryset= Card.objects.all()
